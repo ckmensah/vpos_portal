@@ -1,0 +1,25 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  entity_code: MyString
+  assigned_code: MyString
+  division_name: MyString
+  suburb_id: 1
+  activity_code: MyString
+  service_label: MyString
+  comment: MyText
+  active_status: false
+  del_status: false
+  user_id: 1
+
+two:
+  entity_code: MyString
+  assigned_code: MyString
+  division_name: MyString
+  suburb_id: 1
+  activity_code: MyString
+  service_label: MyString
+  comment: MyText
+  active_status: false
+  del_status: false
+  user_id: 1

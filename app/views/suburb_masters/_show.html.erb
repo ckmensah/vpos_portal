@@ -1,0 +1,34 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <strong>Suburb name:</strong>
+  <%= @suburb_master.suburb_name %>
+</p>
+
+<p>
+  <strong>City town:</strong>
+  <%= @suburb_master.city_town_id %>
+</p>
+
+<p>
+  <strong>Comment:</strong>
+  <%= @suburb_master.comment %>
+</p>
+
+<p>
+  <strong>Active status:</strong>
+  <%= @suburb_master.active_status %>
+</p>
+
+<p>
+  <strong>Del status:</strong>
+  <%= @suburb_master.del_status %>
+</p>
+
+<p>
+  <strong>User:</strong>
+  <%= @suburb_master.user_id %>
+</p>
+
+<%= link_to 'Edit', edit_suburb_master_path(@suburb_master) %> |
+<%= link_to 'Back', suburb_masters_path %>

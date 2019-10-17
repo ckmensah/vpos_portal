@@ -1,0 +1,17 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  city_town_name: MyString
+  region_id: 1
+  comment: MyText
+  active_status: false
+  del_status: false
+  user_id: 1
+
+two:
+  city_town_name: MyString
+  region_id: 1
+  comment: MyText
+  active_status: false
+  del_status: false
+  user_id: 1

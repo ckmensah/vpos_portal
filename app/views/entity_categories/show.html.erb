@@ -1,0 +1,34 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <strong>Assigned code:</strong>
+  <%= @entity_category.assigned_code %>
+</p>
+
+<p>
+  <strong>Category name:</strong>
+  <%= @entity_category.category_name %>
+</p>
+
+<p>
+  <strong>Comment:</strong>
+  <%= @entity_category.comment %>
+</p>
+
+<p>
+  <strong>Active status:</strong>
+  <%= @entity_category.active_status %>
+</p>
+
+<p>
+  <strong>Del status:</strong>
+  <%= @entity_category.del_status %>
+</p>
+
+<p>
+  <strong>User:</strong>
+  <%= @entity_category.user_id %>
+</p>
+
+<%= link_to 'Edit', edit_entity_category_path(@entity_category) %> |
+<%= link_to 'Back', entity_categories_path %>

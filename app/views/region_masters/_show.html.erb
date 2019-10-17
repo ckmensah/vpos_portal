@@ -1,0 +1,29 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <strong>Region name:</strong>
+  <%= @region_master.region_name %>
+</p>
+
+<p>
+  <strong>Comment:</strong>
+  <%= @region_master.comment %>
+</p>
+
+<p>
+  <strong>Active status:</strong>
+  <%= @region_master.active_status %>
+</p>
+
+<p>
+  <strong>Del status:</strong>
+  <%= @region_master.del_status %>
+</p>
+
+<p>
+  <strong>User:</strong>
+  <%= @region_master.user_id %>
+</p>
+
+<%= link_to 'Edit', edit_region_master_path(@region_master) %> |
+<%= link_to 'Back', region_masters_path %>

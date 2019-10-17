@@ -1,0 +1,37 @@
+<p id="notice"><%= notice %></p>
+
+<h1>City Town Masters</h1>
+
+<table>
+  <thead>
+    <tr>
+      <th>City town name</th>
+      <th>Region</th>
+      <th>Comment</th>
+      <th>Active status</th>
+      <th>Del status</th>
+      <th>User</th>
+      <th colspan="3"></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @city_town_masters.each do |city_town_master| %>
+      <tr>
+        <td><%= city_town_master.city_town_name %></td>
+        <td><%= city_town_master.region_id %></td>
+        <td><%= city_town_master.comment %></td>
+        <td><%= city_town_master.active_status %></td>
+        <td><%= city_town_master.del_status %></td>
+        <td><%= city_town_master.user_id %></td>
+        <td><%= link_to 'Show', city_town_master %></td>
+        <td><%= link_to 'Edit', edit_city_town_master_path(city_town_master) %></td>
+        <td><%= link_to 'Destroy', city_town_master, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<br>
+
+<%= link_to 'New City Town Master', new_city_town_master_path %>

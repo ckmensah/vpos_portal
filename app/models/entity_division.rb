@@ -1,0 +1,2 @@
+class EntityDivision < ApplicationRecord
+end

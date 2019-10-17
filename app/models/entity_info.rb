@@ -1,0 +1,2 @@
+class EntityInfo < ApplicationRecord
+end

@@ -1,0 +1,2 @@
+module CityTownMastersHelper
+end

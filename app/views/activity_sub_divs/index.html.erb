@@ -1,0 +1,41 @@
+<p id="notice"><%= notice %></p>
+
+<h1>Activity Sub Divs</h1>
+
+<table>
+  <thead>
+    <tr>
+      <th>Activity div</th>
+      <th>Activity time</th>
+      <th>Classification</th>
+      <th>Amount</th>
+      <th>Comment</th>
+      <th>Active status</th>
+      <th>Del status</th>
+      <th>User</th>
+      <th colspan="3"></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @activity_sub_divs.each do |activity_sub_div| %>
+      <tr>
+        <td><%= activity_sub_div.activity_div_id %></td>
+        <td><%= activity_sub_div.activity_time %></td>
+        <td><%= activity_sub_div.classification %></td>
+        <td><%= activity_sub_div.amount %></td>
+        <td><%= activity_sub_div.comment %></td>
+        <td><%= activity_sub_div.active_status %></td>
+        <td><%= activity_sub_div.del_status %></td>
+        <td><%= activity_sub_div.user_id %></td>
+        <td><%= link_to 'Show', activity_sub_div %></td>
+        <td><%= link_to 'Edit', edit_activity_sub_div_path(activity_sub_div) %></td>
+        <td><%= link_to 'Destroy', activity_sub_div, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<br>
+
+<%= link_to 'New Activity Sub Div', new_activity_sub_div_path %>

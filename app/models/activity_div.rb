@@ -1,0 +1,2 @@
+class ActivityDiv < ApplicationRecord
+end

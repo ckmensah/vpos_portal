@@ -1,0 +1,21 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  activity_div_id: 1
+  activity_time: 2019-10-17 13:43:48
+  classification: MyString
+  amount: 9.99
+  comment: MyText
+  active_status: false
+  del_status: false
+  user_id: 1
+
+two:
+  activity_div_id: 1
+  activity_time: 2019-10-17 13:43:48
+  classification: MyString
+  amount: 9.99
+  comment: MyText
+  active_status: false
+  del_status: false
+  user_id: 1

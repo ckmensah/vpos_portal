@@ -1,0 +1,54 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <strong>Entity code:</strong>
+  <%= @entity_info_extra.entity_code %>
+</p>
+
+<p>
+  <strong>Contact number:</strong>
+  <%= @entity_info_extra.contact_number %>
+</p>
+
+<p>
+  <strong>Web url:</strong>
+  <%= @entity_info_extra.web_url %>
+</p>
+
+<p>
+  <strong>Contact email:</strong>
+  <%= @entity_info_extra.contact_email %>
+</p>
+
+<p>
+  <strong>Location address:</strong>
+  <%= @entity_info_extra.location_address %>
+</p>
+
+<p>
+  <strong>Postal address:</strong>
+  <%= @entity_info_extra.postal_address %>
+</p>
+
+<p>
+  <strong>Comment:</strong>
+  <%= @entity_info_extra.comment %>
+</p>
+
+<p>
+  <strong>Active status:</strong>
+  <%= @entity_info_extra.active_status %>
+</p>
+
+<p>
+  <strong>Del status:</strong>
+  <%= @entity_info_extra.del_status %>
+</p>
+
+<p>
+  <strong>User:</strong>
+  <%= @entity_info_extra.user_id %>
+</p>
+
+<%= link_to 'Edit', edit_entity_info_extra_path(@entity_info_extra) %> |
+<%= link_to 'Back', entity_info_extras_path %>

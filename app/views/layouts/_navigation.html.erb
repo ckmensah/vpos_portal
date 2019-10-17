@@ -1,0 +1,75 @@
+<!--<ul class="nav">-->
+  <!--<li><%#= link_to 'Home', root_path %></li>-->
+  <!--<%#= render 'layouts/navigation_links' %>-->
+<!--</ul>-->
+<!--<nav class="navbar navbar-dark bg-custom-2">-->
+  <!--<a class="navbar-brand" href="#a">BootstrapBay</a>-->
+<!--</nav>-->
+
+
+
+<nav class="navbar sticky-top navbar-expand-lg navbar-dark nav-cust-grad">
+  <!--<nav class="navbar sticky-top navbar-expand-lg navbar-light bg-info">-->
+  <div>
+
+  </div>
+  <%= image_tag("vposss.png", class: "img-responsive", id: "navbar-logo", :width => 150, height: 50) %>
+  <a class="navbar-brand" href="#">
+
+    <!--<img alt='Brand' src='//public/images/vposss.png' class='navbar-logo-img d-inline-block align-top '>-->
+    <!--<img id="navbar-logo" class="img-responsive" src="images/vposss.png" alt="internsgopro logo">-->
+    <!--<span class="navbar-logo-text">Oncoscape</span>-->
+  </a>
+
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#demo-navbar" aria-controls="demo-navbar" aria-expanded="false" aria-label="Toggle navigation">
+
+    <span class="navbar-toggler-icon"></span>
+
+  </button>
+
+
+  <div class="collapse navbar-collapse justify-content-end" id="demo-navbar">
+
+  <ul class="navbar-nav float-right">
+
+    <li class="nav-item active">
+
+      <a class="nav-link text-light" href="https://www.jquery-az.com/jquery-tips/">Dashboard</a>
+
+    </li>
+
+    <li class="nav-item">
+
+      <a class="nav-link text-light" href="https://www.jquery-az.com/bootstrap-4/">Merchant</a>
+
+    </li>
+
+    <li class="nav-item">
+
+      <a class="nav-link text-light" href="https://www.jquery-az.com/javascript-tutorials/">Reports</a>
+
+    </li>
+
+    <li class="nav-item dropdown">
+      <!--<i class="fas fa-angle-down"></i>-->
+      <a class="nav-link text-light dropdown-toggle" href="#" id="navbardrop" data-toggle="dropdown">Setup </a>
+      <div class="dropdown-menu dropdown-menu-right">
+        <a class="dropdown-item" href= "<%= region_masters_path %>" >LOCATION</a>
+        <a class="dropdown-item" href="#">Link 2</a>
+        <a class="dropdown-item" href="#">Link 3</a>
+      </div>
+
+    </li>
+
+    <li class="nav-item">
+
+      <a class="nav-link disabled text-light" href="#">My Profile</a>
+
+    </li>
+
+  </ul>
+    </div>
+
+</nav>
+
+

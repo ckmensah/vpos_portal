@@ -1,0 +1,80 @@
+
+<div>
+  <br>
+  <p id="notes1"><%#= notice %></p>
+  <br>
+  <div>
+    <div class="w3-half">
+      <%= link_to 'NEW', new_region_master_path(count: params[:count], page: params[:page]), style: "width:120px;",
+                  class: 'w3-button w3-purple-vpos w3-border w3-border-purple w3-small w3-round-large',remote:true %>
+    </div>
+    <div class="w3-half">
+      <%= select_tag :count, options_for_select([10,20,30,40,50], params[:count].to_i),
+                     :data => {  :remote => true, :url => url_for(:controller => "region_masters", :action => "region_master_index")},
+                     id:"record", class: "w3-button w3-white w3-border w3-border-purple w3-round-large",
+                     style: "width:auto; height:35px; float:right", remote:true %>
+
+    </div>
+  </div>
+  <br>
+  <div class="table-responsive-md">
+    <br>
+    <table class="table w3-responsive table-striped">
+      <thead>
+      <tr>
+        <th></th>
+        <th>Region</th>
+        <th>Status</th>
+        <th>Date</th>
+        <th>Actions</th>
+      </tr>
+      </thead>
+      <tbody>
+      <% @region_masters.each do |region_master| %>
+
+          <tr>
+            <td><%= link_to 'VIEW', region_master_path(region_master, count: params[:count], page: params[:page]),
+                            style: "width:100px; height: 30px;",
+                            class: 'w3-button w3-purple-vpos w3-border w3-border-purple w3-tiny w3-round-large', remote:true%></td>
+            <td><strong><%= region_master.region_name %></td>
+            <% if region_master.active_status %>
+                <td><strong>Active</strong></td>
+            <% else %>
+                <td><strong>Inactive</strong></td>
+            <% end %>
+            <td><strong><%= region_master.created_at %></strong></td>
+            <td>
+              <%= link_to 'EDIT', edit_region_master_path(region_master, count: params[:count], page: params[:page]),
+                          style: "width:100px; height: 30px; color: #800754 !important",
+                          class: 'w3-button w3-white w3-border w3-border-purple w3-tiny w3-round-large', remote:true%>
+              <% if region_master.active_status %>
+                  <%= link_to 'DISABLE', region_master_path(region_master, count: params[:count], page: params[:page]),
+                              style: "width:100px; height: 30px; color: #800754 !important",
+                              method: :delete, data: { confirm: "Do you wish to disable: #{region_master.region_name}?" },
+                              class: 'w3-button w3-white w3-border w3-border-purple w3-tiny w3-round-large', remote:true%>
+              <% else %>
+                  <%= link_to 'ENABLE', region_master_path(region_master, count: params[:count], page: params[:page]),
+                              style: "width:100px; height: 30px;",
+                              method: :delete, data: { confirm: "Do you wish to enable: #{region_master.region_name}?" },
+                              class: 'w3-button w3-purple-vpos w3-border w3-border-purple w3-tiny w3-round-large', remote:true%>
+              <% end %>
+
+            </td>
+          </tr>
+
+      <% end %>
+
+      </tbody>
+    </table>
+  </div>
+
+
+</div>
+
+
+<script>
+    $(function(){
+        $('.pagination a').attr('data-remote', 'true')
+    });
+
+</script>

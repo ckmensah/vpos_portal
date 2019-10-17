@@ -1,0 +1,41 @@
+<p id="notice"><%= notice %></p>
+
+<h1>Entity Infos</h1>
+
+<table>
+  <thead>
+    <tr>
+      <th>Assigned code</th>
+      <th>Entity name</th>
+      <th>Entity alias</th>
+      <th>Entity cat</th>
+      <th>Comment</th>
+      <th>Active status</th>
+      <th>Del status</th>
+      <th>User</th>
+      <th colspan="3"></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @entity_infos.each do |entity_info| %>
+      <tr>
+        <td><%= entity_info.assigned_code %></td>
+        <td><%= entity_info.entity_name %></td>
+        <td><%= entity_info.entity_alias %></td>
+        <td><%= entity_info.entity_cat_id %></td>
+        <td><%= entity_info.comment %></td>
+        <td><%= entity_info.active_status %></td>
+        <td><%= entity_info.del_status %></td>
+        <td><%= entity_info.user_id %></td>
+        <td><%= link_to 'Show', entity_info %></td>
+        <td><%= link_to 'Edit', edit_entity_info_path(entity_info) %></td>
+        <td><%= link_to 'Destroy', entity_info, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<br>
+
+<%= link_to 'New Entity Info', new_entity_info_path %>

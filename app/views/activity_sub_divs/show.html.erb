@@ -1,0 +1,44 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <strong>Activity div:</strong>
+  <%= @activity_sub_div.activity_div_id %>
+</p>
+
+<p>
+  <strong>Activity time:</strong>
+  <%= @activity_sub_div.activity_time %>
+</p>
+
+<p>
+  <strong>Classification:</strong>
+  <%= @activity_sub_div.classification %>
+</p>
+
+<p>
+  <strong>Amount:</strong>
+  <%= @activity_sub_div.amount %>
+</p>
+
+<p>
+  <strong>Comment:</strong>
+  <%= @activity_sub_div.comment %>
+</p>
+
+<p>
+  <strong>Active status:</strong>
+  <%= @activity_sub_div.active_status %>
+</p>
+
+<p>
+  <strong>Del status:</strong>
+  <%= @activity_sub_div.del_status %>
+</p>
+
+<p>
+  <strong>User:</strong>
+  <%= @activity_sub_div.user_id %>
+</p>
+
+<%= link_to 'Edit', edit_activity_sub_div_path(@activity_sub_div) %> |
+<%= link_to 'Back', activity_sub_divs_path %>

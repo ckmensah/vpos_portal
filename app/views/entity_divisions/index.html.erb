@@ -1,0 +1,45 @@
+<p id="notice"><%= notice %></p>
+
+<h1>Entity Divisions</h1>
+
+<table>
+  <thead>
+    <tr>
+      <th>Entity code</th>
+      <th>Assigned code</th>
+      <th>Division name</th>
+      <th>Suburb</th>
+      <th>Activity code</th>
+      <th>Service label</th>
+      <th>Comment</th>
+      <th>Active status</th>
+      <th>Del status</th>
+      <th>User</th>
+      <th colspan="3"></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @entity_divisions.each do |entity_division| %>
+      <tr>
+        <td><%= entity_division.entity_code %></td>
+        <td><%= entity_division.assigned_code %></td>
+        <td><%= entity_division.division_name %></td>
+        <td><%= entity_division.suburb_id %></td>
+        <td><%= entity_division.activity_code %></td>
+        <td><%= entity_division.service_label %></td>
+        <td><%= entity_division.comment %></td>
+        <td><%= entity_division.active_status %></td>
+        <td><%= entity_division.del_status %></td>
+        <td><%= entity_division.user_id %></td>
+        <td><%= link_to 'Show', entity_division %></td>
+        <td><%= link_to 'Edit', edit_entity_division_path(entity_division) %></td>
+        <td><%= link_to 'Destroy', entity_division, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<br>
+
+<%= link_to 'New Entity Division', new_entity_division_path %>

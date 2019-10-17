@@ -1,0 +1,45 @@
+<p id="notice"><%= notice %></p>
+
+<h1>Entity Info Extras</h1>
+
+<table>
+  <thead>
+    <tr>
+      <th>Entity code</th>
+      <th>Contact number</th>
+      <th>Web url</th>
+      <th>Contact email</th>
+      <th>Location address</th>
+      <th>Postal address</th>
+      <th>Comment</th>
+      <th>Active status</th>
+      <th>Del status</th>
+      <th>User</th>
+      <th colspan="3"></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @entity_info_extras.each do |entity_info_extra| %>
+      <tr>
+        <td><%= entity_info_extra.entity_code %></td>
+        <td><%= entity_info_extra.contact_number %></td>
+        <td><%= entity_info_extra.web_url %></td>
+        <td><%= entity_info_extra.contact_email %></td>
+        <td><%= entity_info_extra.location_address %></td>
+        <td><%= entity_info_extra.postal_address %></td>
+        <td><%= entity_info_extra.comment %></td>
+        <td><%= entity_info_extra.active_status %></td>
+        <td><%= entity_info_extra.del_status %></td>
+        <td><%= entity_info_extra.user_id %></td>
+        <td><%= link_to 'Show', entity_info_extra %></td>
+        <td><%= link_to 'Edit', edit_entity_info_extra_path(entity_info_extra) %></td>
+        <td><%= link_to 'Destroy', entity_info_extra, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<br>
+
+<%= link_to 'New Entity Info Extra', new_entity_info_extra_path %>

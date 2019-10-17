@@ -1,0 +1,34 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <strong>City town name:</strong>
+  <%= @city_town_master.city_town_name %>
+</p>
+
+<p>
+  <strong>Region:</strong>
+  <%= @city_town_master.region_id %>
+</p>
+
+<p>
+  <strong>Comment:</strong>
+  <%= @city_town_master.comment %>
+</p>
+
+<p>
+  <strong>Active status:</strong>
+  <%= @city_town_master.active_status %>
+</p>
+
+<p>
+  <strong>Del status:</strong>
+  <%= @city_town_master.del_status %>
+</p>
+
+<p>
+  <strong>User:</strong>
+  <%= @city_town_master.user_id %>
+</p>
+
+<%= link_to 'Edit', edit_city_town_master_path(@city_town_master) %> |
+<%= link_to 'Back', city_town_masters_path %>

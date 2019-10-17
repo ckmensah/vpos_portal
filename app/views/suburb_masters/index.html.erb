@@ -1,0 +1,37 @@
+<p id="notice"><%= notice %></p>
+
+<h1>Suburb Masters</h1>
+
+<table>
+  <thead>
+    <tr>
+      <th>Suburb name</th>
+      <th>City town</th>
+      <th>Comment</th>
+      <th>Active status</th>
+      <th>Del status</th>
+      <th>User</th>
+      <th colspan="3"></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @suburb_masters.each do |suburb_master| %>
+      <tr>
+        <td><%= suburb_master.suburb_name %></td>
+        <td><%= suburb_master.city_town_id %></td>
+        <td><%= suburb_master.comment %></td>
+        <td><%= suburb_master.active_status %></td>
+        <td><%= suburb_master.del_status %></td>
+        <td><%= suburb_master.user_id %></td>
+        <td><%= link_to 'Show', suburb_master %></td>
+        <td><%= link_to 'Edit', edit_suburb_master_path(suburb_master) %></td>
+        <td><%= link_to 'Destroy', suburb_master, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<br>
+
+<%= link_to 'New Suburb Master', new_suburb_master_path %>
