@@ -6,7 +6,7 @@
   <div class="w3-white w3-hover-shadow col-md-4 offset-md-4 w3-card-4 w3-border w3-border-purple rcorners w3-center">
     <h4 class="show w3-center"><strong>New Suburb</strong></h4>
 
-    <div class="">
+    <div class="w3-container">
       <br/>
       <%= simple_form_for(@suburb_master, :data => {  :remote => true, count: params[:count], page: params[:page]}) do |f| %>
           <%= f.error_notification %>
@@ -62,27 +62,27 @@
 //      city_id.attr("disabled", false);
             city_id.attr("title", "Now select a city/town!");
 
-//            Rails.ajax({
-//                type: "POST",
-//                url: "<%#= suburb_city_ajax_call_path %>",
-//                data: "id_for_region=" + region_id.val(),
-//                dataType: "script"
-//            })
-
-            fetch("<%= suburb_city_ajax_call_path %>", {
-                method: 'post',
-                body: JSON.stringify({id_for_region: region_id.val()}),
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRF-Token': Rails.csrfToken()
-                },
-                dataType: "script",
-                credentials: 'same-origin'
-            }).then(function(response) {
-                return response.json();
-            }).then(function(data) {
-                console.log(data);
+            Rails.ajax({
+                type: "POST",
+                url: "<%= suburb_city_ajax_call_path %>",
+                data: "id_for_region=" + region_id.val(),
+                dataType: "script"
             });
+
+//            fetch("<%#= suburb_city_ajax_call_path %>", {
+//                method: 'post',
+//                body: JSON.stringify({id_for_region: region_id.val()}),
+//                headers: {
+//                    'Content-Type': 'application/json',
+//                    'X-CSRF-Token': Rails.csrfToken()
+//                },
+//                dataType: "script",
+//                credentials: 'same-origin'
+//            }).then(function(response) {
+//                return response.json();
+//            }).then(function(data) {
+//                console.log(data);
+//            });
 
 
         });

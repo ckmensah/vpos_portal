@@ -1,0 +1,71 @@
+
+<div>
+  <br>
+  <p id="notes3"><%#= notice %></p>
+  <br>
+  <div>
+    <!--<div class="w3-half">-->
+      <%#= link_to 'NEW', new_entity_info_path(count: params[:count], page: params[:page]), style: "width:120px;",
+                  class: 'w3-button w3-purple-vpos w3-border w3-border-purple w3-small w3-round-large',remote:true %>
+    <!--</div>-->
+    <div class="">
+      <%= select_tag :count, options_for_select([10,20,30,40,50], params[:count].to_i),
+                     :data => {  :remote => true, :url => url_for(:controller => "entity_infos", :action => "entity_info_index")},
+                     id:"record", class: "w3-button w3-white w3-border w3-border-purple w3-round-large",
+                     style: "width:auto; height:35px; float:right", remote:true %>
+
+    </div>
+  </div>
+  <br>
+  <div class="table-responsive-md">
+    <br>
+    <table class="table w3-responsive table-striped">
+      <thead>
+      <tr>
+        <!--<th></th>-->
+        <th>Merchant Name (Merchant Alias)</th>
+        <!--<th>Category Name (Category code)</th>-->
+        <th>Status</th>
+        <th>Date</th>
+        <th></th>
+      </tr>
+      </thead>
+      <tbody>
+      <% @entity_infos.each do |entity_info| %>
+
+          <tr>
+            <!--<td><%#= link_to 'VIEW', entity_info_path(entity_info, count: params[:count], page: params[:page]),
+                            style: "width:100px; height: 30px;",
+                            class: 'w3-button w3-purple-vpos w3-border w3-border-purple w3-tiny w3-round-large', remote:true%></td>-->
+            <td><strong><%= entity_info.entity_name %> (<%= entity_info.entity_alias %>)</strong></td>
+            <!--<td><strong><%#= entity_info.entity_category.category_name %> (<%#= entity_info.entity_category.assigned_code %>)</strong></td>-->
+            <% if entity_info.active_status %>
+                <td><strong>Active</strong></td>
+            <% else %>
+                <td><strong>Inactive</strong></td>
+            <% end %>
+            <td><strong><%= entity_info.created_at %></strong></td>
+            <td><%= link_to 'ADD DIVISIONS', new_entity_division_path(entity_code: entity_info, interface_type: "info", count: params[:count], page: params[:page]),
+                            style: "width:120px; height: 30px;",
+                            class: 'w3-button w3-purple-vpos w3-border w3-border-purple w3-tiny w3-round-large', remote:true%>
+              <%= link_to 'VIEW DIVISIONS', entity_division_index_path(entity_info, count: params[:count], page: params[:page]),
+                            style: "width:120px; height: 30px;",
+                            class: 'w3-button w3-purple-vpos w3-border w3-border-purple w3-tiny w3-round-large', remote:true%></td>
+          </tr>
+
+      <% end %>
+
+      </tbody>
+    </table>
+  </div>
+
+
+</div>
+
+
+<script>
+    $(function(){
+        $('.pagination a').attr('data-remote', 'true')
+    });
+
+</script>

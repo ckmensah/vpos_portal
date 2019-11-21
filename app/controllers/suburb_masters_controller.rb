@@ -23,14 +23,33 @@ class SuburbMastersController < ApplicationController
       @region_update_city = [["", ""]]
     else
       region_id_record = RegionMaster.find(params[:id_for_region])
-      region_update_city = region_id_record.cities.where(active_status: true).order(city_town_name: :asc).map { |a| [a.city_town_name, a.id] }.insert(0,['Please select a city', 0])
+      region_update_city = region_id_record.cities.where(active_status: true).order(city_town_name: :asc).map { |a| [a.city_town_name, a.id] }.insert(0,['Please select a city', ""])
       if region_update_city.empty?
         @region_update_city = [["", ""]]
       else
         @region_update_city = region_update_city
       end
     end
+    @city_update_suburb = [["", ""]]
     logger.info "For Cities :: #{@region_update_city.inspect}"
+  end
+
+  def suburb_update
+    # converted_params = ActiveSupport::JSON.decode( params[:s] )
+    logger.info "Params:: #{params[:id_for_city_town].inspect}"
+
+    if params[:id_for_city_town].empty?
+      @region_update_city = [["", ""]]
+    else
+      city_town_id_record = CityTownMaster.find(params[:id_for_city_town])
+      city_update_suburb = city_town_id_record.suburb_masters.where(active_status: true).order(suburb_name: :asc).map { |a| [a.suburb_name, a.id] }.insert(0,['Please select a suburb', ""])
+      if city_update_suburb.empty?
+        @city_update_suburb = [["", ""]]
+      else
+        @city_update_suburb = city_update_suburb
+      end
+    end
+    logger.info "For Suburbs :: #{@city_update_suburb.inspect}"
   end
 
 
@@ -61,7 +80,7 @@ class SuburbMastersController < ApplicationController
     @region_masters = RegionMaster.where(active_status: true).order(region_name: :asc)
     suburb_master_params[:region_name].present? ? @city_town_masters = CityTownMaster.where(active_status: true, region_id: suburb_master_params[:region_name]).order(city_town_name: :asc) : @city_town_masters = CityTownMaster.where(id: 0)
 
-    @suburb_master.city_town_id = "" if suburb_master_params[:city_town_id] == "0"
+    #@suburb_master.city_town_id = "" if suburb_master_params[:city_town_id] == "0"
     respond_to do |format|
       if @suburb_master.save
         format.html { redirect_to @suburb_master, notice: 'Suburb master was successfully created.' }
@@ -83,7 +102,8 @@ class SuburbMastersController < ApplicationController
     @region_masters = RegionMaster.where(active_status: true).order(region_name: :asc)
     @city_town_masters = CityTownMaster.where(active_status: true).order(city_town_name: :asc)
     suburb_master_params[:region_name].present? ? @city_town_masters = CityTownMaster.where(active_status: true, region_id: suburb_master_params[:region_name]).order(city_town_name: :asc) : @city_town_masters = CityTownMaster.where(id: 0)
-    @suburb_master.city_town_id = "" if suburb_master_params[:city_town_id] == "0"
+    #suburb_master_params[:city_town_id] = "" if suburb_master_params[:city_town_id] == "0"
+    logger.info "City/Town ID:: #{suburb_master_params[:city_town_id].inspect}"
     respond_to do |format|
       if @suburb_master.update(suburb_master_params)
         format.html { redirect_to @suburb_master, notice: 'Suburb master was successfully updated.' }

@@ -214,7 +214,8 @@ hr{border:0;border-top:1px solid #eee;margin:20px 0}
 .w3-border-purple,.w3-hover-border-purple:hover{border-color:#A31780!important}
 .w3-border-grey,.w3-hover-border-grey:hover,.w3-border-gray,.w3-hover-border-gray:hover{border-color:#bbb!important}
 
-.rcorners {  border-radius: 25px;  background: #73AD21;  }
+/*.rcorners {  border-radius: 25px;  background: #73AD21;  }*/
+.rcorners {  border-radius: 25px; }
 .w3-lobster {font-family: 'Lobster', serif;}
 .w3-montserrat {font-family: 'Montserrat', serif;}
 
@@ -479,7 +480,7 @@ input[type=checkbox]:checked ~ #menu{
 }
 
 .raw_theme {
-    background-color: #57421d;
+    background-color: #A31780;
     color: #fff;
 }
 

@@ -5,7 +5,7 @@ class CreateEntityDivisions < ActiveRecord::Migration[5.2]
       t.string :assigned_code
       t.string :division_name
       t.integer :suburb_id
-      t.string :activity_code
+      t.string :activity_type_code
       t.string :service_label
       t.text :comment
       t.boolean :active_status

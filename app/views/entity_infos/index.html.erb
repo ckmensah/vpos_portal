@@ -1,41 +1,38 @@
-<p id="notice"><%= notice %></p>
 
-<h1>Entity Infos</h1>
+<div class="container">
+  <!--<div class="row">-->
+  <!--<h4 style="text-decoration: underline;"><strong>MERCHANTS   </strong></h4>-->
 
-<table>
-  <thead>
-    <tr>
-      <th>Assigned code</th>
-      <th>Entity name</th>
-      <th>Entity alias</th>
-      <th>Entity cat</th>
-      <th>Comment</th>
-      <th>Active status</th>
-      <th>Del status</th>
-      <th>User</th>
-      <th colspan="3"></th>
-    </tr>
-  </thead>
+  <div class="w3-responsive">
+    <button type="button" class="btn btn-outline-purple tablink w3-vpos-purple" style="font-size: small; width: 120px;" onclick="openCity(event, 'entity_info')">MERCHANTS</button>
+    <button type="button" class="btn btn-outline-purple tablink" style="font-size: small; width: 165px;" onclick="openCity(event, 'entity_division')">MERCHANT DIVISION</button>
+  </div>
 
-  <tbody>
-    <% @entity_infos.each do |entity_info| %>
-      <tr>
-        <td><%= entity_info.assigned_code %></td>
-        <td><%= entity_info.entity_name %></td>
-        <td><%= entity_info.entity_alias %></td>
-        <td><%= entity_info.entity_cat_id %></td>
-        <td><%= entity_info.comment %></td>
-        <td><%= entity_info.active_status %></td>
-        <td><%= entity_info.del_status %></td>
-        <td><%= entity_info.user_id %></td>
-        <td><%= link_to 'Show', entity_info %></td>
-        <td><%= link_to 'Edit', edit_entity_info_path(entity_info) %></td>
-        <td><%= link_to 'Destroy', entity_info, method: :delete, data: { confirm: 'Are you sure?' } %></td>
-      </tr>
-    <% end %>
-  </tbody>
-</table>
 
-<br>
+  <div id="entity_info" class="city active">
+    <%= render :partial=> "entity_info_index" %>
+  </div>
 
-<%= link_to 'New Entity Info', new_entity_info_path %>
+  <div id="entity_division" class="city" style="display:none">
+    <%= render :partial=> "/entity_divisions/entity_index" %>
+  </div>
+
+  <script>
+    function openCity(evt, cityName) {
+      var i, x, tablinks;
+      x = document.getElementsByClassName("city");
+      for (i = 0; i < x.length; i++) {
+        x[i].style.display = "none";
+      }
+      tablinks = document.getElementsByClassName("tablink");
+      for (i = 0; i < x.length; i++) {
+        tablinks[i].className = tablinks[i].className.replace(" w3-vpos-purple", "");
+      }
+
+      document.getElementById(cityName).style.display = "block";
+      evt.currentTarget.className += " w3-vpos-purple";
+    }
+  </script>
+
+  <!--</div>-->
+</div>

@@ -68,6 +68,17 @@ ul.nav li a {
 }
 
 
+.cell-cust-grad{
+
+  background: #a3698a;
+
+  background: -webkit-linear-gradient(to left, #a3698a, #a3698a, #a3698a);
+
+  background: linear-gradient(to left, #a3698a, #a3698a, #a3698a);
+
+}
+
+
 .btn-outline-purple:hover {
   color: #fff;
   background-color: #A31780;

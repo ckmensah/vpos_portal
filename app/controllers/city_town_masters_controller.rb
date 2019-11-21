@@ -58,7 +58,7 @@ class CityTownMastersController < ApplicationController
     respond_to do |format|
       if @city_town_master.update(city_town_master_params)
         format.html { redirect_to @city_town_master, notice: 'City town master was successfully updated.' }
-        flash.now[:danger] = "City/Town was successfully created."
+        flash.now[:danger] = "City/Town was successfully updated."
         format.js { render :show}
         format.json { render :show, status: :ok, location: @city_town_master }
       else

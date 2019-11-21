@@ -10,7 +10,7 @@
       <div class="w3-white w3-hover-shadow col-md-4 offset-md-4 w3-card-4 w3-border w3-border-purple rcorners w3-center">
         <h4 class="show w3-center"><strong>Edit City</strong></h4>
 
-        <div class="">
+        <div class="w3-container">
           <br/>
           <%= simple_form_for(@city_town_master, :data => {  :remote => true, count: params[:count], page: params[:page]}) do |f| %>
               <%= f.error_notification %>

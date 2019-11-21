@@ -5,6 +5,19 @@ class EntityInfoExtrasController < ApplicationController
   # GET /entity_info_extras.json
   def index
     @entity_info_extras = EntityInfoExtra.all
+    params[:count] ? params[:count] : params[:count] = 10
+    params[:page] ? params[:page] : params[:page] = 1
+
+    @entity_info_extras = EntityInfoExtra.paginate(:page => params[:page], :per_page => params[:count]).order('created_at desc')
+
+  end
+
+  def entity_info_extra
+    params[:count] ? params[:count] : params[:count] = 10
+    params[:page] ? params[:page] : params[:page] = 1
+
+    @entity_info_extras = EntityInfoExtra.paginate(:page => params[:page], :per_page => params[:count]).order('created_at desc')
+
   end
 
   # GET /entity_info_extras/1
@@ -25,13 +38,15 @@ class EntityInfoExtrasController < ApplicationController
   # POST /entity_info_extras.json
   def create
     @entity_info_extra = EntityInfoExtra.new(entity_info_extra_params)
-
     respond_to do |format|
       if @entity_info_extra.save
-        format.html { redirect_to @entity_info_extra, notice: 'Entity info extra was successfully created.' }
+        format.html { redirect_to @entity_info_extra, notice: 'Entity extra info was successfully created.' }
+        flash.now[:danger] = "Entity extra info was successfully created."
+        format.js { render :show}
         format.json { render :show, status: :created, location: @entity_info_extra }
       else
         format.html { render :new }
+        format.js {render :new }
         format.json { render json: @entity_info_extra.errors, status: :unprocessable_entity }
       end
     end
@@ -40,12 +55,16 @@ class EntityInfoExtrasController < ApplicationController
   # PATCH/PUT /entity_info_extras/1
   # PATCH/PUT /entity_info_extras/1.json
   def update
+
     respond_to do |format|
       if @entity_info_extra.update(entity_info_extra_params)
         format.html { redirect_to @entity_info_extra, notice: 'Entity info extra was successfully updated.' }
+        flash.now[:danger] = "Entity info extra was successfully updated."
+        format.js { render :show}
         format.json { render :show, status: :ok, location: @entity_info_extra }
       else
         format.html { render :edit }
+        format.js {render :edit }
         format.json { render json: @entity_info_extra.errors, status: :unprocessable_entity }
       end
     end

@@ -18,7 +18,20 @@ Rails.application.routes.draw do
   get '/city_town_masters/city_town_master_index' => 'city_town_masters#city_town_master_index', :as => 'city_town_master_index'
   get '/suburb_masters/suburb_master_index' => 'suburb_masters#suburb_master_index', :as => 'suburb_master_index'
 
+  # patch '/entity_info/update'
+
+  get '/activity_types/activity_type_index' => 'activity_types#activity_type_index', :as => 'activity_type_index'
+  get '/entity_categories/entity_category_index' => 'entity_categories#entity_category_index', :as => 'entity_category_index'
+  get '/entity_infos/entity_info_index' => 'entity_infos#entity_info_index', :as => 'entity_info_index'
+
+
+
+  get '/entity_divisions/entity_division_index/:entity_code' => 'entity_divisions#entity_division_index', :as => 'entity_division_index'
+  get '/entity_divisions/entity_index' => 'entity_divisions#entity_index', :as => 'entity_index'
+
+
   post '/suburb_masters/city_update', :as => 'suburb_city_ajax_call'
+  post '/suburb_masters/suburb_update', :as => 'general_suburb_ajax_call'
 
   resources :suburb_masters
   resources :city_town_masters
@@ -30,6 +43,7 @@ Rails.application.routes.draw do
   resources :entity_divisions
   resources :entity_info_extras
   resources :entity_infos
+  resources :entity_wallet_configs
 
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".

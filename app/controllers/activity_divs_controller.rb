@@ -54,11 +54,7 @@ class ActivityDivsController < ApplicationController
   # DELETE /activity_divs/1
   # DELETE /activity_divs/1.json
   def destroy
-    @activity_div.destroy
-    respond_to do |format|
-      format.html { redirect_to activity_divs_url, notice: 'Activity div was successfully destroyed.' }
-      format.json { head :no_content }
-    end
+
   end
 
   private
@@ -69,6 +65,6 @@ class ActivityDivsController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def activity_div_params
-      params.require(:activity_div).permit(:division_code, :activity_date, :comment, :active_status, :del_status, :user_id)
+      params.require(:activity_div).permit(:division_code, :activity_div_desc, :activity_date, :comment, :active_status, :del_status, :user_id)
     end
 end

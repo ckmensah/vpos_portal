@@ -1,34 +1,67 @@
-<p id="notice"><%= notice %></p>
 
-<p>
-  <strong>Suburb name:</strong>
-  <%= @suburb_master.suburb_name %>
-</p>
 
-<p>
-  <strong>City town:</strong>
-  <%= @suburb_master.city_town_id %>
-</p>
+<div class="w3-container" >
+  <div id="id01" class="w3-modal w3-animate-opacity" style=" display: block">
+    <!--<div class="w3-modal-content w3-card-4" >-->
+    <br/>
 
-<p>
-  <strong>Comment:</strong>
-  <%= @suburb_master.comment %>
-</p>
+    <div class="">
 
-<p>
-  <strong>Active status:</strong>
-  <%= @suburb_master.active_status %>
-</p>
+      <div class="w3-white w3-hover-shadow col-md-6 offset-md-3 w3-card-4 w3-border w3-border-purple rcorners w3-center">
+        <h4 class="show w3-center"><strong>Suburb Details</strong></h4>
 
-<p>
-  <strong>Del status:</strong>
-  <%= @suburb_master.del_status %>
-</p>
+        <div class="w3-container">
+          <br/>
 
-<p>
-  <strong>User:</strong>
-  <%= @suburb_master.user_id %>
-</p>
+          <table class="w3-table-all table table-bordered w3-hoverable w3-card-4">
 
-<%= link_to 'Edit', edit_suburb_master_path(@suburb_master) %> |
-<%= link_to 'Back', suburb_masters_path %>
+            <tr>
+              <td class="raw_theme w3-border cell-cust-grad w3-leftbar"><strong>Region Name (City):</strong></td>
+              <td><strong><%= @suburb_master.a_city.a_region.region_name %> (<%= @suburb_master.a_city.city_town_name %>)</strong></td>
+            </tr>
+
+            <tr>
+              <td class="raw_theme w3-border cell-cust-grad w3-leftbar"><strong>Suburb Name:</strong></td>
+              <td><strong><%= @suburb_master.suburb_name %></strong></td>
+            </tr>
+
+            <tr>
+              <td class="raw_theme w3-border cell-cust-grad w3-leftbar"><strong>Status:</strong></td>
+
+              <% if @suburb_master.active_status %>
+                  <td><strong>Active</strong></td>
+              <% else %>
+                  <td><strong>Inactive</strong></td>
+              <% end %>
+            </tr>
+
+            <tr>
+              <td class="raw_theme w3-border cell-cust-grad w3-leftbar"><strong>Comment:</strong></td>
+              <td><strong><%= @suburb_master.comment %></strong></td>
+            </tr>
+
+
+            <tr>
+              <td class="raw_theme w3-border cell-cust-grad w3-leftbar"><strong>Date:</strong></td>
+              <td>
+                <strong><%= @suburb_master.created_at %></strong>
+              </td>
+            </tr>
+
+          </table>
+
+          <br/>
+          <div class="w3-center">
+            <%= link_to 'Back', suburb_master_index_path(page: params[:page], count: params[:count]), class: 'w3-bar-item w3-btn w3-ripple w3-round-large w3-dark-gray', remote: true %>
+          </div>
+          <br/>
+        </div>
+
+      </div>
+
+    </div>
+
+    <!--</div>-->
+
+  </div>
+</div>

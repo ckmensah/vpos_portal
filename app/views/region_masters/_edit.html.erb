@@ -11,7 +11,7 @@
         <h4 class="show w3-center"><strong>Edit Region</strong></h4>
 
 
-        <div class="">
+        <div class="w3-container">
           <br/>
           <%= simple_form_for(@region_master, :data => {  :remote => true, count: params[:count], page: params[:page]}) do |f| %>
               <%= f.error_notification %>

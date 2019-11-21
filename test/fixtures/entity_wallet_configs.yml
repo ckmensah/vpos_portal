@@ -1,0 +1,21 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  division_code: MyString
+  service_id: 1
+  secret_key: MyString
+  client_key: MyString
+  comment: MyText
+  active_status: false
+  del_status: false
+  user_id: 1
+
+two:
+  division_code: MyString
+  service_id: 1
+  secret_key: MyString
+  client_key: MyString
+  comment: MyText
+  active_status: false
+  del_status: false
+  user_id: 1
