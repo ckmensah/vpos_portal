@@ -1,2 +1,5 @@
+<% if params[:into_create] == "into_create" %>
+$("#entity_division").html("<%= escape_javascript(render(:partial =>"entity_divisions/entity_index")) %>");
+<% end %>
 $("#notes1").html("<%= escape_javascript(render(:partial =>"show")) %>");
 $('#notice1').html("<%= escape_javascript(render 'layouts/messages') %>");

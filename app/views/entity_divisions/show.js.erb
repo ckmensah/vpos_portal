@@ -1,2 +1,7 @@
+
+<% if params[:interface_type] == "info" %>
+$("#notes3").html("<%= escape_javascript(render(:partial =>"show")) %>");
+<% else %>
 $("#notes2").html("<%= escape_javascript(render(:partial =>"show")) %>");
+<% end %>
 $('#notice2').html("<%= escape_javascript(render 'layouts/messages') %>");

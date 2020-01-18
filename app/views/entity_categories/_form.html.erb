@@ -1,18 +1,41 @@
 
-<%= simple_form_for(@entity_category) do |f| %>
-  <%= f.error_notification %>
-  <%= f.error_notification message: f.object.errors[:base].to_sentence if f.object.errors[:base].present? %>
 
-  <div class="form-inputs">
-    <%= f.input :assigned_code %>
-    <%= f.input :category_name %>
-    <%= f.input :comment %>
-    <%= f.input :active_status %>
-    <%= f.input :del_status %>
-    <%= f.input :user_id %>
+
+<div class="">
+
+  <div class="w3-white w3-hover-shadow col-md-4 offset-md-4 w3-card-4 w3-border w3-border-purple rcorners w3-center">
+    <h4 class="show w3-center"><strong>New Merchant Category</strong></h4>
+
+    <div class="w3-container">
+      <br/>
+      <%= simple_form_for(@entity_category, :data => {  :remote => true, count: params[:count], page: params[:page]}) do |f| %>
+          <%= f.error_notification %>
+          <%= f.error_notification message: f.object.errors[:base].to_sentence if f.object.errors[:base].present? %>
+
+          <%= f.input :assigned_code,  label: "Assigned Code", value_method: :id, required: true, input_html:{id: "for_assigned_code", autocomplete: "off",class:"form-control w3-input w3-border w3-white input-group input-append",style:""}  %>
+          <%= f.input :category_name,  label: "Category Name", value_method: :id, required: true, input_html:{id: "for_cat_name", autocomplete: "off",class:"form-control w3-input w3-border w3-white input-group input-append",style:""}  %>
+
+          <%= f.input :comment,  label: "Comment", :as => :text, value_method: :id, required: false, input_html:{rows: 5, cols: 3, autocomplete: "off",class:"form-control w3-border ",style:""}  %>
+
+          <%= f.input :active_status, :as => :hidden, input_html:{value: true} %>
+          <%= f.input :del_status, :as => :hidden, input_html:{value: false} %>
+          <%#= f.input :user_id, :as => :hidden, input_html:{value: current_user.id} %>
+          <div>
+            <%= f.submit "Submit", class: "w3-button w3-purple-vpos w3-border w3-border-purple w3-small w3-round-large", :data => {:disable_with => 'Please Wait...'}, style: "width:auto;float:center;",remote:true %>
+            <%= link_to 'Back', entity_category_index_path(page: params[:page], count: params[:count]), class: "w3-button w3-white w3-border w3-border-purple w3-small w3-round-large",remote:true %>
+          </div>
+      <% end %>
+      <br/>
+    </div>
+
+
   </div>
 
-  <div class="form-actions">
-    <%= f.button :submit %>
-  </div>
-<% end %>
+</div>
+
+
+<div class="col-md-7 col-md-offset-5">
+</div>
+
+
+

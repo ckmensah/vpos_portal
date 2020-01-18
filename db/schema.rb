@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_11_11_180204) do
+ActiveRecord::Schema.define(version: 2019_11_21_124549) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -64,6 +64,24 @@ ActiveRecord::Schema.define(version: 2019_11_11_180204) do
     t.datetime "updated_at"
   end
 
+  create_table "assigned_fees", id: false, force: :cascade do |t|
+    t.serial "id", null: false
+    t.string "entity_div_code", limit: 10
+    t.string "trans_type", limit: 5
+    t.decimal "fee", precision: 11, scale: 3, default: "0.0"
+    t.string "flat_percent", limit: 5
+    t.decimal "cap", precision: 11, scale: 3, default: "0.0"
+    t.decimal "limit_capped", precision: 11, scale: 3, default: "0.0"
+    t.string "charged_to", limit: 5
+    t.string "comment", limit: 255
+    t.boolean "active_status", default: true
+    t.boolean "del_status", default: false
+    t.integer "user_id"
+    t.boolean "approved"
+    t.datetime "created_at", default: -> { "CURRENT_TIMESTAMP" }, null: false
+    t.datetime "updated_at"
+  end
+
   create_table "assigned_service_code", id: false, force: :cascade do |t|
     t.serial "id", null: false
     t.string "entity_div_code", limit: 10
@@ -100,6 +118,15 @@ ActiveRecord::Schema.define(version: 2019_11_11_180204) do
     t.datetime "updated_at"
   end
 
+  create_table "duplicate_callback", id: false, force: :cascade do |t|
+    t.serial "id", null: false
+    t.string "trans_status", limit: 100
+    t.string "nw_trans_id", limit: 50
+    t.string "trans_ref", limit: 20
+    t.string "trans_msg", limit: 255
+    t.datetime "created_at", default: -> { "CURRENT_TIMESTAMP" }, null: false
+  end
+
   create_table "entity_categories", force: :cascade do |t|
     t.string "assigned_code"
     t.string "category_name"
@@ -126,6 +153,7 @@ ActiveRecord::Schema.define(version: 2019_11_11_180204) do
     t.boolean "del_status", default: false
     t.datetime "created_at", default: -> { "CURRENT_TIMESTAMP" }, null: false
     t.datetime "updated_at"
+    t.boolean "allow_qr"
   end
 
   create_table "entity_info", id: false, force: :cascade do |t|
@@ -157,17 +185,94 @@ ActiveRecord::Schema.define(version: 2019_11_11_180204) do
     t.datetime "updated_at"
   end
 
+  create_table "entity_service_account", id: false, force: :cascade do |t|
+    t.serial "id", null: false
+    t.string "entity_div_code", limit: 10
+    t.decimal "gross_bal", precision: 11, scale: 3
+    t.decimal "net_bal", precision: 11, scale: 3
+    t.boolean "active_status", default: true
+    t.boolean "del_status", default: false
+    t.datetime "created_at", default: -> { "CURRENT_TIMESTAMP" }, null: false
+    t.datetime "updated_at"
+  end
+
+  create_table "entity_service_account_trxn", id: false, force: :cascade do |t|
+    t.serial "id", null: false
+    t.string "entity_div_code", limit: 10
+    t.decimal "gross_bal_bef", precision: 11, scale: 3
+    t.decimal "gross_bal_aft", precision: 11, scale: 3
+    t.decimal "net_bal_bef", precision: 11, scale: 3
+    t.decimal "net_bal_aft", precision: 11, scale: 3
+    t.string "processing_id", limit: 20
+    t.decimal "charge", precision: 11, scale: 3
+    t.string "trans_type", limit: 5
+    t.datetime "created_at", default: -> { "CURRENT_TIMESTAMP" }, null: false
+  end
+
   create_table "entity_wallet_configs", force: :cascade do |t|
-    t.string "division_code"
+    t.string "entity_code"
     t.integer "service_id"
     t.string "secret_key"
     t.string "client_key"
     t.text "comment"
-    t.boolean "active_status"
-    t.boolean "del_status"
+    t.boolean "active_status", default: true
+    t.boolean "del_status", default: false
     t.integer "user_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "activity_type_code"
+  end
+
+  create_table "err_log", id: false, force: :cascade do |t|
+    t.serial "id", null: false
+    t.string "entity_div_code", limit: 10
+    t.string "processing_id", limit: 20
+    t.string "trans_type", limit: 5
+    t.string "nw", limit: 5
+    t.text "err_msg"
+    t.datetime "created_at", default: -> { "CURRENT_TIMESTAMP" }, null: false
+  end
+
+  create_table "payment_callback", id: false, force: :cascade do |t|
+    t.serial "id", null: false
+    t.string "trans_status", limit: 100
+    t.string "nw_trans_id", limit: 50
+    t.string "trans_ref", limit: 20
+    t.string "trans_msg", limit: 255
+    t.datetime "created_at", default: -> { "CURRENT_TIMESTAMP" }, null: false
+  end
+
+  create_table "payment_info", id: false, force: :cascade do |t|
+    t.serial "id", null: false
+    t.string "session_id", limit: 50
+    t.string "entity_div_code", limit: 10
+    t.integer "activity_lov_id"
+    t.integer "activity_div_id"
+    t.boolean "processed"
+    t.string "src", limit: 5
+    t.datetime "created_at", default: -> { "CURRENT_TIMESTAMP" }, null: false
+    t.datetime "updated_at"
+    t.string "payment_mode", limit: 5
+    t.decimal "amount", precision: 11, scale: 3
+    t.string "customer_number", limit: 20
+    t.string "trans_type", limit: 5
+    t.decimal "charge", precision: 11, scale: 3
+  end
+
+  create_table "payment_request", id: false, force: :cascade do |t|
+    t.serial "id", null: false
+    t.integer "payment_info_id"
+    t.string "processing_id", limit: 50
+    t.string "customer_number", limit: 20
+    t.string "nw", limit: 5
+    t.string "trans_type", limit: 5
+    t.decimal "amount", precision: 11, scale: 2
+    t.integer "service_id"
+    t.string "payment_mode", limit: 5
+    t.string "reference", limit: 50
+    t.boolean "processed"
+    t.datetime "created_at", default: -> { "CURRENT_TIMESTAMP" }, null: false
+    t.datetime "updated_at"
   end
 
   create_table "region_masters", force: :cascade do |t|
@@ -178,6 +283,20 @@ ActiveRecord::Schema.define(version: 2019_11_11_180204) do
     t.integer "user_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+  end
+
+  create_table "staged_request", id: false, force: :cascade do |t|
+    t.serial "id", null: false
+    t.string "processing_id", limit: 20
+    t.decimal "amount", precision: 10, scale: 2
+    t.string "entity_div_code", limit: 10
+    t.string "narration", limit: 50
+    t.string "trans_type", limit: 5
+    t.integer "payment_info_id"
+    t.integer "payment_req_id"
+    t.boolean "status"
+    t.datetime "created_at", default: -> { "CURRENT_TIMESTAMP" }, null: false
+    t.datetime "updated_at"
   end
 
   create_table "suburb_masters", force: :cascade do |t|
@@ -303,6 +422,10 @@ ActiveRecord::Schema.define(version: 2019_11_11_180204) do
     t.string "fullname"
     t.string "month_code"
     t.string "month_full"
+    t.decimal "charge", default: "0.0"
+    t.string "activity_main_code"
+    t.string "total_amount"
+    t.string "payment_reference"
   end
 
   create_table "ussd_tracker_logs", id: :integer, default: -> { "nextval('tracker_logs_id_seq'::regclass)" }, force: :cascade do |t|

@@ -1,0 +1,656 @@
+
+<div class="w3-container" >
+  <div id="id01" class="w3-modal w3-animate-opacity" style=" display: block">
+    <!--<div class="w3-modal-content w3-card-4" >-->
+    <br/>
+
+    <div class="">
+      <div class="w3-white w3-hover-shadow col-md-10 offset-md-1 w3-card-4 w3-border w3-border-purple rcorners w3-center">
+        <h4 class="show w3-center"><strong>Edit Division Setup</strong></h4>
+        <p id="for_division_edit_setup"><%#= notice %></p>
+        <div id="entity_info_edit"></div>
+        <%= simple_form_for(@entity_division, url: update_division_setup_path(@entity_division, code: params[:code], action_type: "for_update", entity_code: params[:entity_code], count: params[:count], page: params[:page] ),:remote => true) do |f| %>
+          <div class="w3-container w3-border w3-border-purple">
+            <br/>
+            <%= f.error_notification %>
+            <%= f.error_notification message: f.object.errors[:base].to_sentence if f.object.errors[:base].present? %>
+            <div class="w3-center">
+              <div class="w3-half">
+                <h5><strong>* Do you wish to edit list of values for this division?</strong></h5>
+              </div>
+
+              <div class="w3-half">
+
+                <% if @division_activity_lovs.exists? #|| @div_activity_type == "SHW" %>
+                  <strong><%= f.input :div_lov_query, as: :radio_buttons, label: "", collection: [['yes', 'YES'] ,['no', 'NO']], label_method: :last, value_method: :first, :checked => ['yes', 'YES'], input_html:{:item_wrapper_class => 'inline'} %></strong>
+                <% else %>
+                  <strong><%= f.input :div_lov_query, as: :radio_buttons, label: "", collection: [['yes', 'YES'] ,['no', 'NO']], label_method: :last, value_method: :first, input_html:{:item_wrapper_class => 'inline'} %></strong>
+                <% end %>
+
+              </div>
+              <%#= f.collection_radio_buttons :wallet_query, [[true, ' YES    |'] ,[false, ' NO ']], :first, :last %>
+            </div>
+            <%#= f.input :active_status, :as => :hidden, input_html:{value: true} %>
+            <%#= f.input :user_id, :as => :hidden, input_html:{value: current_user.id} %>
+            <input type="hidden" name="into_update_setup" value="into_update_setup">
+
+            <br/>
+          </div>
+
+
+          <br>
+          <%# if @activity_types.exists? %>
+
+          <div id="div_lov_config" class="w3-container w3-white w3-border w3-border-purple w3-responsive w3-mobile " >
+            <h5 class="w3-center"><strong>EDIT DIVISION LIST OF VALUES</strong></h5>
+            <button type="button" id="add_div_lov" onclick="addScreenRow('div_lov_table'); return false;" class="w3-button w3-purple-vpos w3-border w3-border-purple w3-tiny w3-round-large">ADD ANOTHER</button>
+            <div class="pre-scrollable" style="max-height: 50vh">
+              <br/>
+              <!--<input type="hidden" name="into_create" value="into_create">-->
+              <!--<div class="table-responsive">-->
+              <table id="div_lov_table" class="w3-table-all table-bordered w3-hoverable w3-card-4">
+
+                <thead>
+                <tr class="w3-vpos-purple">
+                  <!--                  <th><strong>No.</strong></th>-->
+                  <%# if params[:into_create_setup] == "into_create_setup" %>
+                  <!--                    <th><strong>No.</strong></th>-->
+                  <%# end %>
+                  <th><strong>Activity Code</strong></th>
+                  <th><strong>Description</strong></th>
+                  <th><strong>Delete</strong></th>
+                  <!--<th><strong>Name &emsp;&emsp;&emsp;&emsp;</strong></th>-->
+                  <!--<th><strong>Save</strong></th>-->
+                  <!--<th colspan="1"></th>-->
+                </tr>
+                </thead>
+                <tbody>
+                <% if params[:into_update_setup] == "into_update_setup" %>
+                  <% count = 1 %>
+                  <% unless @the_div_lov.nil? %>
+                    <% @the_div_lov.each do |key,value| %>
+                      <% the_params = value %>
+                      <% logger.info "key: #{key.inspect}; value: #{value.inspect}; inner value: #{value["activity_code"].inspect}" %>
+                      <%# act_type = ActivityType.where(assigned_code: the_params["activity_type_code"], active_status: true).last %>
+                      <tr id="del_div_lov_<%= count %>">
+                        <!--                        <td><strong><%#= count %></strong></td>-->
+                        <td style=""><strong><%= collection_select :the_div_acts_lov, "#{count}[activity_code]", @activity_codes, :last, :first, {selected: the_params["activity_code"], :prompt => 'Select an Activity Code', :include_blank => true}, {id: "act_code_#{count}", class:"form-control w3-input w3-border w3-white input-group input-append", style:"" } %></strong></td>
+                        <td><strong><textarea name="the_div_acts_lov[<%= count %>[lov_desc]]" rows="1" placeholder="Description" class="form-control"><%= the_params["lov_desc"] %></textarea></strong></td>
+                        <td><strong><button type="button" onclick="deleteRow('del_div_lov_<%= count %>'); return false;" class="w3-button w3-purple-vpos w3-border w3-border-purple w3-tiny w3-round-large"></button></strong></td>
+                        <input type="hidden" name="the_div_acts_lov[<%= count %>[id]]" value="<%= the_params["id"] %>" >
+                        <!--<td><strong><input type="checkbox" name="the_list[<%#= count %>[checkbox]]]" style="display: block;">-->
+                        <!--<input type="hidden" name="the_list[<%#= count %>[id]]]" value="<%#= person.last %>"><%# count = count + 1%></strong></td>-->
+                        <!--<input type="hidden" name="the_activity_wallets[<%#= count %>[id]]]" >-->
+                        <% count = count + 1 %>
+                      </tr>
+                    <% end %>
+                  <% end %>
+
+                <% else %>
+                  <% count = 1 %>
+                  <!--list.each do |row|-->
+                  <!--the_params = row[1]-->
+                  <% @division_activity_lovs.each do |division_activity_lov| %>
+                    <%# the_params = person[1] %>
+                    <%# pcs_do = ActivityType.where(id: the_params[:id]).last %>
+                    <tr id="del_div_lov_<%= count %>">
+                      <!--                      <td><strong><%#= count %></strong></td>-->
+                      <td style=""><strong><%= collection_select :the_div_acts_lov, "#{count}[activity_code]", @activity_codes, :last, :first, { :selected => division_activity_lov.activity_code, :prompt => 'Select an Activity Code', :include_blank => true}, {id: "act_code_#{count}", class:"form-control w3-input w3-border w3-white input-group input-append", style:"" } %></strong></td>
+                      <td><strong><textarea name="the_div_acts_lov[<%= count %>[lov_desc]]" rows="1" placeholder="Description" class="form-control"><%= division_activity_lov.lov_desc %></textarea></strong></td>
+                      <td><strong><button onclick="deleteRow('del_div_lov_<%= count %>'); return false;" class="w3-button w3-purple-vpos w3-border w3-border-purple w3-tiny w3-round-large"></button></strong></td>
+                      <input type="hidden" name="the_div_acts_lov[<%= count %>[id]]" value="<%= division_activity_lov.id %>" >
+                      <!--<td><strong><input type="checkbox" name="the_list[<%#= count %>[checkbox]]]" style="display: block;">-->
+                      <!--<input type="hidden" name="the_list[<%#= count %>[id]]]" value="<%#= person.last %>"><%# count = count + 1%></strong></td>-->
+                      <!--<input type="hidden" name="the_activity_wallets[<%#= count %>[id]]]" >-->
+                      <% count = count + 1%>
+                    </tr>
+                  <% end %>
+                <% end %>
+
+                </tbody>
+
+              </table>
+              <!--</div>-->
+              <!--<input type="hidden" name="lbc_main_id" value="<%#= params[:lbc_main_id] %>">-->
+              <!--<input type="hidden" name="bank_allo_id" value="<%#= params[:bank_allo_id] %>">-->
+              <!--<input type="hidden" name="mini" value="super_max">-->
+
+              <br/>
+            </div>
+          </div>
+
+          <br>
+
+          <% if @div_activity_type == "SHW" %>
+
+            <div class="w3-container w3-border w3-border-purple">
+              <br/>
+              <div class="w3-center">
+                <div class="w3-half">
+                  <h5><strong>* Do you wish to edit various activities for this division?</strong></h5>
+                </div>
+                <div class="w3-half">
+                  <% if @activity_divs.exists? #|| @div_activity_type == "SHW" %>
+                    <strong><%= f.input :activity_query, as: :radio_buttons, item_wrapper_class: 'inline', label: "", collection: [['yes', 'YES'] ,['no', 'NO']], label_method: :last, value_method: :first, checked: ['yes', 'YES'] %></strong>
+                  <% else %>
+                    <strong><%= f.input :activity_query, as: :radio_buttons, item_wrapper_class: 'inline', label: "", collection: [['yes', 'YES'] ,['no', 'NO']], label_method: :last, value_method: :first %></strong>
+                  <% end %>
+                </div>
+              </div>
+              <br/>
+            </div>
+
+
+            <br>
+            <%# if @activity_types.exists? %>
+
+            <div id="div_activity_config" class="w3-container w3-white w3-border w3-border-purple w3-responsive w3-mobile " >
+              <h5 class="w3-center"><strong>EDIT ACTIVITY SCHEDULES</strong></h5>
+              <div>
+                <button type="button" id="add_activity" onclick="addActivity('general_activity_div'); return false;" class="w3-button w3-purple-vpos w3-border w3-border-purple w3-tiny w3-round-large">ADD ANOTHER ACTIVITY</button>
+              </div>
+              <br>
+              <div id="general_activity_div" class="w3-container pre-scrollable" style="max-height: 62vh;">
+
+                <% div_count = 1 %>
+                <% @activity_divs.each_with_index do |activity_div, ind| %>
+                  <br>
+                  <div id="activity_div_<%= div_count %>" class="w3-container w3-card-4 w3-border w3-border-purple">
+                    <br>
+                    <div class="w3-container">
+                      <% if params[:into_update_setup] == "into_update_setup" %>
+                        <% if @main_params.any? %>
+                          <% the_params = params["#{@main_params[ind]}"] %>
+                          <div class="w3-quarter">
+                            <h6><strong>Description:</strong></h6>
+                            <input type="text" name="the_activity_<%= div_count %>[0[activity_div_desc]]" value="<%= the_params["0"]["activity_div_desc"] %>" placeholder="Description" class="form-control w3-input w3-border w3-white input-group input-append">
+                          </div>
+                          <div class="w3-quarter">
+                            <h6><strong>Activity Date:</strong></h6>
+                            <input type="date" name="the_activity_<%= div_count %>[0[activity_date]]" style="width: 95%; float: right;" value="<%= the_params["0"]["activity_date"] %>" placeholder="Select Date" class="form-control w3-input w3-border w3-white input-group input-append">
+                          </div>
+                          <input type="hidden" name="the_activity_<%= div_count %>[0[activity_id]]" value="<%= the_params["0"]["activity_id"] %>" >
+                        <% end %>
+
+                      <% else %>
+                        <div class="w3-quarter">
+                          <h6><strong>Description:</strong></h6>
+                          <input type="text" name="the_activity_<%= div_count %>[0[activity_div_desc]]" value="<%= activity_div.activity_div_desc %>" placeholder="Description" class="form-control w3-input w3-border w3-white input-group input-append">
+                        </div>
+                        <div class="w3-quarter">
+                          <h6><strong>Activity Date:</strong></h6>
+                          <input type="date" name="the_activity_<%= div_count %>[0[activity_date]]" style="width: 95%; float: right;" value="<%= activity_div.activity_date %>" placeholder="Select Date" class="form-control w3-input w3-border w3-white input-group input-append">
+
+                        </div>
+                        <input type="hidden" name="the_activity_<%= div_count %>[0[activity_id]]" value="<%= activity_div.id %>" >
+                      <% end %>
+
+                      <div class="w3-quarter">
+                        <button type="button" id="" onclick="deleteActivity('activity_div_<%= div_count %>'); return false;" class="w3-button w3-purple-vpos w3-border w3-border-purple w3-tiny w3-round-large">DELETE ACTIVITY</button>
+                      </div>
+                      <div class="w3-quarter">
+                        <button type="button" id="add_activity_sub" onclick="addActivitySub('activity_sub_table_<%= div_count %>', <%= div_count %>); return false;" class="w3-button w3-purple-vpos w3-border w3-border-purple w3-tiny w3-round-large">ADD ANOTHER TIME SCHEDULE</button>
+                      </div>
+                    </div>
+                    <br>
+                    <div class="pre-scrollable" style="max-height: 30vh">
+                      <!--                    <br/>-->
+                      <!--<input type="hidden" name="into_create" value="into_create">-->
+                      <!--<div class="table-responsive">-->
+                      <table id="activity_sub_table_<%= div_count %>" class="w3-table-all table-bordered w3-hoverable w3-card-4">
+                        <thead>
+                        <tr class="w3-vpos-purple">
+                          <!--                  <th><strong>No.</strong></th>-->
+                          <%# if params[:into_create_setup] == "into_create_setup" %>
+                          <!--                            <th><strong>No.</strong></th>-->
+                          <%# end %>
+                          <th><strong>Activity Time</strong></th>
+                          <th><strong>Classification</strong></th>
+                          <th><strong>Amount</strong></th>
+                          <th><strong>Delete</strong></th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <% if params[:into_update_setup] == "into_update_setup" %>
+                          <% if @main_params.any? %>
+                            <% the_main_params = params["#{@main_params[ind]}"] %>
+                            <% count = 1 %>
+
+                            <% unless the_main_params.nil? %>
+                              <% the_main_params.each do |key,value| %>
+                                <% the_params = value %>
+                                <% logger.info "key: #{key.inspect}; value: #{value.inspect}; inner value: #{value["activity_time"].inspect}" %>
+                                <% unless key == "0" %>
+                                  <tr id="<%= div_count %>_del_activity_sub_<%= count %>">
+                                    <!--                                    <td><strong><%#= count %></strong></td>-->
+                                    <td><strong><input type="time" name="the_activity_<%= div_count %>[<%= count %>[activity_time]]" value="<%= the_params["activity_time"] %>" placeholder="Select Time" class="form-control w3-input w3-border w3-white input-group input-append"></strong></td>
+                                    <td style=""><strong><%= collection_select "the_activity_#{ div_count }", "#{count}[classification]", @activity_sub_div_class, :last, :first, {selected: the_params["classification"], :prompt => 'Select a class', :include_blank => true}, {id: "classify#{count}", class:"form-control w3-input w3-border w3-white input-group input-append", style:"" } %></strong></td>
+                                    <td><strong><input type="number" name="the_activity_<%= div_count %>[<%= count %>[amount]]" value="<%= the_params["amount"] %>" autocomplete="off" min="1" oninput="validity.valid||(value='');" placeholder="Enter amount" class="form-control w3-input w3-border w3-white input-group input-append"></strong></td>
+                                    <td><strong><button type="button" onclick="deleteActivitySubRow('activity_sub_table_<%= div_count %>', '<%= div_count %>_del_activity_sub_<%= count %>'); return false;" class="w3-button w3-purple-vpos w3-border w3-border-purple w3-tiny w3-round-large"></button></strong></td>
+                                    <input type="hidden" name="the_activity_<%= div_count %>[<%= count %>[activity_sub_id]]" value="<%= the_params["activity_sub_id"] %>" >
+                                    <% count = count + 1%>
+                                  </tr>
+                                <% end %>
+                              <% end %>
+                            <% end %>
+                          <% end %>
+
+                        <% else %>
+
+                          <% count = 1 %>
+                          <!--list.each do |row|-->
+                          <!--the_params = row[1]-->
+                          <% sub_activities = @activity_sub_divs.where(activity_div_id: activity_div.id) %>
+                          <% logger.info "Sub Activities :: #{sub_activities.inspect}" %>
+                          <% if sub_activities.exists? %>
+                            <% sub_activities.each do |sub_activity| %>
+                        <% logger.info "Sub Activities:: #{sub_activity.inspect}" %>
+                              <% time_retrieved = sub_activity.activity_time.strftime("%I:%M") %>
+                              <% logger.info "Time Retrieved :: #{time_retrieved.to_time.inspect}" %>
+                              <tr id="<%= div_count %>_del_activity_sub_<%= count %>">
+                                <!--                      <td><strong><%#= count %></strong></td>-->
+                                <td><strong><input type="time" name="the_activity_<%= div_count %>[<%= count %>[activity_time]]" value="<%= time_retrieved %>" autocomplete="off" placeholder="Select Time" class="form-control w3-input w3-border w3-white input-group input-append"></strong></td>
+                                <td style=""><strong><%= collection_select "the_activity_#{ div_count }", "#{count}[classification]", @activity_sub_div_class, :last, :first, { :selected => sub_activity.classification, :prompt => 'Select a class', :include_blank => true}, {id: "classify_#{count}", class:"form-control w3-input w3-border w3-white input-group input-append", style:"" } %></strong></td>
+                                <td><strong><input type="number" name="the_activity_<%= div_count %>[<%= count %>[amount]]" value="<%= sub_activity.amount %>" autocomplete="off" min="1" oninput="validity.valid||(value='');" placeholder="Enter amount" class="form-control w3-input w3-border w3-white input-group input-append"></strong></td>
+                                <td><strong><button type="button" onclick="deleteActivitySubRow('activity_sub_table_<%= div_count %>', '<%= div_count %>_del_activity_sub_<%= count %>'); return false;" class="w3-button w3-purple-vpos w3-border w3-border-purple w3-tiny w3-round-large"></button></strong></td>
+                                <input type="hidden" name="the_activity_<%= div_count %>[<%= count %>[activity_sub_id]]" value="<%= sub_activity.id %>" >
+                                <% count = count + 1 %>
+                              </tr>
+                            <% end %>
+                          <% end %>
+                        <% end %>
+
+                        </tbody>
+
+                      </table>
+                      <!--                    <br/>-->
+                    </div>
+
+                    <br>
+                  </div>
+
+                  <% div_count = div_count + 1%>
+                <% end %>
+                <br>
+              </div>
+
+              <br>
+            </div>
+
+
+          <% end %>
+
+
+          <%# end %>
+
+          <div>
+            <br>
+            <%= f.submit "Submit", class: "w3-button w3-purple-vpos w3-border w3-border-purple w3-small w3-round-large", :data => {:disable_with => 'Please Wait...'}, style: "width:auto;float:center;",remote:true %>
+            <%= link_to 'Back', entity_division_index_path(params[:entity_code], page: params[:page], count: params[:count]), class: "w3-button w3-white w3-border w3-border-purple w3-small w3-round-large",remote:true %>
+            <br><br>
+          </div>
+        <% end %>
+
+
+      </div>
+
+    </div>
+
+
+    <div class="col-md-7 col-md-offset-5">
+    </div>
+
+    <br/>
+    <div class="col-md-7 col-md-offset-5">
+      <br/>
+      <br/>
+    </div>
+    <!--</div>-->
+
+  </div>
+</div>
+
+
+
+
+<script>
+
+    var globalDivCount = 1;
+    // var arraylist2 = <%#= @act_sub_div_classes.to_json.html_safe %>;
+    console.log("Classification Array: " + arraylist1);
+    function addActivity(divID) {
+        var masterDiv     = document.getElementById(divID);
+        var myBr = document.createElement('br');
+        masterDiv.appendChild(myBr);
+        var newDiv = document.createElement("div");
+        // newDiv.appendChild(myBr);
+        var divCnt = <%= @display_div_num %> <%#= params[:into_create_setup] == "into_create_setup" ? @the_activity_sub.size : @display_div_num %>;
+        var divCount = divCnt + globalDivCount;
+        newDiv.setAttribute('id', 'activity_div_' + divCount);
+        newDiv.setAttribute('class', 'w3-container w3-card-4 w3-border w3-border-purple');
+        console.log("Div Count: " + divCount + " Count++: " + divCnt + " Global Count: " + globalDivCount);
+
+        var operationDiv = document.createElement("div");
+        operationDiv.setAttribute("class", "w3-container");
+        var oprQtrDiv1 = document.createElement("div");
+        oprQtrDiv1.setAttribute("class", "w3-quarter");
+        var oprQtrDiv2 = document.createElement("div");
+        oprQtrDiv2.setAttribute("class", "w3-quarter");
+        var oprQtrDiv3 = document.createElement("div");
+        oprQtrDiv3.setAttribute("class", "w3-quarter");
+        var oprQtrDiv4 = document.createElement("div");
+        oprQtrDiv4.setAttribute("class", "w3-quarter");
+
+
+
+        var activityLabel = document.createElement("h6");
+        activityLabel.innerText = "Description: ";
+        activityLabel.setAttribute("style", "font-weight: bold");
+        oprQtrDiv1.appendChild(activityLabel);
+
+
+        var activityInput = document.createElement("input");
+        activityInput.type = "text";
+        activityInput.setAttribute("name", "the_activity_"+ divCount + "[0[activity_div_desc]]");
+        activityInput.setAttribute("placeholder", "Description");
+        activityInput.setAttribute("class", "form-control w3-input w3-border w3-white input-group input-append");
+        oprQtrDiv1.appendChild(activityInput);
+
+        var activityLabel1 = document.createElement("h6");
+        activityLabel1.innerText = "Activity Date: ";
+        activityLabel1.setAttribute("style", "font-weight: bold");
+        oprQtrDiv2.appendChild(activityLabel1);
+
+        var activityInput1 = document.createElement("input");
+        activityInput1.type = "date";
+        activityInput1.setAttribute("name", "the_activity_"+ divCount + "[0[activity_date]]");
+        activityInput1.setAttribute("placeholder", "Select Date");
+        activityInput1.setAttribute("class", "form-control w3-input w3-border w3-white input-group input-append");
+        activityInput1.setAttribute("style", "width: 95%; float: right");
+        oprQtrDiv2.appendChild(activityInput1);
+
+        var deleteDivBtn = document.createElement("button");
+        deleteDivBtn.type = "button";
+        deleteDivBtn.setAttribute("onclick", "deleteActivity('activity_div_"+divCount+"'); return false;");
+        deleteDivBtn.setAttribute("class", "w3-button w3-purple-vpos w3-border w3-border-purple w3-tiny w3-round-large");
+        deleteDivBtn.innerText = "DELETE ACTIVITY";
+        oprQtrDiv3.appendChild(deleteDivBtn);
+
+        var addActSubBtn = document.createElement("button");
+        addActSubBtn.setAttribute("onclick", "addActivitySub('activity_sub_table_"+divCount+"', "+divCount+"); return false;");
+        addActSubBtn.setAttribute("class", "w3-button w3-purple-vpos w3-border w3-border-purple w3-tiny w3-round-large");
+        addActSubBtn.innerText = "ADD ANOTHER TIME SCHEDULE";
+        oprQtrDiv4.appendChild(addActSubBtn);
+
+        operationDiv.appendChild(oprQtrDiv1);
+        operationDiv.appendChild(oprQtrDiv2);
+        operationDiv.appendChild(oprQtrDiv3);
+        operationDiv.appendChild(oprQtrDiv4);
+
+        var scrollDiv = document.createElement("div");
+        scrollDiv.setAttribute("class", "pre-scrollable");
+        scrollDiv.setAttribute("style", "max-height: 30vh");
+        var myBr0 = document.createElement('br');
+        newDiv.appendChild(myBr0);
+        newDiv.appendChild(operationDiv);
+        var myBr1 = document.createElement('br');
+        newDiv.appendChild(myBr1);
+
+
+
+        var newTable = document.createElement("table");
+        newTable.setAttribute('id', 'activity_sub_table_' + divCount);
+        newTable.setAttribute('class', 'w3-table-all table-bordered w3-hoverable w3-card-4');
+        var newTableHeadRow = document.createElement("tr");
+        newTableHeadRow.style = 'font-weight: bold';
+        newTableHeadRow.setAttribute('class', 'w3-vpos-purple');
+        var newTableHead1 = document.createElement("th");
+        var newTableHead2 = document.createElement("th");
+        var newTableHead3 = document.createElement("th");
+        var newTableHead4 = document.createElement("th");
+        newTableHead1.innerText = "Activity Time";
+        newTableHead2.innerText = "Classification";
+        newTableHead3.innerText = "Amount";
+        newTableHead4.innerText = "Delete";
+        newTableHeadRow.appendChild(newTableHead1);
+        newTableHeadRow.appendChild(newTableHead2);
+        newTableHeadRow.appendChild(newTableHead3);
+        newTableHeadRow.appendChild(newTableHead4);
+        newTable.appendChild(newTableHeadRow);
+        scrollDiv.appendChild(newTable);
+        newDiv.appendChild(scrollDiv);
+        newDiv.appendChild(myBr);
+        var myBr2 = document.createElement('br');
+        newDiv.appendChild(myBr2);
+        masterDiv.appendChild(newDiv);
+        addActivitySub('activity_sub_table_' + divCount, divCount);
+        masterDiv.appendChild(myBr);
+        globalDivCount++;
+    }
+
+</script>
+
+
+
+<script>
+
+    var globalRowCount = 2;
+    var globalTableCount = 1;
+    var globalActSubRCnt = 2;
+    var globalActSubTableCnt = 1;
+    var arraylist1 = <%= @activity_sub_div_class.to_json.html_safe %> <%#= @act_sub_div_classes.to_json.html_safe %>;
+    var globalMiniDivCount = 1;
+
+    function addScreenRow(tableID) {
+        var table     = document.getElementById(tableID);
+        var rowCount  = table.rows.length;
+        var row       = table.insertRow(rowCount);
+        var tableCnt = rowCount <%#= params[:into_create_setup] == "into_create_setup" ? @the_div_lov.size : @display_num %>;
+        var tableCount = tableCnt + globalTableCount;
+        console.log("Table Count: " + tableCount + " Table Count++: " + tableCnt + " Global Table Count: " + globalTableCount);
+        // var cell1     = row.insertCell(0);
+        // var element1  = document.createElement("input");
+        // element1.type = "checkbox";
+        // cell1.appendChild(element1);
+
+        var cell1       = row.insertCell(0);
+        // cell1.innerHTML = globalRowCount; //rowCount + 1;
+        var element = document.createElement("select");
+        element.type   = "text";
+        element.setAttribute('name', 'the_div_acts_lov['+ tableCount + '[activity_code]]');
+        element.setAttribute('id', 'act_code_' + tableCount);
+        element.setAttribute('class', 'form-control w3-input w3-border w3-white input-group input-append');
+        element.setAttribute('style', 'font-weight: bold');
+
+        // element.setAttribute('prompt', 'Select an Activity Code');
+        //Append the options from the arraylist to the "select" element
+        var arraylist = [["Select an Activity Code", ""], ["", ""], ["Donations (DON)", "DON"], ["Levy (LVY)", "LVY"], ["Project (PRJ)", "PRJ"]];
+        for (var i = 0; i < arraylist.length; i++) {
+            var option = document.createElement("option");
+            option.value = arraylist[i][1];
+            option.text = arraylist[i][0];
+            element.appendChild(option);
+        }
+        cell1.appendChild(element);
+
+        var cell2       = row.insertCell(1);
+        var element1    = document.createElement("textarea");
+        element1.setAttribute('name', 'the_div_acts_lov['+ tableCount + '[lov_desc]]');
+        element1.setAttribute('rows', '1');
+        element1.setAttribute('class', 'form-control');
+        element1.setAttribute('placeholder', 'Description');
+        element1.setAttribute('style', 'font-weight: bold');
+        cell2.appendChild(element1);
+
+        var cell3      = row.insertCell(2);
+        row.setAttribute('id', 'del_div_lov_'+tableCount);
+        var element2    = document.createElement("button");
+        element2.type   = "button";
+        // element2.onclick = `deleteRow('del_div_lov_`+tableCount+`'); return false;`;
+        element2.setAttribute('class', 'w3-button w3-purple-vpos w3-border w3-border-purple w3-tiny w3-round-large');
+        element2.setAttribute('onclick', `deleteRow('del_div_lov_`+tableCount+`'); return false;`);
+        cell3.appendChild(element2);
+
+        globalRowCount++;
+        globalTableCount++;
+
+    }
+
+
+
+
+
+    console.log("Classification Array: " + arraylist1);
+    function addActivitySub(tableID, divCount) {
+
+        // var divCnt = <%#= @display_act_num %> <%#= params[:into_create_setup] == "into_create_setup" ? @the_activity_sub.size : @display_act_sub_num %>;
+        // var divCount = divCnt + globalMiniDivCount;
+        var table     = document.getElementById(tableID);
+        var rowCount  = table.rows.length;
+        var row       = table.insertRow(rowCount);
+        var tableCnt = rowCount<%#= params[:into_create_setup] == "into_create_setup" ? @the_activity_sub.size : @display_act_sub_num %>;
+        var tableCount = tableCnt + globalActSubTableCnt;
+        console.log("Table Count: " + tableCount + " Table Count++: " + tableCnt + " Global Table Count: " + globalActSubTableCnt + " Global Div Count: " + globalDivCount);
+
+        var cell1       = row.insertCell(0);
+        var element    = document.createElement("input");
+        element.type = "time";
+        element.setAttribute('name', 'the_activity_'+ divCount + '['+ tableCount + '[activity_time]]');
+        element.setAttribute('autocomplete', 'off');
+        element.setAttribute('class', 'form-control w3-input w3-border w3-white input-group input-append');
+        element.setAttribute('placeholder', 'Select Time');
+        element.setAttribute('style', 'font-weight: bold');
+        cell1.appendChild(element);
+
+        var cell2       = row.insertCell(1);
+        // cell1.innerHTML = globalRowCount; //rowCount + 1;
+        var element1 = document.createElement("select");
+        element1.type   = "text";
+        element1.setAttribute('name', 'the_activity_'+ divCount + '['+ tableCount + '[classification]]');
+        element1.setAttribute('id', 'classify_' + tableCount);
+        element1.setAttribute('class', 'form-control w3-input w3-border w3-white input-group input-append');
+        element1.setAttribute('style', 'font-weight: bold');
+
+        // element.setAttribute('prompt', 'Select an Activity Code');
+        //Append the options from the arraylist to the "select" element
+        // var arraylist = [["Select a Classification", ""], ["", ""], ["Donations (DON)", "DON"], ["Levy (LVY)", "LVY"], ["Project (PRJ)", "PRJ"]];
+
+        for (var i = 0; i < arraylist1.length; i++) {
+            var option = document.createElement("option");
+            option.value = arraylist1[i][1];
+            option.text = arraylist1[i][0];
+            element1.appendChild(option);
+        }
+        cell2.appendChild(element1);
+
+        var cell3       = row.insertCell(2);
+        var element2    = document.createElement("input");
+        element2.type = "number";
+        element2.setAttribute('name', 'the_activity_'+ divCount + '['+ tableCount + '[amount]]');
+        element2.setAttribute('autocomplete', 'off');
+        element2.setAttribute('min', '1');
+        element2.setAttribute('oninput', `validity.valid||(value='');`);
+        element2.setAttribute('class', 'form-control w3-input w3-border w3-white input-group input-append');
+        element2.setAttribute('placeholder', 'Enter Amount');
+        element2.setAttribute('style', 'font-weight: bold');
+        cell3.appendChild(element2);
+
+        var cell4      = row.insertCell(3);
+        row.setAttribute('id', divCount + '_del_activity_sub_'+tableCount);
+        var element3    = document.createElement("button");
+        element3.type   = "button";
+        // element3.onclick = `deleteRow('del_div_lov_`+tableCount+`'); return false;`;
+        element3.setAttribute('class', 'w3-button w3-purple-vpos w3-border w3-border-purple w3-tiny w3-round-large');
+        element3.setAttribute('onclick', `deleteActivitySubRow('` + tableID + `', '`+ divCount + `_del_activity_sub_`+tableCount+`'); return false;`);
+        cell4.appendChild(element3);
+        globalActSubRCnt++;
+        globalActSubTableCnt++;
+    }
+
+
+
+
+    function deleteRow(row_id) {
+        // document.getElementById("div_lov_table").deleteRow(row_id);
+        // var row = document.getElementById(row_id);
+        // row.parentNode.removeChild(row);
+        var row = document.getElementById(row_id);
+        document.getElementById("div_lov_table").deleteRow(row.rowIndex);
+    }
+
+
+    function deleteActivitySubRow(tableId, row_id) {
+        var row = document.getElementById(row_id);
+        document.getElementById(tableId).deleteRow(row.rowIndex);
+    }
+
+    function deleteActivity(elementId) {
+        // Removes an element from the document
+        var element = document.getElementById(elementId);
+        element.parentNode.removeChild(element);
+    }
+
+
+    $(document).ready(function () {
+        var div_lov_id = 'div_lov_config';
+        var activity_div_id = 'div_activity_config';
+
+        function displayLov(div_lov_id) {
+            document.getElementById(div_lov_id).style.display = "block"
+        }
+
+        function hideLov(div_lov_id) {
+            document.getElementById(div_lov_id).style.display = "none"
+        }
+
+        function displayActivity(activity_div_id) {
+            document.getElementById(activity_div_id).style.display = "block"
+        }
+
+        function hideActivity(activity_div_id) {
+            document.getElementById(activity_div_id).style.display = "none"
+        }
+
+
+        if (document.getElementById('entity_division_div_lov_query_yes').checked) {
+            console.log("Yes add hidden");
+            displayLov(div_lov_id)
+        }
+        else if (document.getElementById('entity_division_div_lov_query_no').checked) {
+            console.log("No remove hidden");
+            hideLov(div_lov_id)
+        }
+        else {
+            console.log("Remove hidden");
+            hideLov(div_lov_id)
+        }
+
+
+        <% if @div_activity_type == "SHW" %>
+        if (document.getElementById('entity_division_activity_query_yes').checked) {
+            console.log("Yes add hidden");
+            displayActivity(activity_div_id)
+        }
+        else if (document.getElementById('entity_division_activity_query_no').checked) {
+            console.log("No remove hidden");
+            hideActivity(activity_div_id)
+        }
+        else {
+            console.log("Remove hidden");
+            hideActivity(activity_div_id)
+        }
+        <% end %>
+
+
+        $('#entity_division_div_lov_query_yes').click(function(){displayLov(div_lov_id); console.log("Yes add block on click");});
+
+        $('#entity_division_div_lov_query_no').click(function() {hideLov(div_lov_id); console.log("No remove block on click");});
+
+        $('#entity_division_activity_query_yes').click(function(){displayActivity(activity_div_id); console.log("Yes add block on click");});
+
+        $('#entity_division_activity_query_no').click(function() {hideActivity(activity_div_id); console.log("No remove block on click");});
+
+
+    });
+
+</script>

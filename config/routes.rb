@@ -1,6 +1,5 @@
 Rails.application.routes.draw do
 
-
   # get 'home/index'
   # get "/users" => redirect("/")
   # get "/users/sign_up" => redirect("/users/sign_in")
@@ -27,7 +26,13 @@ Rails.application.routes.draw do
 
 
   get '/entity_divisions/entity_division_index/:entity_code' => 'entity_divisions#entity_division_index', :as => 'entity_division_index'
+  get '/entity_divisions/entity_division_index' => 'entity_divisions#entity_division_index', :as => 'entity_div_index'
   get '/entity_divisions/entity_index' => 'entity_divisions#entity_index', :as => 'entity_index'
+
+  get '/entity_divisions/division_setup/:division_code' => 'entity_divisions#division_setup', :as => 'division_setup'
+  post '/division_setup_creation' => 'entity_divisions#create_division_setup', :as => 'create_division_setup'
+  get '/entity_divisions/division_edit_setup/:division_code' => 'entity_divisions#division_edit_setup', :as => 'division_edit_setup'
+  post '/division_setup_update' => 'entity_divisions#update_division_setup', :as => 'update_division_setup'
 
 
   post '/suburb_masters/city_update', :as => 'suburb_city_ajax_call'
@@ -44,6 +49,9 @@ Rails.application.routes.draw do
   resources :entity_info_extras
   resources :entity_infos
   resources :entity_wallet_configs
+  resources :assigned_service_codes
+  resources :division_activity_lovs
+  resources :activity_sub_div_classes
 
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".

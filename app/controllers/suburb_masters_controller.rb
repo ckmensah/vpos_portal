@@ -20,17 +20,18 @@ class SuburbMastersController < ApplicationController
     logger.info "Params:: #{params[:id_for_region].inspect}"
 
     if params[:id_for_region].empty?
-      @region_update_city = [["", ""]]
+      @region_update_city = [["", ""]].insert(0,['Please select a city', ""])
+      # @city_update_suburb = [["", ""]]
     else
       region_id_record = RegionMaster.find(params[:id_for_region])
       region_update_city = region_id_record.cities.where(active_status: true).order(city_town_name: :asc).map { |a| [a.city_town_name, a.id] }.insert(0,['Please select a city', ""])
       if region_update_city.empty?
-        @region_update_city = [["", ""]]
+        @region_update_city = [["", ""]].insert(0,['Please select a city', ""])
       else
         @region_update_city = region_update_city
       end
     end
-    @city_update_suburb = [["", ""]]
+    @city_update_suburb = [["", ""]].insert(0,['Please select a suburb', ""])
     logger.info "For Cities :: #{@region_update_city.inspect}"
   end
 
@@ -39,12 +40,13 @@ class SuburbMastersController < ApplicationController
     logger.info "Params:: #{params[:id_for_city_town].inspect}"
 
     if params[:id_for_city_town].empty?
-      @region_update_city = [["", ""]]
+      # @region_update_city = [["", ""]]
+      @city_update_suburb = [["", ""]].insert(0,['Please select a suburb', ""])
     else
       city_town_id_record = CityTownMaster.find(params[:id_for_city_town])
       city_update_suburb = city_town_id_record.suburb_masters.where(active_status: true).order(suburb_name: :asc).map { |a| [a.suburb_name, a.id] }.insert(0,['Please select a suburb', ""])
       if city_update_suburb.empty?
-        @city_update_suburb = [["", ""]]
+        @city_update_suburb = [["", ""]].insert(0,['Please select a suburb', ""])
       else
         @city_update_suburb = city_update_suburb
       end

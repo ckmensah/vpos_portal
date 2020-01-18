@@ -79,18 +79,21 @@
 <div class="w3-container" >
   <div id="id01" class="w3-modal w3-animate-opacity" style=" display: block">
     <!--<div class="w3-modal-content w3-card-4" >-->
-    <br/>
+    <!--<br/>-->
 
     <div class="">
 
-      <div class="w3-white w3-hover-shadow col-md-6 offset-md-3 w3-card-4 w3-border w3-border-purple rcorners w3-center">
+      <div class="w3-white w3-hover-shadow col-md-8 offset-md-2 w3-card-4 w3-border w3-border-purple rcorners w3-center">
         <h4 class="show w3-center"><strong>Merchant Details</strong></h4>
         <p id="notice1"><strong></strong></p>
 
-        <div class="w3-container">
+        <div class="w3-container w3-border w3-border-purple">
           <br/>
           <%  %>
-          <% entity_extra = @entity_info.entity_info_extras.where(active_status: true, del_status: false).order("entity_info_extra.created_at desc").first %>
+          <% #entity_extra = @entity_info.entity_info_extras.where(active_status: true, del_status: false).order("entity_info_extra.created_at desc").first
+             entity_extra = EntityInfoExtra.where(entity_code: @entity_info.assigned_code, active_status: true, del_status: false).order(created_at: :desc).first
+
+          %>
           <%  %>
           <div class="w3-container w3-responsive pre-scrollable w3-mobile">
           <table class="w3-table-all table table-bordered w3-hoverable w3-card-4">
@@ -100,35 +103,38 @@
               <td><strong><%= @entity_info.entity_name %> (<%= @entity_info.entity_alias %>)</strong></td>
             </tr>
 
-            <tr>
-              <td class="raw_theme w3-border w3-border-black w3-leftbar"><strong>Contact Number(s):</strong></td>
-              <td><strong><%= entity_extra.contact_number %></strong></td>
-            </tr>
+            <% if entity_extra %>
+                <tr>
+                  <td class="raw_theme w3-border w3-border-black w3-leftbar"><strong>Contact Number(s):</strong></td>
+                  <td><strong><%= entity_extra.contact_number %></strong></td>
+                </tr>
 
-            <tr>
-              <td class="raw_theme w3-border w3-border-black w3-leftbar"><strong>Merchant Category:</strong></td>
-              <td><strong><%= @entity_info.entity_category.category_name %></strong></td>
-            </tr>
+                <tr>
+                  <td class="raw_theme w3-border w3-border-black w3-leftbar"><strong>Merchant Category:</strong></td>
+                  <td><strong><%= @entity_info.entity_category.category_name %></strong></td>
+                </tr>
 
-            <tr>
-              <td class="raw_theme w3-border w3-border-black w3-leftbar"><strong>Email:</strong></td>
-              <td><strong><%= entity_extra.contact_email %></strong></td>
-            </tr>
+                <tr>
+                  <td class="raw_theme w3-border w3-border-black w3-leftbar"><strong>Email:</strong></td>
+                  <td><strong><%= entity_extra.contact_email %></strong></td>
+                </tr>
 
-            <tr>
-              <td class="raw_theme w3-border w3-border-black w3-leftbar"><strong>Web URL:</strong></td>
-              <td><strong><%= entity_extra.web_url %></strong></td>
-            </tr>
+                <tr>
+                  <td class="raw_theme w3-border w3-border-black w3-leftbar"><strong>Web URL:</strong></td>
+                  <td><strong><%= entity_extra.web_url %></strong></td>
+                </tr>
 
-            <tr>
-              <td class="raw_theme w3-border w3-border-black w3-leftbar"><strong>Postal Address:</strong></td>
-              <td><strong><%= entity_extra.postal_address %></strong></td>
-            </tr>
+                <tr>
+                  <td class="raw_theme w3-border w3-border-black w3-leftbar"><strong>Postal Address:</strong></td>
+                  <td><strong><%= entity_extra.postal_address %></strong></td>
+                </tr>
 
-            <tr>
-              <td class="raw_theme w3-border w3-border-black w3-leftbar"><strong>Location Address:</strong></td>
-              <td><strong><%= entity_extra.location_address %></strong></td>
-            </tr>
+                <tr>
+                  <td class="raw_theme w3-border w3-border-black w3-leftbar"><strong>Location Address:</strong></td>
+                  <td><strong><%= entity_extra.location_address %></strong></td>
+                </tr>
+
+            <% end %>
 
             <tr>
               <td class="raw_theme w3-border w3-border-black w3-leftbar"><strong>Status:</strong></td>
@@ -153,25 +159,82 @@
 
           </table>
           </div>
+          <br>
+          <% entity_wallet_configs = EntityWalletConfig.where(entity_code: @entity_info.assigned_code).order(created_at: :desc) %>
+          <% if entity_wallet_configs.exists? %>
+              <div class="w3-container w3-responsive pre-scrollable w3-mobile">
+                <table class="w3-table-all table table-bordered w3-hoverable w3-card-4">
+
+                  <thead>
+                  <tr class="w3-purple-vpos">
+                    <th>Activity Type (Activity Alias)</th>
+                    <th>Service ID</th>
+                    <th>Secret Key</th>
+                    <th>Client Key</th>
+                    <th>Status</th>
+                    <th>Date</th>
+                    <th></th>
+                  </tr>
+                  </thead>
+                  <tbody>
+                  <% entity_wallet_configs.each do |entity_wallet_config| %>
+
+                      <tr>
+
+                        <!--<td><strong><%#= entity_info.entity_category.category_name %> (<%#= entity_info.entity_category.assigned_code %>)</strong></td>-->
+                        <td><strong><%= entity_wallet_config.activity_type.activity_type_desc %> (<%= entity_wallet_config.activity_type.assigned_code %>)</strong></td>
+                        <td><strong><%= entity_wallet_config.service_id %></strong></td>
+                        <td><strong><%= entity_wallet_config.secret_key %></strong></td>
+                        <td><strong><%= entity_wallet_config.client_key %></strong></td>
+                        <% if entity_wallet_config.active_status %>
+                            <td><strong>Active</strong></td>
+                        <% else %>
+                            <td><strong>Inactive</strong></td>
+                        <% end %>
+                        <td><strong><%= entity_wallet_config.created_at %></strong></td>
+                        <td>
+
+                          <% if entity_wallet_config.active_status %>
+                              <%= link_to 'DISABLE', entity_wallet_config_path(entity_wallet_config, count: params[:count], page: params[:page]),
+                                          style: "width:80px; height: 30px; color: #800754 !important",
+                                          method: :delete, data: { confirm: "Do you wish to disable: #{entity_wallet_config.activity_type.activity_type_desc} (#{entity_wallet_config.activity_type.assigned_code}) wallet?" },
+                                          class: 'w3-button w3-white w3-border w3-border-purple w3-tiny w3-round-large', remote:true%>
+                          <% else %>
+                              <%= link_to 'ENABLE', entity_wallet_config_path(entity_wallet_config, count: params[:count], page: params[:page]),
+                                          style: "width:80px; height: 30px;",
+                                          method: :delete, data: { confirm: "Do you wish to enable: #{entity_wallet_config.activity_type.activity_type_desc} (#{entity_wallet_config.activity_type.assigned_code}) wallet?" },
+                                          class: 'w3-button w3-purple-vpos w3-border w3-border-purple w3-tiny w3-round-large', remote:true%>
+                          <% end %>
+
+                        </td>
+                      </tr>
+
+                  <% end %>
+
+                  </tbody>
+
+                </table>
+              </div>
+          <% end %>
 
           <br/>
           <div class="w3-center">
-            <%= link_to 'Back', entity_info_index_path(page: params[:page], count: params[:count]), class: 'w3-bar-item w3-btn w3-ripple w3-round-large w3-dark-gray', remote: true %>
+            <%= link_to 'Back', entity_info_index_path(page: params[:page], count: params[:count]), class: 'w3-button w3-white w3-border w3-border-purple w3-small w3-round-large', remote: true %>
           </div>
           <br/>
         </div>
-
+        <br>
       </div>
 
     </div>
 
     <!--</div>-->
+    <!--<br>-->
+    <div class="">
+      <br><br>
+    </div>
+  </div>
 
-  </div>
-  <br/>
-  <div class="col-md-7 offset-md-5">
-    <br><br>
-  </div>
 </div>
 
 

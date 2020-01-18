@@ -1,0 +1,39 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <strong>Activity code:</strong>
+  <%= @division_activity_lov.activity_code %>
+</p>
+
+<p>
+  <strong>Division code:</strong>
+  <%= @division_activity_lov.division_code %>
+</p>
+
+<p>
+  <strong>Lov desc:</strong>
+  <%= @division_activity_lov.lov_desc %>
+</p>
+
+<p>
+  <strong>Comment:</strong>
+  <%= @division_activity_lov.comment %>
+</p>
+
+<p>
+  <strong>Active status:</strong>
+  <%= @division_activity_lov.active_status %>
+</p>
+
+<p>
+  <strong>Del status:</strong>
+  <%= @division_activity_lov.del_status %>
+</p>
+
+<p>
+  <strong>User:</strong>
+  <%= @division_activity_lov.user_id %>
+</p>
+
+<%= link_to 'Edit', edit_division_activity_lov_path(@division_activity_lov) %> |
+<%= link_to 'Back', division_activity_lovs_path %>

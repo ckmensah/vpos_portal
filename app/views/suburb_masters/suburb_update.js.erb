@@ -1,1 +1,11 @@
+
+
+<% if params[:suburb_id_name].present? %>
+<% logger.info "I am for dynamic locations for city. City update suburb :: #{@city_update_suburb.inspect}" %>
+$('#'+'<%= params[:suburb_id_name] %>').html("<%= escape_javascript(options_for_select(@city_update_suburb)) %>");
+<% else %>
+<% logger.info "I am for static locations for city" %>
 $('#for_suburb').html("<%= escape_javascript(options_for_select(@city_update_suburb)) %>");
+<% end %>
+
+

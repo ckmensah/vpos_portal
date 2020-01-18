@@ -17,7 +17,7 @@
         <div class="w3-container">
           <br/>
           <%#= simple_form_for(@entity_division, :data => {:remote => true, count: params[:count], page: params[:page]}) do |f| %>
-          <%= simple_form_for(@new_record, url: entity_divisions_path(@new_record, code: params[:code], action_type: "for_update", entity_code: params[:entity_code], count: params[:count], page: params[:page] ),:remote => true) do |f| %>
+          <%= simple_form_for(@entity_division, url: entity_division_path(@entity_division, code: params[:code], action_type: "for_update", entity_code: params[:entity_code], count: params[:count], page: params[:page] ),:remote => true) do |f| %>
 
               <%= f.error_notification %>
               <%= f.error_notification message: f.object.errors[:base].to_sentence if f.object.errors[:base].present? %>
@@ -25,25 +25,18 @@
                 <%= f.input :division_name, label: "Division Name", required: true, input_html: {id: "div_name", value: @entity_division.division_name, autofocus: true, autocomplete: "off", class: "form-control w3-input w3-border w3-white input-group input-append", style: "width: 90%;"} %>
                 <%= f.input :division_alias, label: "Division Alias", required: true, input_html: {id: "div_alias", value: @entity_division.division_alias, autocomplete: "off", class: "form-control w3-input w3-border w3-white input-group input-append", style: "width: 90%;"} %>
                 <%= f.input :activity_type_code, label: "Activity Code", selected: @entity_division.activity_type_code, collection: @activity_types, label_method: :activity_name, value_method: :assigned_code, required: true, input_html: {id: "activity_key", autocomplete: "off", class: "form-control w3-input w3-border w3-white input-group input-append", style: "width: 90%;"} %>
-                <%= f.input :service_label, label: "Service Label", required: true, input_html: {id: "serv_label", value: @entity_division.service_label, autocomplete: "off", class: "form-control w3-input w3-border w3-white input-group input-append", style: "width: 90%;"} %>
-
-                <%= f.input :region_name, label: "Region", selected: @region_id, collection: @region_masters, label_method: :region_name, value_method: :id, required: true, input_html:{id: "for_region", autocomplete: "off",class:"form-control w3-input w3-border w3-white input-group input-append",style:"width: 90%;"}  %>
-                <%= f.input :city_town_name, label: "City", selected: @city_id, collection: @city_town_masters, label_method: :city_town_name, value_method: :id, required: true, input_html:{id: "for_city", autocomplete: "off",class:"form-control w3-input w3-border w3-white input-group input-append",style:"width: 90%;"}  %>
+                <%= f.input :service_code, as: :integer, label: "Shortcode Ext", required: true, input_html: {id: "serv_code", value: @service_code, autocomplete: "off", min: 1, max: 9999, oninput: "validity.valid||(value='');", class: "form-control w3-input w3-border w3-white input-group input-append", style: "width: 90%;"} %>
+                <%= f.input :service_label, label: "Service Name", required: true, input_html: {id: "serv_label", value: @entity_division.service_label, autocomplete: "off", class: "form-control w3-input w3-border w3-white input-group input-append", style: "width: 90%;"} %>
 
               </div>
 
 
               <div class="w3-half">
+
+                <%= f.input :region_name, label: "Region", selected: @region_id, collection: @region_masters, label_method: :region_name, value_method: :id, required: true, input_html:{id: "for_region", autocomplete: "off",class:"form-control w3-input w3-border w3-white input-group input-append",style:""}  %>
+                <%= f.input :city_town_name, label: "City", selected: @city_id, collection: @city_town_masters, label_method: :city_town_name, value_method: :id, required: true, input_html:{id: "for_city", autocomplete: "off",class:"form-control w3-input w3-border w3-white input-group input-append",style:""}  %>
+
                 <%= f.input :suburb_id, label: "Suburb", selected: @suburb_id, collection: @suburb_masters, label_method: :suburb_name, value_method: :id, required: true, input_html:{id: "for_suburb", autocomplete: "off",class:"form-control w3-input w3-border w3-white input-group input-append",style:""}  %>
-                <%= f.simple_fields_for :entity_wallet_configs do |fff| %>
-                    <%= fff.input :service_id, label: "Service ID", value_method: :id, required: true, input_html: {id: "serv_id", value: @service_id, type: "number", min: "1", oninput: "validity.valid||(value='');", autocomplete: "off", class: "form-control w3-input w3-border w3-white input-group input-append", style: ""} %>
-                    <%#= ff.input :api_key,  label: "Sms Key", value_method: :id, required: true, input_html:{id: "api_key", autocomplete: "off",class:"form-control w3-input w3-border w3-white input-group input-append",style:"width: 90%; height: 25px"}  %>
-                    <%= fff.input :secret_key, label: "Secret Key", required: true, input_html: {id: "k_secret", value: @secret_key, autocomplete: "off", class: "form-control w3-input w3-border w3-white input-group input-append", style: ""} %>
-                    <%= fff.input :client_key, label: "Client Key", required: true, input_html: {id: "k_client", value: @client_key, autocomplete: "off", class: "form-control w3-input w3-border w3-white input-group input-append", style: ""} %>
-                    <%= fff.input :division_code, :as => :hidden, input_html: {value: params[:code]} %>
-                    <%= fff.input :active_status, :as => :hidden, input_html: {value: true} %>
-                    <%= fff.input :del_status, :as => :hidden, input_html: {value: false} %>
-                <% end %>
 
                 <%= f.input :comment, label: "Comment", :as => :text, required: false, input_html: {rows: 3, cols: 3, autocomplete: "off", class: "form-control w3-border ", style: ""} %>
               </div>
@@ -54,12 +47,12 @@
               <%#= ff.input :activity_date, label: "Activity Date", required: true, input_html: {id: "activity_date", autocomplete: "off", class: "form-control w3-input w3-border w3-white input-group input-append", style: "width: 90%;"} %>
               <%#= ff.input :active_status, :as => :hidden, input_html: {value: true} %>
               <%#= ff.input :del_status, :as => :hidden, input_html: {value: false} %>
-
               <%# end %>
               <%= f.input :entity_code, :as => :hidden, input_html: {value: @entity_division.entity_code} %>
               <%#= f.input :assigned_code, :as => :hidden, input_html: {value: @entity_division.assigned_code} %>
               <%= f.input :active_status, :as => :hidden, input_html: {value: true} %>
               <%= f.input :del_status, :as => :hidden, input_html: {value: false} %>
+              <%= f.input :for_update, :as => :hidden, input_html: {value: true} %>
               <%#= f.input :active_status, :as => :hidden, input_html:{value: true} %>
               <%#= f.input :user_id, :as => :hidden, input_html:{value: current_user.id} %>
               <div>

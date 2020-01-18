@@ -14,7 +14,7 @@
 
           <%= f.input :city_town_name,  label: "City", value_method: :id, required: true, input_html:{id: "for_city", autocomplete: "off",class:"form-control w3-input w3-border w3-white input-group input-append",style:""}  %>
 
-          <%= f.input :comment,  label: "Comment", :as => :text, value_method: :id, required: true, input_html:{rows: 5, cols: 3, autocomplete: "off",class:"form-control w3-border ",style:""}  %>
+          <%= f.input :comment,  label: "Comment", :as => :text, value_method: :id, required: false, input_html:{rows: 5, cols: 3, autocomplete: "off",class:"form-control w3-border ",style:""}  %>
 
           <%= f.input :active_status, :as => :hidden, input_html:{value: true} %>
           <%#= f.input :user_id, :as => :hidden, input_html:{value: current_user.id} %>

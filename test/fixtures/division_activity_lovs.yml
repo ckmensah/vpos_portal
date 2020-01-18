@@ -1,0 +1,19 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  activity_code: MyString
+  division_code: MyString
+  lov_desc: MyText
+  comment: MyText
+  active_status: false
+  del_status: false
+  user_id: 1
+
+two:
+  activity_code: MyString
+  division_code: MyString
+  lov_desc: MyText
+  comment: MyText
+  active_status: false
+  del_status: false
+  user_id: 1

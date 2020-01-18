@@ -1,5 +1,16 @@
 <% flash.each do |name, msg| %>
   <% if msg.is_a?(String) %>
-    <%= content_tag :div, msg, :class => "flash_#{name}" %>
+    <%#= content_tag :div, msg, :class => "flash_#{name}" %>
+        <!--<div class="row">-->
+          <div id="alert_message" class=" w3-card-4 alert alert-<%= name.to_s == 'notice' ? "info" : "danger" %>">
+            <button type="button" style="position: static;" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+            <!--<button type="button"  data-dismiss="alert" aria-hidden="true">&times;</button>-->
+            <% logger.info "The flash name is :: #{name.inspect}." %>
+            <%= content_tag :div, msg, :id => "flash_#{name}" %>
+
+          </div>
+        <!--</div>-->
   <% end %>
+
 <% end %>
+

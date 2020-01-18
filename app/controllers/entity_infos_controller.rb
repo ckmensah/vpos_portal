@@ -30,6 +30,7 @@ class EntityInfosController < ApplicationController
     @entity_info = EntityInfo.new
     @entity_info.entity_info_extras.build
     @entity_categories = EntityCategory.where(active_status: true).order(assigned_code: :asc)
+    @activity_types = ActivityType.where(active_status: true).order(assigned_code: :asc)
   end
 
   # GET /entity_infos/1/edit
@@ -38,9 +39,10 @@ class EntityInfosController < ApplicationController
     # @entity_info_extra = @entity_info.entity_info_extras.build
     @new_record = EntityInfo.new
     @new_record.entity_info_extras.build
-    @entity_info_extra = @entity_info.entity_info_extras.where(active_status: true, del_status: false).order(created_at: :desc).first
+    @entity_info_extra = EntityInfoExtra.where(entity_code: @entity_info.assigned_code, active_status: true, del_status: false).order(created_at: :desc).first
     logger.info "Edit build 1 #{@entity_info_extra.inspect}"
     @entity_categories = EntityCategory.where(active_status: true).order(assigned_code: :asc)
+    @activity_types = ActivityType.where(active_status: true).order(assigned_code: :asc)
   end
 
   # POST /entity_infos
@@ -48,25 +50,74 @@ class EntityInfosController < ApplicationController
 
   def create
     @entity_info = EntityInfo.new(entity_info_params)
+    @new_record = EntityInfo.new(entity_info_params)
+    @the_wallet_params = params[:the_activity_wallets]
     if entity_info_params[:action_type] != "for_update"
       @entity_info.assigned_code = EntityInfo.gen_entity_info_code
       logger.info "The Entity Information code is #{@entity_info.assigned_code.inspect}"
     end
     @entity_categories = EntityCategory.where(active_status: true).order(assigned_code: :asc)
+    @activity_types = ActivityType.where(active_status: true).order(assigned_code: :asc)
     respond_to do |format|
+      validity, activity_number = EntityInfo.validate_wallet_config(@the_wallet_params,@entity_info.assigned_code,entity_info_params[:wallet_query], entity_info_params[:action_type])
+      logger.info "==================== wallet validity is #{validity.inspect} and activity number #{activity_number.inspect}"
       if @entity_info.valid?
-        if entity_info_params[:action_type] == "for_update"
-          logger.info "UPDATING IN CREATE......... INTERESTING"
-          EntityInfo.update_last_but_one('entity_info', 'assigned_code', @entity_info.assigned_code)
-          EntityInfo.update_last_but_one('entity_info_extra', 'entity_code', @entity_info.assigned_code)
+        if validity && entity_info_params[:wallet_query].present?
+
+          if entity_info_params[:action_type] == "for_update"
+            logger.info "UPDATING IN CREATE......... INTERESTING"
+            @new_record.save(validate: false)
+            EntityInfo.update_last_but_one('entity_info', 'assigned_code', @entity_info.assigned_code)
+            EntityInfo.update_last_but_one('entity_info_extra', 'entity_code', @entity_info.assigned_code)
+            EntityInfo.update_wallet_config(@the_wallet_params,@entity_info.assigned_code)
+          else
+            @entity_info.save(validate: false)
+            EntityInfo.save_wallet_config(@the_wallet_params,@entity_info.assigned_code) if entity_info_params[:wallet_query] == "yes"
+          end
+          @entity_infos = EntityInfo.where(del_status: false).paginate(:page => params[:page], :per_page => params[:count]).order('created_at desc')
+          format.html { redirect_to @entity_info, notice: 'Entity info was successfully created.' }
+          flash.now[:notice] = "Entity info was successfully created."
+          format.js { render :show}
+          format.json { render :show, status: :created, location: @entity_info }
+        else
+          unless entity_info_params[:wallet_query] == "no"
+            if entity_info_params[:wallet_query] == "yes"
+              flash.now[:note] = activity_number == 0? "You selected 'YES' for wallet configurations. Please setup wallets." : "Please ensure that your inputs at number #{activity_number} is complete and valid."
+            else
+              flash.now[:note] = activity_number == 0? "Please select 'NO' if you do not wish to setup wallet configurations" : "Please ensure that your inputs at number #{activity_number} is complete and valid."
+            end
+          end
+          # flash.now[:note] = activity_number == 0? "Please select 'NO' if you do not wish to setup wallet configurations" : "Please ensure that your inputs at number #{activity_number} is complete and valid."
+          format.html { render :new }
+          if entity_info_params[:action_type] == "for_update"
+            @entity_info_extra = EntityInfoExtra.where(entity_code: @entity_info.assigned_code, active_status: true, del_status: false).order(created_at: :desc).first
+            logger.info "Edit build 2 #{@entity_info_extra.inspect}"
+            format.js {render :edit }
+          else
+            format.js {render :new }
+          end
+          format.json { render json: @entity_info.errors, status: :unprocessable_entity }
         end
-        format.html { redirect_to @entity_info, notice: 'Entity info was successfully created.' }
-        flash.now[:danger] = "Entity info was successfully created."
-        format.js { render :show}
-        format.json { render :show, status: :created, location: @entity_info }
+
       else
+        if validity && entity_info_params[:wallet_query].present? #|| entity_info_params[:wallet_query] == "no"
+        else
+          unless entity_info_params[:wallet_query] == "no"
+            if entity_info_params[:wallet_query] == "yes"
+              flash.now[:note] = activity_number == 0? "You selected 'YES' for wallet configurations. Please setup wallets." : "Please ensure that your inputs at number #{activity_number} is complete and valid."
+            else
+              flash.now[:note] = activity_number == 0? "Please select 'NO' if you do not wish to setup wallet configurations" : "Please ensure that your inputs at number #{activity_number} is complete and valid."
+            end
+          end
+        end
         format.html { render :new }
-        format.js {render :new }
+        if entity_info_params[:action_type] == "for_update"
+          @entity_info_extra = EntityInfoExtra.where(entity_code: @entity_info.assigned_code, active_status: true, del_status: false).order(created_at: :desc).first
+          logger.info "Edit build 3 #{@entity_info_extra.inspect}"
+          format.js {render :edit }
+        else
+          format.js {render :new }
+        end
         format.json { render json: @entity_info.errors, status: :unprocessable_entity }
       end
     end
@@ -96,6 +147,7 @@ class EntityInfosController < ApplicationController
         @new_extra.valid?
         @entity_info.valid?
         @entity_categories = EntityCategory.where(active_status: true).order(assigned_code: :asc)
+        @activity_types = ActivityType.where(active_status: true).order(assigned_code: :asc)
         format.html { render :edit }
         format.js {render :edit }
         format.json { render json: @entity_info.errors, status: :unprocessable_entity }
@@ -107,7 +159,9 @@ class EntityInfosController < ApplicationController
   # DELETE /entity_infos/1.json
 
   def destroy
-    if @entity_info.active_status
+    @entity_info = EntityInfo.where(assigned_code: params[:id], del_status: false).order('id desc').first
+
+    if @entity_info.active_status && @entity_info.del_status == false
       EntityInfo.disable_by_update_onef("entity_info","assigned_code",@entity_info.assigned_code)
       @entity_infos = EntityInfo.where(del_status: false).paginate(:page => params[:page], :per_page => params[:count]).order('created_at desc')
       respond_to do |format|
@@ -118,7 +172,7 @@ class EntityInfosController < ApplicationController
         # window.location.href = "<%= recipe_path(@recipe) %>"
       end
 
-    else
+    elsif @entity_info.active_status == false && @entity_info.del_status == false
       EntityInfo.enable_by_update_onet("entity_info","assigned_code",@entity_info.assigned_code)
       @entity_infos = EntityInfo.where(del_status: false).paginate(:page => params[:page], :per_page => params[:count]).order('created_at desc')
       respond_to do |format|
@@ -139,7 +193,7 @@ class EntityInfosController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def entity_info_params
-      params.require(:entity_info).permit(:assigned_code, :entity_name, :entity_alias, :entity_cat_id, :action_type, :comment, :active_status, :del_status, :user_id,
+      params.require(:entity_info).permit(:assigned_code, :entity_name, :entity_alias, :entity_cat_id, :action_type, :wallet_query, :comment, :active_status, :del_status, :user_id,
                                           entity_info_extras_attributes: [:id, :entity_code, :contact_number, :web_url, :contact_email, :location_address, :postal_address, :comment, :active_status, :del_status, :user_id])
     end
 end

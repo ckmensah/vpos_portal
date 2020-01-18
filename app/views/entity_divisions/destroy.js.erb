@@ -1,3 +1,4 @@
-$("#entity_division").html("<%= escape_javascript(render(:partial =>"entity_division_index")) %>");
-$('#destroy2').html("<%= escape_javascript(render 'layouts/messages') %>");
+<%# params[:entity_code] %>
+$("#entity_division").html("<%= escape_javascript(render("entity_division_index")) %>");
+$('#notes2').html("<%= escape_javascript(render 'layouts/messages') %>");
 $('.pagination a').attr('data-remote', 'true');

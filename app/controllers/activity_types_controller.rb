@@ -44,7 +44,7 @@ class ActivityTypesController < ApplicationController
         format.html { redirect_to @activity_type, notice: 'Activity type was successfully created.' }
         flash.now[:danger] = "Activity type was successfully created."
         format.js { render :show}
-        format.json { render :show, status: :created, location: @city_town_master }
+        format.json { render :show, status: :created, location: @activity_type }
       else
         format.html { render :new }
         format.js {render :new }
@@ -101,11 +101,13 @@ class ActivityTypesController < ApplicationController
     end
   end
 
+
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_activity_type
       # @activity_type = ActivityType.find(params[:id])
-      @activity_type = ActivityType.where(assigned_code: params[:id], active_status: true, del_status: false).order('id desc').first
+      @activity_type = ActivityType.where(assigned_code: params[:id]).order('id desc').first
+      # @activity_type = ActivityType.where(assigned_code: params[:id], active_status: true, del_status: false).order('id desc').first
     end
 
     # Never trust parameters from the scary internet, only allow the white list through.

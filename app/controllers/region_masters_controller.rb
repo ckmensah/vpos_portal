@@ -86,7 +86,6 @@ class RegionMastersController < ApplicationController
         format.json { head :no_content }
         # window.location.href = "<%= recipe_path(@recipe) %>"
       end
-
     else
       @region_master.active_status = true
       @region_master.save(validate: false)

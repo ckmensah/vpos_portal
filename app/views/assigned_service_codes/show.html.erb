@@ -1,0 +1,34 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <strong>Entity div code:</strong>
+  <%= @assigned_service_code.entity_div_code %>
+</p>
+
+<p>
+  <strong>Service code:</strong>
+  <%= @assigned_service_code.service_code %>
+</p>
+
+<p>
+  <strong>Comment:</strong>
+  <%= @assigned_service_code.comment %>
+</p>
+
+<p>
+  <strong>Active status:</strong>
+  <%= @assigned_service_code.active_status %>
+</p>
+
+<p>
+  <strong>Del status:</strong>
+  <%= @assigned_service_code.del_status %>
+</p>
+
+<p>
+  <strong>User:</strong>
+  <%= @assigned_service_code.user_id %>
+</p>
+
+<%= link_to 'Edit', edit_assigned_service_code_path(@assigned_service_code) %> |
+<%= link_to 'Back', assigned_service_codes_path %>

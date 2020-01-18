@@ -1,12 +1,12 @@
 
 <div class="">
 
-  <div class="w3-white w3-hover-shadow col-md-6 offset-md-3 w3-card-4 w3-border w3-border-purple rcorners w3-center">
+  <div class="w3-white w3-hover-shadow col-md-8 offset-md-2 w3-card-4 w3-border w3-border-purple rcorners w3-center">
     <h4 class="show w3-center"><strong>New Merchant Information</strong></h4>
-
-    <div class="w3-container">
+    <div id="entity_info_new"></div>
+    <%= simple_form_for(@entity_info, :data => {  :remote => true, count: params[:count], page: params[:page]}) do |f| %>
+    <div class="w3-container w3-border w3-border-purple">
       <br/>
-      <%= simple_form_for(@entity_info, :data => {  :remote => true, count: params[:count], page: params[:page]}) do |f| %>
           <%= f.error_notification %>
           <%= f.error_notification message: f.object.errors[:base].to_sentence if f.object.errors[:base].present? %>
           <div class="w3-half">
@@ -34,17 +34,111 @@
           <% end %>
 
 
-          <%= f.input :comment,  label: "Comment", :as => :text, value_method: :id, required: true, input_html:{rows: 3, cols: 3, autocomplete: "off",class:"form-control w3-border ",style:""}  %>
+          <%= f.input :comment,  label: "Comment", :as => :text, value_method: :id, required: false, input_html:{rows: 3, cols: 3, autocomplete: "off",class:"form-control w3-border ",style:""}  %>
+            <h6><strong>* Do you wish to setup wallets for the various activity types?</strong></h6>
+            <strong><%= f.input :wallet_query, as: :radio_buttons, item_wrapper_class: 'inline', label: "", collection: [['yes', 'YES'] ,['no', 'NO']], label_method: :last, value_method: :first %></strong>
+            <%#= f.collection_radio_buttons :wallet_query, [[true, ' YES    |'] ,[false, ' NO ']], :first, :last %>
             </div>
           <%#= f.input :active_status, :as => :hidden, input_html:{value: true} %>
           <%#= f.input :user_id, :as => :hidden, input_html:{value: current_user.id} %>
-          <div>
-            <%= f.submit "Submit", class: "w3-button w3-purple-vpos w3-border w3-border-purple w3-small w3-round-large", :data => {:disable_with => 'Please Wait...'}, style: "width:auto;float:center;",remote:true %>
-            <%= link_to 'Back', entity_info_index_path(page: params[:page], count: params[:count]), class: "w3-button w3-white w3-border w3-border-purple w3-small w3-round-large",remote:true %>
-          </div>
-      <% end %>
+            <input type="hidden" name="into_create" value="into_create">
+
       <br/>
     </div>
+
+        <br>
+        <% if @activity_types.exists? %>
+    <div id="wallet_config" class="w3-container w3-white w3-border w3-border-purple w3-responsive w3-mobile " >
+      <h5 class="w3-center"><strong>Setup Wallets for Activity Types</strong></h5>
+      <div class="pre-scrollable" style="max-height: 62vh">
+        <br/>
+
+        <!--<input type="hidden" name="into_create" value="into_create">-->
+        <!--<div class="table-responsive">-->
+
+        <table class="w3-table-all table-bordered w3-hoverable w3-card-4">
+
+          <thead>
+          <tr class="w3-vpos-purple">
+            <th><strong>No.</strong></th>
+            <th><strong>Activity Type</strong></th>
+            <th style="width: 100px;"><strong>Service ID</strong></th>
+            <!--<th><strong>Name &emsp;&emsp;&emsp;&emsp;</strong></th>-->
+            <th><strong>Secret Key</strong></th>
+            <th><strong>Client Key</strong></th>
+            <!--<th><strong>Save</strong></th>-->
+
+            <!--<th colspan="1"></th>-->
+          </tr>
+          </thead>
+          <tbody>
+          <% if params[:into_create] == "into_create" %>
+              <% count = 1 %>
+              <% @the_wallet_params.each do |key,value| %>
+                  <% the_params = value %>
+                  <% logger.info "key: #{key.inspect}; value: #{value.inspect}; inner value: #{value["activity_type_code"].inspect}" %>
+                  <% act_type = ActivityType.where(assigned_code: the_params["activity_type_code"], active_status: true).last %>
+                  <tr>
+                    <td><strong><%= count %></strong></td>
+                    <td><strong><%= act_type.activity_type_desc %> (<%= act_type.assigned_code %>)</strong></td>
+                    <td><strong><input type="number" name="the_activity_wallets[<%= count %>[service_id]]" value="<%= the_params["service_id"] %>" autocomplete="off" min="1" oninput="validity.valid||(value='');" placeholder="ID" class="form-control" /></strong></td>
+                    <td><strong><textarea name="the_activity_wallets[<%= count %>[secret_key]]" rows="1" placeholder="Secret Key" class="form-control"><%= the_params["secret_key"] %></textarea></strong></td>
+                    <td><strong><textarea name="the_activity_wallets[<%= count %>[client_key]]" rows="1" placeholder="Client Key" class="form-control"><%= the_params["client_key"] %></textarea></strong></td>
+                    <input type="hidden" name="the_activity_wallets[<%= count %>[activity_type_code]]]" value="<%= act_type.assigned_code %>" >
+
+
+                    <!--<td><strong><input type="checkbox" name="the_list[<%#= count %>[checkbox]]]" style="display: block;">-->
+                    <!--<input type="hidden" name="the_list[<%#= count %>[id]]]" value="<%#= person.last %>"><%# count = count + 1%></strong></td>-->
+                    <!--<input type="hidden" name="the_activity_wallets[<%#= count %>[id]]]" >-->
+                    <% count = count + 1%>
+                  </tr>
+              <% end %>
+          <% else %>
+              <% count = 1 %>
+              <!--list.each do |row|-->
+              <!--the_params = row[1]-->
+              <% @activity_types.each do |activity_type| %>
+                  <%# the_params = person[1] %>
+                  <%# pcs_do = ActivityType.where(id: the_params[:id]).last %>
+                  <tr>
+                    <td><strong><%= count %></strong></td>
+                    <td><strong><%= activity_type.activity_type_desc %> (<%= activity_type.assigned_code %>)</strong></td>
+                    <td><strong><input type="number" name="the_activity_wallets[<%= count %>[service_id]]" autocomplete="off" min="1" oninput="validity.valid||(value='');" placeholder="ID" class="form-control" /></strong></td>
+                    <td><strong><textarea name="the_activity_wallets[<%= count %>[secret_key]]" rows="1" cols="" placeholder="Secret Key" class="form-control"></textarea></strong></td>
+                    <td><strong><textarea name="the_activity_wallets[<%= count %>[client_key]]" rows="1" placeholder="Client Key" class="form-control"></textarea></strong></td>
+                    <input type="hidden" name="the_activity_wallets[<%= count %>[activity_type_code]]]" value="<%= activity_type.assigned_code %>" >
+
+
+                    <!--<td><strong><input type="checkbox" name="the_list[<%#= count %>[checkbox]]]" style="display: block;">-->
+                    <!--<input type="hidden" name="the_list[<%#= count %>[id]]]" value="<%#= person.last %>"><%# count = count + 1%></strong></td>-->
+                    <!--<input type="hidden" name="the_activity_wallets[<%#= count %>[id]]]" >-->
+                    <% count = count + 1%>
+                  </tr>
+              <% end %>
+          <% end %>
+
+          </tbody>
+
+        </table>
+        <!--</div>-->
+
+        <!--<input type="hidden" name="lbc_main_id" value="<%#= params[:lbc_main_id] %>">-->
+        <!--<input type="hidden" name="bank_allo_id" value="<%#= params[:bank_allo_id] %>">-->
+        <!--<input type="hidden" name="mini" value="super_max">-->
+
+
+        <br/>
+      </div>
+    </div>
+        <% end %>
+
+        <div>
+          <br><br>
+          <%= f.submit "Submit", class: "w3-button w3-purple-vpos w3-border w3-border-purple w3-small w3-round-large", :data => {:disable_with => 'Please Wait...'}, style: "width:auto;float:center;",remote:true %>
+          <%= link_to 'Back', entity_info_index_path(page: params[:page], count: params[:count]), class: "w3-button w3-white w3-border w3-border-purple w3-small w3-round-large",remote:true %>
+          <br><br>
+        </div>
+    <% end %>
 
 
   </div>
@@ -54,3 +148,38 @@
 
 <div class="col-md-7 col-md-offset-5">
 </div>
+
+
+<script>
+
+    $(document).ready(function () {
+        var wallet_id = 'wallet_config';
+
+        function displayBlock(wallet_id) {
+            document.getElementById(wallet_id).style.display = "block"
+        }
+
+        function hideBlock(wallet_id) {
+            document.getElementById(wallet_id).style.display = "none"
+        }
+
+        if (document.getElementById('entity_info_wallet_query_yes').checked) {
+            console.log("Yes add hidden");
+            displayBlock(wallet_id)
+        }
+        else if (document.getElementById('entity_info_wallet_query_no').checked) {
+            console.log("No remove hidden");
+            hideBlock(wallet_id)
+        }
+        else {
+            console.log("Remove hidden");
+            hideBlock(wallet_id)
+        }
+
+        $('#entity_info_wallet_query_yes').click(function(){displayBlock(wallet_id); console.log("Yes add block on click");});
+
+        $('#entity_info_wallet_query_no').click(function() {hideBlock(wallet_id); console.log("No remove block on click");});
+
+    });
+
+</script>

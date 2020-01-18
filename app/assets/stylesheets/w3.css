@@ -228,12 +228,14 @@ hr{border:0;border-top:1px solid #eee;margin:20px 0}
     /*background-image: url('/personal_images/cocoa_login.png');*/
 }
 
+
 .image_svg{
     height: 650px;
     width: 1300px;
 }
 
-.table-bordered td, .table-bordered th{  border-color: black !important;  }
+/*.table-bordered td, .table-bordered th{  border-color: black !important;  }*/
+.table-bordered td, .table-bordered th{  border-color: #A31780 !important;  }
 
 .t-header-color,.t-hover-header-color:hover{color:#fff!important;background-color:#57421d!important}
 
@@ -538,6 +540,38 @@ input[type=checkbox]:checked ~ #menu{
 .w3-vpos-purple,.w3-hover-vpos-purple:hover{color:#fff!important;background-color:#A31780!important}
 
 .w3-purple-vpos{color:#fff!important;background-color:#A31780!important}
+
+
+input[type="radio"]:checked {
+    background-color:#A31780;
+    border: 6px solid #A31780;
+    color: #A31780;
+    /*outline: 1px solid #A31780;*/
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+
+    border-radius: 50%;
+    width: 14px;
+    height: 14px;
+
+    transition: 0.2s all linear;
+    margin-right: 5px;
+
+    position: relative;
+    top: 1px;
+}
+
+
+
+input[type="radio"] {
+    color: white;
+    background-color: #A31780;
+    padding: 5px 10px;
+    border-radius: 0;
+    border: 0;
+    font-size: 14px;
+}
 
 
 /*#A31780*/

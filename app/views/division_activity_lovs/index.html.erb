@@ -1,0 +1,39 @@
+<p id="notice"><%= notice %></p>
+
+<h1>Division Activity Lovs</h1>
+
+<table>
+  <thead>
+    <tr>
+      <th>Activity code</th>
+      <th>Division code</th>
+      <th>Lov desc</th>
+      <th>Comment</th>
+      <th>Active status</th>
+      <th>Del status</th>
+      <th>User</th>
+      <th colspan="3"></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @division_activity_lovs.each do |division_activity_lov| %>
+      <tr>
+        <td><%= division_activity_lov.activity_code %></td>
+        <td><%= division_activity_lov.division_code %></td>
+        <td><%= division_activity_lov.lov_desc %></td>
+        <td><%= division_activity_lov.comment %></td>
+        <td><%= division_activity_lov.active_status %></td>
+        <td><%= division_activity_lov.del_status %></td>
+        <td><%= division_activity_lov.user_id %></td>
+        <td><%= link_to 'Show', division_activity_lov %></td>
+        <td><%= link_to 'Edit', edit_division_activity_lov_path(division_activity_lov) %></td>
+        <td><%= link_to 'Destroy', division_activity_lov, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<br>
+
+<%= link_to 'New Division Activity Lov', new_division_activity_lov_path %>
