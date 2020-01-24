@@ -1,0 +1,68 @@
+
+
+<div class="w3-container" >
+  <div id="edit_modal" class="w3-modal w3-animate-opacity" style=" display: block">
+    <!--<div class="w3-modal-content w3-card-4" >-->
+    <br/>
+
+    <%#= render 'form' %>
+    <div class="">
+
+      <div class="w3-white w3-hover-shadow col-md-4 offset-md-4 w3-card-4 w3-border w3-border-purple rcorners w3-center">
+        <h4 class="show w3-center"><strong>Edit Sub Activity Classes</strong></h4>
+
+        <div class="w3-container">
+          <br/>
+          <%#= simple_form_for(@activity_sub_div_class, :data => {  :remote => true, count: params[:count], page: params[:page]}) do |f| %>
+          <%= simple_form_for(@activity_sub_div_class, url: activity_sub_div_class_path(@activity_sub_div_class, class_div_top: params[:class_div_top], code: params[:code], entity_code: params[:entity_code], count: params[:count], page: params[:page] ),:remote => true) do |f| %>
+            <%= f.error_notification %>
+            <%= f.error_notification message: f.object.errors[:base].to_sentence if f.object.errors[:base].present? %>
+            <%#= f.input :entity_div_code, :as => :hidden, input_html:{value: params[:code]} %>
+            <%= f.input :class_desc,  label: "Activity Class", value_method: :id, required: true, input_html:{id: "act_class", autocomplete: "off",class:"form-control w3-input w3-border w3-white input-group input-append",style:""}  %>
+
+            <%# count = 1 %>
+            <%# @activity_sub_div_classes.each do |act_class| %>
+              <%#= f.input :class_desc,  label: "Activity Class #{count}", value_method: :id, required: true, input_html:{id: "act_class_#{count}", value: "#{act_class.class_desc}", autocomplete: "off",class:"form-control w3-input w3-border w3-white input-group input-append",style:""}  %>
+<!--              <br/>-->
+              <%# count = count + 1 %>
+            <%# end %>
+
+            <%#= f.input :comment,  label: "Comment", :as => :text, value_method: :id, required: false, input_html:{rows: 5, cols: 3, autocomplete: "off",class:"form-control w3-border ",style:""}  %>
+<!--            <input type="hidden" name="create_update" value="create_update">-->
+            <%= f.input :active_status, :as => :hidden, input_html:{value: true} %>
+            <%#= f.input :user_id, :as => :hidden, input_html:{value: current_user.id} %>
+            <div>
+              <%= f.submit "Submit", class: "w3-button w3-purple-vpos w3-border w3-border-purple w3-small w3-round-large", :data => {:disable_with => 'Please Wait...'}, style: "width:auto;float:center;",remote:true %>
+              <% if params[:class_div_top] == "class_div_top" %>
+                <button type="button" class="w3-button w3-white w3-border w3-border-purple w3-small w3-round-large" onclick="document.getElementById('edit_modal').style.display='none'" >Back</button>
+              <% else %>
+                <%= link_to 'Back', entity_division_index_path(entity_code: params[:entity_code], class_div_top: params[:class_div_top], code: params[:code], page: params[:page], count: params[:count]), class: "w3-button w3-white w3-border w3-border-purple w3-small w3-round-large",remote:true %>
+              <% end %>
+            </div>
+          <% end %>
+          <br/>
+        </div>
+
+
+      </div>
+
+    </div>
+
+
+    <div class="col-md-7 col-md-offset-5">
+    </div>
+
+
+    <br/>
+    <div class="col-md-7 col-md-offset-5">
+      <br/>
+      <br/>
+    </div>
+    <!--</div>-->
+
+  </div>
+</div>
+
+
+
+

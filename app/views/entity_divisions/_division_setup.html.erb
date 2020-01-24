@@ -210,7 +210,7 @@
                                   <tr id="<%= div_count %>_del_activity_sub_<%= count %>">
                                     <!--                                    <td><strong><%#= count %></strong></td>-->
                                     <td><strong><input type="time" name="the_activity_<%= div_count %>[<%= count %>[activity_time]]" value="<%= the_params["activity_time"] %>" placeholder="Select Time" class="form-control w3-input w3-border w3-white input-group input-append"></strong></td>
-                                    <td style=""><strong><%= collection_select "the_activity_#{ div_count }", "#{count}[classification]", @activity_sub_div_cl, :last, :first, {selected: the_params["classification"], :prompt => 'Select a class', :include_blank => true}, {id: "classify#{count}", class:"form-control w3-input w3-border w3-white input-group input-append", style:"" } %></strong></td>
+                                    <td style=""><strong><%= collection_select "the_activity_#{ div_count }", "#{count}[classification]", @act_sub_div_classes, :last, :first, {selected: the_params["classification"], :prompt => 'Select a class', :include_blank => true}, {id: "classify#{count}", class:"form-control w3-input w3-border w3-white input-group input-append", style:"" } %></strong></td>
                                     <td><strong><input type="number" name="the_activity_<%= div_count %>[<%= count %>[amount]]" value="<%= the_params["amount"] %>" autocomplete="off" min="1" oninput="validity.valid||(value='');" placeholder="Enter amount" class="form-control w3-input w3-border w3-white input-group input-append"></strong></td>
                                     <td><strong><button type="button" onclick="deleteActivitySubRow('activity_sub_table_<%= div_count %>', '<%= div_count %>_del_activity_sub_<%= count %>'); return false;" class="w3-button w3-purple-vpos w3-border w3-border-purple w3-tiny w3-round-large"></button></strong></td>
                                     <% count = count + 1%>
@@ -229,7 +229,7 @@
                             <tr id="<%= div_count %>_del_activity_sub_<%= count %>">
                               <!--                      <td><strong><%#= count %></strong></td>-->
                               <td><strong><input type="time" name="the_activity_<%= div_count %>[<%= count %>[activity_time]]" autocomplete="off" placeholder="Select Time" class="form-control w3-input w3-border w3-white input-group input-append"></strong></td>
-                              <td style=""><strong><%= collection_select "the_activity_#{ div_count }", "#{count}[classification]", @activity_sub_div_cl, :last, :first, {:prompt => 'Select a class', :include_blank => true}, {id: "classify_#{count}", class:"form-control w3-input w3-border w3-white input-group input-append", style:"" } %></strong></td>
+                              <td style=""><strong><%= collection_select "the_activity_#{ div_count }", "#{count}[classification]", @act_sub_div_classes, :last, :first, {:prompt => 'Select a class', :include_blank => true}, {id: "classify_#{count}", class:"form-control w3-input w3-border w3-white input-group input-append", style:"" } %></strong></td>
                               <td><strong><input type="number" name="the_activity_<%= div_count %>[<%= count %>[amount]]" autocomplete="off" min="1" oninput="validity.valid||(value='');" placeholder="Enter amount" class="form-control w3-input w3-border w3-white input-group input-append"></strong></td>
                               <td><strong><button type="button" onclick="deleteActivitySubRow('activity_sub_table_<%= div_count %>', '<%= div_count %>_del_activity_sub_<%= count %>'); return false;" class="w3-button w3-purple-vpos w3-border w3-border-purple w3-tiny w3-round-large"></button></strong></td>
                               <% count = count + 1%>
@@ -246,7 +246,7 @@
                     <br>
                   </div>
 
-                  <% div_count = div_count + 1%>
+                  <% div_count = div_count + 1 %>
                 <% end %>
                 <br>
               </div>

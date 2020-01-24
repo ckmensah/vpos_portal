@@ -171,6 +171,7 @@ class EntityDivisionsController < ApplicationController
     @activity_sub_divs = ActivitySubDiv.where(active_status: true).order(created_at: :desc)
     @division_activity_lovs = DivisionActivityLov.where(division_code: params[:code], active_status: true).order(created_at: :desc)
 
+    @display_div_num = @activity_divs.size
     @activity_codes = [["Donations (DON)", "DON"], ["Levy (LVY)", "LVY"], ["Project (PRJ)", "PRJ"]]
     @activity_sub_div_class = [['Select a class', ""], ["Double", 4], ["Single", 3], ["VIP", 1],  ["Standard", 2]]
     @activity_sub_div_cl = [["Double", 4], ["Single", 3], ["VIP", 1],  ["Standard", 2]]
@@ -181,6 +182,8 @@ class EntityDivisionsController < ApplicationController
     #region_update_city = region_id_record.cities.where(active_status: true).order(city_town_name: :asc).map { |a| [a.city_town_name, a.id] }.insert(0,['Please select a city', ""])
 
   end
+
+
 
   def update_division_setup
     @entity_division = EntityDivision.new(entity_division_params)
@@ -195,7 +198,7 @@ class EntityDivisionsController < ApplicationController
 
     @the_div_lov = params[:the_div_acts_lov]
     @main_params = EntityDivision.hsh_key_validator(params)
-    @display_div_num = @main_params.any? ? @main_params.size : 0
+    @display_div_num = @main_params.any? ? @main_params.size : 1
     @entity_info = EntityInfo.where(assigned_code: params[:entity_code], active_status: true, del_status: false).order(created_at: :desc).first
     @entity_name = @entity_info ? "#{@entity_info.entity_name} (#{@entity_info.entity_alias})" : ""
     @entity_divisions = EntityDivision.where(entity_code: params[:entity_code], del_status: false).paginate(:page => params[:page], :per_page => params[:count]).order('created_at desc')
@@ -222,8 +225,8 @@ class EntityDivisionsController < ApplicationController
       logger.info " LOV:: Validate result:: #{lov_validate_result}, Error number :: #{lov_error_num}, Row number #{lov_row_num}"
       if valid_result && lov_validate_result
         logger.info "=================== UPDATING... ==================="
-        #EntityDivision.division_lov_update(@the_div_lov, params[:code], entity_division_params)
-        #EntityDivision.division_setup_update(params, @main_params, @div_activity_type, entity_division_params)
+        EntityDivision.division_lov_update(@the_div_lov, params[:code], entity_division_params)
+        EntityDivision.division_setup_update(params, @main_params, @div_activity_type, entity_division_params)
         flash.now[:notice] = "Setup update was successful."
         format.js { render :entity_division_index }
       else

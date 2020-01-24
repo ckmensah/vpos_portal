@@ -8,6 +8,7 @@ class EntityDivision < ApplicationRecord
   has_many :assigned_service_codes, class_name: 'AssignedServiceCode', foreign_key: :entity_div_code
   has_many :division_activity_lovs, class_name: 'DivisionActivityLov', foreign_key: :division_code
   has_many :activity_sub_div_class, class_name: 'ActivitySubDivClass', foreign_key: :entity_div_code
+  has_many :payment_infos, class_name: 'PaymentInfo', foreign_key: :entity_div_code
 
   # has_many :entity_wallet_configs, class_name: 'EntityWalletConfig', foreign_key: :division_code
   # has_many :assigned_service_code, class_name: 'AssignedServiceCode', foreign_key: :entity_div_code
@@ -426,9 +427,10 @@ class EntityDivision < ApplicationRecord
       end
 
     else
-      logger.info "== Division Activities are not allowed for these activity codes."
+      logger.info "=== Division Activities are not allowed for these activity codes."
     end
   end
+
 
 
   def self.object_ids(model_obj)

@@ -1,0 +1,35 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  session_id: MyString
+  entity_div_code: MyString
+  activity_lov_id: 1
+  activity_div_id: 1
+  activity_sub_div_id: 1
+  processed: false
+  src: MyString
+  payment_mode: MyString
+  amount: 9.99
+  customer_number: MyString
+  trans_type: MyString
+  charge: 9.99
+  active_status: false
+  del_status: false
+  user_id: 1
+
+two:
+  session_id: MyString
+  entity_div_code: MyString
+  activity_lov_id: 1
+  activity_div_id: 1
+  activity_sub_div_id: 1
+  processed: false
+  src: MyString
+  payment_mode: MyString
+  amount: 9.99
+  customer_number: MyString
+  trans_type: MyString
+  charge: 9.99
+  active_status: false
+  del_status: false
+  user_id: 1

@@ -1,5 +1,6 @@
 Rails.application.routes.draw do
 
+
   # get 'home/index'
   # get "/users" => redirect("/")
   # get "/users/sign_up" => redirect("/users/sign_in")
@@ -35,6 +36,9 @@ Rails.application.routes.draw do
   post '/division_setup_update' => 'entity_divisions#update_division_setup', :as => 'update_division_setup'
 
 
+  get '/payment_infos/payment_info_index' => 'payment_infos#payment_info_index', :as => 'payment_info_index'
+
+
   post '/suburb_masters/city_update', :as => 'suburb_city_ajax_call'
   post '/suburb_masters/suburb_update', :as => 'general_suburb_ajax_call'
 
@@ -52,6 +56,9 @@ Rails.application.routes.draw do
   resources :assigned_service_codes
   resources :division_activity_lovs
   resources :activity_sub_div_classes
+  resources :payment_infos
+  resources :payment_requests
+  resources :payment_callbacks
 
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".

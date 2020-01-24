@@ -1,0 +1,19 @@
+
+<%= simple_form_for(@payment_callback) do |f| %>
+  <%= f.error_notification %>
+  <%= f.error_notification message: f.object.errors[:base].to_sentence if f.object.errors[:base].present? %>
+
+  <div class="form-inputs">
+    <%= f.input :trans_status %>
+    <%= f.input :nw_trans_id %>
+    <%= f.input :trans_ref %>
+    <%= f.input :trans_msg %>
+    <%= f.input :active_status %>
+    <%= f.input :del_status %>
+    <%= f.input :user_id %>
+  </div>
+
+  <div class="form-actions">
+    <%= f.button :submit %>
+  </div>
+<% end %>

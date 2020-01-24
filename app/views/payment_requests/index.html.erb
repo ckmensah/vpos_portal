@@ -1,0 +1,51 @@
+<p id="notice"><%= notice %></p>
+
+<h1>Payment Requests</h1>
+
+<table>
+  <thead>
+    <tr>
+      <th>Payment info</th>
+      <th>Processing</th>
+      <th>Customer number</th>
+      <th>Nw</th>
+      <th>Trans type</th>
+      <th>Amount</th>
+      <th>Service</th>
+      <th>Payment mode</th>
+      <th>Reference</th>
+      <th>Processed</th>
+      <th>Active status</th>
+      <th>Del status</th>
+      <th>User</th>
+      <th colspan="3"></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @payment_requests.each do |payment_request| %>
+      <tr>
+        <td><%= payment_request.payment_info_id %></td>
+        <td><%= payment_request.processing_id %></td>
+        <td><%= payment_request.customer_number %></td>
+        <td><%= payment_request.nw %></td>
+        <td><%= payment_request.trans_type %></td>
+        <td><%= payment_request.amount %></td>
+        <td><%= payment_request.service_id %></td>
+        <td><%= payment_request.payment_mode %></td>
+        <td><%= payment_request.reference %></td>
+        <td><%= payment_request.processed %></td>
+        <td><%= payment_request.active_status %></td>
+        <td><%= payment_request.del_status %></td>
+        <td><%= payment_request.user_id %></td>
+        <td><%= link_to 'Show', payment_request %></td>
+        <td><%= link_to 'Edit', edit_payment_request_path(payment_request) %></td>
+        <td><%= link_to 'Destroy', payment_request, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<br>
+
+<%= link_to 'New Payment Request', new_payment_request_path %>

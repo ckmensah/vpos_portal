@@ -1,0 +1,39 @@
+<p id="notice"><%= notice %></p>
+
+<h1>Payment Callbacks</h1>
+
+<table>
+  <thead>
+    <tr>
+      <th>Trans status</th>
+      <th>Nw trans</th>
+      <th>Trans ref</th>
+      <th>Trans msg</th>
+      <th>Active status</th>
+      <th>Del status</th>
+      <th>User</th>
+      <th colspan="3"></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @payment_callbacks.each do |payment_callback| %>
+      <tr>
+        <td><%= payment_callback.trans_status %></td>
+        <td><%= payment_callback.nw_trans_id %></td>
+        <td><%= payment_callback.trans_ref %></td>
+        <td><%= payment_callback.trans_msg %></td>
+        <td><%= payment_callback.active_status %></td>
+        <td><%= payment_callback.del_status %></td>
+        <td><%= payment_callback.user_id %></td>
+        <td><%= link_to 'Show', payment_callback %></td>
+        <td><%= link_to 'Edit', edit_payment_callback_path(payment_callback) %></td>
+        <td><%= link_to 'Destroy', payment_callback, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<br>
+
+<%= link_to 'New Payment Callback', new_payment_callback_path %>

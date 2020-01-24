@@ -76,6 +76,9 @@ class ActivityTypesController < ApplicationController
   # DELETE /activity_types/1.json
 
   def destroy
+    params[:count] ? params[:count] : params[:count] = 10
+    params[:page] ? params[:page] : params[:page] = 1
+
     if @activity_type.active_status
       @activity_type.active_status = false
       @activity_type.save(validate: false)

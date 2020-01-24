@@ -1,0 +1,69 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <strong>Payment info:</strong>
+  <%= @payment_request.payment_info_id %>
+</p>
+
+<p>
+  <strong>Processing:</strong>
+  <%= @payment_request.processing_id %>
+</p>
+
+<p>
+  <strong>Customer number:</strong>
+  <%= @payment_request.customer_number %>
+</p>
+
+<p>
+  <strong>Nw:</strong>
+  <%= @payment_request.nw %>
+</p>
+
+<p>
+  <strong>Trans type:</strong>
+  <%= @payment_request.trans_type %>
+</p>
+
+<p>
+  <strong>Amount:</strong>
+  <%= @payment_request.amount %>
+</p>
+
+<p>
+  <strong>Service:</strong>
+  <%= @payment_request.service_id %>
+</p>
+
+<p>
+  <strong>Payment mode:</strong>
+  <%= @payment_request.payment_mode %>
+</p>
+
+<p>
+  <strong>Reference:</strong>
+  <%= @payment_request.reference %>
+</p>
+
+<p>
+  <strong>Processed:</strong>
+  <%= @payment_request.processed %>
+</p>
+
+<p>
+  <strong>Active status:</strong>
+  <%= @payment_request.active_status %>
+</p>
+
+<p>
+  <strong>Del status:</strong>
+  <%= @payment_request.del_status %>
+</p>
+
+<p>
+  <strong>User:</strong>
+  <%= @payment_request.user_id %>
+</p>
+
+<%= link_to 'Edit', edit_payment_request_path(@payment_request) %> |
+<%= link_to 'Back', payment_requests_path %>

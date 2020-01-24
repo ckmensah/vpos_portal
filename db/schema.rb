@@ -10,10 +10,48 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_11_21_124549) do
+ActiveRecord::Schema.define(version: 2020_01_23_112254) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "activity_category", id: false, force: :cascade do |t|
+    t.serial "id", null: false
+    t.string "assigned_code", limit: 10
+    t.string "activity_cat_desc", limit: 155
+    t.text "image_data"
+    t.string "image_path", limit: 255
+    t.boolean "active_status", default: true
+    t.boolean "del_status", default: false
+    t.integer "user_id"
+    t.datetime "created_at", default: -> { "CURRENT_TIMESTAMP" }
+    t.datetime "updated_at"
+  end
+
+  create_table "activity_category_div", id: false, force: :cascade do |t|
+    t.serial "id", null: false
+    t.string "division_code", limit: 10
+    t.integer "activity_category_id"
+    t.integer "activity_div_cat_id"
+    t.string "category_div_desc", limit: 155
+    t.string "comment", limit: 255
+    t.boolean "active_status", default: true
+    t.boolean "del_status", default: false
+    t.integer "user_id"
+    t.datetime "created_at", default: -> { "CURRENT_TIMESTAMP" }
+    t.datetime "updated_at"
+  end
+
+  create_table "activity_div_cat", id: false, force: :cascade do |t|
+    t.serial "id", null: false
+    t.string "division_code", limit: 10
+    t.string "div_cat_desc", limit: 100
+    t.boolean "active_status", default: true
+    t.boolean "del_status", default: false
+    t.integer "user_id"
+    t.datetime "created_at", default: -> { "CURRENT_TIMESTAMP" }
+    t.datetime "updated_at"
+  end
 
   create_table "activity_divs", force: :cascade do |t|
     t.string "division_code"
@@ -25,6 +63,36 @@ ActiveRecord::Schema.define(version: 2019_11_21_124549) do
     t.datetime "created_at", default: -> { "CURRENT_TIMESTAMP" }, null: false
     t.datetime "updated_at"
     t.string "activity_div_desc", limit: 150
+    t.integer "activity_fixture_id"
+  end
+
+  create_table "activity_fixture", id: false, force: :cascade do |t|
+    t.serial "id", null: false
+    t.string "division_code", limit: 10
+    t.string "activity_participant_a", limit: 10
+    t.string "activity_participant_b", limit: 10
+    t.integer "activity_category_div_id"
+    t.string "comment", limit: 255
+    t.boolean "active_status", default: true
+    t.boolean "del_status", default: false
+    t.integer "user_id"
+    t.datetime "created_at", default: -> { "CURRENT_TIMESTAMP" }
+    t.datetime "updated_at"
+  end
+
+  create_table "activity_participant", id: false, force: :cascade do |t|
+    t.serial "id", null: false
+    t.string "assigned_code", limit: 10
+    t.string "division_code", limit: 10
+    t.string "participant_name", limit: 255
+    t.string "participant_alias", limit: 255
+    t.text "image_data"
+    t.string "image_path", limit: 255
+    t.boolean "active_status", default: true
+    t.boolean "del_status", default: false
+    t.integer "user_id"
+    t.datetime "created_at", default: -> { "CURRENT_TIMESTAMP" }
+    t.datetime "updated_at"
   end
 
   create_table "activity_sub_div_class", id: false, force: :cascade do |t|
@@ -91,6 +159,19 @@ ActiveRecord::Schema.define(version: 2019_11_21_124549) do
     t.boolean "active_status", default: true
     t.boolean "del_status", default: false
     t.datetime "created_at", default: -> { "CURRENT_TIMESTAMP" }, null: false
+    t.datetime "updated_at"
+  end
+
+  create_table "auth_req", id: false, force: :cascade do |t|
+    t.serial "id", null: false
+    t.string "mobile_number", limit: 20
+    t.string "imei", limit: 50
+    t.text "secret_code"
+    t.string "device_type", limit: 10
+    t.boolean "expired", default: false
+    t.string "status", limit: 10
+    t.datetime "created_at", default: -> { "CURRENT_TIMESTAMP" }, null: false
+    t.string "ref_code", limit: 50
     t.datetime "updated_at"
   end
 
@@ -257,6 +338,11 @@ ActiveRecord::Schema.define(version: 2019_11_21_124549) do
     t.string "customer_number", limit: 20
     t.string "trans_type", limit: 5
     t.decimal "charge", precision: 11, scale: 3
+    t.integer "activity_sub_div_id"
+    t.string "activity_main_code", limit: 50
+    t.string "paid_by", limit: 255
+    t.string "recipient_number", limit: 50
+    t.string "recipient_type", limit: 50
   end
 
   create_table "payment_request", id: false, force: :cascade do |t|
@@ -310,6 +396,50 @@ ActiveRecord::Schema.define(version: 2019_11_21_124549) do
     t.datetime "updated_at", null: false
   end
 
+  create_table "ussd_activity_div_cat_temps", id: :serial, force: :cascade do |t|
+    t.string "mobile_number"
+    t.string "activity_type"
+    t.string "activity_code"
+    t.string "entity_div_code"
+    t.string "activity_div_cat_index"
+    t.string "activity_div_cat_id"
+    t.string "activity_div_category"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at"
+  end
+
+  create_table "ussd_activity_div_sub_cat_temps", id: :serial, force: :cascade do |t|
+    t.string "mobile_number"
+    t.string "activity_type"
+    t.string "activity_code"
+    t.string "entity_div_code"
+    t.string "activity_div_subcat_index"
+    t.string "activity_cat_div_id"
+    t.string "category_div_desc"
+    t.string "activity_div_category"
+    t.string "activity_category"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at"
+  end
+
+  create_table "ussd_activity_fixtures_temps", id: :serial, force: :cascade do |t|
+    t.string "mobile_number"
+    t.string "activity_type"
+    t.string "activity_code"
+    t.string "entity_div_code"
+    t.string "activity_fixture_id"
+    t.string "participant_a_alias"
+    t.string "participant_a"
+    t.string "image_a"
+    t.string "participant_b_alias"
+    t.string "participant_b"
+    t.string "activity_category_div"
+    t.string "image_b"
+    t.datetime "created_at", default: -> { "now()" }, null: false
+    t.datetime "updated_at"
+    t.string "fixtures_index"
+  end
+
   create_table "ussd_activity_plans_temps", id: :serial, force: :cascade do |t|
     t.string "mobile_number"
     t.string "activity_type"
@@ -321,6 +451,11 @@ ActiveRecord::Schema.define(version: 2019_11_21_124549) do
     t.string "activity_date"
     t.datetime "created_at", null: false
     t.datetime "updated_at"
+    t.string "activity_category_div"
+    t.string "participant_a_alias"
+    t.string "participant_a"
+    t.string "participant_b_alias"
+    t.string "participant_b"
   end
 
   create_table "ussd_activity_sub_plans_temps", id: :serial, force: :cascade do |t|
@@ -426,6 +561,29 @@ ActiveRecord::Schema.define(version: 2019_11_21_124549) do
     t.string "activity_main_code"
     t.string "total_amount"
     t.string "payment_reference"
+    t.integer "activity_sub_plan_id"
+    t.string "activity_date"
+    t.string "activity_time"
+    t.string "classification"
+    t.string "activity_plan"
+    t.integer "qty"
+    t.boolean "allow_qr"
+    t.string "email"
+    t.string "qr_send_option"
+    t.boolean "submit_status", default: false
+    t.string "activity_div_cat_id"
+    t.string "activity_div_cat_desc"
+    t.string "activity_cat_div_id"
+    t.string "category_div_desc"
+    t.string "activity_category_div"
+    t.string "activity_fixture_id"
+    t.string "participant_a_alias"
+    t.string "participant_a"
+    t.string "participant_b_alias"
+    t.string "participant_b"
+    t.string "activity_plan_id"
+    t.string "recipient_number"
+    t.string "recipient_type"
   end
 
   create_table "ussd_tracker_logs", id: :integer, default: -> { "nextval('tracker_logs_id_seq'::regclass)" }, force: :cascade do |t|

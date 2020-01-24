@@ -1,0 +1,39 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <strong>Trans status:</strong>
+  <%= @payment_callback.trans_status %>
+</p>
+
+<p>
+  <strong>Nw trans:</strong>
+  <%= @payment_callback.nw_trans_id %>
+</p>
+
+<p>
+  <strong>Trans ref:</strong>
+  <%= @payment_callback.trans_ref %>
+</p>
+
+<p>
+  <strong>Trans msg:</strong>
+  <%= @payment_callback.trans_msg %>
+</p>
+
+<p>
+  <strong>Active status:</strong>
+  <%= @payment_callback.active_status %>
+</p>
+
+<p>
+  <strong>Del status:</strong>
+  <%= @payment_callback.del_status %>
+</p>
+
+<p>
+  <strong>User:</strong>
+  <%= @payment_callback.user_id %>
+</p>
+
+<%= link_to 'Edit', edit_payment_callback_path(@payment_callback) %> |
+<%= link_to 'Back', payment_callbacks_path %>

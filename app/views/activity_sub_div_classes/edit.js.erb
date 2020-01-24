@@ -1,0 +1,8 @@
+
+
+<% if  params[:class_div_top] == "class_div_top" %>
+$("#notes4").html("<%= escape_javascript(render(:partial =>"edit")) %>");
+<% else %>
+$("#notes2").html("<%= escape_javascript(render(:partial =>"edit")) %>");
+<% end %>
+$('#edit_notice').html("<%= escape_javascript(render 'layouts/messages') %>");

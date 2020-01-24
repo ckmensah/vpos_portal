@@ -56,8 +56,10 @@ gem 'whenever', require: false
 gem 'turnout'
 
 
-gem 'will_paginate', '~> 3.1', '>= 3.1.8'
-gem 'will_paginate-bootstrap', '~> 1.0', '>= 1.0.2'
+#gem 'will_paginate', '~> 3.1', '>= 3.1.8'
+#gem 'will_paginate-bootstrap', '~> 1.0', '>= 1.0.2'
+#gem 'will_paginate', '~> 3.2', '>= 3.2.1'
+#gem 'will_paginate-bootstrap', '~> 1.0', '>= 1.0.1'
 gem 'paperclip', '~> 6.1'
 gem 'prawn'
 gem 'prawn-table'
@@ -151,8 +153,8 @@ gem 'dynamic_form', '~> 1.1', '>= 1.1.4'
 # gem 'savon', '~> 2.11.1'
 # # gem 'nokogiri', '~> 1.6.6.2'
 #
-# gem 'will_paginate', '~> 3.0'
-# gem 'will_paginate-bootstrap', '~> 1.0.1'
+ gem 'will_paginate', '~> 3.0'
+ gem 'will_paginate-bootstrap', '~> 1.0.1'
 #
 # gem 'momentjs-rails', '>= 2.9.0'
 # gem 'bootstrap3-datetimepicker-rails', '~> 4.15.35'

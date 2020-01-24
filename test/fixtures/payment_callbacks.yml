@@ -1,0 +1,19 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  trans_status: MyString
+  nw_trans_id: MyString
+  trans_ref: MyString
+  trans_msg: MyString
+  active_status: false
+  del_status: false
+  user_id: 1
+
+two:
+  trans_status: MyString
+  nw_trans_id: MyString
+  trans_ref: MyString
+  trans_msg: MyString
+  active_status: false
+  del_status: false
+  user_id: 1

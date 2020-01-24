@@ -1,0 +1,4 @@
+<%# params[:entity_code] %>
+$("#notes2").html("<%= escape_javascript(render("index")) %>");
+$('#notes4').html("<%= escape_javascript(render 'layouts/messages') %>");
+$('.pagination a').attr('data-remote', 'true');

@@ -1,0 +1,27 @@
+
+<%= simple_form_for(@payment_info) do |f| %>
+  <%= f.error_notification %>
+  <%= f.error_notification message: f.object.errors[:base].to_sentence if f.object.errors[:base].present? %>
+
+  <div class="form-inputs">
+    <%= f.input :session_id %>
+    <%= f.input :entity_div_code %>
+    <%= f.input :activity_lov_id %>
+    <%= f.input :activity_div_id %>
+    <%= f.input :activity_sub_div_id %>
+    <%= f.input :processed %>
+    <%= f.input :src %>
+    <%= f.input :payment_mode %>
+    <%= f.input :amount %>
+    <%= f.input :customer_number %>
+    <%= f.input :trans_type %>
+    <%= f.input :charge %>
+    <%= f.input :active_status %>
+    <%= f.input :del_status %>
+    <%= f.input :user_id %>
+  </div>
+
+  <div class="form-actions">
+    <%= f.button :submit %>
+  </div>
+<% end %>
