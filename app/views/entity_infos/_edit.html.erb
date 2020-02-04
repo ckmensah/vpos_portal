@@ -106,14 +106,14 @@
                 <%= f.simple_fields_for :entity_info_extras do |ff| %>
                     <%= ff.input :contact_number,  label: "Contact Number", value_method: :id, required: true, input_html:{id: "contact_no", value: @entity_info_extra.contact_number, autocomplete: "off",class:"form-control w3-input w3-border w3-white input-group input-append",style:"width: 90%;"}  %>
                     <%#= ff.input :api_key,  label: "Sms Key", value_method: :id, required: true, input_html:{id: "api_key", autocomplete: "off",class:"form-control w3-input w3-border w3-white input-group input-append",style:"width: 90%; height: 25px"}  %>
-                    <%= ff.input :web_url,  label: "Web Url", required: true, input_html:{id: "web_url", value: @entity_info_extra.web_url, autocomplete: "off",class:"form-control w3-input w3-border w3-white input-group input-append",style:"width: 90%;"}  %>
+                    <%= ff.input :web_url,  label: "Web Url", required: false, input_html:{id: "web_url", value: @entity_info_extra.web_url, autocomplete: "off",class:"form-control w3-input w3-border w3-white input-group input-append",style:"width: 90%;"}  %>
                     <%= ff.input :contact_email,  label: "Email", required: true, input_html:{id: "contact_email", value: @entity_info_extra.contact_email, autocomplete: "off",class:"form-control w3-input w3-border w3-white input-group input-append",style:"width: 90%;"}  %>
                     </div>
                     <div class="w3-half">
                       <%#= f.input :unit_id,  label: "Product Unit", collection: @product_units, label_method: :district_desc, value_method: :id, required: true, input_html:{id: "prod_unit", autocomplete: "off",class:"form-control w3-input w3-border w3-white input-group input-append",style:""}  %>
                       <%#= ff.input :comment,  label: "Comment", :as => :text, value_method: :id, required: true, input_html:{id: "title_id", rows: 3, cols: 3, autocomplete: "off",class:"form-control w3-border ",style:""}  %>
                       <%= ff.input :active_status, :as => :hidden, input_html:{value: true} %>
-                      <%#= ff.input :user_id, :as => :hidden, input_html:{value: current_user.id} %>
+                      <%= ff.input :user_id, :as => :hidden, input_html:{value: current_user.id} %>
                       <%= ff.input :location_address,  label: "Location Address", :as => :text, required: false, input_html:{rows: 3, cols: 3, value: @entity_info_extra.location_address, autocomplete: "off",class:"form-control w3-border ",style:""}  %>
                       <%= ff.input :postal_address,  label: "Postal Address", :as => :text, required: false, input_html:{rows: 3, cols: 3, value: @entity_info_extra.postal_address, autocomplete: "off",class:"form-control w3-border ",style:""}  %>
 
@@ -127,7 +127,7 @@
                 <%#= f.collection_radio_buttons :wallet_query, [[true, ' YES    |'] ,[false, ' NO ']], :first, :last %>
                 </div>
                 <%#= f.input :active_status, :as => :hidden, input_html:{value: true} %>
-                <%#= f.input :user_id, :as => :hidden, input_html:{value: current_user.id} %>
+                <%= f.input :user_id, :as => :hidden, input_html:{value: current_user.id} %>
                 <input type="hidden" name="into_create" value="into_create">
 
                 <br/>

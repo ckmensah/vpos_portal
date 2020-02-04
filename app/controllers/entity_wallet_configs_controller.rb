@@ -1,6 +1,7 @@
 class EntityWalletConfigsController < ApplicationController
   before_action :set_entity_wallet_config, only: [:show, :edit, :update, :destroy]
-
+  load_and_authorize_resource
+  before_action :load_permissions
   # GET /entity_wallet_configs
   # GET /entity_wallet_configs.json
   def index

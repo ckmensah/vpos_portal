@@ -1,11 +1,13 @@
 class EntityInfo < ApplicationRecord
   self.table_name="entity_info"
   self.primary_key = :assigned_code
-  attr_accessor :action_type, :wallet_query#, :service_id, :secret_key, :client_key, :activity_type
+  attr_accessor :action_type, :wallet_query #, :service_id, :secret_key, :client_key, :activity_type
 
   has_many :entity_divisions, class_name: 'EntityDivision', foreign_key: :entity_code
   has_many :entity_info_extras,  class_name: 'EntityInfoExtra', foreign_key: :entity_code
   has_many :entity_wallet_configs, class_name: 'EntityWalletConfig', foreign_key: :entity_code#, primary_key: :id
+  has_many :users, class_name: 'User', foreign_key: :entity_code
+
   belongs_to :entity_category, class_name: 'EntityCategory', foreign_key: :entity_cat_id, primary_key: :assigned_code
 
 
@@ -87,11 +89,11 @@ class EntityInfo < ApplicationRecord
   end
 
 
-  def self.save_wallet_config(wallet_params, assigned_code)
+  def self.save_wallet_config(wallet_params, assigned_code, current_user)
     wallet_params.each do |key, value|
       if value["service_id"].present? && value["secret_key"].present? && value["client_key"].present?
         for_wallet_config = EntityWalletConfig.new(entity_code: assigned_code, activity_type_code: value["activity_type_code"],
-                                                   service_id: value["service_id"], secret_key: value["secret_key"],
+                                                   service_id: value["service_id"], secret_key: value["secret_key"], user_id: current_user.id,
                                                    client_key: value["client_key"], active_status: true, del_status: false)
         for_wallet_config.save(validate: false)
       end

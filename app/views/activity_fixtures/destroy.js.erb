@@ -1,0 +1,3 @@
+$("#sports").html("<%= escape_javascript(render(:partial =>"activity_fixture_index")) %>");
+$('#notes8').html("<%= escape_javascript(render 'layouts/messages') %>");
+$('.pagination a').attr('data-remote', 'true');

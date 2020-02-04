@@ -1,0 +1,11 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  division_code: MyString
+  activity_participant_a: MyString
+  activity_participant_b: MyString
+
+two:
+  division_code: MyString
+  activity_participant_a: MyString
+  activity_participant_b: MyString

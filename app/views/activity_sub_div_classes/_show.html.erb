@@ -8,7 +8,7 @@
     <div class="">
 
       <div class="w3-white w3-hover-shadow col-md-6 offset-md-3 w3-card-4 w3-border w3-border-purple rcorners w3-center">
-        <h4 class="show w3-center"><strong>Activity Class Details</strong></h4>
+        <h4 class="show w3-center"><strong>Ticket Type Details</strong></h4>
         <p id="notice2"><strong></strong></p>
 
         <div class="w3-container">
@@ -24,7 +24,7 @@
                 <div class="col-md-10 offset-md-1">
                   <table class="w3-table-all table-bordered w3-hoverable w3-card-4">
                     <tr class="w3-vpos-purple">
-                      <td><strong>Activity Class(es) for <%= @activity_sub_div_class.entity_division.division_name %>:</strong></td>
+                      <td><strong>Activity Ticket Type(s) for <%= @activity_sub_div_class.entity_division.division_name %>:</strong></td>
                     </tr>
                     <% count = 0 %>
                     <% if @activity_sub_div_class.class_one.present? %>
@@ -74,13 +74,13 @@
                 <% else %>
                 <table class="w3-table-all table table-bordered w3-hoverable w3-card-4">
                   <tr>
-                    <td class="raw_theme w3-border w3-border-black w3-leftbar"><strong>Division Name:</strong></td>
+                    <td class="raw_theme w3-border w3-border-black w3-leftbar"><strong>Service Name:</strong></td>
                     <td>
                       <strong><%= @activity_sub_div_class.entity_division.division_name %></strong>
                     </td>
                   </tr>
                   <tr>
-                    <td class="raw_theme w3-border w3-border-black w3-leftbar"><strong>Activity Class:</strong></td>
+                    <td class="raw_theme w3-border w3-border-black w3-leftbar"><strong>Ticket Types:</strong></td>
                     <td>
                       <strong><%= @activity_sub_div_class.class_desc %></strong>
                     </td>
@@ -97,7 +97,7 @@
               <% else %>
               <table class="w3-table-all table table-bordered w3-hoverable w3-card-4">
                 <tr class="w3-vpos-purple">
-                  <td><strong>Activity Class(es):</strong></td>
+                  <td><strong>Ticket Type(s):</strong></td>
                 </tr>
 
                 <% if @activity_sub_div_class.class_one.present? %>

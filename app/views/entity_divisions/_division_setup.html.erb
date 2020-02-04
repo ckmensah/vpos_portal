@@ -6,7 +6,7 @@
 
     <div class="">
       <div class="w3-white w3-hover-shadow col-md-10 offset-md-1 w3-card-4 w3-border w3-border-purple rcorners w3-center">
-        <h4 class="show w3-center"><strong>Division Setup</strong></h4>
+        <h4 class="show w3-center"><strong>Service Setup</strong></h4>
         <p id="for_division_setup"><%#= notice %></p>
         <div id="entity_info_new"></div>
         <%= simple_form_for(@entity_division, url: create_division_setup_path(@entity_division, code: params[:code], action_type: "for_update", entity_code: params[:entity_code], count: params[:count], page: params[:page] ),:remote => true) do |f| %>
@@ -36,7 +36,7 @@
           <%# if @activity_types.exists? %>
 
           <div id="div_lov_config" class="w3-container w3-white w3-border w3-border-purple w3-responsive w3-mobile " >
-            <h5 class="w3-center"><strong>SETUP DIVISION LIST OF VALUES</strong></h5>
+            <h5 class="w3-center"><strong>SETUP SERVICE LIST OF VALUES</strong></h5>
             <button type="button" id="add_div_lov" onclick="addScreenRow('div_lov_table'); return false;" class="w3-button w3-purple-vpos w3-border w3-border-purple w3-tiny w3-round-large">ADD ANOTHER</button>
             <div class="pre-scrollable" style="max-height: 50vh">
               <br/>
@@ -114,13 +114,13 @@
 
           <br>
 
-          <% if @div_activity_type == "SHW" %>
+          <% if @div_activity_type == "SHW" || @div_activity_type == "SPO" %>
 
             <div class="w3-container w3-border w3-border-purple">
               <br/>
               <div class="w3-center">
                 <div class="w3-half">
-                  <h5><strong>* Do you wish to setup various activities for this division?</strong></h5>
+                  <h5><strong>* Do you wish to setup various activities for this service?</strong></h5>
                 </div>
                 <div class="w3-half">
                   <strong><%= f.input :activity_query, as: :radio_buttons, item_wrapper_class: 'inline', label: "", collection: [['yes', 'YES'] ,['no', 'NO']], label_method: :last, value_method: :first %></strong>
@@ -601,7 +601,7 @@
         }
 
 
-        <% if @div_activity_type == "SHW" %>
+        <% if @div_activity_type == "SHW" || @div_activity_type == "SPO" %>
 if (document.getElementById('entity_division_activity_query_yes').checked) {
             console.log("Yes add hidden");
             displayActivity(activity_div_id)

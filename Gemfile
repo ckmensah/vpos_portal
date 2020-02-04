@@ -66,6 +66,10 @@ gem 'prawn-table'
 gem 'auto-session-timeout'
 gem 'faraday', '~> 0.9.2'
 gem 'dynamic_form', '~> 1.1', '>= 1.1.4'
+gem 'bootstrap3-datetimepicker-rails', '~> 4.15.35'
+gem 'shrine', '~> 2.12'
+gem "shrine-cloudinary"
+gem "cloudinary"
 
 
 

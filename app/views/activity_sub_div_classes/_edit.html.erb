@@ -9,7 +9,7 @@
     <div class="">
 
       <div class="w3-white w3-hover-shadow col-md-4 offset-md-4 w3-card-4 w3-border w3-border-purple rcorners w3-center">
-        <h4 class="show w3-center"><strong>Edit Sub Activity Classes</strong></h4>
+        <h4 class="show w3-center"><strong>Edit Ticket Types</strong></h4>
 
         <div class="w3-container">
           <br/>
@@ -18,7 +18,7 @@
             <%= f.error_notification %>
             <%= f.error_notification message: f.object.errors[:base].to_sentence if f.object.errors[:base].present? %>
             <%#= f.input :entity_div_code, :as => :hidden, input_html:{value: params[:code]} %>
-            <%= f.input :class_desc,  label: "Activity Class", value_method: :id, required: true, input_html:{id: "act_class", autocomplete: "off",class:"form-control w3-input w3-border w3-white input-group input-append",style:""}  %>
+            <%= f.input :class_desc,  label: "Ticket Type", value_method: :id, required: true, input_html:{id: "act_class", autocomplete: "off",class:"form-control w3-input w3-border w3-white input-group input-append",style:""}  %>
 
             <%# count = 1 %>
             <%# @activity_sub_div_classes.each do |act_class| %>
@@ -30,7 +30,7 @@
             <%#= f.input :comment,  label: "Comment", :as => :text, value_method: :id, required: false, input_html:{rows: 5, cols: 3, autocomplete: "off",class:"form-control w3-border ",style:""}  %>
 <!--            <input type="hidden" name="create_update" value="create_update">-->
             <%= f.input :active_status, :as => :hidden, input_html:{value: true} %>
-            <%#= f.input :user_id, :as => :hidden, input_html:{value: current_user.id} %>
+            <%= f.input :user_id, :as => :hidden, input_html:{value: current_user.id} %>
             <div>
               <%= f.submit "Submit", class: "w3-button w3-purple-vpos w3-border w3-border-purple w3-small w3-round-large", :data => {:disable_with => 'Please Wait...'}, style: "width:auto;float:center;",remote:true %>
               <% if params[:class_div_top] == "class_div_top" %>

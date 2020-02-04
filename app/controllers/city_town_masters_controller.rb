@@ -1,6 +1,7 @@
 class CityTownMastersController < ApplicationController
   before_action :set_city_town_master, only: [:show, :edit, :update, :destroy]
-
+  load_and_authorize_resource
+  before_action :load_permissions
   # GET /city_town_masters
   # GET /city_town_masters.json
   def index

@@ -24,7 +24,7 @@
               <%= f.input :comment, label: "Comment", :as => :text, value_method: :id, required: true, input_html:{rows: 5, cols: 3, autocomplete: "off",class:"form-control w3-border ",style:""}  %>
 
               <%= f.input :active_status, :as => :hidden, input_html:{value: true} %>
-              <%#= f.input :user_id, :as => :hidden, input_html:{value: current_user.id} %>
+              <%= f.input :user_id, :as => :hidden, input_html:{value: current_user.id} %>
               <div>
                 <%= f.submit "Submit", class: "w3-button w3-purple-vpos w3-border w3-border-purple w3-small w3-round-large", :data => {:disable_with => 'Please Wait...'}, style: "width:auto;float:center;",remote:true %>
                 <%= link_to 'Back', suburb_master_index_path(page: params[:page], count: params[:count]), class: "w3-button w3-white w3-border w3-border-purple w3-small w3-round-large",remote:true %>

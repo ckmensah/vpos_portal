@@ -1,0 +1,94 @@
+<!--<h2>Edit <%#= resource_name.to_s.humanize %></h2>-->
+
+
+<div class="container">
+  <!--<div class="row">-->
+<!--  <h4 style="text-decoration: underline;"><strong>EDIT PROFILE   </strong></h4>-->
+
+  <div class="w3-responsive">
+    <button type="button" class="btn btn-outline-purple tablink w3-vpos-purple" style="font-size: small; width: 220px;" onclick="openCity(event, 'user_profile')">EDIT YOUR USER ACCOUNT</button>
+  </div>
+
+  <div id="user_profile" class="city active">
+    <br>
+    <%= simple_form_for(resource, as: resource_name, url: registration_path(resource_name), html: { method: :put }) do |f| %>
+      <%= f.error_notification %>
+      <div class="w3-container">
+        <br/>
+        <div class="w3-white w3-center" style="position: static;">
+          <br/>
+      <div class="form-inputs">
+
+        <div class="w3-half">
+          <%= f.input :user_name,  label: "User Name", value_method: :id, autofocus: true, required: true, input_html:{id: "id_user_name", autocomplete: "off",class:"form-control w3-input w3-border w3-white input-group input-append",style:"width:90%;"}  %>
+          <%= f.input :last_name,  label: "Last Name", value_method: :id, required: true, input_html:{id: "id_last_name", autocomplete: "off",class:"form-control w3-input w3-border w3-white input-group input-append",style:"width:90%;"}  %>
+          <%= f.input :first_name,  label: "First Name", value_method: :id, required: true, input_html:{id: "id_first_name", autocomplete: "off",class:"form-control w3-input w3-border w3-white input-group input-append",style:"width:90%;"}  %>
+          <%= f.input :contact_number,  label: "Contact Number", value_method: :id, required: true, input_html:{id: "id_contact_num", autocomplete: "off",class:"form-control w3-input w3-border w3-white input-group input-append",style:"width:90%;"}  %>
+
+        </div>
+
+        <div class="w3-half">
+          <%= f.input :email,  label: "Email", value_method: :id, required: true, input_html:{id: "id_email", autocomplete: "off",class:"form-control w3-input w3-border w3-white input-group input-append",style:"width:90%;"}  %>
+          <% if devise_mapping.confirmable? && resource.pending_reconfirmation? %>
+            <p>Currently waiting confirmation for: <%= resource.unconfirmed_email %></p>
+          <% end %>
+          <%= f.input :password, label: "Password",
+                      hint: "leave it blank if you don't want to change it",
+                      required: false,
+                      input_html: { autocomplete: "new-password", style:"width:90%;", class: "form-control w3-input w3-border w3-white input-group input-append" } %>
+          <%= f.input :password_confirmation,
+                      required: false,
+                      input_html: { autocomplete: "new-password", style:"width:90%;", class: "form-control w3-input w3-border w3-white input-group input-append" } %>
+          <%= f.input :current_password,
+                      hint: "we need your current password to confirm your changes",
+                      required: true,
+                      input_html: { autocomplete: "current-password", style:"width:90%;", class: "form-control w3-input w3-border w3-white input-group input-append" } %>
+
+        </div>
+
+
+        <%#= f.input :active_status, :as => :hidden, input_html:{value: true} %>
+        <%#= f.input :user_id, :as => :hidden, input_html:{value: current_user.id} %>
+
+      </div>
+          <div class="w3-center form-actions">
+            <%= f.submit "Update", class: "w3-button w3-purple-vpos w3-border w3-border-purple w3-small w3-round-large", :data => {:disable_with => 'Please Wait...'}, style: "width:auto;float:center;",remote:true %>
+            <%= link_to 'Back', :back, class: "w3-button w3-white w3-border w3-border-purple w3-small w3-round-large"  %>
+          </div>
+          <br>
+        </div>
+      </div>
+
+      <!--  <div class="form-actions">-->
+      <%#= f.button :submit, "Update" %>
+      <!--  </div>-->
+    <% end %>
+
+  </div>
+
+
+
+  <script>
+      function openCity(evt, cityName) {
+          var i, x, tablinks;
+          x = document.getElementsByClassName("city");
+          for (i = 0; i < x.length; i++) {
+              x[i].style.display = "none";
+          }
+          tablinks = document.getElementsByClassName("tablink");
+          for (i = 0; i < x.length; i++) {
+              tablinks[i].className = tablinks[i].className.replace(" w3-vpos-purple", "");
+          }
+
+          document.getElementById(cityName).style.display = "block";
+          evt.currentTarget.className += " w3-vpos-purple";
+      }
+  </script>
+
+  <!--</div>-->
+</div>
+
+
+
+
+

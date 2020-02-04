@@ -1,14 +1,30 @@
 class EntityInfosController < ApplicationController
   before_action :set_entity_info, only: [:show, :edit, :update, :destroy]
-
+  load_and_authorize_resource
+  before_action :load_permissions
   # GET /entity_infos
   # GET /entity_infos.json
   def index
     params[:count] ? params[:count] : params[:count] = 10
     params[:page] ? params[:page] : params[:page] = 1
 
-    @entity_infos = EntityInfo.where(del_status: false).paginate(:page => params[:page], :per_page => params[:count]).order('created_at desc')
-    @entity_divisions = EntityDivision.where(del_status: false).paginate(:page => params[:page], :per_page => params[:count]).order('created_at desc')
+    if current_user.super_admin? || current_user.super_user?
+      @entity_infos = EntityInfo.where(del_status: false).paginate(:page => params[:page], :per_page => params[:count]).order('created_at desc')
+      @entity_divisions = EntityDivision.where(del_status: false).paginate(:page => params[:page], :per_page => params[:count]).order('created_at desc')
+      @entity_info_sports = EntityInfo.where(active_status: true, entity_cat_id: "SPO").paginate(:page => params[:page], :per_page => params[:count]).order('created_at desc')
+
+    elsif current_user.merchant_admin?
+      @entity_infos = EntityInfo.where(assigned_code: current_user.entity_code, del_status: false).paginate(:page => params[:page], :per_page => params[:count]).order('created_at desc')
+      @entity_divisions = EntityDivision.where(entity_code: current_user.entity_code, del_status: false).paginate(:page => params[:page], :per_page => params[:count]).order('created_at desc')
+      @entity_info_sports = EntityInfo.where( assigned_code: current_user.entity_code, active_status: true, entity_cat_id: "SPO").paginate(:page => params[:page], :per_page => params[:count]).order('created_at desc')
+
+    elsif current_user.merchant_service?
+      @entity_divs = EntityDivision.where(active_status: true, assigned_code: current_user.division_code).first
+      @entity_infos = EntityInfo.where(assigned_code: @entity_divs.entity_code, del_status: false).paginate(:page => params[:page], :per_page => params[:count]).order('created_at desc')
+      @entity_divisions = EntityDivision.where(assigned_code: current_user.division_code, del_status: false).paginate(:page => params[:page], :per_page => params[:count]).order('created_at desc')
+      @entity_info_sports = EntityInfo.where(assigned_code: @entity_divs.entity_code, active_status: true, entity_cat_id: "SPO").paginate(:page => params[:page], :per_page => params[:count]).order('created_at desc')
+
+    end
 
   end
 
@@ -16,7 +32,51 @@ class EntityInfosController < ApplicationController
     params[:count] ? params[:count] : params[:count] = 10
     params[:page] ? params[:page] : params[:page] = 1
 
-    @entity_infos = EntityInfo.where(del_status: false).paginate(:page => params[:page], :per_page => params[:count]).order('created_at desc')
+    @entity_infos = EntityInfo.where(active_status: true).paginate(:page => params[:page], :per_page => params[:count]).order('created_at desc')
+    if current_user.super_admin? || current_user.super_user?
+      @entity_infos = EntityInfo.where(del_status: false).paginate(:page => params[:page], :per_page => params[:count]).order('created_at desc')
+      #@entity_divisions = EntityDivision.where(del_status: false).paginate(:page => params[:page], :per_page => params[:count]).order('created_at desc')
+      #@entity_info_sports = EntityInfo.where(active_status: true, entity_cat_id: "SPO").paginate(:page => params[:page], :per_page => params[:count]).order('created_at desc')
+
+    elsif current_user.merchant_admin?
+      @entity_infos = EntityInfo.where(assigned_code: current_user.entity_code, del_status: false).paginate(:page => params[:page], :per_page => params[:count]).order('created_at desc')
+      #@entity_divisions = EntityDivision.where(entity_code: current_user.entity_code, del_status: false).paginate(:page => params[:page], :per_page => params[:count]).order('created_at desc')
+      #@entity_info_sports = EntityInfo.where( assigned_code: current_user.entity_code, active_status: true, entity_cat_id: "SPO").paginate(:page => params[:page], :per_page => params[:count]).order('created_at desc')
+
+    elsif current_user.merchant_service?
+      @entity_divs = EntityDivision.where(active_status: true, assigned_code: current_user.division_code).first
+      if @entity_divs
+        @entity_infos = EntityInfo.where(assigned_code: @entity_divs.entity_code, del_status: false).paginate(:page => params[:page], :per_page => params[:count]).order('created_at desc')
+      end
+      #@entity_divisions = EntityDivision.where(assigned_code: current_user.division_code, del_status: false).paginate(:page => params[:page], :per_page => params[:count]).order('created_at desc')
+      #@entity_info_sports = EntityInfo.where(assigned_code: @entity_divs.entity_code, active_status: true, entity_cat_id: "SPO").paginate(:page => params[:page], :per_page => params[:count]).order('created_at desc')
+    end
+  end
+
+  def sports_index
+    params[:count] ? params[:count] : params[:count] = 10
+    params[:page] ? params[:page] : params[:page] = 1
+
+    #@entity_info_sports = EntityInfo.where(active_status: true, entity_cat_id: "SPO").paginate(:page => params[:page], :per_page => params[:count]).order('created_at desc')
+    @entity_infos = EntityInfo.where(active_status: true).paginate(:page => params[:page], :per_page => params[:count]).order('created_at desc')
+    if current_user.super_admin? || current_user.super_user?
+      #@entity_infos = EntityInfo.where(del_status: false).paginate(:page => params[:page], :per_page => params[:count]).order('created_at desc')
+      #@entity_divisions = EntityDivision.where(del_status: false).paginate(:page => params[:page], :per_page => params[:count]).order('created_at desc')
+      @entity_info_sports = EntityInfo.where(active_status: true, entity_cat_id: "SPO").paginate(:page => params[:page], :per_page => params[:count]).order('created_at desc')
+
+    elsif current_user.merchant_admin?
+      #@entity_infos = EntityInfo.where(assigned_code: current_user.entity_code, del_status: false).paginate(:page => params[:page], :per_page => params[:count]).order('created_at desc')
+      #@entity_divisions = EntityDivision.where(entity_code: current_user.entity_code, del_status: false).paginate(:page => params[:page], :per_page => params[:count]).order('created_at desc')
+      @entity_info_sports = EntityInfo.where( assigned_code: current_user.entity_code, active_status: true, entity_cat_id: "SPO").paginate(:page => params[:page], :per_page => params[:count]).order('created_at desc')
+
+    elsif current_user.merchant_service?
+      @entity_divs = EntityDivision.where(active_status: true, assigned_code: current_user.division_code).first
+      if @entity_divs
+        #@entity_infos = EntityInfo.where(assigned_code: @entity_divs.entity_code, del_status: false).paginate(:page => params[:page], :per_page => params[:count]).order('created_at desc')
+        @entity_info_sports = EntityInfo.where(assigned_code: @entity_divs.entity_code, active_status: true, entity_cat_id: "SPO").paginate(:page => params[:page], :per_page => params[:count]).order('created_at desc')
+      end
+      #@entity_divisions = EntityDivision.where(assigned_code: current_user.division_code, del_status: false).paginate(:page => params[:page], :per_page => params[:count]).order('created_at desc')
+    end
 
   end
 
@@ -72,7 +132,7 @@ class EntityInfosController < ApplicationController
             EntityInfo.update_wallet_config(@the_wallet_params,@entity_info.assigned_code)
           else
             @entity_info.save(validate: false)
-            EntityInfo.save_wallet_config(@the_wallet_params,@entity_info.assigned_code) if entity_info_params[:wallet_query] == "yes"
+            EntityInfo.save_wallet_config(@the_wallet_params,@entity_info.assigned_code, current_user) if entity_info_params[:wallet_query] == "yes"
           end
           @entity_infos = EntityInfo.where(del_status: false).paginate(:page => params[:page], :per_page => params[:count]).order('created_at desc')
           format.html { redirect_to @entity_info, notice: 'Entity info was successfully created.' }

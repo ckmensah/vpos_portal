@@ -1,6 +1,7 @@
 class DivisionActivityLovsController < ApplicationController
   before_action :set_division_activity_lov, only: [:show, :edit, :update, :destroy]
-
+  load_and_authorize_resource
+  before_filter :load_permissions
   # GET /division_activity_lovs
   # GET /division_activity_lovs.json
   def index

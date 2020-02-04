@@ -3,7 +3,7 @@
 <div class="">
 
   <div class="w3-white w3-hover-shadow col-md-4 offset-md-4 w3-card-4 w3-border w3-border-purple rcorners w3-center">
-    <h4 class="show w3-center"><strong>New Sub Activity Classes</strong></h4>
+    <h4 class="show w3-center"><strong>New Ticket Types</strong></h4>
     <div id="new_notice"></div>
     <div class="w3-container">
 
@@ -13,11 +13,11 @@
         <%= f.error_notification %>
         <%= f.error_notification message: f.object.errors[:base].to_sentence if f.object.errors[:base].present? %>
         <%= f.input :entity_div_code, :as => :hidden, input_html:{value: params[:code]} %>
-        <%= f.input :class_one,  label: "Activity Class 1", value_method: :id, required: true, input_html:{id: "act_class_one", autocomplete: "off",class:"form-control w3-input w3-border w3-white input-group input-append",style:""}  %>
-        <%= f.input :class_two,  label: "Activity Class 2", value_method: :id, required: true, input_html:{id: "act_class_two", autocomplete: "off",class:"form-control w3-input w3-border w3-white input-group input-append",style:""}  %>
-        <%= f.input :class_three,  label: "Activity Class 3", value_method: :id, required: true, input_html:{id: "act_class_three", autocomplete: "off",class:"form-control w3-input w3-border w3-white input-group input-append",style:""}  %>
-        <%= f.input :class_four,  label: "Activity Class 4", value_method: :id, required: true, input_html:{id: "act_class_four", autocomplete: "off",class:"form-control w3-input w3-border w3-white input-group input-append",style:""}  %>
-        <%= f.input :class_five,  label: "Activity Class 5", value_method: :id, required: true, input_html:{id: "act_class_five", autocomplete: "off",class:"form-control w3-input w3-border w3-white input-group input-append",style:""}  %>
+        <%= f.input :class_one,  label: "Ticket Type 1", value_method: :id, required: true, input_html:{id: "act_class_one", autocomplete: "off",class:"form-control w3-input w3-border w3-white input-group input-append",style:""}  %>
+        <%= f.input :class_two,  label: "Ticket Type 2", value_method: :id, required: true, input_html:{id: "act_class_two", autocomplete: "off",class:"form-control w3-input w3-border w3-white input-group input-append",style:""}  %>
+        <%= f.input :class_three,  label: "Ticket Type 3", value_method: :id, required: true, input_html:{id: "act_class_three", autocomplete: "off",class:"form-control w3-input w3-border w3-white input-group input-append",style:""}  %>
+        <%= f.input :class_four,  label: "Ticket Type 4", value_method: :id, required: true, input_html:{id: "act_class_four", autocomplete: "off",class:"form-control w3-input w3-border w3-white input-group input-append",style:""}  %>
+        <%= f.input :class_five,  label: "Ticket Type 5", value_method: :id, required: true, input_html:{id: "act_class_five", autocomplete: "off",class:"form-control w3-input w3-border w3-white input-group input-append",style:""}  %>
 
         <%# count = 1 %>
         <%# 5.times.each do |act_class| %>
@@ -29,7 +29,7 @@
         <%#= f.input :comment,  label: "Comment", :as => :text, value_method: :id, required: false, input_html:{rows: 5, cols: 3, autocomplete: "off",class:"form-control w3-border ",style:""}  %>
         <input type="hidden" name="multi_create" value="multi_create">
         <%= f.input :active_status, :as => :hidden, input_html:{value: true} %>
-        <%#= f.input :user_id, :as => :hidden, input_html:{value: current_user.id} %>
+        <%= f.input :user_id, :as => :hidden, input_html:{value: current_user.id} %>
         <div>
           <%= f.submit "Submit", class: "w3-button w3-purple-vpos w3-border w3-border-purple w3-small w3-round-large", :data => {:disable_with => 'Please Wait...'}, style: "width:auto;float:center;",remote:true %>
 

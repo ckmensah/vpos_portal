@@ -1,0 +1,82 @@
+
+<div class="w3-container" >
+  <div id="id01" class="w3-modal w3-animate-opacity" style=" display: block">
+    <!--<div class="w3-modal-content w3-card-4" >-->
+    <br/>
+
+    <div class="">
+
+      <div class="w3-white w3-hover-shadow col-md-6 offset-md-3 w3-card-4 w3-border w3-border-purple rcorners w3-center">
+        <h4 class="show w3-center"><strong>Category Type Details</strong></h4>
+        <p id="notice10"><strong></strong></p>
+        <div class="w3-container">
+          <br/>
+
+          <table class="w3-table-all table table-bordered w3-hoverable w3-card-4">
+
+            <!--            <tr>-->
+            <!--              <td class="raw_theme w3-border cell-cust-grad w3-leftbar"><strong>Team Logo:</strong></td>-->
+            <!--              <td><strong><%#= @activity_participant.assigned_code %></strong></td>-->
+            <!--            </tr>-->
+
+            <tr>
+              <td class="raw_theme w3-border cell-cust-grad w3-leftbar"><strong>Category Type Name:</strong></td>
+              <td><strong><%= @activity_category_div.category_div_desc %></strong></td>
+            </tr>
+
+            <tr>
+              <td class="raw_theme w3-border cell-cust-grad w3-leftbar"><strong>Sports Type:</strong></td>
+              <td><strong><%= @activity_category_div.activity_category.activity_cat_desc %></strong></td>
+            </tr>
+
+            <tr>
+              <td class="raw_theme w3-border cell-cust-grad w3-leftbar"><strong>Category Name:</strong></td>
+              <td><strong><%= @activity_category_div.activity_div_cat.div_cat_desc %></strong></td>
+            </tr>
+
+            <tr>
+              <td class="raw_theme w3-border cell-cust-grad w3-leftbar"><strong>Status:</strong></td>
+              <% if @activity_category_div.active_status %>
+                <td><strong>Active</strong></td>
+              <% else %>
+                <td><strong>Inactive</strong></td>
+              <% end %>
+            </tr>
+
+            <!--            <tr>-->
+            <!--              <td class="raw_theme w3-border cell-cust-grad w3-leftbar"><strong>Comment:</strong></td>-->
+            <!--              <td><strong><%#= @activity_participant.comment %></strong></td>-->
+            <!--            </tr>-->
+
+            <tr>
+              <td class="raw_theme w3-border cell-cust-grad w3-leftbar"><strong>Date:</strong></td>
+              <td>
+                <strong><%= @activity_category_div.created_at %></strong>
+              </td>
+            </tr>
+
+          </table>
+
+          <br/>
+          <div class="w3-center">
+            <%#= link_to 'Back', activity_participant_index_path(page: params[:page], count: params[:count]), class: 'w3-bar-item w3-btn w3-ripple w3-round-large w3-dark-gray', remote: true %>
+            <%= link_to 'Back', activity_div_cat_path(@activity_category_div.activity_div_cat_id, show_click: "show_click", code: params[:code], entity_code: params[:entity_code], page: params[:page], count: params[:count]), class: "w3-button w3-white w3-border w3-border-purple w3-small w3-round-large",remote:true %>
+
+          </div>
+          <br/>
+        </div>
+
+      </div>
+
+    </div>
+
+    <!--</div>-->
+
+  </div>
+</div>
+
+
+
+
+
+

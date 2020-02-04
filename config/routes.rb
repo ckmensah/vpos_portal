@@ -1,10 +1,10 @@
 Rails.application.routes.draw do
 
-
-  # get 'home/index'
-  # get "/users" => redirect("/")
-  # get "/users/sign_up" => redirect("/users/sign_in")
-  # # devise_for :users
+  root 'home#index'
+  #devise_for :users
+   get "/users" => redirect("/")
+   #get "/users/sign_up" => redirect("/users/sign_in")
+    devise_for :users
   #
   # devise_for :users, controllers: {sessions: 'users/sessions'}
   #
@@ -12,7 +12,21 @@ Rails.application.routes.draw do
   #   match 'active'            => 'users/sessions#active',               via: :get
   #   match 'timeout'           => 'users/sessions#timeout',              via: :get
   # end
-  root 'home#index'
+
+  get '/users/user_index' => 'users#user_index', :as => 'user_index'
+  get '/users/index' => 'users#index', :as => 'main_users'
+  get '/users/new' => 'users#new', :as => 'user_new'
+  post '/users/create' => 'users#create', :as => 'user_create'
+  get '/users/:id/edit' => 'users#edit', :as => 'user_edit'
+  get '/users/:id' => 'users#show', :as => 'user_show'
+  put '/users/:id' => 'user#update', :as => 'user_update'
+  patch '/users/:id' => 'users#update'
+  delete '/users/:id' => 'users#destroy', :as => 'user_delete'
+
+  get '/roles/role_index' => 'roles#role_index', :as => 'role_index'
+
+  get '/home/home_index' => 'home#home_index', :as => 'home_index'
+
 
   get '/region_masters/region_master_index' => 'region_masters#region_master_index', :as => 'region_master_index'
   get '/city_town_masters/city_town_master_index' => 'city_town_masters#city_town_master_index', :as => 'city_town_master_index'
@@ -21,14 +35,20 @@ Rails.application.routes.draw do
   # patch '/entity_info/update'
 
   get '/activity_types/activity_type_index' => 'activity_types#activity_type_index', :as => 'activity_type_index'
+
+  get '/activity_categories/activity_category_index' => 'activity_categories#activity_category_index', :as => 'activity_category_index'
+
+
+
   get '/entity_categories/entity_category_index' => 'entity_categories#entity_category_index', :as => 'entity_category_index'
   get '/entity_infos/entity_info_index' => 'entity_infos#entity_info_index', :as => 'entity_info_index'
-
 
 
   get '/entity_divisions/entity_division_index/:entity_code' => 'entity_divisions#entity_division_index', :as => 'entity_division_index'
   get '/entity_divisions/entity_division_index' => 'entity_divisions#entity_division_index', :as => 'entity_div_index'
   get '/entity_divisions/entity_index' => 'entity_divisions#entity_index', :as => 'entity_index'
+  get '/entity_infos/sports_index' => 'entity_infos#sports_index', :as => 'sports_index'
+  get '/entity_divisions/main_sports_index/:entity_code' => 'entity_divisions#main_sports_index', :as => 'main_sports_index'
 
   get '/entity_divisions/division_setup/:division_code' => 'entity_divisions#division_setup', :as => 'division_setup'
   post '/division_setup_creation' => 'entity_divisions#create_division_setup', :as => 'create_division_setup'
@@ -37,10 +57,17 @@ Rails.application.routes.draw do
 
 
   get '/payment_infos/payment_info_index' => 'payment_infos#payment_info_index', :as => 'payment_info_index'
+  get '/payment_infos/transaction_resend/:id' => 'payment_infos#transaction_resend', :as => 'transaction_resend'
+
+  get '/activity_participants/activity_participant_index' => 'activity_participants#activity_participant_index', :as => 'activity_participant_index'
+  get '/activity_fixtures/activity_fixture_index' => 'activity_fixtures#activity_fixture_index', :as => 'activity_fixture_index'
+  get '/activity_div_cats/activity_div_cat_index' => 'activity_div_cats#activity_div_cat_index', :as => 'activity_div_cat_index'
+  get '/activity_category_divs/activity_category_div_index/:div_cat_id' => 'activity_category_divs#activity_category_div_index', :as => 'activity_category_div_index'
 
 
   post '/suburb_masters/city_update', :as => 'suburb_city_ajax_call'
   post '/suburb_masters/suburb_update', :as => 'general_suburb_ajax_call'
+  post '/entity_divisions/division_update', :as => 'general_division_ajax_call'
 
   resources :suburb_masters
   resources :city_town_masters
@@ -59,6 +86,16 @@ Rails.application.routes.draw do
   resources :payment_infos
   resources :payment_requests
   resources :payment_callbacks
+  resources :entity_service_account_trxns
+  resources :entity_service_accounts
+  resources :activity_participants
+  resources :activity_fixtures
+  resources :activity_category_divs
+  resources :activity_categories
+  resources :activity_div_cats
+  resources :permission_roles
+  resources :permissions
+  resources :roles
 
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".

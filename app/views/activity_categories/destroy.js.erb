@@ -1,0 +1,3 @@
+$("#activity_category").html("<%= escape_javascript(render(:partial =>"activity_category_index")) %>");
+$('#notes1').html("<%= escape_javascript(render 'layouts/messages') %>");
+$('.pagination a').attr('data-remote', 'true');

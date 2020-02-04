@@ -1,0 +1,3 @@
+$("#notes9").html("<%= escape_javascript(render(:partial =>"activity_div_cat/#{@activity_category_div.activity_div_cat_id}")) %>");
+$('#notice9').html("<%= escape_javascript(render 'layouts/messages') %>");
+$('.pagination a').attr('data-remote', 'true');

@@ -1,6 +1,7 @@
 class ActivityTypesController < ApplicationController
   before_action :set_activity_type, only: [:show, :edit, :update, :destroy]
-
+  load_and_authorize_resource
+  before_action :load_permissions
   # GET /activity_types
   # GET /activity_types.json
   def index
@@ -42,7 +43,7 @@ class ActivityTypesController < ApplicationController
     respond_to do |format|
       if @activity_type.save
         format.html { redirect_to @activity_type, notice: 'Activity type was successfully created.' }
-        flash.now[:danger] = "Activity type was successfully created."
+        flash.now[:notice] = "Activity type was successfully created."
         format.js { render :show}
         format.json { render :show, status: :created, location: @activity_type }
       else
@@ -61,7 +62,7 @@ class ActivityTypesController < ApplicationController
     respond_to do |format|
       if @activity_type.update(activity_type_params)
         format.html { redirect_to @activity_type, notice: 'Activity type was successfully updated.' }
-        flash.now[:danger] = "Activity type was successfully updated."
+        flash.now[:notice] = "Activity type was successfully updated."
         format.js { render :show}
         format.json { render :show, status: :ok, location: @activity_type }
       else

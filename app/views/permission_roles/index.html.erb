@@ -1,0 +1,35 @@
+<p id="notice"><%= notice %></p>
+
+<h1>Permission Roles</h1>
+
+<table>
+  <thead>
+    <tr>
+      <th>Role</th>
+      <th>Permission</th>
+      <th>Active status</th>
+      <th>Del status</th>
+      <th>User</th>
+      <th colspan="3"></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @permission_roles.each do |permission_role| %>
+      <tr>
+        <td><%= permission_role.role_id %></td>
+        <td><%= permission_role.permission_id %></td>
+        <td><%= permission_role.active_status %></td>
+        <td><%= permission_role.del_status %></td>
+        <td><%= permission_role.user_id %></td>
+        <td><%= link_to 'Show', permission_role %></td>
+        <td><%= link_to 'Edit', edit_permission_role_path(permission_role) %></td>
+        <td><%= link_to 'Destroy', permission_role, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<br>
+
+<%= link_to 'New Permission Role', new_permission_role_path %>

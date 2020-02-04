@@ -1,5 +1,7 @@
 class ActivitySubDivClassesController < ApplicationController
   before_action :set_activity_sub_div_class, only: [:show, :edit, :update, :destroy]
+  load_and_authorize_resource
+  before_action :load_permissions
 
   # GET /activity_sub_div_classes
   # GET /activity_sub_div_classes.json
@@ -43,12 +45,12 @@ class ActivitySubDivClassesController < ApplicationController
         ActivitySubDivClass.save_classes(@activity_sub_div_class)
         format.html { redirect_to @activity_sub_div_class, notice: 'Activity sub div class was successfully created.' }
         format.json { render :show, status: :created, location: @activity_sub_div_class }
-        flash.now[:notice] = "Activity Class(es) are successfully created."
+        flash.now[:notice] = "Ticket Type(s) are successfully created."
         format.js { render :show }
       else
         format.html { render :new }
         format.json { render json: @activity_sub_div_class.errors, status: :unprocessable_entity }
-        flash.now[:danger] = "Sorry, you didn't enter any Class. Try again."
+        flash.now[:danger] = "Sorry, you didn't enter any Ticket Type. Try again."
         format.js { render :new }
       end
     end
@@ -70,7 +72,7 @@ class ActivitySubDivClassesController < ApplicationController
       if @activity_sub_div_class.update(activity_sub_div_class_params)
         format.html { redirect_to @activity_sub_div_class, notice: 'Activity sub div class was successfully updated.' }
         format.json { render :show, status: :ok, location: @activity_sub_div_class }
-        flash.now[:notice] = "Activity Class(es) are successfully updated."
+        flash.now[:notice] = "Ticket Type(s) are successfully updated."
         format.js { render :show}
       else
         format.html { render :edit }
@@ -95,7 +97,7 @@ class ActivitySubDivClassesController < ApplicationController
       @activity_sub_div_classes = ActivitySubDivClass.where(entity_div_code: params[:code], del_status: false).paginate(:page => params[:page], :per_page => params[:count]).order('created_at desc')
       respond_to do |format|
         format.html { redirect_to activity_types_url, notice: 'Occupation master was successfully disabled.' }
-        flash.now[:note] = 'Sub Activity Class was successfully disabled.'
+        flash.now[:note] = 'Ticket Type(s) was successfully disabled.'
         format.js { render :layout => false}
         format.json { head :no_content }
         # window.location.href = "<%= recipe_path(@recipe) %>"
@@ -107,7 +109,7 @@ class ActivitySubDivClassesController < ApplicationController
       @activity_sub_div_classes = ActivitySubDivClass.where(entity_div_code: params[:code], del_status: false).paginate(:page => params[:page], :per_page => params[:count]).order('created_at desc')
       respond_to do |format|
         format.html { redirect_to activity_types_url, notice: 'Allergy master was successfully enabled.' }
-        flash.now[:notice] = 'Sub Activity Class was successfully enabled.'
+        flash.now[:notice] = 'Ticket Type(s) was successfully enabled.'
         format.js { render :layout => false }
         format.json { head :no_content }
       end

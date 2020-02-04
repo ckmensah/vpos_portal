@@ -1,0 +1,106 @@
+
+<style>
+  /*input[type=checkbox]{*/
+  /*display: none;*/
+  /*}*/
+</style>
+
+
+
+<div class="w3-container" >
+  <div id="id01" class="w3-modal w3-animate-opacity" style=" display: block">
+    <!--<div class="w3-modal-content w3-card-4" >-->
+    <br/>
+
+    <div class="">
+      <div id="notes1"></div>
+      <div class="w3-white w3-hover-shadow col-md-8 offset-md-2 w3-card-4 w3-border w3-border-purple rcorners w3-center">
+        <h4 class="show w3-center"><strong>Edit Role</strong></h4>
+
+        <div class="w3-container">
+
+          <%= simple_form_for(@role, :html => { :class => 'description'}, remote:true) do |f| %>
+            <div class="w3-container ">
+              <!--          <br/>-->
+              <div class="w3-center" style="">
+
+                <%= f.error_notification %>
+
+                <%= f.label :role_name, "Name" %>
+                <%= f.input :role_name, class:"form-control", label: false, boolean_style: :inline, input_html:{autocomplete: 'off'} %>
+
+                <div class="w3-border w3-border-purple w3-white">
+                  <br/>
+                  <div class="form-inputs">
+                    <h4><strong><%= f.label :role_name, "Permissions" %></strong></h4>
+                    <!--<table class="table table-striped custab table-responsive table-hover table-condensed table-bordered">-->
+
+                    <div class="pre-scrollable" style="max-height: 62vh; position: static;;">
+                      <table class="w3-table-all table-bordered w3-hoverable w3-card-4">
+                        <tr class="w3-vpos-purple">
+                          <th> Class</th>
+                          <th> Action</th>
+                          <th><input style="display: block;" type="checkbox" onClick="toggle(this)" /> All<br/></th>
+                        </tr>
+
+
+                        <% @permissions.each do |permission| %>
+                          <tr>
+                            <td> <%= permission.subject_class %> </td>
+                            <td> <%= permission.action %> </td>
+                            <td> <%= check_box_tag 'permissions[]', permission.id, @role_permissions.include?(permission.id), {array: true, class: "check_box", style: "display:block"} %> </td>
+                          </tr>
+                        <% end %>
+                      </table>
+                    </div>
+                    <div class="w3-container">
+                      <br/>
+                    </div>
+                    <%= f.input :active_status, :as => :hidden, input_html:{value: true} %>
+                    <%= f.input :user_id, :as => :hidden, input_html:{value: current_user.id} %>
+
+
+                  </div>
+                  <br/>
+                </div>
+                <br/>
+                <div class="w3-center">
+                  <%= f.submit "Submit", class: "w3-button w3-purple-vpos w3-border w3-border-purple w3-small w3-round-large", :data => {:disable_with => 'Please Wait...'}, style: "width:auto;float:center;",remote:true %>
+                  <%= link_to 'Back', role_index_path(flag: "main_all", page: params[:page], count: params[:count]), class: "w3-button w3-white w3-border w3-border-purple w3-small w3-round-large",remote:true %>
+                  <br/>
+
+                </div>
+              </div>
+            </div>
+            <div class="w3-container">
+              <br/>
+            </div>
+          <% end %>
+
+        </div>
+
+      </div>
+
+    </div>
+
+
+    <br/>
+    <div class="col-md-7 col-md-offset-5">
+      <br/>
+      <br/>
+    </div>
+    <!--</div>-->
+
+  </div>
+</div>
+
+
+
+<script type="text/javascript">
+    function toggle(source) {
+        checkboxes = document.getElementsByName('permissions[]');
+        for(var i=0, n=checkboxes.length;i<n;i++) {
+            checkboxes[i].checked = source.checked;
+        }
+    }
+</script>

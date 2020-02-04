@@ -6,77 +6,107 @@
   <!--<a class="navbar-brand" href="#a">BootstrapBay</a>-->
 <!--</nav>-->
 
+<% if user_signed_in? %>
+
+  <nav class="navbar sticky-top navbar-expand-lg navbar-dark nav-cust-grad">
+    <!--<nav class="navbar sticky-top navbar-expand-lg navbar-light bg-info">-->
+    <div>
+
+    </div>
+    <% if current_user.super_admin? || current_user.super_user? %>
+      <%= image_tag("vposss.png", class: "img-responsive", id: "navbar-logo", :width => 150, height: 50) %>
+      <% elsif current_user.merchant_admin? %>
+      <% entity_info = EntityInfo.where(active_status: true, assigned_code: current_user.entity_code).order(created_at: :desc).last %>
+      <h5><%= entity_info.entity_name %></h5>
+    <% elsif current_user.merchant_service? %>
+      <% entity_division = EntityDivision.where(active_status: true, assigned_code: current_user.division_code).order(created_at: :desc).last %>
+      <h4><%= entity_division.division_name %></h4>
+    <% end %>
 
 
-<nav class="navbar sticky-top navbar-expand-lg navbar-dark nav-cust-grad">
-  <!--<nav class="navbar sticky-top navbar-expand-lg navbar-light bg-info">-->
-  <div>
+    <a class="navbar-brand" href="#">
 
-  </div>
-  <%= image_tag("vposss.png", class: "img-responsive", id: "navbar-logo", :width => 150, height: 50) %>
-  <a class="navbar-brand" href="#">
+      <!--<img alt='Brand' src='//public/images/vposss.png' class='navbar-logo-img d-inline-block align-top '>-->
+      <!--<img id="navbar-logo" class="img-responsive" src="images/vposss.png" alt="internsgopro logo">-->
+      <!--<span class="navbar-logo-text">Oncoscape</span>-->
+    </a>
 
-    <!--<img alt='Brand' src='//public/images/vposss.png' class='navbar-logo-img d-inline-block align-top '>-->
-    <!--<img id="navbar-logo" class="img-responsive" src="images/vposss.png" alt="internsgopro logo">-->
-    <!--<span class="navbar-logo-text">Oncoscape</span>-->
-  </a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#demo-navbar" aria-controls="demo-navbar" aria-expanded="false" aria-label="Toggle navigation">
 
-  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#demo-navbar" aria-controls="demo-navbar" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
 
-    <span class="navbar-toggler-icon"></span>
-
-  </button>
+    </button>
 
 
-  <div class="collapse navbar-collapse justify-content-end" id="demo-navbar">
+    <div class="collapse navbar-collapse justify-content-end" id="demo-navbar">
 
-  <ul class="navbar-nav float-right">
+      <ul class="navbar-nav float-right">
 
-    <li class="nav-item active">
+<!--        <li class="nav-item active">-->
 
-      <a class="nav-link text-light" href="https://www.jquery-az.com/jquery-tips/">Dashboard</a>
+<!--          <a class="nav-link text-light" href="https://www.jquery-az.com/jquery-tips/">Dashboard</a>-->
 
-    </li>
+<!--        </li>-->
 
-    <li class="nav-item">
+<!--        <li class="nav-item">-->
 
-      <a class="nav-link text-light" href="https://www.jquery-az.com/javascript-tutorials/">Reports</a>
+<!--          <a class="nav-link text-light" href="https://www.jquery-az.com/javascript-tutorials/">Reports</a>-->
 
-    </li>
-
-    <li class="nav-item">
-
-      <a class="nav-link text-light" href="<%= payment_infos_path %>">Transactions</a>
-
-    </li>
-
-    <li class="nav-item">
-
-      <a class="nav-link text-light" href="<%= entity_infos_path %>">Merchant</a>
-
-    </li>
+<!--        </li>-->
 
 
-    <li class="nav-item dropdown">
-      <!--<i class="fas fa-angle-down"></i>-->
-      <a class="nav-link text-light dropdown-toggle" href="#" id="navbardrop" data-toggle="dropdown">Setup </a>
-      <div class="dropdown-menu dropdown-menu-right">
-        <a class="dropdown-item" href= "<%= region_masters_path %>" >LOCATION</a>
-        <a class="dropdown-item" href="<%= entity_categories_path %>">MERCHANT CATEGORIES</a>
-        <a class="dropdown-item" href="<%= activity_types_path %>">ACTIVITY TYPES</a>
-      </div>
+        <li class="nav-item active">
 
-    </li>
+          <a class="nav-link text-light" href="<%= root_path %>">Dashboard</a>
 
-    <li class="nav-item">
+        </li>
 
-      <a class="nav-link disabled text-light" href="#">My Profile</a>
+        <li class="nav-item active">
 
-    </li>
+          <a class="nav-link text-light" href="<%= payment_infos_path %>">Transactions</a>
 
-  </ul>
+        </li>
+
+        <li class="nav-item">
+
+          <a class="nav-link text-light" href="<%= entity_infos_path %>">Merchant</a>
+
+        </li>
+
+
+        <li class="nav-item dropdown">
+          <!--<i class="fas fa-angle-down"></i>-->
+          <a class="nav-link text-light dropdown-toggle" href="#" id="navbardrop" data-toggle="dropdown">Setup </a>
+
+          <div class="dropdown-menu dropdown-menu-right">
+            <a class="dropdown-item" href= "<%= region_masters_path %>" >Location</a>
+            <a class="dropdown-item" href="<%= entity_categories_path %>">Merchant Categories</a>
+            <a class="dropdown-item" href="<%= activity_types_path %>">Activity Types</a>
+            <a class="dropdown-item" href="<%= activity_categories_path %>">Activity Category</a>
+            <a class="dropdown-item" href="<%= main_users_path %>">Users</a>
+            <a class="dropdown-item" href="<%= roles_path %>">Roles</a>
+          </div>
+
+        </li>
+
+
+        <li class="nav-item dropdown">
+          <!--<i class="fas fa-angle-down"></i>-->
+          <a class="nav-link text-light dropdown-toggle" href="#" id="navbardrop" data-toggle="dropdown"><%= current_user.user_name.capitalize %>'s Account</a>
+          <div class="dropdown-menu dropdown-menu-right">
+            <a class="dropdown-item" href= "<%= edit_user_registration_path %>" >Edit Account</a>
+            <a class="dropdown-item" href="<%= destroy_user_session_path %>" data-method="delete">Log Out</a>
+          </div>
+
+        </li>
+
+
+      </ul>
     </div>
 
-</nav>
+  </nav>
+
+<% end %>
+
 
 

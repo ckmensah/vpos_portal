@@ -1,0 +1,328 @@
+
+<div>
+
+  <div class="w3-container">
+    <button type="button" class="btn btn-outline-purple tablink w3-vpos-purple" style="font-size: small; width: 150px;" onclick="openCity(event, 'for_home')">DASHBOARD</button>
+
+
+    <p id="notes1"><br><%#= notice %></p>
+<!--    <br>-->
+    <div class="">
+      <%= link_to 'DASHBOARD FILTER',"#report", :data =>{ toggle:'modal'}, style: "font-size: small; width: 200px;", class: 'btn btn-outline-purple tablink w3-vpos-purple' %>
+      <br>
+    </div>
+
+    <br>
+    <div>
+      <div class="w3-half">
+        <div class="w3-responsive col-md-10 col-md-offset-1 w3-mobile">
+          <table class="w3-responsive table-striped w3-table-all table-bordered w3-hoverable w3-card-4">
+            <tr class="w3-vpos-purple">
+              <td><h5><strong>Total Successful Transaction (Count)</strong></h5></td>
+            </tr>
+
+            <tr>
+
+              <td style="text-align: center"><h2><strong><%= @payment_success_count %></strong></h2></td>
+            </tr>
+          </table>
+        </div>
+
+        <br>
+      </div>
+
+<!--      <br>-->
+      <div class="w3-half">
+        <div class="w3-responsive col-md-12 col-md-offset-0 w3-mobile">
+          <table class="w3-responsive table-striped w3-table-all table-bordered w3-hoverable w3-card-4">
+            <tr class="w3-vpos-purple">
+              <td><h5><strong>Total Successful Transaction (Amount GHS)</strong></h5></td>
+            </tr>
+
+            <tr>
+              <td style="text-align: center"><h2><strong><%= @payment_success_amount %></strong></h2></td>
+            </tr>
+          </table>
+        </div>
+
+        <br>
+      </div>
+
+      <div>
+        <br>
+      </div>
+      <div class="w3-half">
+        <br>
+        <div class="w3-responsive col-md-10 col-md-offset-1 w3-mobile">
+          <table class="w3-responsive table-striped w3-table-all table-bordered w3-hoverable w3-card-4">
+            <tr class="w3-vpos-purple">
+              <td><h5><strong>Total Failed Transaction (Count)</strong></h5></td>
+            </tr>
+
+            <tr>
+              <td style="text-align: center"><h2><strong><%= @payment_fail_count %></strong></h2></td>
+            </tr>
+          </table>
+        </div>
+        <br>
+      </div>
+
+      <div class="w3-half">
+        <br>
+      </div>
+
+    </div>
+
+    <div class="table-responsive-md">
+      <br>
+      <table class=" w3-responsive table-striped w3-table-all table-bordered w3-hoverable w3-card-4">
+        <thead>
+        <tr class="w3-vpos-purple">
+          <!--        <th></th>-->
+          <!--        <th>Merchant Name (Merchant Alias)</th>-->
+<!--          <th>No.</th>-->
+          <th></th>
+          <th colspan="2">Successful</th>
+          <th>Failed</th>
+<!--          <th>Network</th>-->
+        </tr>
+        <tr>
+          <td><strong>Network</strong></td>
+          <td><strong>Count</strong></td>
+          <td><strong>Amount</strong></td>
+          <td><strong>Count</strong></td>
+        </tr>
+
+        </thead>
+        <tbody>
+
+
+        <% @mtn_success = @pay_success.where("nw = 'MTN'") %>
+        <% @airtel_success = @pay_success.where("nw = 'AIR'") %>
+        <% @vod_success = @pay_success.where("nw = 'VOD'") %>
+        <% @tigo_success = @pay_success.where("nw = 'TIG'") %>
+        <% @visa_success = @pay_success.where("nw = 'VISA'") %>
+        <% @master_success = @pay_success.where("nw = 'MTC'") %>
+
+        <% @mtn_fail = @pay_fail.where("nw = 'MTN'") %>
+        <% @airtel_fail = @pay_fail.where("nw = 'AIR'") %>
+        <% @vod_fail = @pay_fail.where("nw = 'VOD'") %>
+        <% @tigo_fail = @pay_fail.where("nw = 'TIG'") %>
+        <% @visa_fail = @pay_fail.where("nw = 'VISA'") %>
+        <% @master_fail = @pay_fail.where("nw = 'MTC'") %>
+
+        <tr>
+          <td><strong>MTN</strong></td>
+          <% if @mtn_success.exists? %>
+            <td><strong><%= @mtn_success.count %></strong></td>
+            <td><strong><%= number_to_currency(@mtn_success.sum(:amount), unit: "GHS ") %></strong></td>
+          <% else %>
+            <td><strong>0</strong></td>
+            <td><strong>0.00</strong></td>
+            <% end %>
+
+          <%if @mtn_fail.exists? %>
+            <td><strong><%= @mtn_fail.count %></strong></td>
+            <% else %>
+          <td><strong>0</strong></td>
+            <% end %>
+        </tr>
+
+<!--        <tr>-->
+<!--          <td><strong>AirtelTigo</strong></td>-->
+          <%# if @airtel_success.exists? || @tigo_success.exists? %>
+<!--            <td><strong><%#= @airtel_success.count.to_i + @tigo_success.count.to_i %></strong></td>-->
+<!--            <td><strong><%#= number_to_currency(@airtel_success.sum(:amount).to_f + @tigo_success.sum(:amount).to_f, unit: "GHS ") %></strong></td>-->
+          <%# else %>
+<!--            <td><strong>0</strong></td>-->
+<!--            <td><strong>0.00</strong></td>-->
+          <%# end %>
+
+          <%#if @airtel_fail.exists? || @tigo_fail.exists? %>
+<!--            <td><strong><%#= @airtel_fail.count.to_i + @tigo_fail.count.to_i %></strong></td>-->
+          <%# else %>
+<!--            <td><strong>0</strong></td>-->
+          <%# end %>
+<!--        </tr>-->
+
+        <tr>
+          <td><strong>Tigo</strong></td>
+          <% if @tigo_success.exists? %>
+            <td><strong><%= @tigo_success.count.to_i %></strong></td>
+            <td><strong><%= number_to_currency(@tigo_success.sum(:amount), unit: "GHS ") %></strong></td>
+          <% else %>
+            <td><strong>0</strong></td>
+            <td><strong>0.00</strong></td>
+          <% end %>
+
+          <%if @tigo_fail.exists? %>
+            <td><strong><%= @tigo_fail.count.to_i %></strong></td>
+          <% else %>
+            <td><strong>0</strong></td>
+          <% end %>
+        </tr>
+
+
+        <tr>
+          <td><strong>Airtel</strong></td>
+          <% if @airtel_success.exists? %>
+            <td><strong><%= @airtel_success.count.to_i %></strong></td>
+            <td><strong><%= number_to_currency(@airtel_success.sum(:amount).to_f, unit: "GHS ") %></strong></td>
+          <% else %>
+            <td><strong>0</strong></td>
+            <td><strong>0.00</strong></td>
+          <% end %>
+
+          <%if @airtel_fail.exists? %>
+            <td><strong><%= @airtel_fail.count.to_i %></strong></td>
+          <% else %>
+            <td><strong>0</strong></td>
+          <% end %>
+        </tr>
+
+
+        <tr>
+          <td><strong>Vodafone</strong></td>
+          <% if @vod_success.exists? %>
+            <td><strong><%= @vod_success.count %></strong></td>
+            <td><strong><%= number_to_currency(@vod_success.sum(:amount), unit: "GHS ") %></strong></td>
+          <% else %>
+            <td><strong>0</strong></td>
+            <td><strong>0.00</strong></td>
+          <% end %>
+
+          <%if @vod_fail.exists? %>
+            <td><strong><%= @vod_fail.count %></strong></td>
+          <% else %>
+            <td><strong>0</strong></td>
+          <% end %>
+        </tr>
+
+<!--        <tr>-->
+<!--          <td>MTN</td>-->
+<!--          <td>MTN</td>-->
+<!--          <td>MTN</td>-->
+<!--          <td>MTN</td>-->
+<!--        </tr>-->
+
+        </tbody>
+      </table>
+      <br>
+      <div  style="float: right">
+        <%#= will_paginate @payment_infos, class: "w3-card-4", renderer: BootstrapPagination::Rails, :params => { :controller => "payment_infos", :action => "payment_info_index", count: params[:count], page: params[:page] } %>
+        <%#= js_will_paginate @academic_years, :params => { :controller => "academic_years", :action => "aca_year_index" } %>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+
+
+
+<div class="modal fade" id="report" role="dialog">
+  <div class="modal-dialog modal-dialog-centered ">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4>Filter Dashboard</h4>
+        <button type="button" class="close" data-dismiss="modal">
+          <span aria-hidden="true">x</span>
+          <span class="sr-only">Close</span>
+        </button>
+        <!--        <br/>-->
+        <!--<h4 class="modal-title" id="myModalLabel">Payments Filter</h4>-->
+      </div>
+
+      <div class="modal-body">
+        <!--        <div class="center jumbotron" style="background-color:#fff;" >-->
+        <!--            <br/>-->
+        <!--            <div class="row">-->
+        <!--              <div class="col-md-10 col-md-offset-1">-->
+        <!--                <fieldset>-->
+
+
+        <% @activity_types = ActivityType.where(active_status: true) %>
+        <% @networks = [["MTN", "MTN"], ["VOD", "VOD"], ["TIGO", "TIG"], ["AIRTEL", "AIR"]] %>
+        <% @statuses = [["SUCCESS", "000"], ["FAIL", "001"], ["PENDING", "NIL"]] %>
+
+        <%= simple_form_for :filter_main, :url => (home_index_path(count: params[:count], page: params[:page])), :method =>'get', html: { class: 'form-horizontal' }, remote: true do |f| %>
+
+          <% if current_user.super_admin? || current_user.super_user? %>
+            <%= f.input :entity_name, collection: @payment_merchant, label_method: :entity_name, value_method: :assigned_code, class:"form-control", input_html: {id: "id_entity_info", style: "width: 100%;"}, label: "Merchant Name", boolean_style: :inline %>
+            <%#= f.label :division_name,"Merchant Service", style:"" %>
+            <%= f.input :division_name, collection: @payment_service, label_method: :division_name, value_method: :assigned_code, class:"form-control", input_html: {id: "id_entity_div", style: "width: 100%;"}, label: "Service Name", boolean_style: :inline %>
+            <%#= f.input :division_name, class:"form-control", input_html: {style: "width: 90%;", autocomplete: "off"}, label: "Merchant Service", boolean_style: :inline %>
+
+          <% elsif current_user.merchant_admin? %>
+
+            <%= f.input :division_name, collection: @payment_service, label_method: :division_name, value_method: :assigned_code, class:"form-control", input_html: {style: "width: 100%;"}, label: "Service Name", boolean_style: :inline %>
+            <%#= f.input :division_name, class:"form-control", input_html: {style: "width: 90%;", autocomplete: "off"}, label: "Merchant Service", boolean_style: :inline %>
+
+      <% elsif current_user.merchant_service? %>
+
+          <% end %>
+
+            <!--<input type="text" data-behaviour='datepicker' >-->
+            <%#= f.label :start_date,"Start Date", style:"float:left" %>
+            <div class="w3-half">
+              <%= f.input :start_date, :id => "datepicker1", as: :date, html5: true, class:"form-control input-group date", label: "Start Date", boolean_style: :inline, input_html: {style: "width: 90%", data: {behaviour: 'datepicker', provide: 'datepicker'}, autocomplete: "off"} %>
+            </div>
+
+            <div class="w3-half">
+              <%= f.input :end_date, :id => "datepicker2", as: :date, html5: true, class:"form-control", label: "End Date", boolean_style: :inline, input_html: {style: "", data: {behaviour: 'datepicker', provide: 'datepicker'}, autocomplete: "off"} %>
+            </div>
+            <%#= f.label :end_date,"End Date", style:"" %>
+
+          <div class="w3-center">
+            <%= f.submit "Filter", :data =>{ :disable_with => 'Searching..'}, class: "btn btn-outline-purple tablink w3-vpos-purple", style: "width:auto;" %>
+          </div>
+
+        <% end %>
+
+        <!--                </fieldset>-->
+        <!--              </div>-->
+        <!--            </div>-->
+
+        <!--        </div>-->
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+
+
+<script>
+    $(function(){
+
+        // $('.pagination a').attr('data-remote', 'true');
+        $('.modal-backdrop').remove();
+
+        $('#datepicker1').datepicker({format: 'yyyy-mm-dd'});
+        $('#datepicker2').datepicker({format: 'yyyy-mm-dd'});
+
+    });
+
+    $(document).ready(function(){
+        $('[data-toggle="tooltip"]').tooltip();
+        var entity_info_id = $('#id_entity_info');
+        var entity_div_id  = $('#id_entity_div');
+
+        entity_info_id.change(function() {
+            console.log("For entity_info id:: " + entity_info_id.val());
+            entity_div_id.attr("title", "Now select a service.");
+            Rails.ajax({
+                type: "POST",
+                url: "<%= general_division_ajax_call_path %>",
+                data: "id_for_entity_info=" + entity_info_id.val(),
+                dataType: "script"
+            });
+        });
+    });
+
+
+</script>
+
+
+

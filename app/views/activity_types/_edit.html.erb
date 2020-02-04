@@ -18,13 +18,13 @@
               <%= f.error_notification message: f.object.errors[:base].to_sentence if f.object.errors[:base].present? %>
               <%= f.input :activity_type_desc,  label: "Type Description", value_method: :id, required: true, input_html:{id: "for_type_desc", autocomplete: "off",class:"form-control w3-input w3-border w3-white input-group input-append",style:""}  %>
 
-              <%= f.input :assigned_code,  label: "Assigned Code", value_method: :id, required: true, input_html:{id: "for_assigned_code", autocomplete: "off",class:"form-control w3-input w3-border w3-white input-group input-append",style:""}  %>
+              <%= f.input :assigned_code,  label: "Assigned Code",  value_method: :id, required: true, input_html:{id: "for_assigned_code", readonly: true, autocomplete: "off",class:"form-control w3-input w3-border w3-white input-group input-append",style:""}  %>
 
               <%= f.input :comment,  label: "Comment", :as => :text, value_method: :id, required: false, input_html:{rows: 5, cols: 3, autocomplete: "off",class:"form-control w3-border ",style:""}  %>
 
               <%= f.input :active_status, :as => :hidden, input_html:{value: true} %>
               <%= f.input :del_status, :as => :hidden, input_html:{value: false} %>
-              <%#= f.input :user_id, :as => :hidden, input_html:{value: current_user.id} %>
+              <%= f.input :user_id, :as => :hidden, input_html:{value: current_user.id} %>
               <div>
                 <%= f.submit "Submit", class: "w3-button w3-purple-vpos w3-border w3-border-purple w3-small w3-round-large", :data => {:disable_with => 'Please Wait...'}, style: "width:auto;float:center;",remote:true %>
                 <%= link_to 'Back', activity_type_index_path(page: params[:page], count: params[:count]), class: "w3-button w3-white w3-border w3-border-purple w3-small w3-round-large",remote:true %>

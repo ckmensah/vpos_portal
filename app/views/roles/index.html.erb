@@ -1,0 +1,33 @@
+
+<div class="container">
+  <!--<div class="row">-->
+  <!--  <h4 style="text-decoration: underline;"><strong>LOCATION   </strong></h4>-->
+
+  <div class="w3-responsive">
+    <button type="button" class="btn btn-outline-purple tablink w3-vpos-purple" style="font-size: small; width: 120px;" onclick="openCity(event, 'role')">ROLE SETUP</button>
+  </div>
+
+  <div id="role" class="city active">
+    <%= render :partial=> "role_index" %>
+  </div>
+
+
+  <script>
+      function openCity(evt, cityName) {
+          var i, x, tablinks;
+          x = document.getElementsByClassName("city");
+          for (i = 0; i < x.length; i++) {
+              x[i].style.display = "none";
+          }
+          tablinks = document.getElementsByClassName("tablink");
+          for (i = 0; i < x.length; i++) {
+              tablinks[i].className = tablinks[i].className.replace(" w3-vpos-purple", "");
+          }
+
+          document.getElementById(cityName).style.display = "block";
+          evt.currentTarget.className += " w3-vpos-purple";
+      }
+  </script>
+
+  <!--</div>-->
+</div>

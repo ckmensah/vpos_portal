@@ -1,0 +1,1 @@
+json.partial! "entity_service_account_trxns/entity_service_account_trxn", entity_service_account_trxn: @entity_service_account_trxn

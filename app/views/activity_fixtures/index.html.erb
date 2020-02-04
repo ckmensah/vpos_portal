@@ -1,0 +1,31 @@
+<p id="notice"><%= notice %></p>
+
+<h1>Activity Fixtures</h1>
+
+<table>
+  <thead>
+    <tr>
+      <th>Division code</th>
+      <th>Activity participant a</th>
+      <th>Activity participant b</th>
+      <th colspan="3"></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @activity_fixtures.each do |activity_fixture| %>
+      <tr>
+        <td><%= activity_fixture.division_code %></td>
+        <td><%= activity_fixture.activity_participant_a %></td>
+        <td><%= activity_fixture.activity_participant_b %></td>
+        <td><%= link_to 'Show', activity_fixture %></td>
+        <td><%= link_to 'Edit', edit_activity_fixture_path(activity_fixture) %></td>
+        <td><%= link_to 'Destroy', activity_fixture, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<br>
+
+<%= link_to 'New Activity Fixture', new_activity_fixture_path %>

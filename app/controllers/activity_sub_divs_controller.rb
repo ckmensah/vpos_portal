@@ -1,6 +1,7 @@
 class ActivitySubDivsController < ApplicationController
   before_action :set_activity_sub_div, only: [:show, :edit, :update, :destroy]
-
+  load_and_authorize_resource
+  before_action :load_permissions
   # GET /activity_sub_divs
   # GET /activity_sub_divs.json
   def index

@@ -1,0 +1,45 @@
+
+<div class="">
+
+  <div class="w3-white w3-hover-shadow col-md-4 offset-md-4 w3-card-4 w3-border w3-border-purple rcorners w3-center">
+    <h4 class="show w3-center"><strong>New Fixture</strong></h4>
+
+    <div class="w3-container">
+      <br/>
+      <%#= simple_form_for(@activity_fixture, :data => {  :remote => true, count: params[:count], page: params[:page]}) do |f| %>
+          <%= simple_form_for(@activity_fixture, url: activity_fixtures_path(@activity_fixture, code: params[:code], entity_code: params[:entity_code], count: params[:count], page: params[:page] ),:remote => true) do |f| %>
+
+    <%= f.error_notification %>
+        <%= f.error_notification message: f.object.errors[:base].to_sentence if f.object.errors[:base].present? %>
+        <%= f.input :activity_participant_a, collection: @activity_participants, label: "Team A", value_method: :assigned_code, label_method: :participant_name, required: true, input_html:{id: "team_a", autocomplete: "off",class:"form-control w3-input w3-border w3-white input-group input-append",style:""}  %>
+
+        <%= f.input :activity_participant_b, collection: @activity_participants, label: "Team B", value_method: :assigned_code, label_method: :participant_name, required: true, input_html:{id: "team_b", autocomplete: "off",class:"form-control w3-input w3-border w3-white input-group input-append",style:""}  %>
+        <%= f.input :activity_category_div_id, collection: @activity_category_divs, label: "Sports Category", value_method: :id, label_method: :category_div_desc, required: true, input_html:{id: "category_div", autocomplete: "off",class:"form-control w3-input w3-border w3-white input-group input-append",style:""}  %>
+
+        <%#= f.input :comment,  label: "Comment", :as => :text, value_method: :id, required: false, input_html:{rows: 5, cols: 3, autocomplete: "off",class:"form-control w3-border ",style:""}  %>
+
+        <%= f.input :active_status, :as => :hidden, input_html:{value: true} %>
+        <%= f.input :del_status, :as => :hidden, input_html:{value: false} %>
+        <%= f.input :user_id, :as => :hidden, input_html:{value: current_user.id} %>
+        <div>
+          <%= f.submit "Submit", class: "w3-button w3-purple-vpos w3-border w3-border-purple w3-small w3-round-large", :data => {:disable_with => 'Please Wait...'}, style: "width:auto;float:center;",remote:true %>
+          <%= link_to 'Back', activity_fixture_index_path(code: params[:code], entity_code: params[:entity_code], page: params[:page], count: params[:count]), class: "w3-button w3-white w3-border w3-border-purple w3-small w3-round-large",remote:true %>
+        </div>
+      <% end %>
+      <br/>
+    </div>
+
+
+  </div>
+
+</div>
+
+
+<div class="col-md-7 col-md-offset-5">
+</div>
+
+
+
+
+
+

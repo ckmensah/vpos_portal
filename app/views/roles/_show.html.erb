@@ -1,0 +1,57 @@
+
+
+<div class="w3-container" >
+  <div id="id01" class="w3-modal w3-animate-opacity" style=" display: block">
+    <!--<div class="w3-modal-content w3-card-4" >-->
+<!--    <br/>-->
+
+    <div class="">
+
+      <div class="w3-white w3-hover-shadow col-md-8 offset-md-2 w3-card-4 w3-border w3-border-purple rcorners w3-center">
+        <h4 class="show w3-center"><strong><%= @role.role_name %> Details</strong></h4>
+        <p id="notice2"><strong></strong></p>
+        <div class="w3-container">
+<!--          <br/>-->
+          <div class="pre-scrollable" style="max-height: 60vh;">
+            <table class="w3-table-all table-bordered w3-hoverable w3-card-4">
+              <thead>
+              <tr class="w3-vpos-purple">
+                <th>Controller Name</th>
+                <th>Action</th>
+                <th>Name</th>
+                <th>Desc</th>
+              </tr>
+              </thead>
+
+              <tbody>
+              <% @permissions1.each do |permission| %>
+                <tr>
+                  <td> <%= permission.subject_class %> </td>
+                  <td> <%= permission.action %> </td>
+                  <td> <%= permission.name %> </td>
+                  <td> <%= permission.description %> </td>
+                </tr>
+              <% end %>
+              </tbody>
+            </table>
+
+          </div>
+
+          <br/>
+          <div class="w3-center">
+            <%= link_to 'Edit Role', edit_role_path(@role, page: params[:page], count: params[:count]), class: "w3-button w3-purple-vpos w3-border w3-border-purple w3-small w3-round-large",remote:true %>
+            <%= link_to 'Back', role_index_path(page: params[:page], count: params[:count]), class: 'w3-button w3-white w3-border w3-border-purple w3-small w3-round-large', remote: true %>
+          </div>
+          <br/>
+        </div>
+
+      </div>
+
+    </div>
+    <br/>
+    <br/>
+    <br/>
+    <!--</div>-->
+
+  </div>
+</div>

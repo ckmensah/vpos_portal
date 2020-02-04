@@ -1,6 +1,7 @@
 class EntityInfoExtrasController < ApplicationController
   before_action :set_entity_info_extra, only: [:show, :edit, :update, :destroy]
-
+  load_and_authorize_resource
+  before_action :load_permissions
   # GET /entity_info_extras
   # GET /entity_info_extras.json
   def index

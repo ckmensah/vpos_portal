@@ -1,0 +1,39 @@
+<p id="notice"><%= notice %></p>
+
+<h1>Entity Service Accounts</h1>
+
+<table>
+  <thead>
+    <tr>
+      <th>Entity div code</th>
+      <th>Gross bal</th>
+      <th>Net bal</th>
+      <th>Comment</th>
+      <th>Active status</th>
+      <th>Del status</th>
+      <th>User</th>
+      <th colspan="3"></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @entity_service_accounts.each do |entity_service_account| %>
+      <tr>
+        <td><%= entity_service_account.entity_div_code %></td>
+        <td><%= entity_service_account.gross_bal %></td>
+        <td><%= entity_service_account.net_bal %></td>
+        <td><%= entity_service_account.comment %></td>
+        <td><%= entity_service_account.active_status %></td>
+        <td><%= entity_service_account.del_status %></td>
+        <td><%= entity_service_account.user_id %></td>
+        <td><%= link_to 'Show', entity_service_account %></td>
+        <td><%= link_to 'Edit', edit_entity_service_account_path(entity_service_account) %></td>
+        <td><%= link_to 'Destroy', entity_service_account, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<br>
+
+<%= link_to 'New Entity Service Account', new_entity_service_account_path %>

@@ -1,6 +1,7 @@
 class EntityDivisionsController < ApplicationController
   before_action :set_entity_division, only: [:show, :edit, :update, :destroy, :division_setup, :create_division_setup]
-
+  load_and_authorize_resource
+  before_action :load_permissions
   # GET /entity_divisions
   # GET /entity_divisions.json
   def index
@@ -15,10 +16,64 @@ class EntityDivisionsController < ApplicationController
     params[:count] ? params[:count] : params[:count] = 10
     params[:page] ? params[:page] : params[:page] = 1
 
-    @entity_info = EntityInfo.where(assigned_code: params[:entity_code], active_status: true, del_status: false).order(created_at: :desc).first
-    @entity_info ? @entity_name = "#{@entity_info.entity_name} (#{@entity_info.entity_alias})" : ""
-    @entity_divisions = EntityDivision.where(entity_code: params[:entity_code], del_status: false).paginate(:page => params[:page], :per_page => params[:count]).order('created_at desc')
+    if current_user.super_admin? || current_user.super_user?
+      @entity_info = EntityInfo.where(assigned_code: params[:entity_code], active_status: true, del_status: false).order(created_at: :desc).first
+      @entity_info ? @entity_name = "#{@entity_info.entity_name} (#{@entity_info.entity_alias})" : ""
+      @entity_divisions = EntityDivision.where(entity_code: params[:entity_code], del_status: false).paginate(:page => params[:page], :per_page => params[:count]).order('created_at desc')
 
+    elsif current_user.merchant_admin?
+      @entity_info = EntityInfo.where(assigned_code: current_user.entity_code, active_status: true, del_status: false).order(created_at: :desc).first
+      @entity_info ? @entity_name = "#{@entity_info.entity_name} (#{@entity_info.entity_alias})" : ""
+      @entity_divisions = EntityDivision.where(entity_code: currnet_user.entity_code, del_status: false).paginate(:page => params[:page], :per_page => params[:count]).order('created_at desc')
+
+    elsif current_user.merchant_service?
+      @entity_name = ""
+      @entity_divisions = EntityDivision.where(assigned_code: current_user.division_code, del_status: false).paginate(:page => params[:page], :per_page => params[:count]).order('created_at desc')
+
+    end
+  end
+
+  def main_sports_index
+    params[:count] ? params[:count] : params[:count] = 10
+    params[:page] ? params[:page] : params[:page] = 1
+
+    if current_user.super_admin? || current_user.super_user?
+      @entity_info = EntityInfo.where(assigned_code: params[:entity_code], active_status: true, del_status: false).order(created_at: :desc).first
+      @entity_info ? @entity_name = "#{@entity_info.entity_name} (#{@entity_info.entity_alias})" : ""
+      @entity_divisions = EntityDivision.where(entity_code: params[:entity_code], del_status: false).paginate(:page => params[:page], :per_page => params[:count]).order('created_at desc')
+
+    elsif current_user.merchant_admin?
+      @entity_info = EntityInfo.where(assigned_code: current_user.entity_code, active_status: true, del_status: false).order(created_at: :desc).first
+      @entity_info ? @entity_name = "#{@entity_info.entity_name} (#{@entity_info.entity_alias})" : ""
+      @entity_divisions = EntityDivision.where(entity_code: currnet_user.entity_code, del_status: false).paginate(:page => params[:page], :per_page => params[:count]).order('created_at desc')
+
+    elsif current_user.merchant_service?
+      #@entity_info = EntityInfo.where(assigned_code: current_user.entity_code, active_status: true, del_status: false).order(created_at: :desc).first
+      #@entity_info ? @entity_name = "#{@entity_info.entity_name} (#{@entity_info.entity_alias})" : ""
+      @entity_name = ""
+      @entity_divisions = EntityDivision.where(assigned_code: current_user.division_code, del_status: false).paginate(:page => params[:page], :per_page => params[:count]).order('created_at desc')
+
+    end
+
+  end
+
+
+  def division_update
+    # converted_params = ActiveSupport::JSON.decode( params[:s] )
+    logger.info "Params:: #{params[:id_for_entity_info].inspect}"
+    if params[:id_for_entity_info].empty?
+      # @region_update_city = [["", ""]]
+      @info_update_division = [["", ""]].insert(0,['Please select a service', ""])
+    else
+      info_id_record = EntityInfo.find(params[:id_for_entity_info])
+      info_update_division = info_id_record.entity_divisions.where(active_status: true).order(division_name: :asc).map { |a| [a.division_name, a.assigned_code] }.insert(0,['Please select a service', ""])
+      if info_update_division.empty?
+        @info_update_division = [["", ""]].insert(0,['Please select a service', ""])
+      else
+        @info_update_division = info_update_division
+      end
+    end
+    logger.info "For Suburbs :: #{@info_update_division.inspect}"
   end
 
   # def entity_division_index
@@ -39,6 +94,12 @@ class EntityDivisionsController < ApplicationController
 
 
   def division_setup
+    if current_user.merchant_admin?
+      params[:entity_code] = current_user.entity_code
+    elsif current_user.merchant_service?
+      params[:entity_code] = current_user.entity_code
+      params[:code] = current_user.division_code
+    end
     @entity_division = EntityDivision.new
     @entity_div = EntityDivision.where(assigned_code: params[:code], active_status: true).order(created_at: :desc).first
     @div_activity_type = @entity_div.activity_type.assigned_code
@@ -61,6 +122,12 @@ class EntityDivisionsController < ApplicationController
 
 
   def create_division_setup
+    if current_user.merchant_admin?
+      params[:entity_code] = current_user.entity_code
+    elsif current_user.merchant_service?
+      params[:entity_code] = current_user.entity_code
+      params[:code] = current_user.division_code
+    end
     @entity_division = EntityDivision.new(entity_division_params)
     @entity_div = EntityDivision.where(assigned_code: params[:code], active_status: true).order(created_at: :desc).first
     @div_activity_type = @entity_div.activity_type.assigned_code
@@ -101,8 +168,8 @@ class EntityDivisionsController < ApplicationController
       logger.info " LOV:: Validate result:: #{lov_validate_result}, Error number :: #{lov_error_num}, Row number #{lov_row_num}"
       if valid_result && lov_validate_result
         logger.info "=================== SAVING ==================="
-        EntityDivision.division_lov_save(@the_div_lov, params[:code], entity_division_params)
-        EntityDivision.division_setup_save(params, @main_params, @div_activity_type, entity_division_params)
+        EntityDivision.division_lov_save(@the_div_lov, params[:code], entity_division_params,current_user)
+        EntityDivision.division_setup_save(params, @main_params, @div_activity_type, entity_division_params, current_user)
         format.js { render :entity_division_index }
       else
         if lov_validate_result != true
@@ -162,6 +229,12 @@ class EntityDivisionsController < ApplicationController
 
 
   def division_edit_setup
+    if current_user.merchant_admin?
+      params[:entity_code] = current_user.entity_code
+    elsif current_user.merchant_service?
+      params[:entity_code] = current_user.entity_code
+      params[:code] = current_user.division_code
+    end
     @entity_division = EntityDivision.new
     @entity_div = EntityDivision.where(assigned_code: params[:code], active_status: true).order(created_at: :desc).first
     @div_activity_type = @entity_div.activity_type.assigned_code
@@ -186,6 +259,12 @@ class EntityDivisionsController < ApplicationController
 
 
   def update_division_setup
+    if current_user.merchant_admin?
+      params[:entity_code] = current_user.entity_code
+    elsif current_user.merchant_service?
+      params[:entity_code] = current_user.entity_code
+      params[:code] = current_user.division_code
+    end
     @entity_division = EntityDivision.new(entity_division_params)
     logger.info "==================== I WAS HIT HERE ====================="
     params[:count] ? params[:count] : params[:count] = 10
@@ -458,6 +537,15 @@ class EntityDivisionsController < ApplicationController
   # end
 
 
+
+
+
+
+
+
+
+
+
   def create
     @entity_division = EntityDivision.new(entity_division_params)
     @display = params[:divisions]
@@ -473,7 +561,7 @@ class EntityDivisionsController < ApplicationController
     respond_to do |format|
       if validity_result
         logger.info "I WAS HERE SOME...."
-        EntityDivision.save_entity_divisions(@display, entity_division_params)
+        EntityDivision.save_entity_divisions(@display, entity_division_params, current_user)
         format.html { redirect_to @entity_division, notice: 'Entity division was successfully updated.' }
         flash.now[:notice] = "Entity division was successfully updated."
         format.js { render :show}
@@ -511,27 +599,27 @@ class EntityDivisionsController < ApplicationController
     entity_division_params[:city_town_name].present? ? @suburb_masters = SuburbMaster.where(active_status: true, city_town_id: entity_division_params[:city_town_name]).order(suburb_name: :asc) : @suburb_masters = [["", ""]].insert(0,['Please select a suburb', ""])
 
     @suburb_id = entity_division_params[:suburb_id]
-        if @suburb_id.present?
-          logger.info "Long chain :: #{@entity_division.suburb_master.a_city.a_region.inspect}"
-          logger.info "For suburb id :: #{@suburb_id.inspect}"
-          @sub_masters = SuburbMaster.where(id: @suburb_id).last
-          logger.info "Sub Master #{@sub_masters.inspect}"
-          logger.info "City id :: #{@sub_masters.a_city.inspect}"
-          @region_id = @sub_masters.a_city.region_id
-          @city_id = @sub_masters.city_town_id
-          @entity_division.region_name = @region_id
-          @entity_division.city_town_name = @city_id
-          @city_town_masters = CityTownMaster.where(region_id: @region_id)
-          @suburb_masters = SuburbMaster.where(city_town_id: @sub_masters.city_town_id)
-          logger.info "Region id :: #{@region_id.inspect}"
-        else
-          @region_id = entity_division_params[:region_name].present? ? entity_division_params[:region_name] : []
-          @city_id = entity_division_params[:city_town_name].present? ? entity_division_params[:city_town_name] : []
-          @suburb_id = []
-          entity_division_params[:region_name].present? ? @city_town_masters = CityTownMaster.where(active_status: true, region_id: entity_division_params[:region_name]).order(city_town_name: :asc) : @city_town_masters = CityTownMaster.where(id: 0)
-          entity_division_params[:city_town_name].present? ? @suburb_masters = SuburbMaster.where(active_status: true, city_town_id: entity_division_params[:city_town_name]).order(suburb_name: :asc) : @suburb_masters = SuburbMaster.where(id: 0)
+    if @suburb_id.present?
+      logger.info "Long chain :: #{@entity_division.suburb_master.a_city.a_region.inspect}"
+      logger.info "For suburb id :: #{@suburb_id.inspect}"
+      @sub_masters = SuburbMaster.where(id: @suburb_id).last
+      logger.info "Sub Master #{@sub_masters.inspect}"
+      logger.info "City id :: #{@sub_masters.a_city.inspect}"
+      @region_id = @sub_masters.a_city.region_id
+      @city_id = @sub_masters.city_town_id
+      @entity_division.region_name = @region_id
+      @entity_division.city_town_name = @city_id
+      @city_town_masters = CityTownMaster.where(region_id: @region_id)
+      @suburb_masters = SuburbMaster.where(city_town_id: @sub_masters.city_town_id)
+      logger.info "Region id :: #{@region_id.inspect}"
+    else
+      @region_id = entity_division_params[:region_name].present? ? entity_division_params[:region_name] : []
+      @city_id = entity_division_params[:city_town_name].present? ? entity_division_params[:city_town_name] : []
+      @suburb_id = []
+      entity_division_params[:region_name].present? ? @city_town_masters = CityTownMaster.where(active_status: true, region_id: entity_division_params[:region_name]).order(city_town_name: :asc) : @city_town_masters = CityTownMaster.where(id: 0)
+      entity_division_params[:city_town_name].present? ? @suburb_masters = SuburbMaster.where(active_status: true, city_town_id: entity_division_params[:city_town_name]).order(suburb_name: :asc) : @suburb_masters = SuburbMaster.where(id: 0)
 
-        end
+    end
 
     respond_to do |format|
       if @new_record.valid?#.update(entity_division_params)
@@ -541,7 +629,7 @@ class EntityDivisionsController < ApplicationController
         @assigned_service_code = AssignedServiceCode.where(del_status: false, entity_div_code: @entity_division.assigned_code).order(created_at: :desc)
         @active_service_code = @assigned_service_code.where(active_status: true).first
         unless entity_division_params[:service_code] == @active_service_code.service_code
-        logger.info "LOGGER 2 ========================================================"
+          logger.info "LOGGER 2 ========================================================"
           @active_service_code.update(service_code: entity_division_params[:service_code])
         end
         update_last_but_one("entity_division", "assigned_code", @entity_division.assigned_code)
@@ -569,10 +657,14 @@ class EntityDivisionsController < ApplicationController
   # DELETE /entity_divisions/1
   # DELETE /entity_divisions/1.json
   def destroy
+    if current_user.merchant_admin?
+      params[:entity_code] = current_user.entity_code
+    end
     @entity_division = EntityDivision.where(assigned_code: params[:id], del_status: false).order('id desc').first
 
     if @entity_division.active_status && @entity_division.del_status == false
       EntityDivision.disable_by_update_onef("entity_division","assigned_code",@entity_division.assigned_code)
+
       @entity_divisions = EntityDivision.where(entity_code: params[:entity_code], del_status: false).paginate(:page => params[:page], :per_page => params[:count]).order('created_at desc')
       respond_to do |format|
         format.html { redirect_to entity_divisions_url, notice: 'Occupation master was successfully disabled.' }
@@ -585,6 +677,7 @@ class EntityDivisionsController < ApplicationController
     elsif @entity_division.active_status == false && @entity_division.del_status == false
       EntityInfo.enable_by_update_onet("entity_division","assigned_code",@entity_division.assigned_code)
       @entity_divisions = EntityDivision.where(entity_code: params[:entity_code], del_status: false).paginate(:page => params[:page], :per_page => params[:count]).order('created_at desc')
+
       respond_to do |format|
         format.html { redirect_to entity_infos_url, notice: 'Allergy master was successfully enabled.' }
         flash.now[:notice] = 'Merchant division was successfully enabled.'
@@ -595,20 +688,20 @@ class EntityDivisionsController < ApplicationController
   end
 
   private
-    # Use callbacks to share common setup or constraints between actions.
-    def set_entity_division
-      # @entity_division = EntityDivision.find(params[:id])
-      @entity_division = EntityDivision.where(assigned_code: params[:id], active_status: true, del_status: false).order('id desc').first
-    end
+  # Use callbacks to share common setup or constraints between actions.
+  def set_entity_division
+    # @entity_division = EntityDivision.find(params[:id])
+    @entity_division = EntityDivision.where(assigned_code: params[:id], active_status: true, del_status: false).order('id desc').first
+  end
 
-    # Never trust parameters from the scary internet, only allow the white list through.
-    def entity_division_params
-      params.require(:entity_division).permit(:entity_code, :assigned_code, :division_name, :division_alias, :action_type, :suburb_id,
-                                              :activity_type_code, :service_label, :region_name, :city_town_name, :comment,
-                                              :div_lov_query, :activity_query, :sub_activity_query,
-                                              :active_status, :del_status, :user_id, :service_code, :for_update, divisions: [], :the_div_acts_lov => {})
-                                              # entity_wallet_configs_attributes: [:id, :division_code, :service_id, :secret_key, :client_key, :comment, :active_status, :del_status, :user_id]
-                                              #activity_divs_attributes: [:id, :division_code, :activity_div_desc, :activity_date, :comment, :active_status, :del_status, :user_id],
+  # Never trust parameters from the scary internet, only allow the white list through.
+  def entity_division_params
+    params.require(:entity_division).permit(:entity_code, :assigned_code, :division_name, :division_alias, :action_type, :suburb_id,
+                                            :activity_type_code, :service_label, :region_name, :city_town_name, :comment,
+                                            :div_lov_query, :activity_query, :sub_activity_query,
+                                            :active_status, :del_status, :user_id, :service_code, :for_update, divisions: [], :the_div_acts_lov => {})
+    # entity_wallet_configs_attributes: [:id, :division_code, :service_id, :secret_key, :client_key, :comment, :active_status, :del_status, :user_id]
+    #activity_divs_attributes: [:id, :division_code, :activity_div_desc, :activity_date, :comment, :active_status, :del_status, :user_id],
 
-    end
+  end
 end

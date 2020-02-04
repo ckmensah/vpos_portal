@@ -1,6 +1,7 @@
 class SuburbMastersController < ApplicationController
   before_action :set_suburb_master, only: [:show, :edit, :update, :destroy]
-
+  load_and_authorize_resource
+  before_action :load_permissions
   # GET /suburb_masters
   # GET /suburb_masters.json
   def index

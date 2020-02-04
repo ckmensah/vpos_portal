@@ -37,11 +37,21 @@
                 <td><strong><%= @pay_info.service_id %></strong></td>
               </tr>
 
+              <tr>
+                <td class="raw_theme w3-border w3-border-black w3-leftbar"><strong>Activity Type:</strong></td>
+                <td><strong><%= @pay_info.activity_main_code %></strong></td>
+              </tr>
+
               <%# if entity_extra %>
                 <tr>
-                  <td class="raw_theme w3-border w3-border-black w3-leftbar"><strong>Contact Number(s):</strong></td>
+                  <td class="raw_theme w3-border w3-border-black w3-leftbar"><strong>Contact No.(s):</strong></td>
                   <td><strong><%= @pay_info.customer_number if @pay_info.customer_number.present? %></strong></td>
                 </tr>
+
+              <tr>
+                <td class="raw_theme w3-border w3-border-black w3-leftbar"><strong>Recipient No.(s):</strong></td>
+                <td><strong><%= @pay_info.recipient_number if @pay_info.recipient_number.present? %></strong></td>
+              </tr>
 
               <tr>
                 <td class="raw_theme w3-border w3-border-black w3-leftbar"><strong>Transaction ID.:</strong></td>
@@ -100,8 +110,13 @@
               </tr>
 
               <tr>
-                <td class="raw_theme w3-border w3-border-black w3-leftbar"><strong>Payment Description:</strong></td>
+                <td class="raw_theme w3-border w3-border-black w3-leftbar"><strong>Charge:</strong></td>
                 <td><strong><%= @pay_info.charge %></strong></td>
+              </tr>
+
+              <tr>
+                <td class="raw_theme w3-border w3-border-black w3-leftbar"><strong>Payment Description:</strong></td>
+                <td><strong><%= @pay_info.trans_msg %></strong></td>
               </tr>
 
               <tr>
@@ -116,7 +131,7 @@
 
           <br/>
           <div class="w3-center">
-            <%= link_to 'Back', payment_info_index_path(page: params[:page], count: params[:count]), class: 'w3-button w3-white w3-border w3-border-purple w3-small w3-round-large', remote: true %>
+            <%= link_to 'Back', payment_info_index_path(params: params.to_unsafe_h, page: params[:page], count: params[:count]), class: 'w3-button w3-white w3-border w3-border-purple w3-small w3-round-large', remote: true %>
           </div>
           <br/>
         </div>

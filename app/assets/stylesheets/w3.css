@@ -504,8 +504,9 @@ input[type=checkbox]:checked ~ #menu{
 
 .login_interface {
 
-    background: url(cocoa_login.png) no-repeat center fixed;
-    background-size: cover;
+    /*background: url(cocoa_login.png) no-repeat center fixed;*/
+    background: url(vpos_login.png) no-repeat center fixed;
+    background-size: auto;
 }
 
 

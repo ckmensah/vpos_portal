@@ -1,6 +1,7 @@
 class EntityCategoriesController < ApplicationController
   before_action :set_entity_category, only: [:show, :edit, :update, :destroy]
-
+  load_and_authorize_resource
+  before_action :load_permissions
   # GET /entity_categories
   # GET /entity_categories.json
   def index

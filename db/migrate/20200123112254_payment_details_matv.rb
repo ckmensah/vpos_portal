@@ -41,14 +41,19 @@ class PaymentDetailsMatv < ActiveRecord::Migration[5.2]
 
 
        LEFT JOIN entity_division ON payment_info.entity_div_code = entity_division.assigned_code and entity_division.active_status = true and entity_division.del_status = false
-       LEFT JOIN division_activity_lov ON payment_info.activity_lov_id = division_activity_lov.id and division_activity_lov.active_status = true and division_activity_lov.del_status = false
-       LEFT JOIN activity_divs ON payment_info.activity_div_id = activity_divs.id and activity_divs.active_status = true and activity_divs.del_status = false
-       LEFT JOIN activity_sub_divs ON payment_info.activity_sub_div_id = activity_sub_divs.id and activity_sub_divs.active_status = true and activity_sub_divs.del_status = false;
+       LEFT JOIN division_activity_lov ON entity_division.assigned_code = division_activity_lov.division_code and division_activity_lov.active_status = true and division_activity_lov.del_status = false
+       LEFT JOIN activity_divs ON activity_divs.division_code = entity_division.assigned_code and activity_divs.active_status = true and activity_divs.del_status = false
+       LEFT JOIN activity_sub_divs ON activity_sub_divs.activity_div_id = activity_divs.id;
      )
 
     #(division_activity_lov.active_status = true and division_activity_lov.del_status = false)
     #and (activity_divs.active_status = true and activity_divs.del_status = false)
     #and (activity_sub_divs.active_status = true and activity_sub_divs.del_status = false)
+    # LEFT JOIN entity_division ON payment_info.entity_div_code = entity_division.assigned_code and entity_division.active_status = true and entity_division.del_status = false
+    #       LEFT JOIN division_activity_lov ON payment_info.activity_lov_id = division_activity_lov.id and division_activity_lov.active_status = true and division_activity_lov.del_status = false
+    #       LEFT JOIN activity_divs ON payment_info.activity_div_id = activity_divs.id and activity_divs.active_status = true and activity_divs.del_status = false
+    #       LEFT JOIN activity_sub_divs ON payment_info.activity_sub_div_id = activity_sub_divs.id and activity_sub_divs.active_status = true and activity_sub_divs.del_status = false;
+
   end
 
 

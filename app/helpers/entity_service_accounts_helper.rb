@@ -1,0 +1,2 @@
+module EntityServiceAccountsHelper
+end

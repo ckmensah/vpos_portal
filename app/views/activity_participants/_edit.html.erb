@@ -1,0 +1,89 @@
+
+
+
+<div class="w3-container" >
+  <div id="id01" class="w3-modal w3-animate-opacity" style=" display: block">
+    <!--<div class="w3-modal-content w3-card-4" >-->
+    <br/>
+
+    <div class="">
+
+      <div class="w3-white w3-hover-shadow col-md-4 offset-md-4 w3-card-4 w3-border w3-border-purple rcorners w3-center">
+        <h4 class="show w3-center"><strong>Edit Participant</strong></h4>
+
+        <div class="w3-container">
+          <br/>
+          <%#= simple_form_for(@activity_type, :data => {  :remote => true, count: params[:count], page: params[:page]}) do |f| %>
+            <%= simple_form_for(@activity_participant, url: activity_participant_path(@activity_participant, code: params[:code], entity_code: params[:entity_code], count: params[:count], page: params[:page] ),:remote => true) do |f| %>
+              <%= f.error_notification %>
+            <%= f.error_notification message: f.object.errors[:base].to_sentence if f.object.errors[:base].present? %>
+            <%= f.input :participant_name,  label: "Participant Name", value_method: :id, required: true, input_html:{id: "for_type_desc", autocomplete: "off",class:"form-control w3-input w3-border w3-white input-group input-append",style:""}  %>
+
+            <%= f.input :participant_alias,  label: "Participant Alias", value_method: :id, required: true, input_html:{id: "for_assigned_code", autocomplete: "off",class:"form-control w3-input w3-border w3-white input-group input-append",style:""}  %>
+            <%#= f.hidden_field :image, value: @activity_participant.cached_image_data %>
+            <%#= f.file_field :image, id: "avatar-upload"  %>
+<!--            <br>-->
+<!--            <img id="img_prev" width=200 height=200 src="#" alt="your image" class="img-thumbnail hidden"/>-->
+            <%#= f.input :comment,  label: "Comment", :as => :text, value_method: :id, required: false, input_html:{rows: 5, cols: 3, autocomplete: "off",class:"form-control w3-border ",style:""}  %>
+
+            <%#= f.input :image_path, :as => :hidden, input_html:{value: "https://res.cloudinary.com/appsnmob/virtual_pos/sports/"} %>
+            <%= f.input :active_status, :as => :hidden, input_html:{value: true} %>
+            <%= f.input :del_status, :as => :hidden, input_html:{value: false} %>
+            <%= f.input :user_id, :as => :hidden, input_html:{value: current_user.id} %>
+            <div>
+              <%= f.submit "Submit", class: "w3-button w3-purple-vpos w3-border w3-border-purple w3-small w3-round-large", :data => {:disable_with => 'Please Wait...'}, style: "width:auto;float:center;",remote:true %>
+              <%= link_to 'Back', activity_participant_index_path(code: params[:code], entity_code: params[:entity_code], page: params[:page], count: params[:count]), class: "w3-button w3-white w3-border w3-border-purple w3-small w3-round-large",remote:true %>
+            </div>
+          <% end %>
+          <br/>
+        </div>
+
+
+      </div>
+
+    </div>
+
+
+    <div class="col-md-7 col-md-offset-5">
+    </div>
+
+
+
+
+    <br/>
+    <div class="col-md-7 col-md-offset-5">
+      <br/>
+      <br/>
+    </div>
+    <!--</div>-->
+
+  </div>
+</div>
+
+
+
+
+
+<script>
+
+    $(function() {
+        function readURL(input) {
+            if (input.files && input.files[0]) {
+                var reader = new FileReader();
+
+                reader.onload = function (e) {
+                    $('#img_prev').attr('src', e.target.result);
+                }
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+
+        $("#avatar-upload").change(function(){
+            $('#img_prev').removeClass('hidden');
+            readURL(this);
+        });
+    });
+
+</script>
+
+

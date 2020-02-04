@@ -1,0 +1,61 @@
+
+<style>
+  .submissionfield { width: 400px; height: 55px; border: 1px solid #999999; padding: 5px; }
+</style>
+<%#= render "devise/shared/links" %>
+
+
+<div class="w3-container">
+
+  <div class="w3-half" style="opacity: 0.5">
+    <br>
+    <br>
+    <br>
+    <br>
+    <%= image_tag("vpos_login.png", class: "img-responsive", id: "navbar-logo", :width => 500, height: 500) %>
+  </div>
+
+  <div class="w3-half">
+    <div class="col-md-8 col-md-offset-2">
+
+      <div>
+        <%= image_tag("vposss.png", class: "img-responsive", id: "navbar-logo", :width => 400, height: 150) %>
+      </div>
+
+      <div>
+        <br>
+        <h3>Sign In to continue</h3>
+        <%= render 'layouts/messages' %>
+        <br>
+        <%= simple_form_for(resource, as: resource_name, url: session_path(resource_name)) do |f| %>
+          <div class="form-inputs">
+            <%= f.input :user_name,
+                        required: false,
+                        autofocus: true, label: false,
+                        input_html: {placeholder: "Username", autocomplete: "user-name", class: "submissionfield", id: ""} %>
+            <br>
+            <%= f.input :password,
+                        required: false, label: false,
+                        input_html: { placeholder: "Password", autocomplete: "current-password", class: "submissionfield" } %>
+            <br>
+            <%#= f.input :remember_me, as: :boolean if devise_mapping.rememberable? %>
+            <div class="form-actions w3-center">
+              <%#= f.button :submit, "Log in" %>
+              <%= f.submit "SIGN IN", class: "w3-button w3-purple-vpos w3-border w3-border-purple w3-large w3-round-large", :data => {:disable_with => 'Please Wait...'}, style: "width:200px; height: 55px;float:center;" %>
+            </div>
+          </div>
+
+        <% end %>
+
+      </div>
+
+    </div>
+
+  </div>
+</div>
+
+
+
+
+
+

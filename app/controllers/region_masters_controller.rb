@@ -1,6 +1,7 @@
 class RegionMastersController < ApplicationController
   before_action :set_region_master, only: [:show, :edit, :update, :destroy]
-
+  load_and_authorize_resource
+  before_action :load_permissions
   # GET /region_masters
   # GET /region_masters.json
   def index

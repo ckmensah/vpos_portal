@@ -25,7 +25,7 @@
 
               <%= f.input :active_status, :as => :hidden, input_html:{value: true} %>
               <%= f.input :del_status, :as => :hidden, input_html:{value: false} %>
-              <%#= f.input :user_id, :as => :hidden, input_html:{value: current_user.id} %>
+              <%= f.input :user_id, :as => :hidden, input_html:{value: current_user.id} %>
               <div>
                 <%= f.submit "Submit", class: "w3-button w3-purple-vpos w3-border w3-border-purple w3-small w3-round-large", :data => {:disable_with => 'Please Wait...'}, style: "width:auto;float:center;",remote:true %>
                 <%= link_to 'Back', entity_category_index_path(page: params[:page], count: params[:count]), class: "w3-button w3-white w3-border w3-border-purple w3-small w3-round-large",remote:true %>

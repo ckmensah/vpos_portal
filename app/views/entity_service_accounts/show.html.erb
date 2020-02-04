@@ -1,0 +1,39 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <strong>Entity div code:</strong>
+  <%= @entity_service_account.entity_div_code %>
+</p>
+
+<p>
+  <strong>Gross bal:</strong>
+  <%= @entity_service_account.gross_bal %>
+</p>
+
+<p>
+  <strong>Net bal:</strong>
+  <%= @entity_service_account.net_bal %>
+</p>
+
+<p>
+  <strong>Comment:</strong>
+  <%= @entity_service_account.comment %>
+</p>
+
+<p>
+  <strong>Active status:</strong>
+  <%= @entity_service_account.active_status %>
+</p>
+
+<p>
+  <strong>Del status:</strong>
+  <%= @entity_service_account.del_status %>
+</p>
+
+<p>
+  <strong>User:</strong>
+  <%= @entity_service_account.user_id %>
+</p>
+
+<%= link_to 'Edit', edit_entity_service_account_path(@entity_service_account) %> |
+<%= link_to 'Back', entity_service_accounts_path %>

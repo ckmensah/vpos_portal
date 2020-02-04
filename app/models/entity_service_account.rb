@@ -1,0 +1,2 @@
+class EntityServiceAccount < ApplicationRecord
+end

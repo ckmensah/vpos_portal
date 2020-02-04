@@ -1,0 +1,88 @@
+
+
+<div class="w3-container" >
+  <div id="id01" class="w3-modal w3-animate-opacity" style=" display: block">
+    <!--<div class="w3-modal-content w3-card-4" >-->
+    <br/>
+
+    <div class="">
+
+      <div class="w3-white w3-hover-shadow col-md-6 offset-md-3 w3-card-4 w3-border w3-border-purple rcorners w3-center">
+        <h4 class="show w3-center"><strong>User Details</strong></h4>
+        <p id="notice2"><strong></strong></p>
+        <div class="w3-container">
+          <br/>
+
+
+          <table class="w3-table-all table table-bordered w3-hoverable w3-card-4">
+
+            <tr>
+              <td class="raw_theme w3-border cell-cust-grad w3-leftbar"><strong>User Name:</strong></td>
+              <td><strong><%= @user.user_name %></strong></td>
+            </tr>
+
+            <tr>
+              <td class="raw_theme w3-border cell-cust-grad w3-leftbar"><strong>Full Name:</strong></td>
+              <td><strong><%= @user.last_name %> <%= @user.first_name %></strong></td>
+            </tr>
+
+            <tr>
+              <td class="raw_theme w3-border cell-cust-grad w3-leftbar"><strong>Email:</strong></td>
+              <td><strong><%= @user.email %></strong></td>
+            </tr>
+
+            <tr>
+              <td class="raw_theme w3-border cell-cust-grad w3-leftbar"><strong>Contact Number:</strong></td>
+              <td><strong><%= @user.contact_number %></strong></td>
+            </tr>
+
+<!--            <tr>-->
+<!--              <td class="raw_theme w3-border cell-cust-grad w3-leftbar"><strong>Role Name:</strong></td>-->
+<!--              <td><strong><%#= @user.role.role_name %></strong></td>-->
+<!--            </tr>-->
+
+            <tr>
+              <td class="raw_theme w3-border cell-cust-grad w3-leftbar"><strong>Merchant:</strong></td>
+              <td><strong><%= @user.entity_info.entity_name if @user.entity_code.present? %></strong></td>
+            </tr>
+
+            <tr>
+              <td class="raw_theme w3-border cell-cust-grad w3-leftbar"><strong>Merchant Service:</strong></td>
+              <td><strong><%= @user.entity_division.division_name if @user.division_code.present? %></strong></td>
+            </tr>
+
+            <tr>
+              <td class="raw_theme w3-border cell-cust-grad w3-leftbar"><strong>Status:</strong></td>
+
+              <% if @user.active_status %>
+                  <td><strong>Active</strong></td>
+              <% else %>
+                  <td><strong>Inactive</strong></td>
+              <% end %>
+            </tr>
+
+
+            <tr>
+              <td class="raw_theme w3-border cell-cust-grad w3-leftbar"><strong>Date:</strong></td>
+              <td>
+                <strong><%= @user.created_at %></strong>
+              </td>
+            </tr>
+
+          </table>
+
+          <br/>
+          <div class="w3-center">
+            <%= link_to 'Back', user_index_path(page: params[:page], count: params[:count]), class: 'w3-bar-item w3-btn w3-ripple w3-round-large w3-dark-gray', remote: true %>
+          </div>
+          <br/>
+        </div>
+
+      </div>
+
+    </div>
+
+    <!--</div>-->
+
+  </div>
+</div>

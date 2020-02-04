@@ -1,6 +1,7 @@
 class AssignedServiceCodesController < ApplicationController
   before_action :set_assigned_service_code, only: [:show, :edit, :update, :destroy]
-
+  load_and_authorize_resource
+  before_action :load_permissions
   # GET /assigned_service_codes
   # GET /assigned_service_codes.json
   def index

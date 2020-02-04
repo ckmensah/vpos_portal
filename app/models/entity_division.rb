@@ -9,9 +9,15 @@ class EntityDivision < ApplicationRecord
   has_many :division_activity_lovs, class_name: 'DivisionActivityLov', foreign_key: :division_code
   has_many :activity_sub_div_class, class_name: 'ActivitySubDivClass', foreign_key: :entity_div_code
   has_many :payment_infos, class_name: 'PaymentInfo', foreign_key: :entity_div_code
+  has_many :users, class_name: 'User', foreign_key: :division_code
+  has_many :activity_participants, class_name: 'ActivityParticipant', foreign_key: :division_code
+  has_many :activity_fixtures, class_name: 'ActivityFixture', foreign_key: :division_code
+  has_many :activity_category_divs, class_name: 'ActivityCategoryDiv', foreign_key: :division_code
+  has_many :activity_div_cats, class_name: 'ActivityDivCat', foreign_key: :division_code
 
   # has_many :entity_wallet_configs, class_name: 'EntityWalletConfig', foreign_key: :division_code
   # has_many :assigned_service_code, class_name: 'AssignedServiceCode', foreign_key: :entity_div_code
+
   belongs_to :activity_type, class_name: 'ActivityType', foreign_key: :activity_type_code
   belongs_to :entity_info, class_name: 'EntityInfo', foreign_key: :entity_code
   belongs_to :suburb_master, class_name: 'SuburbMaster', foreign_key: :suburb_id
@@ -69,7 +75,7 @@ class EntityDivision < ApplicationRecord
     row_num = 0
     error_num = "0"
     valid_result = false
-    if div_activity_type == "SHW"
+    if div_activity_type == "SHW" || div_activity_type == "SPO"
       if entity_division_params[:activity_query] == 'yes'
         if main_param_keys.any?
           main_param_keys.each_with_index do |main_param_key, ind|
@@ -264,14 +270,15 @@ class EntityDivision < ApplicationRecord
   end
 
 
-  def self.save_entity_divisions(division_params, entity_div_params)
+
+  def self.save_entity_divisions(division_params, entity_div_params, current_user)
     division_params.each do |key, value|
       if value["division_name"].present? && value["division_alias"].present? && value["service_label"].present? && value["service_code"].present? && value["activity_type_code"].present? && value["region_name"].present? && value["city_town_name"].present? && value["suburb_id"].present?
         assigned_code = gen_entity_div_code
         for_divisions = EntityDivision.new(entity_code: entity_div_params[:entity_code], assigned_code: assigned_code,
                                            activity_type_code: value["activity_type_code"], division_name: value["division_name"],
                                            service_label: value["service_label"], suburb_id: value["suburb_id"], division_alias: value["division_alias"],
-                                           active_status: true, del_status: false)
+                                           active_status: true, del_status: false, user_id: current_user.id)
 
         for_service_codes = AssignedServiceCode.new(entity_div_code: assigned_code, service_code: value["service_code"],
                                                     active_status: true, del_status: false)
@@ -282,7 +289,8 @@ class EntityDivision < ApplicationRecord
   end
 
 
-  def self.division_lov_save(div_lov_params, division_code, entity_division_params)
+
+  def self.division_lov_save(div_lov_params, division_code, entity_division_params, current_user)
     if entity_division_params[:div_lov_query] == 'yes'
       if div_lov_params != nil
         div_lov_params_size = div_lov_params.keys.size
@@ -309,9 +317,9 @@ class EntityDivision < ApplicationRecord
 
 
 
-  def self.division_setup_save(params, main_param_keys, div_activity_type, entity_division_params)
+  def self.division_setup_save(params, main_param_keys, div_activity_type, entity_division_params, current_user)
 
-    if div_activity_type == "SHW"
+    if div_activity_type == "SHW" || div_activity_type == "SPO"
       if entity_division_params[:activity_query] == 'yes'
         if main_param_keys.any?
           main_param_keys.each_with_index do |main_param_key, ind|
@@ -355,7 +363,7 @@ class EntityDivision < ApplicationRecord
 
   def self.division_setup_update(params, main_param_keys, div_activity_type, entity_division_params)
 
-    if div_activity_type == "SHW"
+    if div_activity_type == "SHW" || div_activity_type == "SPO"
       if entity_division_params[:activity_query] == 'yes'
         if main_param_keys.any?
           activity_arr_ids = []
