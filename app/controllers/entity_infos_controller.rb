@@ -12,17 +12,20 @@ class EntityInfosController < ApplicationController
       @entity_infos = EntityInfo.where(del_status: false).paginate(:page => params[:page], :per_page => params[:count]).order('created_at desc')
       @entity_divisions = EntityDivision.where(del_status: false).paginate(:page => params[:page], :per_page => params[:count]).order('created_at desc')
       @entity_info_sports = EntityInfo.where(active_status: true, entity_cat_id: "SPO").paginate(:page => params[:page], :per_page => params[:count]).order('created_at desc')
+      @entity_div_sports = EntityDivision.where(active_status: true, activity_type_code: "SPO").paginate(:page => params[:page], :per_page => params[:count]).order('created_at desc')
 
     elsif current_user.merchant_admin?
       @entity_infos = EntityInfo.where(assigned_code: current_user.entity_code, del_status: false).paginate(:page => params[:page], :per_page => params[:count]).order('created_at desc')
       @entity_divisions = EntityDivision.where(entity_code: current_user.entity_code, del_status: false).paginate(:page => params[:page], :per_page => params[:count]).order('created_at desc')
       @entity_info_sports = EntityInfo.where( assigned_code: current_user.entity_code, active_status: true, entity_cat_id: "SPO").paginate(:page => params[:page], :per_page => params[:count]).order('created_at desc')
+      @entity_div_sports = EntityDivision.where( assigned_code: current_user.entity_code, active_status: true, activity_type_code: "SPO").paginate(:page => params[:page], :per_page => params[:count]).order('created_at desc')
 
     elsif current_user.merchant_service?
       @entity_divs = EntityDivision.where(active_status: true, assigned_code: current_user.division_code).first
       @entity_infos = EntityInfo.where(assigned_code: @entity_divs.entity_code, del_status: false).paginate(:page => params[:page], :per_page => params[:count]).order('created_at desc')
       @entity_divisions = EntityDivision.where(assigned_code: current_user.division_code, del_status: false).paginate(:page => params[:page], :per_page => params[:count]).order('created_at desc')
       @entity_info_sports = EntityInfo.where(assigned_code: @entity_divs.entity_code, active_status: true, entity_cat_id: "SPO").paginate(:page => params[:page], :per_page => params[:count]).order('created_at desc')
+      @entity_div_sports = EntityDivision.where(assigned_code: @entity_divs.entity_code, active_status: true, activity_type_code: "SPO").paginate(:page => params[:page], :per_page => params[:count]).order('created_at desc')
 
     end
 
@@ -224,6 +227,19 @@ class EntityInfosController < ApplicationController
     if @entity_info.active_status && @entity_info.del_status == false
       EntityInfo.disable_by_update_onef("entity_info","assigned_code",@entity_info.assigned_code)
       @entity_infos = EntityInfo.where(del_status: false).paginate(:page => params[:page], :per_page => params[:count]).order('created_at desc')
+
+      @entity_infos = EntityInfo.where(active_status: true).paginate(:page => params[:page], :per_page => params[:count]).order('created_at desc')
+      if current_user.super_admin? || current_user.super_user?
+        @entity_infos = EntityInfo.where(del_status: false).paginate(:page => params[:page], :per_page => params[:count]).order('created_at desc')
+      elsif current_user.merchant_admin?
+        @entity_infos = EntityInfo.where(assigned_code: current_user.entity_code, del_status: false).paginate(:page => params[:page], :per_page => params[:count]).order('created_at desc')
+      elsif current_user.merchant_service?
+        @entity_divs = EntityDivision.where(active_status: true, assigned_code: current_user.division_code).first
+        if @entity_divs
+          @entity_infos = EntityInfo.where(assigned_code: @entity_divs.entity_code, del_status: false).paginate(:page => params[:page], :per_page => params[:count]).order('created_at desc')
+        end
+      end
+
       respond_to do |format|
         format.html { redirect_to entity_infos_url, notice: 'Occupation master was successfully disabled.' }
         flash.now[:note] = 'Entity information was successfully disabled.'

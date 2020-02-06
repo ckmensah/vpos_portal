@@ -6,7 +6,7 @@
 
 
   <div class="w3-responsive">
-    <% if current_user.super_admin? || current_user.super_user? || current_user.merchant_admin? %>
+    <% if current_user.super_admin? || current_user.super_user? #|| current_user.merchant_admin? %>
       <button type="button" class="btn btn-outline-purple tablink w3-vpos-purple" style="font-size: small; width: 120px;" onclick="openCity(event, 'entity_info')">MERCHANTS</button>
     <% end %>
 
@@ -18,7 +18,7 @@
     <button type="button" class="btn btn-outline-purple tablink" style="font-size: small; width: 165px;" onclick="openCity(event, 'sports')">SPORTS SETUP</button>
   </div>
 
-  <% if current_user.super_admin? || current_user.super_user? || current_user.merchant_admin? %>
+  <% if current_user.super_admin? || current_user.super_user? %>
     <div id="entity_info" class="city active">
       <%= render :partial=> "entity_info_index" %>
     </div>
@@ -28,9 +28,10 @@
     <div id="entity_division" class="city" style="display:none">
       <%= render :partial=> "/entity_divisions/entity_index" %>
     </div>
-  <% else %>
+  <% elsif current_user.merchant_admin?  %>
     <div id="entity_division" class="city active">
-      <%= render :partial=> "/entity_divisions/entity_division_index/#{current_user.entity_code}" %>
+      <% params[:entity_code] = current_user.entity_code %>
+      <%= render :partial=> "/entity_divisions/entity_division_index" %>
     </div>
   <% end %>
 
@@ -40,15 +41,24 @@
       <%= render :partial=> "/entity_infos/sports_index" %>
     </div>
   <% elsif current_user.merchant_admin? %>
+    <%# an_entity_info = EntityInfo.where(active_status: true, assigned_code: current_user.entity_code).order(created_at: :desc).first %>
+    <%# if an_entity_info %>
+      <%# if an_entity_info.entity_cat_id == "SPO" #|| an_entity_div.activity_type_code == "SHW" %>
+
+      <%# else %>
+      <%# end %>
+    <%# end %>
     <div id="sports" class="city" style="display:none">
-      <%= render :partial=> "/entity_infos/main_sports_index/#{current_user.entity_code}" %>
+      <% params[:entity_code] = current_user.entity_code %>
+      <%= render :partial=> "/entity_divisions/main_sports_index" %>
     </div>
   <% elsif current_user.merchant_service? %>
     <% an_entity_div = EntityDivision.where(active_status: true, assigned_code: current_user.division_code).order(created_at: :desc).first %>
     <% if an_entity_div %>
-      <% if an_entity_div.activity_type_code == "SPO" || an_entity_div.activity_type_code == "SHW" %>
+      <% if an_entity_div.activity_type_code == "SPO" #|| an_entity_div.activity_type_code == "SHW" %>
         <div id="sports" class="city" style="display:none">
-          <%= render :partial=> "/entity_infos/main_sports_index/#{current_user.entity_code}" %>
+          <% params[:entity_code] = current_user.entity_code %>
+          <%= render :partial=> "/entity_divisions/main_sports_index" %>
         </div>
       <% else %>
       <% end %>

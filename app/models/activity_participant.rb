@@ -10,8 +10,20 @@ class ActivityParticipant < ApplicationRecord
   validates :division_code, presence: {message: " cannot be empty."}
   validates :participant_name, presence: {message: " cannot be empty."}
   validates :participant_alias, presence: {message: " cannot be empty."}
-  validates :image_data, presence: {message: " cannot be empty."}
-  validates :image_path, presence: {message: " cannot be empty."}
+  #validates :image_data, presence: {message: " cannot be empty."}
+  #validates :image_path, presence: {message: " cannot be empty."}
+
+
+  def self.gen_participant_code
+    sql = "select nextval('participant_gen_codes')"
+    val = ActiveRecord::Base.connection.execute(sql)
+    val = val.values[0][0]
+    logger.info "For Participant ID, #{val}"
+    val
+    #"#{val}"0000000011
+     code = "%010d" % val
+     "#{code}"
+  end
 
 
 

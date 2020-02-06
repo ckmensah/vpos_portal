@@ -17,6 +17,28 @@ class User < ApplicationRecord
   validates :email, presence: {message: " cannot be empty."}
   validates :role_id, presence: {message: "Please choose a role"}
 
+  validate :validate_division_code #, :if => :skip_update_validation
+  validate :validate_entity_code #, :if => :skip_update_validation
+
+
+
+  def validate_division_code
+    if self.role_id == 4
+      unless self.division_code.present?
+        errors.add :division_code, " cannot be empty."
+      end
+    end
+  end
+
+
+  def validate_entity_code
+    if self.role_id == 3 || self.role_id == 4
+      unless self.entity_code.present?
+        errors.add :entity_code, " cannot be empty."
+      end
+    end
+  end
+
 
   def user_fullname
     "#{last_name} #{first_name} (#{user_name})"

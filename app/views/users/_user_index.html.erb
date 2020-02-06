@@ -38,7 +38,7 @@
 
           <tr>
             <td><%= link_to 'VIEW', user_show_path(user, count: params[:count], page: params[:page]),
-                            style: "width:100px; height: 30px;",
+                            style: "width:70px; height: 30px;",
                             class: 'w3-button w3-purple-vpos w3-border w3-border-purple w3-tiny w3-round-large', remote:true%></td>
             <td><strong><%= user.last_name %> <%= user.first_name %></strong></td>
             <td><strong><%= user.user_name %></strong></td>
@@ -52,16 +52,16 @@
             <td><strong><%= user.created_at %></strong></td>
             <td>
               <%= link_to 'EDIT', user_edit_path(user, count: params[:count], page: params[:page]),
-                          style: "width:100px; height: 30px; color: #800754 !important",
+                          style: "width:70px; height: 30px; color: #800754 !important",
                           class: 'w3-button w3-white w3-border w3-border-purple w3-tiny w3-round-large', remote:true%>
               <% if user.active_status %>
                   <%= link_to 'DISABLE', user_delete_path(user, count: params[:count], page: params[:page]),
-                              style: "width:100px; height: 30px; color: #800754 !important",
+                              style: "width:80px; height: 30px; color: #800754 !important",
                               method: :delete, data: { confirm: "Do you wish to disable: #{user.user_name}?" },
                               class: 'w3-button w3-white w3-border w3-border-purple w3-tiny w3-round-large', remote:true%>
               <% else %>
                   <%= link_to 'ENABLE', user_delete_path(user, count: params[:count], page: params[:page]),
-                              style: "width:100px; height: 30px;",
+                              style: "width:80px; height: 30px;",
                               method: :delete, data: { confirm: "Do you wish to enable: #{user.user_name}?" },
                               class: 'w3-button w3-vpos-purple w3-border w3-border-purple w3-tiny w3-round-large', remote:true%>
               <% end %>

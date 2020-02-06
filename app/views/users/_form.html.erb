@@ -9,7 +9,7 @@
       <br/>
       <%#= simple_form_for(@user, :data => {  :remote => true, count: params[:count], page: params[:page]}) do |f| %>
       <%#= simple_form_for(@user, url: user_create_path(@user, count: params[:count], page: params[:page] ),:remote => true) do |f| %>
-      <%= simple_form_for(@user, as: @user, url: user_create_path(@user, count: params[:count], page: params[:page]),:remote => true) do |f| %>
+      <%= simple_form_for(@user, as: @user, url: user_create_path(@user, into_create: "into_create", count: params[:count], page: params[:page]),:remote => true) do |f| %>
         <%= f.error_notification %>
           <%= f.error_notification message: f.object.errors[:base].to_sentence if f.object.errors[:base].present? %>
         <div class="w3-half">
@@ -23,26 +23,35 @@
         <div class="w3-half">
 
           <% if current_user.super_admin? %>
-            <%= f.input :role_id, collection: Role.all.order(role_name: :asc), label_method: :role_name, value_method: :id, :required => true , include_blank: true, label: "Role:", :input_html => {autocomplete: "off", style:"",  :class => 'form-control w3-input w3-border w3-white input-group input-append'} %>
+            <%= f.input :role_id, collection: Role.all.order(role_name: :asc), label_method: :role_name, value_method: :id, :required => true , include_blank: true, label: "Role:", :input_html => {id: "id_role", autocomplete: "off", style:"",  :class => 'form-control w3-input w3-border w3-white input-group input-append'} %>
           <% elsif current_user.super_user? %>
-            <%= f.input :role_id, collection: Role.where("active_status = true and id not in (1)").order(role_name: :asc), label_method: :role_name, value_method: :id, :required => true , include_blank: true, label: "Role:", :input_html => {autocomplete: "off", style:"",  :class => 'form-control w3-input w3-border w3-white input-group input-append'} %>
+            <%= f.input :role_id, collection: Role.where("active_status = true and id not in (1)").order(role_name: :asc), label_method: :role_name, value_method: :id, :required => true , include_blank: true, label: "Role:", :input_html => {id: "id_role", autocomplete: "off", style:"",  :class => 'form-control w3-input w3-border w3-white input-group input-append'} %>
           <% elsif current_user.merchant_admin? %>
-            <%= f.input :role_id, collection: Role.where("active_status = true and id not in (1,2,3)").order(role_name: :asc), label_method: :role_name, value_method: :id, :required => true , include_blank: true, label: "Role:", :input_html => {autocomplete: "off", style:"",  :class => 'form-control w3-input w3-border w3-white input-group input-append'} %>
+            <%= f.input :role_id, collection: Role.where("active_status = true and id not in (1,2,3)").order(role_name: :asc), label_method: :role_name, value_method: :id, :required => true , include_blank: true, label: "Role:", :input_html => {id: "id_role", autocomplete: "off", style:"",  :class => 'form-control w3-input w3-border w3-white input-group input-append'} %>
           <% else %>
             <%#= f.input :role_id, collection: Role.where("active_status = true and id not in (1,2,3)").order(role_name: :asc), label_method: :role_name, value_method: :id, :required => true , include_blank: true, label: "Role:", :input_html => {autocomplete: "off", style:"",  :class => 'form-control w3-input w3-border w3-white input-group input-append'} %>
           <% end %>
           <%#= f.input :access_type,  label: "Access Type", collection: @region_masters, label_method: :region_name, value_method: :id, required: true, input_html:{id: "id_region", autocomplete: "off",class:"form-control w3-input w3-border w3-white input-group input-append",style:""}  %>
           <% if current_user.super_admin? || current_user.super_user? %>
-            <%= f.input :entity_code,  label: "Merchant", collection: @entity_infos, label_method: :entity_name, value_method: :assigned_code, required: true, input_html:{id: "id_entity_info", autocomplete: "off",class:"form-control w3-input w3-border w3-white input-group input-append",style:""}  %>
-            <%= f.input :division_code,  label: "Service", collection: @entity_divisions, label_method: :division_name, value_method: :assigned_code, required: true, input_html:{id: "id_entity_div", autocomplete: "off",class:"form-control w3-input w3-border w3-white input-group input-append",style:""}  %>
+            <div id="id_entity" style="display: none">
+              <%= f.input :entity_code,  label: "Merchant", collection: @entity_infos, label_method: :entity_name, value_method: :assigned_code, required: true, input_html:{id: "id_entity_info", autocomplete: "off",class:"form-control w3-input w3-border w3-white input-group input-append",style:""}  %>
+            </div>
+            <div id="id_service" style="display: none">
+              <%= f.input :division_code,  label: "Service", collection: @entity_divisions, label_method: :division_name, value_method: :assigned_code, required: true, input_html:{id: "id_entity_div", autocomplete: "off",class:"form-control w3-input w3-border w3-white input-group input-append",style:""}  %>
+            </div>
           <% elsif current_user.merchant_admin? %>
             <%= f.input :entity_code, :as => :hidden, input_html:{value: current_user.entity_code} %>
-            <%= f.input :division_code,  label: "Service", collection: @entity_divisions.where(entity_code: current_user.entity_code), label_method: :division_name, value_method: :assigned_code, required: true, input_html:{id: "id_entity_div", autocomplete: "off",class:"form-control w3-input w3-border w3-white input-group input-append",style:""}  %>
+            <div id="id_service" style="display: none">
+              <%= f.input :division_code,  label: "Service", collection: @entity_divisions.where(entity_code: current_user.entity_code), label_method: :division_name, value_method: :assigned_code, required: true, input_html:{id: "id_entity_div", autocomplete: "off",class:"form-control w3-input w3-border w3-white input-group input-append",style:""}  %>
+            </div>
+
           <% end %>
 
           <%#= f.input :comment,  label: "Comment", :as => :text, value_method: :id, required: true, input_html:{rows: 5, cols: 3, autocomplete: "off",class:"form-control w3-border ",style:""}  %>
-          <%= f.input :password, autocomplete: "off", required: false, label: "Password", hint: ("#{@minimum_password_length} characters minimum" if @minimum_password_length), input_html:{id: "new-password", class:"form-control w3-input w3-border w3-white input-group input-append",style:""}  %>
-          <%= f.input :password_confirmation, autocomplete: "off", required: false,  label: "Confirm password", input_html:{id: "new-password", class:"form-control w3-input w3-border w3-white input-group input-append",style:""}  %>
+          <%#= f.input :password, autocomplete: "off", required: false, label: "Password", hint: ("#{@minimum_password_length} characters minimum" if @minimum_password_length), input_html:{id: "new2-password", class:"form-control w3-input w3-border w3-white input-group input-append",style:""}  %>
+          <%#= f.input :password_confirmation, autocomplete: "off", required: false,  label: "Confirm password", input_html:{id: "new1-password", class:"form-control w3-input w3-border w3-white input-group input-append",style:""}  %>
+          <%= f.input :password, autocomplete: "off", required: false, label: "Password", input_html:{id: "password", class:"form-control w3-card-4 w3-input w3-border w3-sand input-group input-append",style:"height:3%; width:90%; margin-left: 5%; position: static"}  %>
+          <%= f.input :password_confirmation, autocomplete: "off", required: false,  label: "Confirm password", input_html:{id: "password_conf", class:"form-control w3-card-4 w3-input w3-border w3-sand input-group input-append",style:" height:3%; width:90%; margin-left: 5%; position: static "}  %>
 
 
         </div>
@@ -76,6 +85,9 @@
     $(document).ready(function(){
         $('[data-toggle="tooltip"]').tooltip();
         var entity_info_id = $('#id_entity_info');
+        var role_id = $('#id_role');
+        var service_id = "id_service";
+        var entity_id = "id_entity";
         var entity_div_id  = $('#id_entity_div');
 
         entity_info_id.change(function() {
@@ -88,6 +100,43 @@
                 dataType: "script"
             });
         });
+
+        if (role_id.val() == "3") {
+            console.log("For 3");
+            document.getElementById(entity_id).style.display = "block";
+            document.getElementById(service_id).style.display = "none";
+            // entity_info_id.val("");
+            // entity_div_id.val("");
+        } else if (role_id.val() == "4") {
+            console.log("For 4");
+            document.getElementById(entity_id).style.display = "block";
+            document.getElementById(service_id).style.display = "block";
+        }
+
+        role_id.change(function() {
+            console.log("For role id:: " + role_id.val());
+            // entity_div_id.attr("title", "Now select a service.");
+            if (role_id.val() == "1" || role_id.val() == "2") {
+                console.log("For 1 and 2");
+                document.getElementById(entity_id).style.display = "none";
+                document.getElementById(service_id).style.display = "none";
+                entity_info_id.val("");
+                entity_div_id.empty();
+            } else if (role_id.val() == "3") {
+                console.log("For 3");
+                document.getElementById(entity_id).style.display = "block";
+                document.getElementById(service_id).style.display = "none";
+                entity_info_id.val("");
+                entity_div_id.val("");
+
+            } else if (role_id.val() == "4") {
+                console.log("For 4");
+                document.getElementById(entity_id).style.display = "block";
+                document.getElementById(service_id).style.display = "block";
+            }
+            // $('#img_prev').removeClass('hidden');
+        });
+
     });
 
 </script>

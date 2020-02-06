@@ -49,6 +49,7 @@ Rails.application.routes.draw do
   get '/entity_divisions/entity_index' => 'entity_divisions#entity_index', :as => 'entity_index'
   get '/entity_infos/sports_index' => 'entity_infos#sports_index', :as => 'sports_index'
   get '/entity_divisions/main_sports_index/:entity_code' => 'entity_divisions#main_sports_index', :as => 'main_sports_index'
+  get '/entity_divisions/main_sports_index' => 'entity_divisions#main_sports_index'
 
   get '/entity_divisions/division_setup/:division_code' => 'entity_divisions#division_setup', :as => 'division_setup'
   post '/division_setup_creation' => 'entity_divisions#create_division_setup', :as => 'create_division_setup'
@@ -68,6 +69,7 @@ Rails.application.routes.draw do
   post '/suburb_masters/city_update', :as => 'suburb_city_ajax_call'
   post '/suburb_masters/suburb_update', :as => 'general_suburb_ajax_call'
   post '/entity_divisions/division_update', :as => 'general_division_ajax_call'
+  #post '/users/divisions', :as => 'general_role_ajax_call'
 
   resources :suburb_masters
   resources :city_town_masters

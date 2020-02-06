@@ -33,7 +33,11 @@ class UsersController < ApplicationController
   def new
     @user = User.new
     @entity_infos = EntityInfo.where(active_status: true).order(entity_name: :asc)
-    @entity_divisions = EntityDivision.where(id: 0, active_status: true).order(division_name: :asc)
+    if current_user.super_admin? || current_user.super_user?
+      @entity_divisions = EntityDivision.where(id: 0, active_status: true).order(division_name: :asc)
+    elsif current_user.merchant_admin?
+      @entity_divisions = EntityDivision.where(active_status: true).order(division_name: :asc)
+    end
   end
 
   # GET /users/1/edit
@@ -77,15 +81,18 @@ class UsersController < ApplicationController
   # PATCH/PUT /users/1.json
   def update
     @entity_infos = EntityInfo.where(active_status: true).order(entity_name: :asc)
-    unless user_params[:role_id] == "1" || user_params[:role_id] == "2"
+    #unless user_params[:role_id] == "1" || user_params[:role_id] == "2"
       if user_params[:role_id] == "3"
         @user.access_type = "M"
       elsif user_params[:role_id] == "4"
         @user.access_type = "S"
+      else
+        @user.access_type = nil
       end
-    end
+    #end
+
     respond_to do |format|
-      if @user.save #update(user_params)
+      if @user.update(user_params)
         format.html { redirect_to @user, notice: 'User was successfully updated.' }
         flash.now[:notice] = "#{user_params[:user_name].capitalize} was successfully updated."
         format.js { render :show }

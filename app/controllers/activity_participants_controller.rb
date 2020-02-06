@@ -36,8 +36,9 @@ class ActivityParticipantsController < ApplicationController
   # POST /activity_participants.json
   def create
     #params[:activity_participant][:image].open if activity_participant_params[:image].present?
-    logger.info "Result :: #{params[:activity_participant][:image].inspect}"
+    #logger.info "Result :: #{params[:activity_participant][:image].inspect}"
     @activity_participant = ActivityParticipant.new(activity_participant_params)
+    @activity_participant.assigned_code = ActivityParticipant.gen_participant_code
 
     respond_to do |format|
       if @activity_participant.save

@@ -31,10 +31,10 @@
       <!--<span class="navbar-logo-text">Oncoscape</span>-->
     </a>
 
-    <% interest = EntityDivision.all.first %>
-    <% interest.assigned_code  %>
-    <% interest.activity_type_code %>
-    
+    <%# interest = EntityDivision.all.first %>
+    <%# interest.assigned_code  %>
+    <%# interest.activity_type_code %>
+
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#demo-navbar" aria-controls="demo-navbar" aria-expanded="false" aria-label="Toggle navigation">
 
       <span class="navbar-toggler-icon"></span>
@@ -71,27 +71,37 @@
 
         </li>
 
-        <li class="nav-item">
+        <% if current_user.super_admin? || current_user.super_user? %>
+          <li class="nav-item">
+            <a class="nav-link text-light" href="<%= entity_infos_path %>">Merchant</a>
+          </li>
+          <% elsif current_user.merchant_admin? %>
+          <li class="nav-item">
+            <a class="nav-link text-light" href="<%= entity_infos_path %>">Services</a>
+          </li>
+          <% end %>
 
-          <a class="nav-link text-light" href="<%= entity_infos_path %>">Merchant</a>
 
-        </li>
+        <% if current_user.super_admin? || current_user.super_user? %>
+          <li class="nav-item dropdown">
+            <!--<i class="fas fa-angle-down"></i>-->
+            <a class="nav-link text-light dropdown-toggle" href="#" id="navbardrop" data-toggle="dropdown">Setup </a>
 
+            <div class="dropdown-menu dropdown-menu-right">
+              <a class="dropdown-item" href= "<%= region_masters_path %>" >Location</a>
+              <a class="dropdown-item" href="<%= entity_categories_path %>">Merchant Categories</a>
+              <a class="dropdown-item" href="<%= activity_types_path %>">Activity Types</a>
+              <a class="dropdown-item" href="<%= activity_categories_path %>">Activity Category</a>
+              <a class="dropdown-item" href="<%= main_users_path %>">Users</a>
+              <a class="dropdown-item" href="<%= roles_path %>">Roles</a>
+            </div>
 
-        <li class="nav-item dropdown">
-          <!--<i class="fas fa-angle-down"></i>-->
-          <a class="nav-link text-light dropdown-toggle" href="#" id="navbardrop" data-toggle="dropdown">Setup </a>
-
-          <div class="dropdown-menu dropdown-menu-right">
-            <a class="dropdown-item" href= "<%= region_masters_path %>" >Location</a>
-            <a class="dropdown-item" href="<%= entity_categories_path %>">Merchant Categories</a>
-            <a class="dropdown-item" href="<%= activity_types_path %>">Activity Types</a>
-            <a class="dropdown-item" href="<%= activity_categories_path %>">Activity Category</a>
-            <a class="dropdown-item" href="<%= main_users_path %>">Users</a>
-            <a class="dropdown-item" href="<%= roles_path %>">Roles</a>
-          </div>
-
-        </li>
+          </li>
+          <% elsif current_user.merchant_admin? %>
+          <li class="nav-item">
+            <a class="nav-link text-light" href="<%= main_users_path %>">Users</a>
+          </li>
+          <% end %>
 
 
         <li class="nav-item dropdown">

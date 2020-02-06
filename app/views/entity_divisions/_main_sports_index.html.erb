@@ -6,19 +6,32 @@
   <h4><%= @entity_name %></h4>
   <br>
   <div>
-    <div class="w3-half">
-      <%#= link_to 'NEW', new_entity_division_path(entity_code: params[:entity_code], count: params[:count], page: params[:page]), style: "width:120px;",
+    <% if current_user.super_admin? || current_user.super_user? #|| current_user.merchant_admin? %>
+      <div class="w3-half">
+        <%#= link_to 'NEW', new_entity_division_path(entity_code: params[:entity_code], count: params[:count], page: params[:page]), style: "width:120px;",
                   class: 'w3-button w3-purple-vpos w3-border w3-border-purple w3-small w3-round-large',remote:true %>
-      <%= link_to 'BACK', sports_index_path(entity_code: params[:entity_code], count: params[:count], page: params[:page]), style: "width:120px;",
-                  class: 'w3-button w3-white w3-border w3-border-purple w3-small w3-round-large',remote:true %>
-    </div>
-    <div class="w3-half">
-      <%= select_tag :count, options_for_select([10,20,30,40,50], params[:count].to_i),
-                     :data => {  :remote => true, :url => url_for(:controller => "entity_divisions", :action => "main_sports_index", :params => {entity_code: params[:entity_code]})},
-                     id:"record", class: "w3-button w3-white w3-border w3-border-purple w3-round-large",
-                     style: "width:auto; height:35px; float:right", remote:true %>
 
-    </div>
+        <%= link_to 'BACK', sports_index_path(entity_code: params[:entity_code], count: params[:count], page: params[:page]), style: "width:120px;",
+                    class: 'w3-button w3-white w3-border w3-border-purple w3-small w3-round-large',remote:true %>
+      </div>
+      <div class="w3-half">
+        <% logger.info "Trial :: #{params[:entity_code].inspect}" %>
+        <%= select_tag :count, options_for_select([10,20,30,40,50], params[:count].to_i),
+                       :data => {  :remote => true, :url => url_for(:controller => "entity_divisions", :action => "main_sports_index", :params => {entity_code: params[:entity_code]})},
+                       id:"record", class: "w3-button w3-white w3-border w3-border-purple w3-round-large",
+                       style: "width:auto; height:35px; float:right", remote:true %>
+
+      </div>
+      <% else %>
+      <div class="">
+        <% logger.info "Trial :: #{params[:entity_code].inspect}" %>
+        <%= select_tag :count, options_for_select([10,20,30,40,50], params[:count].to_i),
+                       :data => {  :remote => true, :url => url_for(:controller => "entity_divisions", :action => "main_sports_index", :params => {entity_code: params[:entity_code]})},
+                       id:"record", class: "w3-button w3-white w3-border w3-border-purple w3-round-large",
+                       style: "width:auto; height:35px; float:right", remote:true %>
+
+      </div>
+    <% end %>
   </div>
   <br>
   <div class="table-responsive-md">
@@ -35,7 +48,7 @@
       </tr>
       </thead>
       <tbody>
-      <% @entity_divisions.each do |entity_division| %>
+      <% @entity_div_sports.each do |entity_division| %>
         <%# division_act_lov = DivisionActivityLov.where(division_code: entity_division.assigned_code, active_status: true) %>
         <%# activity_div = ActivityDiv.where(division_code: entity_division.assigned_code, active_status: true) %>
         <%# act_sub_div_class = ActivitySubDivClass.where(entity_div_code: entity_division.assigned_code, del_status: false) %>
