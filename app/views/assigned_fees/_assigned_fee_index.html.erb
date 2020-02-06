@@ -8,6 +8,11 @@
     <div class="w3-half">
       <%= link_to 'NEW', new_assigned_fee_path(count: params[:count], page: params[:page]), style: "width:120px;",
                   class: 'w3-button w3-purple-vpos w3-border w3-border-purple w3-small w3-round-large',remote:true %>
+      <% if current_user.super_admin? || current_user.super_user? #|| current_user.merchant_admin? %>
+        <%= link_to 'BACK', entity_index_path(count: params[:count], page: params[:page]), style: "width:120px;",
+                    class: 'w3-button w3-white w3-border w3-border-purple w3-small w3-round-large',remote:true %>
+      <% end %>
+
     </div>
     <div class="w3-half">
       <%= select_tag :count, options_for_select([50, 100, 150, 200, 500], params[:count].to_i),

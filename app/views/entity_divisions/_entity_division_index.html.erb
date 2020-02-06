@@ -75,7 +75,7 @@
             <td><strong><%= entity_division.created_at %></strong></td>
             <td>
               <% if entity_division.active_status && entity_division.del_status == false %>
-                <% if current_user.super_admin? #|| current_user.super_user? %>
+                <% if current_user.super_admin? || current_user.super_user? %>
                   <%= link_to 'SERVICE FEES', assigned_fee_index_path(entity_code: params[:entity_code], code: entity_division.assigned_code, count: params[:count], page: params[:page]),
                               style: "width:100px; height: 30px; color: #800754 !important",
                               class: 'w3-button w3-white w3-border w3-border-purple w3-tiny w3-round-large', remote:true%>

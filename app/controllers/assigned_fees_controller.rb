@@ -11,7 +11,12 @@ class AssignedFeesController < ApplicationController
     params[:count] ? params[:count] : params[:count] = 10
     params[:page] ? params[:page] : params[:page] = 1
 
-    @assigned_fees = AssignedFee.where(del_status: false).paginate(:page => params[:page], :per_page => params[:count]).order('created_at desc')
+    if current_user.super_admin? || current_user.super_user?
+      @assigned_fees = AssignedFee.where(entity_div_code: params[:code], del_status: false).paginate(:page => params[:page], :per_page => params[:count]).order('created_at desc')
+      @services = EntityDivision.where(active_status: true, assigned_code: params[:code]).order(created_at: :desc).first
+      @service_name = @services ? @services.division_name : ""
+    else
+    end
   end
 
   # GET /assigned_fees/1
