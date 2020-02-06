@@ -362,6 +362,7 @@ ActiveRecord::Schema.define(version: 2020_01_28_110840) do
     t.string "recipient_type", limit: 50
     t.string "recipient_email", limit: 255
     t.string "narration", limit: 255
+    t.integer "qty"
   end
 
   create_table "payment_request", id: false, force: :cascade do |t|

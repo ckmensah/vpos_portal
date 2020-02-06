@@ -38,6 +38,7 @@ Rails.application.routes.draw do
 
   get '/activity_categories/activity_category_index' => 'activity_categories#activity_category_index', :as => 'activity_category_index'
 
+  get '/assigned_fees/assigned_fee_index' => 'assigned_fees#assigned_fee_index', :as => 'assigned_fee_index'
 
 
   get '/entity_categories/entity_category_index' => 'entity_categories#entity_category_index', :as => 'entity_category_index'
@@ -98,6 +99,7 @@ Rails.application.routes.draw do
   resources :permission_roles
   resources :permissions
   resources :roles
+  resources :assigned_fees
 
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".

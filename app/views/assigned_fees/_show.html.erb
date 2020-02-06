@@ -1,0 +1,102 @@
+
+
+<div class="w3-container" >
+  <div id="id01" class="w3-modal w3-animate-opacity" style=" display: block">
+    <!--<div class="w3-modal-content w3-card-4" >-->
+    <br/>
+
+    <div class="">
+
+      <div class="w3-white w3-hover-shadow col-md-6 offset-md-3 w3-card-4 w3-border w3-border-purple rcorners w3-center">
+        <h4 class="show w3-center"><strong>Assigned Fees Details</strong></h4>
+        <p id="notice11"><strong></strong></p>
+        <div class="w3-container">
+          <br/>
+
+          <table class="w3-table-all table table-bordered w3-hoverable w3-card-4">
+
+            <tr>
+              <td class="raw_theme w3-border cell-cust-grad w3-leftbar"><strong>Merchant Name:</strong></td>
+              <td><strong><%= @assigned_fee.entity_division.division_name %></strong></td>
+            </tr>
+
+            <tr>
+              <td class="raw_theme w3-border cell-cust-grad w3-leftbar"><strong>Service Name:</strong></td>
+              <td><strong><%= @assigned_fee.entity_division.entity_info.entity_name %></strong></td>
+            </tr>
+
+            <tr>
+              <td class="raw_theme w3-border cell-cust-grad w3-leftbar"><strong>Trans Type:</strong></td>
+              <td><strong><%= @assigned_fee.trans_type %></strong></td>
+            </tr>
+
+            <tr>
+              <td class="raw_theme w3-border cell-cust-grad w3-leftbar"><strong>Fee:</strong></td>
+              <td><strong><%= @assigned_fee.fee %></strong></td>
+            </tr>
+
+            <tr>
+              <td class="raw_theme w3-border cell-cust-grad w3-leftbar"><strong>Flat percent:</strong></td>
+              <td><strong><%= @assigned_fee.flat_percent %></strong></td>
+            </tr>
+
+            <tr>
+              <td class="raw_theme w3-border cell-cust-grad w3-leftbar"><strong>Cap:</strong></td>
+              <td><strong><%= @assigned_fee.cap %></strong></td>
+            </tr>
+
+            <tr>
+              <td class="raw_theme w3-border cell-cust-grad w3-leftbar"><strong>Limit Cap:</strong></td>
+              <td><strong><%= @assigned_fee.limit_capped %></strong></td>
+            </tr>
+
+            <tr>
+              <td class="raw_theme w3-border cell-cust-grad w3-leftbar"><strong>Charged To:</strong></td>
+<!--              <td><strong><%#= @assigned_fee.charged_to %></strong></td>-->
+              <% if @assigned_fee.charged_to == "M" %>
+                <td><strong>Merchant</strong></td>
+              <% elsif @assigned_fee.charged_to == "C" %>
+                <td><strong>Customer</strong></td>
+              <% end %>
+            </tr>
+
+            <tr>
+              <td class="raw_theme w3-border cell-cust-grad w3-leftbar"><strong>Status:</strong></td>
+
+              <% if @assigned_fee.active_status %>
+                <td><strong>Active</strong></td>
+              <% else %>
+                <td><strong>Inactive</strong></td>
+              <% end %>
+            </tr>
+
+            <tr>
+              <td class="raw_theme w3-border cell-cust-grad w3-leftbar"><strong>Comment:</strong></td>
+              <td><strong><%= @assigned_fee.comment %></strong></td>
+            </tr>
+
+
+            <tr>
+              <td class="raw_theme w3-border cell-cust-grad w3-leftbar"><strong>Date:</strong></td>
+              <td>
+                <strong><%= @assigned_fee.created_at %></strong>
+              </td>
+            </tr>
+
+          </table>
+
+          <br/>
+          <div class="w3-center">
+            <%= link_to 'Back', assigned_fee_index_path(entity_code: params[:entity_code], code: params[:code], page: params[:page], count: params[:count]), class: 'w3-bar-item w3-btn w3-ripple w3-round-large w3-dark-gray', remote: true %>
+          </div>
+          <br/>
+        </div>
+
+      </div>
+      <br/>
+    </div>
+
+    <!--</div>-->
+
+  </div>
+</div>

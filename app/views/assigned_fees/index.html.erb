@@ -1,0 +1,47 @@
+<p id="notice"><%= notice %></p>
+
+<h1>Assigned Fees</h1>
+
+<table>
+  <thead>
+    <tr>
+      <th>Entity div code</th>
+      <th>Trans type</th>
+      <th>Fee</th>
+      <th>Flat percent</th>
+      <th>Cap</th>
+      <th>Limit capped</th>
+      <th>Charged to</th>
+      <th>Comment</th>
+      <th>Active status</th>
+      <th>Del status</th>
+      <th>User</th>
+      <th colspan="3"></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @assigned_fees.each do |assigned_fee| %>
+      <tr>
+        <td><%= assigned_fee.entity_div_code %></td>
+        <td><%= assigned_fee.trans_type %></td>
+        <td><%= assigned_fee.fee %></td>
+        <td><%= assigned_fee.flat_percent %></td>
+        <td><%= assigned_fee.cap %></td>
+        <td><%= assigned_fee.limit_capped %></td>
+        <td><%= assigned_fee.charged_to %></td>
+        <td><%= assigned_fee.comment %></td>
+        <td><%= assigned_fee.active_status %></td>
+        <td><%= assigned_fee.del_status %></td>
+        <td><%= assigned_fee.user_id %></td>
+        <td><%= link_to 'Show', assigned_fee %></td>
+        <td><%= link_to 'Edit', edit_assigned_fee_path(assigned_fee) %></td>
+        <td><%= link_to 'Destroy', assigned_fee, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<br>
+
+<%= link_to 'New Assigned Fee', new_assigned_fee_path %>

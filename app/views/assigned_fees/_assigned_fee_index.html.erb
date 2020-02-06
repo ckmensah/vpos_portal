@@ -1,0 +1,100 @@
+
+<div>
+  <br>
+  <p id="notes11"><%#= notice %></p>
+  <h4><%= @service_name %></h4>
+  <br>
+  <div>
+    <div class="w3-half">
+      <%= link_to 'NEW', new_assigned_fee_path(count: params[:count], page: params[:page]), style: "width:120px;",
+                  class: 'w3-button w3-purple-vpos w3-border w3-border-purple w3-small w3-round-large',remote:true %>
+    </div>
+    <div class="w3-half">
+      <%= select_tag :count, options_for_select([50, 100, 150, 200, 500], params[:count].to_i),
+                     :data => {  :remote => true, :url => url_for(:controller => "assigned_fees", :action => "assigned_fee_index")},
+                     id:"record", class: "w3-button w3-white w3-border w3-border-purple w3-round-large",
+                     style: "width:auto; height:35px; float:right", remote:true %>
+
+    </div>
+  </div>
+  <br>
+  <div class="table-responsive-md">
+    <br>
+    <table class="table w3-responsive table-striped">
+      <thead>
+      <tr>
+        <th></th>
+
+<!--        <th>Merchant Name</th>-->
+        <th>Service Name</th>
+<!--        <th>Trans Type</th>-->
+        <th>Fee</th>
+<!--        <th>Flat Percent</th>-->
+        <th>Cap</th>
+        <th>Limit Capped</th>
+        <th>Charged To</th>
+        <th>Status</th>
+        <th>Date</th>
+        <th>Actions</th>
+      </tr>
+      </thead>
+      <tbody>
+      <% @assigned_fees.each do |assigned_fee| %>
+        <tr>
+          <td><%= link_to 'VIEW', assigned_fee_path(assigned_fee, count: params[:count], page: params[:page]),
+                          style: "width:60px; height: 30px;",
+                          class: 'w3-button w3-purple-vpos w3-border w3-border-purple w3-tiny w3-round-large', remote:true%></td>
+<!--          <td><strong><%#= assigned_fee.entity_division.entity_info.entity_name %></td>-->
+          <td><%= assigned_fee.entity_division.division_name %></td>
+<!--          <td><strong><%#= assigned_fee.trans_type %></td>-->
+          <td><%= assigned_fee.fee %></td>
+<!--          <td><strong><%#= assigned_fee.flat_percent %></td>-->
+          <td><%= assigned_fee.cap %></td>
+          <td><%= assigned_fee.limit_capped %></td>
+          <td><%= assigned_fee.charged_to %></td>
+          <%# if assigned_fee.charged_to == "M" %>
+<!--            <td><strong>Merchant</strong></td>-->
+          <%# elsif assigned_fee.charged_to == "C" %>
+<!--            <td><strong>Customer</strong></td>-->
+          <%# end %>
+          <% if assigned_fee.active_status %>
+            <td>Active</td>
+          <% else %>
+            <td>Inactive</td>
+          <% end %>
+          <td><%= assigned_fee.created_at %></td>
+          <td>
+            <%= link_to 'EDIT', edit_assigned_fee_path(assigned_fee, count: params[:count], page: params[:page]),
+                        style: "width:60px; height: 30px; color: #800754 !important",
+                        class: 'w3-button w3-white w3-border w3-border-purple w3-tiny w3-round-large', remote:true%>
+            <% if assigned_fee.active_status %>
+              <%= link_to 'DISABLE', assigned_fee_path(assigned_fee, count: params[:count], page: params[:page]),
+                          style: "width:70px; height: 30px; color: #800754 !important",
+                          method: :delete, data: { confirm: "Do you wish to disable assigned fees for: #{assigned_fee.entity_division.division_name}?" },
+                          class: 'w3-button w3-white w3-border w3-border-purple w3-tiny w3-round-large', remote:true%>
+            <% else %>
+              <%= link_to 'ENABLE', assigned_fee_path(assigned_fee, count: params[:count], page: params[:page]),
+                          style: "width:70px; height: 30px;",
+                          method: :delete, data: { confirm: "Do you wish to enable assigned fees for: #{assigned_fee.entity_division.division_name}?" },
+                          class: 'w3-button w3-purple-vpos w3-border w3-border-purple w3-tiny w3-round-large', remote:true%>
+            <% end %>
+
+          </td>
+        </tr>
+
+      <% end %>
+
+      </tbody>
+    </table>
+  </div>
+
+
+</div>
+
+
+<script>
+    $(function(){
+        $('.pagination a').attr('data-remote', 'true')
+    });
+
+</script>

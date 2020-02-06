@@ -1,0 +1,2 @@
+module AssignedFeesHelper
+end

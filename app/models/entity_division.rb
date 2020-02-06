@@ -14,6 +14,7 @@ class EntityDivision < ApplicationRecord
   has_many :activity_fixtures, class_name: 'ActivityFixture', foreign_key: :division_code
   has_many :activity_category_divs, class_name: 'ActivityCategoryDiv', foreign_key: :division_code
   has_many :activity_div_cats, class_name: 'ActivityDivCat', foreign_key: :division_code
+  has_many :assigned_fees, class_name: 'AssignedFee', foreign_key: :entity_div_code
 
   # has_many :entity_wallet_configs, class_name: 'EntityWalletConfig', foreign_key: :division_code
   # has_many :assigned_service_code, class_name: 'AssignedServiceCode', foreign_key: :entity_div_code

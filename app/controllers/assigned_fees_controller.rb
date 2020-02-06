@@ -1,0 +1,111 @@
+class AssignedFeesController < ApplicationController
+  before_action :set_assigned_fee, only: [:show, :edit, :update, :destroy]
+
+  # GET /assigned_fees
+  # GET /assigned_fees.json
+  def index
+    #@assigned_fees = AssignedFee.all
+  end
+
+  def assigned_fee_index
+    params[:count] ? params[:count] : params[:count] = 10
+    params[:page] ? params[:page] : params[:page] = 1
+
+    @assigned_fees = AssignedFee.where(del_status: false).paginate(:page => params[:page], :per_page => params[:count]).order('created_at desc')
+  end
+
+  # GET /assigned_fees/1
+  # GET /assigned_fees/1.json
+  def show
+  end
+
+  # GET /assigned_fees/new
+  def new
+    @assigned_fee = AssignedFee.new
+  end
+
+  # GET /assigned_fees/1/edit
+  def edit
+  end
+
+  # POST /assigned_fees
+  # POST /assigned_fees.json
+  def create
+    @assigned_fee = AssignedFee.new(assigned_fee_params)
+
+    respond_to do |format|
+      if @assigned_fee.save
+        flash.now[:notice] = "Assigned Fee was successfully created."
+        format.js { render :show}
+        format.html { redirect_to @assigned_fee, notice: 'Assigned fee was successfully created.' }
+        format.json { render :show, status: :created, location: @assigned_fee }
+      else
+        format.js { render :new}
+        format.html { render :new }
+        format.json { render json: @assigned_fee.errors, status: :unprocessable_entity }
+      end
+    end
+  end
+
+  # PATCH/PUT /assigned_fees/1
+  # PATCH/PUT /assigned_fees/1.json
+  def update
+    respond_to do |format|
+      if @assigned_fee.update(assigned_fee_params)
+
+        flash.now[:notice] = "Assigned Fee was successfully updated."
+        format.js { render :show}
+        format.html { redirect_to @assigned_fee, notice: 'Assigned fee was successfully updated.' }
+        format.json { render :show, status: :ok, location: @assigned_fee }
+      else
+        format.js { render :edit }
+        format.html { render :edit }
+        format.json { render json: @assigned_fee.errors, status: :unprocessable_entity }
+      end
+
+    end
+  end
+
+  # DELETE /assigned_fees/1
+  # DELETE /assigned_fees/1.json
+  def destroy
+
+    params[:count] ? params[:count] : params[:count] = 10
+    params[:page] ? params[:page] : params[:page] = 1
+
+    if @assigned_fee.active_status
+      @assigned_fee.active_status = false
+      @assigned_fee.save(validate: false)
+      @assigned_fees = AssignedFee.where(del_status: false).paginate(:page => params[:page], :per_page => params[:count]).order('created_at desc')
+      respond_to do |format|
+        format.html { redirect_to activity_types_url, notice: 'Occupation master was successfully disabled.' }
+        flash.now[:note] = 'Assigned Fee was successfully disabled.'
+        format.js { render :layout => false}
+        format.json { head :no_content }
+        # window.location.href = "<%= recipe_path(@recipe) %>"
+      end
+
+    else
+      @assigned_fee.active_status = true
+      @assigned_fee.save(validate: false)
+      @assigned_fees = AssignedFee.where(del_status: false).paginate(:page => params[:page], :per_page => params[:count]).order('created_at desc')
+      respond_to do |format|
+        format.html { redirect_to activity_types_url, notice: 'Allergy master was successfully enabled.' }
+        flash.now[:notice] = 'Assigned Fee was successfully enabled.'
+        format.js { render :layout => false }
+        format.json { head :no_content }
+      end
+    end
+  end
+
+  private
+    # Use callbacks to share common setup or constraints between actions.
+    def set_assigned_fee
+      @assigned_fee = AssignedFee.find(params[:id])
+    end
+
+    # Never trust parameters from the scary internet, only allow the white list through.
+    def assigned_fee_params
+      params.require(:assigned_fee).permit(:entity_div_code, :trans_type, :fee, :flat_percent, :cap, :limit_capped, :charged_to, :comment, :active_status, :del_status, :user_id)
+    end
+end

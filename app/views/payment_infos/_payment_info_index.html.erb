@@ -84,7 +84,7 @@
     </div>
 
     <div class="w3-third">
-      <%= select_tag :count, options_for_select([10,20,30,40,50], params[:count].to_i),
+      <%= select_tag :count, options_for_select([50, 100, 150, 200, 500, "All"], params[:count].to_i),
                      :data => {  :remote => true, :url => url_for(:controller => "payment_infos", :action => "payment_info_index",
                                                                   :params => {entity_name: params[:entity_name],
                                                                               division_name: params[:division_name],
@@ -125,10 +125,12 @@
         <th></th>
       </tr>
       </thead>
+
       <tbody>
+      <% amount = 0.00 %>
       <% @payment_infos.each_with_index do |payment_info, num| %>
       <% @merchant = EntityDivision.where(active_status: true, assigned_code: payment_info.entity_div_code).order(created_at: :desc).first %>
-
+        <% amount = amount + payment_info.amount %>
 
         <tr>
           <td><%= num + 1 %></td>
@@ -181,7 +183,19 @@
           </td>
         </tr>
 
+
+<!--      <tr>-->
+<!--        <td class="w3-vpos-purple" colspan="2"></td>-->
+<!--        <td colspan="2"></td>-->
+<!--      </tr>-->
+
       <% end %>
+      <tr>
+        <td class="w3-vpos-purple" colspan="2"></td>
+        <td class="w3-vpos-purple" colspan="2">Total Amount</td>
+        <td colspan="1"><%= amount %> <%# count %></td>
+        <td class="w3-vpos-purple" colspan="5"></td>
+      </tr>
 
       </tbody>
     </table>

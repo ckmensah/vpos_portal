@@ -166,7 +166,11 @@ class PaymentInfosController < ApplicationController
     logger.info "The Search :: #{the_search.inspect}"
 
     if current_user.super_admin? || current_user.super_user?
-      @payment_infos = PaymentReport.where(the_search).paginate(:page => params[:page], :per_page => params[:count]).order('created_at desc')
+      if params[:count] == "All"
+        @payment_infos = PaymentReport.where(the_search)
+      else
+        @payment_infos = PaymentReport.where(the_search).paginate(:page => params[:page], :per_page => params[:count]).order('created_at desc')
+      end
     elsif current_user.merchant_admin?
       entity_div_id_str = "'0'"
       @entity_divs = EntityDivision.where(entity_code: current_user.entity_code)
@@ -174,9 +178,17 @@ class PaymentInfosController < ApplicationController
         entity_div_id_str << ",'#{entity_div.assigned_code}'"
       end
       final_div_ids = "(#{entity_div_id_str})"
-      @payment_infos = PaymentReport.where("entity_div_code IN #{final_div_ids}").where(the_search).paginate(:page => params[:page], :per_page => params[:count]).order('created_at desc')
+      if params[:count] == "All"
+        @payment_infos = PaymentReport.where("entity_div_code IN #{final_div_ids}").where(the_search)
+      else
+        @payment_infos = PaymentReport.where("entity_div_code IN #{final_div_ids}").where(the_search).paginate(:page => params[:page], :per_page => params[:count]).order('created_at desc')
+      end
     elsif current_user.merchant_service?
-      @payment_infos = PaymentReport.where(entity_div_code: current_user.division_code).where(the_search).paginate(:page => params[:page], :per_page => params[:count]).order('created_at desc')
+      if params[:count] == "All"
+        @payment_infos = PaymentReport.where(entity_div_code: current_user.division_code).where(the_search)
+      else
+        @payment_infos = PaymentReport.where(entity_div_code: current_user.division_code).where(the_search).paginate(:page => params[:page], :per_page => params[:count]).order('created_at desc')
+      end
     end
 
     respond_to do |format|
@@ -191,6 +203,7 @@ class PaymentInfosController < ApplicationController
 
     #logger.info "Report #{@payment_infos.inspect}"
   end
+
 
 
 
