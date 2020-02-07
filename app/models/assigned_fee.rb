@@ -1,7 +1,7 @@
 class AssignedFee < ApplicationRecord
   #self.table_name="assigned_fee"
   self.primary_key = :id
-  #validates_uniqueness_of :activity_type_desc, :assigned_code
+  validates_uniqueness_of :entity_div_code #, :assigned_code
 
   #has_many :entity_divisions, class_name: 'EntityDivision', foreign_key: :activity_type_code
   belongs_to :entity_division, class_name: 'EntityDivision', foreign_key: :entity_div_code

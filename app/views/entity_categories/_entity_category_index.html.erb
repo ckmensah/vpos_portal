@@ -66,6 +66,13 @@
 
       </tbody>
     </table>
+    <% unless params[:count] == "All" %>
+      <div class="flickr_pagination"  style="float: right">
+        <%= will_paginate @entity_categories, class: "w3-card", renderer: BootstrapPagination::Rails,
+                          :params => { :controller => "entity_categories", :action => "entity_category_index", count: params[:count], page: params[:page] } %>
+        <%#= js_will_paginate @payment_infos, :params => { :controller => "payment_infos", :action => "payment_info_index" } %>
+      </div>
+    <% end %>
   </div>
 
 

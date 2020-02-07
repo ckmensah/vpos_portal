@@ -6,10 +6,13 @@
   <br>
   <div>
     <div class="w3-half">
-      <%= link_to 'NEW', new_assigned_fee_path(count: params[:count], page: params[:page]), style: "width:120px;",
-                  class: 'w3-button w3-purple-vpos w3-border w3-border-purple w3-small w3-round-large',remote:true %>
+      <% unless @assigned_fees.exists? %>
+        <%= link_to 'NEW', new_assigned_fee_path(entity_code: params[:entity_code], code: params[:code], count: params[:count], page: params[:page]), style: "width:120px;",
+                    class: 'w3-button w3-purple-vpos w3-border w3-border-purple w3-small w3-round-large',remote:true %>
+        <% end %>
+
       <% if current_user.super_admin? || current_user.super_user? #|| current_user.merchant_admin? %>
-        <%= link_to 'BACK', entity_index_path(count: params[:count], page: params[:page]), style: "width:120px;",
+        <%= link_to 'BACK', entity_division_index_path(entity_code: params[:entity_code], code: params[:code], count: params[:count], page: params[:page]), style: "width:120px;",
                     class: 'w3-button w3-white w3-border w3-border-purple w3-small w3-round-large',remote:true %>
       <% end %>
 
@@ -91,6 +94,13 @@
 
       </tbody>
     </table>
+    <% unless params[:count] == "All" %>
+      <div class="flickr_pagination"  style="float: right">
+        <%= will_paginate @assigned_fees, class: "w3-card", renderer: BootstrapPagination::Rails,
+                          :params => { :controller => "assigned_fees", :action => "assigned_fee_index", count: params[:count], page: params[:page] } %>
+        <%#= js_will_paginate @payment_infos, :params => { :controller => "payment_infos", :action => "payment_info_index" } %>
+      </div>
+    <% end %>
   </div>
 
 
