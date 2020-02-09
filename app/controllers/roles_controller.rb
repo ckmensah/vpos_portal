@@ -3,7 +3,7 @@ class RolesController < ApplicationController
   before_action :is_super_admin?
 
   def index
-    params[:count] ? params[:count] : params[:count] = 10
+    params[:count] ? params[:count] : params[:count] = 50
     params[:page].present? ? page = params[:page].to_i : page = 1
 
     logger.info "Current User:: #{current_user.inspect}"
@@ -14,7 +14,7 @@ class RolesController < ApplicationController
 
   def role_index
 
-    params[:count] ? params[:count] : params[:count] = 10
+    params[:count] ? params[:count] : params[:count] = 50
     params[:page].present? ? page = params[:page].to_i : page = 1
 
     current_user.super_admin? ? @roles = Role.where(active_status: true).paginate(:page => page, :per_page => params[:count]).order(created_at: :desc):@roles = Role.where("active_status = true AND id != 1").paginate(:page => page, :per_page => params[:count]).order(created_at: :desc)

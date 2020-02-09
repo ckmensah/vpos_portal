@@ -5,7 +5,7 @@ class EntityCategoriesController < ApplicationController
   # GET /entity_categories
   # GET /entity_categories.json
   def index
-    params[:count] ? params[:count] : params[:count] = 10
+    params[:count] ? params[:count] : params[:count] = 50
     params[:page] ? params[:page] : params[:page] = 1
 
     @entity_categories = EntityCategory.paginate(:page => params[:page], :per_page => params[:count]).order('created_at desc')
@@ -14,7 +14,7 @@ class EntityCategoriesController < ApplicationController
 
 
   def entity_category_index
-    params[:count] ? params[:count] : params[:count] = 10
+    params[:count] ? params[:count] : params[:count] = 50
     params[:page] ? params[:page] : params[:page] = 1
 
     @entity_categories = EntityCategory.paginate(:page => params[:page], :per_page => params[:count]).order('created_at desc')

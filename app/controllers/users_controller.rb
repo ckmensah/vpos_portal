@@ -6,7 +6,7 @@ class UsersController < ApplicationController
   # GET /users
   # GET /users.json
   def index
-    params[:count] ? params[:count] : params[:count] = 10
+    params[:count] ? params[:count] : params[:count] = 50
     params[:page].present? ? page = params[:page].to_i : page = 1
 
     @users = User.unscoped.where(creator_id: current_user.id).paginate(:page => page, :per_page => params[:count]).order(created_at: :desc)
@@ -15,7 +15,7 @@ class UsersController < ApplicationController
 
   def user_index
 
-    params[:count] ? params[:count] : params[:count] = 10
+    params[:count] ? params[:count] : params[:count] = 50
     params[:page].present? ? page = params[:page].to_i : page = 1
 
     @users = User.unscoped.where(creator_id: current_user.id).paginate(:page => page, :per_page => params[:count]).order(created_at: :desc)

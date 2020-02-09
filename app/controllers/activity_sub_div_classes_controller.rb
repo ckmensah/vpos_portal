@@ -6,7 +6,7 @@ class ActivitySubDivClassesController < ApplicationController
   # GET /activity_sub_div_classes
   # GET /activity_sub_div_classes.json
   def index
-    params[:count] ? params[:count] : params[:count] = 10
+    params[:count] ? params[:count] : params[:count] = 50
     params[:page] ? params[:page] : params[:page] = 1
 
     @entity_div_name = EntityDivision.where(assigned_code: params[:code], active_status: true).order(created_at: :desc).first
@@ -32,7 +32,7 @@ class ActivitySubDivClassesController < ApplicationController
   # POST /activity_sub_div_classes.json
   def create
     @activity_sub_div_class = ActivitySubDivClass.new(activity_sub_div_class_params)
-    params[:count] ? params[:count] : params[:count] = 10
+    params[:count] ? params[:count] : params[:count] = 50
     params[:page] ? params[:page] : params[:page] = 1
 
     @entity_info = EntityInfo.where(assigned_code: params[:entity_code], active_status: true, del_status: false).order(created_at: :desc).first
@@ -61,7 +61,7 @@ class ActivitySubDivClassesController < ApplicationController
   # PATCH/PUT /activity_sub_div_classes/1
   # PATCH/PUT /activity_sub_div_classes/1.json
   def update
-    params[:count] ? params[:count] : params[:count] = 10
+    params[:count] ? params[:count] : params[:count] = 50
     params[:page] ? params[:page] : params[:page] = 1
 
     @entity_info = EntityInfo.where(assigned_code: params[:entity_code], active_status: true, del_status: false).order(created_at: :desc).first
@@ -87,7 +87,7 @@ class ActivitySubDivClassesController < ApplicationController
   # DELETE /activity_sub_div_classes/1
   # DELETE /activity_sub_div_classes/1.json
   def destroy
-    params[:count] ? params[:count] : params[:count] = 10
+    params[:count] ? params[:count] : params[:count] = 50
     params[:page] ? params[:page] : params[:page] = 1
     @entity_div_name = EntityDivision.where(assigned_code: params[:code], active_status: true).order(created_at: :desc).first
     @entity_div_name = @entity_div_name ? "#{@entity_div_name.division_name} (#{@entity_div_name.division_alias})" : ""

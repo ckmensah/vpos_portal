@@ -12,9 +12,10 @@ class PaymentReport < ApplicationRecord
       csv << headers
       general_report.each do |summary|
         # ------code comes here
-        merchant = summary.entity_division.entity_info.entity_name
-        service = summary.entity_division.division_name
-        activity_type = summary.entity_division.activity_type.activity_type_desc
+        logger.info "General report :: #{summary.inspect}"
+        merchant = summary.entity_division.entity_info ? summary.entity_division.entity_info.entity_name : ""
+        service = summary.entity_division ? summary.entity_division.division_name : ""
+        activity_type = summary.entity_division.activity_type ? summary.entity_division.activity_type.activity_type_desc : ""
         mobile_num = summary.customer_number
         network = summary.nw
         transction_id = summary.processing_id

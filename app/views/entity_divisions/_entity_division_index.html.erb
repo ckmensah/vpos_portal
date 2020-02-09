@@ -13,10 +13,9 @@
         <%= link_to 'BACK', entity_index_path(count: params[:count], page: params[:page]), style: "width:120px;",
                     class: 'w3-button w3-white w3-border w3-border-purple w3-small w3-round-large',remote:true %>
       <% end %>
-
     </div>
     <div class="w3-half">
-      <%= select_tag :count, options_for_select([10,20,30,40,50], params[:count].to_i),
+      <%= select_tag :count, options_for_select([50, 100, 150, 200, 500], params[:count].to_i),
                      :data => {  :remote => true, :url => url_for(:controller => "entity_divisions", :action => "entity_division_index", :params => {entity_code: params[:entity_code]})},
                      id:"record", class: "w3-button w3-white w3-border w3-border-purple w3-round-large",
                      style: "width:auto; height:35px; float:right", remote:true %>
@@ -30,7 +29,7 @@
       <thead>
       <tr>
         <th></th>
-        <th>Service Name (Service Alias)</th>
+        <th>Service Name</th>
         <th>Activity Type</th>
         <th>Status</th>
         <th>Date</th>
@@ -65,7 +64,7 @@
             <% end %>
 
             </td>
-            <td><strong><%= entity_division.division_name %> (<%= entity_division.division_alias %>)</strong></td>
+            <td><strong><%= entity_division.division_name %> <%#= entity_division.division_alias %></strong></td>
             <td><strong><%= entity_division.activity_type.activity_type_desc %> <%#= entity_info.entity_category.assigned_code %></strong></td>
             <% if entity_division.active_status %>
                 <td><strong>Active</strong></td>

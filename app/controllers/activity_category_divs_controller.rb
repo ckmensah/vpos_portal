@@ -66,7 +66,7 @@ class ActivityCategoryDivsController < ApplicationController
   # DELETE /activity_category_divs/1.json
 
   def destroy
-    params[:count] ? params[:count] : params[:count] = 10
+    params[:count] ? params[:count] : params[:count] = 50
     params[:page] ? params[:page] : params[:page] = 1
 
     if @activity_category_div.active_status

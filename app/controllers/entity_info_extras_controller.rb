@@ -6,7 +6,7 @@ class EntityInfoExtrasController < ApplicationController
   # GET /entity_info_extras.json
   def index
     @entity_info_extras = EntityInfoExtra.all
-    params[:count] ? params[:count] : params[:count] = 10
+    params[:count] ? params[:count] : params[:count] = 50
     params[:page] ? params[:page] : params[:page] = 1
 
     @entity_info_extras = EntityInfoExtra.paginate(:page => params[:page], :per_page => params[:count]).order('created_at desc')
@@ -14,7 +14,7 @@ class EntityInfoExtrasController < ApplicationController
   end
 
   def entity_info_extra
-    params[:count] ? params[:count] : params[:count] = 10
+    params[:count] ? params[:count] : params[:count] = 50
     params[:page] ? params[:page] : params[:page] = 1
 
     @entity_info_extras = EntityInfoExtra.paginate(:page => params[:page], :per_page => params[:count]).order('created_at desc')

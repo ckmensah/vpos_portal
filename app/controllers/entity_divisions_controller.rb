@@ -148,7 +148,7 @@ class EntityDivisionsController < ApplicationController
     @display_div_num = @main_params.any? ? @main_params.size : 0
     @display_act_sub_num = 1
 
-    params[:count] ? params[:count] : params[:count] = 10
+    params[:count] ? params[:count] : params[:count] = 50
     params[:page] ? params[:page] : params[:page] = 1
 
     @entity_info = EntityInfo.where(assigned_code: params[:entity_code], active_status: true, del_status: false).order(created_at: :desc).first
@@ -178,7 +178,7 @@ class EntityDivisionsController < ApplicationController
       logger.info " LOV:: Validate result:: #{lov_validate_result}, Error number :: #{lov_error_num}, Row number #{lov_row_num}"
       if valid_result && lov_validate_result
         logger.info "=================== SAVING ==================="
-        EntityDivision.division_lov_save(@the_div_lov, params[:code], entity_division_params,current_user)
+        EntityDivision.division_lov_save(@the_div_lov, params[:code], entity_division_params, current_user)
         EntityDivision.division_setup_save(params, @main_params, @div_activity_type, entity_division_params, current_user)
         format.js { render :entity_division_index }
       else
@@ -314,8 +314,8 @@ class EntityDivisionsController < ApplicationController
       logger.info " LOV:: Validate result:: #{lov_validate_result}, Error number :: #{lov_error_num}, Row number #{lov_row_num}"
       if valid_result && lov_validate_result
         logger.info "=================== UPDATING... ==================="
-        EntityDivision.division_lov_update(@the_div_lov, params[:code], entity_division_params)
-        EntityDivision.division_setup_update(params, @main_params, @div_activity_type, entity_division_params)
+        EntityDivision.division_lov_update(@the_div_lov, params[:code], entity_division_params, current_user)
+        EntityDivision.division_setup_update(params, @main_params, @div_activity_type, entity_division_params, current_user)
         flash.now[:notice] = "Setup update was successful."
         format.js { render :entity_division_index }
       else

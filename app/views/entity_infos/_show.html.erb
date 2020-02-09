@@ -86,6 +86,8 @@
       <div class="w3-white w3-hover-shadow col-md-8 offset-md-2 w3-card-4 w3-border w3-border-purple rcorners w3-center">
         <h4 class="show w3-center"><strong>Merchant Details</strong></h4>
         <p id="notice1"><strong></strong></p>
+        <p id="wallet_show"><strong></strong></p>
+
 
         <div class="w3-container w3-border w3-border-purple">
           <br/>
@@ -167,9 +169,9 @@
 
                   <thead>
                   <tr class="w3-purple-vpos">
-                    <th>Activity Type (Activity Alias)</th>
+                    <th>Activity Type</th>
                     <th>Service ID</th>
-                    <th>Secret Key</th>
+<!--                    <th>Secret Key</th>-->
                     <th>Client Key</th>
                     <th>Status</th>
                     <th>Date</th>
@@ -182,10 +184,10 @@
                       <tr>
 
                         <!--<td><strong><%#= entity_info.entity_category.category_name %> (<%#= entity_info.entity_category.assigned_code %>)</strong></td>-->
-                        <td><strong><%= entity_wallet_config.activity_type.activity_type_desc %> (<%= entity_wallet_config.activity_type.assigned_code %>)</strong></td>
+                        <td><strong><%#= entity_wallet_config.activity_type.activity_type_desc %> <%= entity_wallet_config.activity_type.assigned_code %></strong></td>
                         <td><strong><%= entity_wallet_config.service_id %></strong></td>
-                        <td><strong><%= entity_wallet_config.secret_key %></strong></td>
-                        <td><strong><%= entity_wallet_config.client_key %></strong></td>
+<!--                        <td><strong><%#= entity_wallet_config.secret_key[0..7] %>...</strong></td>-->
+                        <td><strong><%= entity_wallet_config.client_key[0..7] %>...</strong></td>
                         <% if entity_wallet_config.active_status %>
                             <td><strong>Active</strong></td>
                         <% else %>
@@ -193,7 +195,9 @@
                         <% end %>
                         <td><strong><%= entity_wallet_config.created_at %></strong></td>
                         <td>
-
+                          <%= link_to 'VIEW', entity_wallet_config_path(entity_wallet_config, entity_code: @entity_info.assigned_code, count: params[:count], page: params[:page]),
+                                      style: "width:70px; height: 30px; color: #800754 !important",
+                                      class: 'w3-button w3-white w3-border w3-border-purple w3-tiny w3-round-large', remote:true%>
                           <% if entity_wallet_config.active_status %>
                               <%= link_to 'DISABLE', entity_wallet_config_path(entity_wallet_config, count: params[:count], page: params[:page]),
                                           style: "width:80px; height: 30px; color: #800754 !important",

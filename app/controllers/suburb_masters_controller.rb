@@ -9,7 +9,7 @@ class SuburbMastersController < ApplicationController
   end
 
   def suburb_master_index
-    params[:count] ? params[:count] : params[:count] = 10
+    params[:count] ? params[:count] : params[:count] = 50
     params[:page] ? params[:page] : params[:page] = 1
 
     @suburb_masters = SuburbMaster.all.paginate(:page => params[:page], :per_page => params[:count]).order('created_at desc')

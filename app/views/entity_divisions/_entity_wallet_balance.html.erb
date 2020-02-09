@@ -17,16 +17,16 @@
       <div class="w3-half">
         <% logger.info "Trial :: #{params[:entity_code].inspect}" %>
         <%= select_tag :count, options_for_select([50, 100, 150, 200, 500], params[:count].to_i),
-                       :data => {  :remote => true, :url => url_for(:controller => "entity_divisions", :action => "main_sports_index", :params => {entity_code: params[:entity_code]})},
+                       :data => {  :remote => true, :url => url_for(:controller => "entity_divisions", :action => "entity_wallet_balance", :params => {entity_code: params[:entity_code]})},
                        id:"record", class: "w3-button w3-white w3-border w3-border-purple w3-round-large",
                        style: "width:auto; height:35px; float:right", remote:true %>
 
       </div>
-      <% else %>
+    <% else %>
       <div class="">
         <% logger.info "Trial :: #{params[:entity_code].inspect}" %>
         <%= select_tag :count, options_for_select([50, 100, 150, 200, 500], params[:count].to_i),
-                       :data => {  :remote => true, :url => url_for(:controller => "entity_divisions", :action => "main_sports_index", :params => {entity_code: params[:entity_code]})},
+                       :data => {  :remote => true, :url => url_for(:controller => "entity_divisions", :action => "entity_wallet_balance", :params => {entity_code: params[:entity_code]})},
                        id:"record", class: "w3-button w3-white w3-border w3-border-purple w3-round-large",
                        style: "width:auto; height:35px; float:right", remote:true %>
 
@@ -39,7 +39,7 @@
     <table class="table w3-responsive table-striped">
       <thead>
       <tr>
-<!--        <th></th>-->
+        <!--        <th></th>-->
         <th>Service Name (Service Alias)</th>
         <th>Activity Type</th>
         <th>Status</th>
@@ -48,40 +48,30 @@
       </tr>
       </thead>
       <tbody>
-      <% @entity_div_sports.each do |entity_division| %>
+      <% @entity_wallet_balances.each do |entity_wallet_balance| %>
         <%# division_act_lov = DivisionActivityLov.where(division_code: entity_division.assigned_code, active_status: true) %>
         <%# activity_div = ActivityDiv.where(division_code: entity_division.assigned_code, active_status: true) %>
         <%# act_sub_div_class = ActivitySubDivClass.where(entity_div_code: entity_division.assigned_code, del_status: false) %>
 
 
         <tr>
-<!--          <td></td>-->
-          <td><strong><%= entity_division.division_name %> (<%= entity_division.division_alias %>)</strong></td>
-          <td><strong><%= entity_division.activity_type.activity_type_desc %> <%#= entity_info.entity_category.assigned_code %></strong></td>
-          <% if entity_division.active_status %>
+          <!--          <td></td>-->
+          <td><strong><%= entity_wallet_balance.division_name %> (<%= entity_wallet_balance.division_alias %>)</strong></td>
+          <td><strong><%= entity_wallet_balance.activity_type.activity_type_desc %> <%#= entity_info.entity_category.assigned_code %></strong></td>
+          <% if entity_wallet_balance.active_status %>
             <td><strong>Active</strong></td>
           <% else %>
             <td><strong>Inactive</strong></td>
           <% end %>
-          <td><strong><%= entity_division.created_at %></strong></td>
+          <td><strong><%= entity_wallet_balance.created_at %></strong></td>
           <td>
-            <% if entity_division.active_status && entity_division.del_status == false %>
-              <%= link_to 'CATEGORY', activity_div_cat_index_path(code: entity_division.assigned_code, entity_code: params[:entity_code], count: params[:count], page: params[:page]),
-                          style: "width:120px; height: 30px; color: #800754 !important",
-                          class: 'w3-button w3-white w3-border w3-border-purple w3-tiny w3-round-large', remote:true%>
-
-              <%= link_to 'PARTICIPANT', activity_participant_index_path(code: entity_division.assigned_code, entity_code: params[:entity_code], count: params[:count], page: params[:page]),
-                          style: "width:120px; height: 30px; color: #800754 !important",
-                          class: 'w3-button w3-white w3-border w3-border-purple w3-tiny w3-round-large', remote:true%>
-
-              <%= link_to 'FIXTURES', activity_fixture_index_path(code: entity_division.assigned_code, entity_code: params[:entity_code], count: params[:count], page: params[:page]),
+            <% if entity_wallet_balance.active_status && entity_wallet_balance.del_status == false %>
+              <%= link_to 'WALLET BALANCE', activity_fixture_index_path(code: entity_division.assigned_code, entity_code: params[:entity_code], count: params[:count], page: params[:page]),
                           style: "width:120px; height: 30px; color: #800754 !important",
                           class: 'w3-button w3-white w3-border w3-border-purple w3-tiny w3-round-large', remote:true%>
 
             <% else %>
-              <button class="w3-button w3-white w3-border w3-disabled w3-border-purple w3-tiny w3-round-large" style="width:120px; height: 30px; color: #800754 !important">CATEGORY</button>
-              <button class="w3-button w3-white w3-border w3-disabled w3-border-purple w3-tiny w3-round-large" style="width:120px; height: 30px; color: #800754 !important">PARTICIPANT</button>
-              <button class="w3-button w3-white w3-border w3-disabled w3-border-purple w3-tiny w3-round-large" style="width:120px; height: 30px; color: #800754 !important">FIXTURES</button>
+            <button class="w3-button w3-white w3-border w3-disabled w3-border-purple w3-tiny w3-round-large" style="width:120px; height: 30px; color: #800754 !important">WALLET BALANCES</button>
             <% end %>
 
           </td>
@@ -94,8 +84,8 @@
     </table>
     <% unless params[:count] == "All" %>
       <div class="flickr_pagination"  style="float: right">
-        <%= will_paginate @entity_div_sports, class: "w3-card", renderer: BootstrapPagination::Rails,
-                          :params => { :controller => "entity_divisions", :action => "main_sports_index", count: params[:count], page: params[:page] } %>
+        <%= will_paginate @entity_wallet_balances, class: "w3-card", renderer: BootstrapPagination::Rails,
+                          :params => { :controller => "entity_divisions", :action => "entity_wallet_balance", count: params[:count], page: params[:page] } %>
         <%#= js_will_paginate @payment_infos, :params => { :controller => "payment_infos", :action => "payment_info_index" } %>
       </div>
     <% end %>

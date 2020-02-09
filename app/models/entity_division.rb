@@ -15,6 +15,9 @@ class EntityDivision < ApplicationRecord
   has_many :activity_category_divs, class_name: 'ActivityCategoryDiv', foreign_key: :division_code
   has_many :activity_div_cats, class_name: 'ActivityDivCat', foreign_key: :division_code
   has_many :assigned_fees, class_name: 'AssignedFee', foreign_key: :entity_div_code
+  has_many :entity_service_accounts, class_name: "EntityServiceAccount", foreign_key: :entity_div_code
+  has_many :entity_service_account_trxns, class_name: "EntityServiceAccountTrxn", foreign_key: :entity_div_code
+  
 
   # has_many :entity_wallet_configs, class_name: 'EntityWalletConfig', foreign_key: :division_code
   # has_many :assigned_service_code, class_name: 'AssignedServiceCode', foreign_key: :entity_div_code
@@ -331,19 +334,19 @@ class EntityDivision < ApplicationRecord
               if key == "0"
                 if value["activity_div_desc"].present? && value["activity_date"].present?
                   logger.info "SAVING ........"
-                  for_division_lov = ActivityDiv.new(activity_div_desc: value["activity_div_desc"], activity_date: value["activity_date"],
-                                                     division_code: params[:code], active_status: true, del_status: false)
+                  for_activity_div = ActivityDiv.new(activity_div_desc: value["activity_div_desc"], activity_date: value["activity_date"],
+                                                     division_code: params[:code], active_status: true, del_status: false, user_id: current_user.id)
 
-                  for_division_lov.save(validate: false)
-                  activity_div_id = for_division_lov.id
+                  for_activity_div.save(validate: false)
+                  activity_div_id = for_activity_div.id
                 end
               elsif check_string(value)
                 if value["activity_time"].present? && value["classification"].present? && value["amount"].present?
                   logger.info "SAVING ...... "
-                  for_division_lov = ActivitySubDiv.new(activity_div_id: activity_div_id, activity_time: value["activity_time"], classification: value["classification"],
+                  for_sub_activity_div = ActivitySubDiv.new(activity_div_id: activity_div_id, activity_time: value["activity_time"], classification: value["classification"],
                                                         amount: value["amount"], active_status: true, del_status: false)
 
-                  for_division_lov.save(validate: false)
+                  for_sub_activity_div.save(validate: false)
                 end
               else
               end
@@ -362,7 +365,7 @@ class EntityDivision < ApplicationRecord
   end
 
 
-  def self.division_setup_update(params, main_param_keys, div_activity_type, entity_division_params)
+  def self.division_setup_update(params, main_param_keys, div_activity_type, entity_division_params, current_user)
 
     if div_activity_type == "SHW" || div_activity_type == "SPO"
       if entity_division_params[:activity_query] == 'yes'
@@ -388,14 +391,14 @@ class EntityDivision < ApplicationRecord
                     if activity_div
                       logger.info "=== UPDATE ACTIVITY ........"
                       activity_arr_ids << value["activity_id"].to_i
-                      activity_div.update!(activity_div_desc: value["activity_div_desc"], activity_date: value["activity_date"])
+                      activity_div.update!(activity_div_desc: value["activity_div_desc"], activity_date: value["activity_date"], user_id: current_user.id)
                     end
                     activity_div_id = value["activity_id"]
                     update_act_div_id = value["activity_id"].to_i
                   else
                     logger.info "=== SAVING ACTIVITY ........"
                     for_division_lov = ActivityDiv.new(activity_div_desc: value["activity_div_desc"], activity_date: value["activity_date"],
-                                                       division_code: params[:code], active_status: true, del_status: false)
+                                                       division_code: params[:code], active_status: true, del_status: false, user_id: current_user.id)
 
                     for_division_lov.save!(validate: false)
                     activity_div_id = for_division_lov.id
@@ -410,14 +413,14 @@ class EntityDivision < ApplicationRecord
                       logger.info "=== UPDATING ...... "
                       act_sub_arr_id << value["activity_sub_id"].to_i
                       activity_sub_div.update!(activity_time: value["activity_time"], classification: value["classification"],
-                                               amount: value["amount"])
+                                               amount: value["amount"], user_id: current_user.id)
                     end
                   else
                     logger.info "=== SAVING ...... "
                     for_division_lov = ActivitySubDiv.new(activity_div_id: activity_div_id, activity_time: value["activity_time"], classification: value["classification"],
-                                                          amount: value["amount"], active_status: true, del_status: false)
+                                                          amount: value["amount"], active_status: true, del_status: false, user_id: current_user.id)
 
-                    for_division_lov.save(validate: false)
+                    for_division_lov.save!(validate: false)
                   end
                 end
               else
@@ -506,7 +509,7 @@ class EntityDivision < ApplicationRecord
 
 
 
-  def self.division_lov_update(div_lov_params, division_code, entity_division_params)
+  def self.division_lov_update(div_lov_params, division_code, entity_division_params, current_user)
     if entity_division_params[:div_lov_query] == 'yes'
       if div_lov_params != nil
         div_lov_params_size = div_lov_params.keys.size
@@ -521,12 +524,15 @@ class EntityDivision < ApplicationRecord
               division_activity_lov = DivisionActivityLov.where(id: value["id"], active_status: true).first
               if division_activity_lov
                 logger.info "=== UPDATING Division LOV ..................."
-                division_activity_lov.update!(activity_code: value["activity_code"], lov_desc: value["lov_desc"])
+                division_activity_lov.update!(activity_code: value["activity_code"], lov_desc: value["lov_desc"], user_id: current_user.id)
+                #division_activity_lov.activity_code = value["activity_code"]
+                #division_activity_lov.lov_desc = value["lov_desc"]
+                #division_activity_lov.save(validate: false)
               end
             else
               logger.info "=== SAVING Division LOV ..................."
               for_division_lov = DivisionActivityLov.new(activity_code: value["activity_code"], lov_desc: value["lov_desc"],
-                                                         division_code: division_code, active_status: true, del_status: false)
+                                                         division_code: division_code, active_status: true, del_status: false, user_id: current_user.id)
 
               for_division_lov.save!(validate: false)
             end

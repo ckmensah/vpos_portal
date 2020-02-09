@@ -3,7 +3,7 @@
 <div class="w3-container" >
   <div id="id01" class="w3-modal w3-animate-opacity" style=" display: block">
     <!--<div class="w3-modal-content w3-card-4" >-->
-    <br/>
+<!--    <br/>-->
 
     <div class="">
 
@@ -33,7 +33,7 @@
 
           </div>
       <% else %>
-          <div class="w3-white w3-hover-shadow col-md-6 offset-md-3 w3-card-4 w3-border w3-border-purple rcorners w3-center">
+          <div class="w3-white w3-hover-shadow col-md-8 offset-md-2 w3-card-4 w3-border w3-border-purple rcorners w3-center">
             <h4 class="show w3-center"><strong>Merchant Service Details</strong></h4>
             <p id="notice2"><strong></strong></p>
 
@@ -101,6 +101,65 @@
 
                 </table>
               </div>
+              <% @service_account = EntityServiceAccount.where(entity_div_code: @entity_division.assigned_code).order(created_at: :desc).first %>
+              <% @service_account_details = EntityServiceAccountTrxn.where(entity_div_code: @entity_division.assigned_code).order(created_at: :desc) %>
+
+
+              <% if @service_account %>
+                <br/><br/>
+                <div class="w3-container w3-responsive pre-scrollable w3-mobile table-responsive-md">
+
+                  <table class=" w3-responsive table-striped w3-table-all table-bordered w3-hoverable w3-card-4">
+                    <thead>
+
+                    <tr>
+                      <th class="w3-topbar" colspan="2"></th>
+                      <th class="w3-topbar" colspan="2">GROSS BALANCE</th>
+                      <th class="w3-topbar" colspan="2">NET BALANCE</th>
+                      <th class="w3-topbar" colspan="2"></th>
+                    </tr>
+
+                    <tr>
+                      <td class="" colspan="2"></td>
+                      <td class="" colspan="2"><%= @service_account.gross_bal %></td>
+                      <td class="" colspan="2"><%= @service_account.net_bal %></td>
+                      <td class="" colspan="2"></td>
+                    </tr>
+
+                    <tr class="w3-vpos-purple">
+                      <th>No.</th>
+                      <th>Trans. ID</th>
+                      <th>Gross Bal (Before)</th>
+                      <th>Gross Bal (After)</th>
+                      <th>Net Bal (Before)</th>
+                      <th>Net Bal (After)</th>
+                      <th>Charges</th>
+                      <th>Trans Type</th>
+<!--                      <th></th>-->
+                    </tr>
+                    </thead>
+                    <tbody>
+
+                    <% @service_account_details.each_with_index do |acount_details, num| %>
+                    <tr>
+                      <td><%= num + 1 %></td>
+                      <td><%= acount_details.processing_id %></td>
+                      <td><%= acount_details.gross_bal_bef %></td>
+                      <td><%= acount_details.gross_bal_aft %></td>
+                      <td><%= acount_details.net_bal_bef %></td>
+                      <td><%= acount_details.net_bal_aft %></td>
+                      <td><%= acount_details.charge %></td>
+                      <td><%= acount_details.trans_type %></td>
+
+                    </tr>
+
+                    <% end %>
+                    </tbody>
+                  </table>
+
+                </div>
+                <% end %>
+
 
               <br/>
               <div class="w3-center">
@@ -110,9 +169,10 @@
             </div>
 
           </div>
+
       <% end %>
 
-
+      <br/>
     </div>
 
     <!--</div>-->

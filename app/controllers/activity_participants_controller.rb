@@ -9,7 +9,7 @@ class ActivityParticipantsController < ApplicationController
   end
 
   def activity_participant_index
-    params[:count] ? params[:count] : params[:count] = 10
+    params[:count] ? params[:count] : params[:count] = 50
     params[:page] ? params[:page] : params[:page] = 1
 
     @entity_info = EntityInfo.where(assigned_code: params[:entity_code], active_status: true, del_status: false).order(created_at: :desc).first
@@ -78,7 +78,7 @@ class ActivityParticipantsController < ApplicationController
   # DELETE /activity_participants/1
   # DELETE /activity_participants/1.json
   def destroy
-    params[:count] ? params[:count] : params[:count] = 10
+    params[:count] ? params[:count] : params[:count] = 50
     params[:page] ? params[:page] : params[:page] = 1
 
     if @activity_participant.active_status

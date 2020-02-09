@@ -6,8 +6,11 @@
   <div>
     <div class="w3-third">
       <%#= link_to 'NEW', new_entity_info_path(count: params[:count], page: params[:page]), style: "width:120px;", class: 'w3-button w3-purple-vpos w3-border w3-border-purple w3-small w3-round-large',remote:true %>
-      <%= link_to 'Filter',"#reports", :data =>{ toggle:'modal'}, class: 'w3-bar-item w3-btn w3-card-4 w3-blue w3-small w3-ripple w3-round-xlarge' %>
+      <%#= link_to 'Filter',"#reports", :data =>{ toggle:'modal'}, class: 'w3-bar-item w3-btn w3-card-4 w3-blue w3-small w3-ripple w3-round-xlarge' %>
+      <%= link_to 'FILTER',"#reports", :data =>{ toggle:'modal'}, style: "font-size: small; width: 150px;", class: 'btn btn-outline-purple tablink w3-vpos-purple' %>
+      <br>
     </div>
+
 
     <div class="w3-third" style="padding-bottom: 15px">
       <% if @payment_infos.exists? %>
@@ -128,12 +131,12 @@
 
       <tbody>
       <% amount = 0.00 %>
-      <% @payment_infos.each_with_index do |payment_info, num| %>
+      <% @payment_infos.each.with_index(@payment_infos.offset + 1) do |payment_info, num| %>
       <% @merchant = EntityDivision.where(active_status: true, assigned_code: payment_info.entity_div_code).order(created_at: :desc).first %>
         <% amount = amount + payment_info.amount %>
 
         <tr>
-          <td><%= num + 1 %></td>
+          <td><%= num %></td>
 <!--          <td><%#= payment_info.entity_division.entity_info.entity_name %> (<%#= payment_info.entity_division.entity_info.entity_alias %>)</td>-->
           <% if current_user.super_admin? || current_user.super_user? %>
             <td><%= payment_info.entity_division.division_name %> <%#= payment_info.entity_division.division_alias %></td>
@@ -160,7 +163,7 @@
 
           <td><%= payment_info.created_at %></td>
           <td><%= link_to 'VIEW', payment_info_path(payment_info, params: params.to_unsafe_h, count: params[:count], page: params[:page]),
-                          style: "width:80px; height: 30px;",
+                          style: "width:70px; height: 30px;",
                           class: 'w3-button w3-purple-vpos w3-border w3-border-purple w3-tiny w3-round-large', remote:true%>
             <% if current_user.super_admin? || current_user.super_user? || current_user.merchant_admin?  %>
               <% if @merchant && (@merchant.activity_type_code == "SHW" || @merchant.activity_type_code == "SPO") %>
@@ -306,8 +309,16 @@
 
 
 
+<style>
+  .modal-open {
+    padding-right: 0 !important;
+  }
+  html {
+    overflow-y: scroll !important;
+  }
 
 
+</style>
 
 
 
@@ -317,6 +328,7 @@
       $('.pagination a').attr('data-remote', 'true');
       $('.modal-backdrop').remove();
     });
+
 
     $('#csv').click(function () {
         console.log('works!');

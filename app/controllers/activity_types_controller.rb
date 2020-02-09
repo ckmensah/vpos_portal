@@ -5,7 +5,7 @@ class ActivityTypesController < ApplicationController
   # GET /activity_types
   # GET /activity_types.json
   def index
-    params[:count] ? params[:count] : params[:count] = 10
+    params[:count] ? params[:count] : params[:count] = 50
     params[:page] ? params[:page] : params[:page] = 1
 
     @activity_types = ActivityType.paginate(:page => params[:page], :per_page => params[:count]).order('created_at desc')
@@ -14,7 +14,7 @@ class ActivityTypesController < ApplicationController
 
 
   def activity_type_index
-    params[:count] ? params[:count] : params[:count] = 10
+    params[:count] ? params[:count] : params[:count] = 50
     params[:page] ? params[:page] : params[:page] = 1
 
     @activity_types = ActivityType.paginate(:page => params[:page], :per_page => params[:count]).order('created_at desc')
@@ -77,7 +77,7 @@ class ActivityTypesController < ApplicationController
   # DELETE /activity_types/1.json
 
   def destroy
-    params[:count] ? params[:count] : params[:count] = 10
+    params[:count] ? params[:count] : params[:count] = 50
     params[:page] ? params[:page] : params[:page] = 1
 
     if @activity_type.active_status

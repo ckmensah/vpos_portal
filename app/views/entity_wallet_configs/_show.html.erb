@@ -1,0 +1,116 @@
+
+<div class="w3-container" >
+  <div id="id01" class="w3-modal w3-animate-opacity" style=" display: block">
+    <!--<div class="w3-modal-content w3-card-4" >-->
+    <!--<br/>-->
+
+    <div class="">
+
+      <div class="w3-white w3-hover-shadow col-md-6 offset-md-3 w3-card-4 w3-border w3-border-purple rcorners w3-center">
+        <h4 class="show w3-center"><strong>Merchant Details</strong></h4>
+        <p id="notice1"><strong></strong></p>
+        <p id="wallet_show"><strong></strong></p>
+
+        <div class="w3-container w3-border w3-border-purple">
+          <br/>
+          <%  %>
+          <% @entity_wallet_config = EntityWalletConfig.where(entity_code: params[:entity_code], active_status: true, del_status: false).order("created_at desc").first
+
+          %>
+          <%  %>
+          <div class="w3-container w3-responsive pre-scrollable w3-mobile">
+            <table class="w3-table-all table table-bordered w3-hoverable w3-card-4">
+
+              <tr>
+                <td class="raw_theme w3-border w3-border-black w3-leftbar"><strong>Activity Type (Alias):</strong></td>
+                <td><strong><%= @entity_wallet_config.activity_type.activity_type_desc %> (<%= @entity_wallet_config.activity_type.assigned_code %>)</strong></td>
+              </tr>
+
+              <tr>
+                <td class="raw_theme w3-border w3-border-black w3-leftbar"><strong>Service ID:</strong></td>
+                <td><strong><%= @entity_wallet_config.service_id %></strong></td>
+              </tr>
+
+              <tr>
+                <td class="raw_theme w3-border w3-border-black w3-leftbar"><strong>Client Key:</strong></td>
+                <td><strong><%= @entity_wallet_config.client_key %></strong></td>
+              </tr>
+
+              <tr>
+                <td class="raw_theme w3-border w3-border-black w3-leftbar"><strong>Secret Key:</strong></td>
+                <td><strong><%= @entity_wallet_config.secret_key %></strong></td>
+              </tr>
+
+              <tr>
+                <td class="raw_theme w3-border w3-border-black w3-leftbar"><strong>Status:</strong></td>
+                <% if @entity_wallet_config.active_status %>
+                  <td><strong>Active</strong></td>
+                <% else %>
+                  <td><strong>Inactive</strong></td>
+                <% end %>
+              </tr>
+
+              <tr>
+                <td class="raw_theme w3-border w3-border-black w3-leftbar"><strong>Comment:</strong></td>
+                <td><strong><%= @entity_wallet_config.comment %></strong></td>
+              </tr>
+
+              <tr>
+                <td class="raw_theme w3-border w3-border-black w3-leftbar"><strong>Date:</strong></td>
+                <td>
+                  <strong><%= @entity_wallet_config.created_at %></strong>
+                </td>
+              </tr>
+
+            </table>
+          </div>
+          <br>
+          <div class="w3-center">
+            <%= link_to 'Back', entity_info_path(params[:entity_code], page: params[:page], count: params[:count]), class: 'w3-button w3-white w3-border w3-border-purple w3-small w3-round-large', remote: true %>
+          </div>
+          <br/>
+        </div>
+        <br>
+      </div>
+
+    </div>
+
+    <!--</div>-->
+    <!--<br>-->
+    <div class="">
+      <br><br>
+    </div>
+  </div>
+
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

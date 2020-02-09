@@ -11,7 +11,7 @@
                   class: 'w3-button w3-purple-vpos w3-border w3-border-purple w3-small w3-round-large',remote:true %>
     </div>
     <div class="w3-half">
-      <%= select_tag :count, options_for_select([10,20,30,40,50], params[:count].to_i),
+      <%= select_tag :count, options_for_select([50, 100, 150, 200, 500], params[:count].to_i),
                      :data => {  :remote => true, :url => url_for(:controller => "roles", :action => "role_index")},
                      id:"record", class: "w3-button w3-white w3-border w3-border-purple w3-round-large",
                      style: "width:auto; height:35px; float:right", remote:true %>

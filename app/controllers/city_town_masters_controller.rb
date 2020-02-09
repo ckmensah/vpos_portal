@@ -9,7 +9,7 @@ class CityTownMastersController < ApplicationController
   end
 
   def city_town_master_index
-    params[:count] ? params[:count] : params[:count] = 10
+    params[:count] ? params[:count] : params[:count] = 50
     params[:page] ? params[:page] : params[:page] = 1
 
     @city_town_masters = CityTownMaster.all.paginate(:page => params[:page], :per_page => params[:count]).order('created_at desc')

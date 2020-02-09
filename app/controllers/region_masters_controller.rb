@@ -5,7 +5,7 @@ class RegionMastersController < ApplicationController
   # GET /region_masters
   # GET /region_masters.json
   def index
-    params[:count] ? params[:count] : params[:count] = 10
+    params[:count] ? params[:count] : params[:count] = 50
     params[:page] ? params[:page] : params[:page] = 1
 
     @region_masters = RegionMaster.all.paginate(:page => params[:page], :per_page => params[:count]).order(region_name: :asc)
@@ -15,7 +15,7 @@ class RegionMastersController < ApplicationController
   end
 
   def region_master_index
-    params[:count] ? params[:count] : params[:count] = 10
+    params[:count] ? params[:count] : params[:count] = 50
     params[:page] ? params[:page] : params[:page] = 1
 
     @region_masters = RegionMaster.all.paginate(:page => params[:page], :per_page => params[:count]).order(region_name: :asc)

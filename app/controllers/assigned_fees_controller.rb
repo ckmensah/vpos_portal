@@ -8,7 +8,7 @@ class AssignedFeesController < ApplicationController
   end
 
   def assigned_fee_index
-    params[:count] ? params[:count] : params[:count] = 10
+    params[:count] ? params[:count] : params[:count] = 50
     params[:page] ? params[:page] : params[:page] = 1
 
     if current_user.super_admin? || current_user.super_user?
@@ -75,7 +75,7 @@ class AssignedFeesController < ApplicationController
   # DELETE /assigned_fees/1.json
   def destroy
 
-    params[:count] ? params[:count] : params[:count] = 10
+    params[:count] ? params[:count] : params[:count] = 50
     params[:page] ? params[:page] : params[:page] = 1
 
     if @assigned_fee.active_status

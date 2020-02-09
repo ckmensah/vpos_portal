@@ -9,7 +9,7 @@ class ActivityFixturesController < ApplicationController
   end
 
   def activity_fixture_index
-    params[:count] ? params[:count] : params[:count] = 10
+    params[:count] ? params[:count] : params[:count] = 50
     params[:page] ? params[:page] : params[:page] = 1
     @entity_info = EntityInfo.where(assigned_code: params[:entity_code], active_status: true, del_status: false).order(created_at: :desc).first
     @entity_info ? @entity_name = "#{@entity_info.entity_name} (#{@entity_info.entity_alias})" : ""
@@ -78,7 +78,7 @@ class ActivityFixturesController < ApplicationController
   # DELETE /activity_fixtures/1.json
   def destroy
 
-    params[:count] ? params[:count] : params[:count] = 10
+    params[:count] ? params[:count] : params[:count] = 50
     params[:page] ? params[:page] : params[:page] = 1
     if @activity_fixture.active_status
       @activity_fixture.active_status = false

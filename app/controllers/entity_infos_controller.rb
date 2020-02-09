@@ -5,7 +5,7 @@ class EntityInfosController < ApplicationController
   # GET /entity_infos
   # GET /entity_infos.json
   def index
-    params[:count] ? params[:count] : params[:count] = 10
+    params[:count] ? params[:count] : params[:count] = 50
     params[:page] ? params[:page] : params[:page] = 1
 
     if current_user.super_admin? || current_user.super_user?
@@ -32,7 +32,7 @@ class EntityInfosController < ApplicationController
   end
 
   def entity_info_index
-    params[:count] ? params[:count] : params[:count] = 10
+    params[:count] ? params[:count] : params[:count] = 50
     params[:page] ? params[:page] : params[:page] = 1
 
     @entity_infos = EntityInfo.where(active_status: true).paginate(:page => params[:page], :per_page => params[:count]).order('created_at desc')
@@ -57,7 +57,7 @@ class EntityInfosController < ApplicationController
   end
 
   def sports_index
-    params[:count] ? params[:count] : params[:count] = 10
+    params[:count] ? params[:count] : params[:count] = 50
     params[:page] ? params[:page] : params[:page] = 1
 
     #@entity_info_sports = EntityInfo.where(active_status: true, entity_cat_id: "SPO").paginate(:page => params[:page], :per_page => params[:count]).order('created_at desc')

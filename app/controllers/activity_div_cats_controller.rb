@@ -11,7 +11,7 @@ class ActivityDivCatsController < ApplicationController
 
   def activity_div_cat_index
 
-    params[:count] ? params[:count] : params[:count] = 10
+    params[:count] ? params[:count] : params[:count] = 50
     params[:page] ? params[:page] : params[:page] = 1
 
     @activity_div_cats = ActivityDivCat.paginate(:page => params[:page], :per_page => params[:count]).order('created_at desc')
@@ -72,7 +72,7 @@ class ActivityDivCatsController < ApplicationController
   # DELETE /activity_div_cats/1
   # DELETE /activity_div_cats/1.json
   def destroy
-    params[:count] ? params[:count] : params[:count] = 10
+    params[:count] ? params[:count] : params[:count] = 50
     params[:page] ? params[:page] : params[:page] = 1
 
     if @activity_div_cat.active_status
