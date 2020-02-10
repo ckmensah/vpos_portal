@@ -59,12 +59,12 @@
 <!--          <td><strong><%#= assigned_fee.flat_percent %></td>-->
           <td><%= assigned_fee.cap %></td>
           <td><%= assigned_fee.limit_capped %></td>
-          <td><%= assigned_fee.charged_to %></td>
-          <%# if assigned_fee.charged_to == "M" %>
-<!--            <td><strong>Merchant</strong></td>-->
-          <%# elsif assigned_fee.charged_to == "C" %>
-<!--            <td><strong>Customer</strong></td>-->
-          <%# end %>
+<!--          <td><%#= assigned_fee.charged_to %></td>-->
+          <% if assigned_fee.charged_to == "M" %>
+            <td>Merchant</td>
+          <% elsif assigned_fee.charged_to == "C" %>
+            <td>Customer</td>
+          <% end %>
           <% if assigned_fee.active_status %>
             <td>Active</td>
           <% else %>

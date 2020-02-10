@@ -40,7 +40,7 @@ class EntityCategoriesController < ApplicationController
   # POST /entity_categories.json
 
   def create
-    @entity_category = EntityCategory.new(activity_type_params)
+    @entity_category = EntityCategory.new(entity_category_params)
     respond_to do |format|
       if @entity_category.save
         format.html { redirect_to @entity_category, notice: 'Entity category was successfully created.' }

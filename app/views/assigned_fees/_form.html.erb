@@ -7,25 +7,28 @@
 
     <div class="w3-container">
       <br/>
-      <%= simple_form_for(@assigned_fee, :data => {  :remote => true, count: params[:count], page: params[:page]}) do |f| %>
-        <%= f.error_notification %>
+      <%#= simple_form_for(@assigned_fee, :data => {  :remote => true, count: params[:count], page: params[:page]}) do |f| %>
+        <%= simple_form_for(@assigned_fee, url: assigned_fees_path(@assigned_fee, code: params[:code], entity_code: params[:entity_code], count: params[:count], page: params[:page] ),:remote => true) do |f| %>
+          <%= f.error_notification %>
         <%= f.error_notification message: f.object.errors[:base].to_sentence if f.object.errors[:base].present? %>
-        <%= f.input :entity_div_code, :as => :hidden, input_html:{value: params[:entity_code]} %>
+        <%= f.input :entity_div_code, :as => :hidden, input_html:{value: params[:code]} %>
+
         <div class="w3-half">
-          <%= f.input :trans_type,  label: "Trans Type", collection: [["Customer to Merchant (CTM)", "CTM"], ["Merchant to Customer (MTC)", "MTC"]], label_method: :first, value_method: :last, required: true, input_html:{id: "trans_type", autocomplete: "off",class:"form-control w3-input w3-border w3-white input-group input-append",style:"width: 90%"}  %>
+          <%#= f.input :trans_type,  label: "Trans Type", collection: [["Customer to Merchant (CTM)", "CTM"], ["Merchant to Customer (MTC)", "MTC"]], label_method: :first, value_method: :last, required: true, input_html:{id: "trans_type", autocomplete: "off",class:"form-control w3-input w3-border w3-white input-group input-append",style:"width: 90%"}  %>
           <%= f.input :fee,  label: "Fee", value_method: :id, required: true, input_html:{id: "fee", autocomplete: "off",class:"form-control w3-input w3-border w3-white input-group input-append",style:"width: 90%"}  %>
-          <%= f.input :flat_percent,  label: "Flat Percent", value_method: :id, required: true, input_html:{id: "flat_percent", autocomplete: "off",class:"form-control w3-input w3-border w3-white input-group input-append",style:"width: 90%"}  %>
-          <%= f.input :cap,  label: "Cap", value_method: :id, required: true, input_html:{id: "cap", autocomplete: "off",class:"form-control w3-input w3-border w3-white input-group input-append",style:"width: 90%"}  %>
+          <%= f.input :flat_percent,  label: "Rate Type", collection: [["Fixed", "F"], ["Percentage", "P"]], label_method: :first, value_method: :last, required: true, input_html:{id: "flat_percent", autocomplete: "off",class:"form-control w3-input w3-border w3-white input-group input-append",style:"width: 90%"}  %>
+          <%= f.input :cap,  label: "Cap", value_method: :id, required: false, input_html:{id: "cap", autocomplete: "off",class:"form-control w3-input w3-border w3-white input-group input-append",style:"width: 90%"}  %>
 
         </div>
 
         <div class="w3-half">
-          <%= f.input :limit_capped,  label: "Capped Limit", value_method: :id, required: true, input_html:{id: "limit_capped", autocomplete: "off",class:"form-control w3-input w3-border w3-white input-group input-append",style:""}  %>
+          <%= f.input :limit_capped,  label: "Capped Limit", value_method: :id, required: false, input_html:{id: "limit_capped", autocomplete: "off",class:"form-control w3-input w3-border w3-white input-group input-append",style:""}  %>
           <%= f.input :charged_to,  label: "Charged To:", collection: [["Merchant", "M"], ["Customer", "C"]], label_method: :first, value_method: :last, required: true, input_html:{id: "charge", autocomplete: "off",class:"form-control w3-input w3-border w3-white input-group input-append",style:""}  %>
           <%= f.input :comment,  label: "Comment", :as => :text, value_method: :id, required: false, input_html:{rows: 5, cols: 3, autocomplete: "off",class:"form-control w3-border ",style:""}  %>
 
         </div>
 
+        <%= f.input :trans_type, :as => :hidden, input_html:{value: "CTM"} %>
         <%= f.input :active_status, :as => :hidden, input_html:{value: true} %>
         <%= f.input :del_status, :as => :hidden, input_html:{value: false} %>
         <%= f.input :user_id, :as => :hidden, input_html:{value: current_user.id} %>

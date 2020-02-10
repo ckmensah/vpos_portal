@@ -37,6 +37,13 @@ class AssignedFeesController < ApplicationController
   # POST /assigned_fees.json
   def create
     @assigned_fee = AssignedFee.new(assigned_fee_params)
+    unless @assigned_fee.cap.present?
+      @assigned_fee.cap = 0.000
+    end
+
+    unless @assigned_fee.limit_capped.present?
+      @assigned_fee.limit_capped = 0.000
+    end
 
     respond_to do |format|
       if @assigned_fee.save
@@ -45,6 +52,7 @@ class AssignedFeesController < ApplicationController
         format.html { redirect_to @assigned_fee, notice: 'Assigned fee was successfully created.' }
         format.json { render :show, status: :created, location: @assigned_fee }
       else
+        logger.info "Error :: #{@assigned_fee.errors.messages.inspect}"
         format.js { render :new}
         format.html { render :new }
         format.json { render json: @assigned_fee.errors, status: :unprocessable_entity }

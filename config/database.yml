@@ -1,3 +1,4 @@
+
 # PostgreSQL. Versions 8.2 and up are supported.
 #
 # Install the pg driver:
@@ -15,20 +16,21 @@
 # gem 'pg'
 #
 default: &default
-  adapter: postgresql
+  adapter: <%= ENV["DB_ADAPTER"] %>
   encoding: unicode
   # For details on connection pooling, see rails configuration guide
   # http://guides.rubyonrails.org/configuring.html#database-pooling
   wait_timeout: 300
   pool: 70
-  host: localhost
-  port: 4044
-  username: pos_user
-  password: '12test123'
+  host: <%= ENV["DB_HOST"] %>
+  port: <%= ENV["DB_PORT"] %>
+  reconnect: true
 
 development:
   <<: *default
-  database: virtual_pos
+  database: <%= ENV["VPOS_DBNAME"] %>
+  username: <%= ENV["VPOS_DB_USER"] %>
+  password: <%= ENV["VPOS_DB_PASSWORD"] %>
 
   # The specified database role being used to connect to postgres.
   # To create additional roles in postgres see `$ createuser --help`.
@@ -85,6 +87,10 @@ test:
 #
 production:
   <<: *default
-  database: vpos_portal_production
-  username: vpos_portal
-  password: <%= ENV['VPOS_PORTAL_DATABASE_PASSWORD'] %>
+  database: <%= ENV["VPOS_DBNAME"] %>
+  username: <%= ENV["VPOS_DB_USER"] %>
+  password: <%= ENV['VPOS_DB_PASSWORD'] %>
+
+
+
+

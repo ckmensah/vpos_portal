@@ -10,8 +10,8 @@ class AssignedFee < ApplicationRecord
   validates :trans_type, presence: {message: " cannot be empty."}
   validates :fee, presence: {message: " cannot be empty."}
   validates :flat_percent, presence: {message: " cannot be empty."}
-  validates :cap, presence: {message: " cannot be empty."}
-  validates :limit_capped, presence: {message: " cannot be empty."}
+  #validates :cap, presence: {message: " cannot be empty."}
+  #validates :limit_capped, presence: {message: " cannot be empty."}
   validates :charged_to, presence: {message: " cannot be empty."}
 
 

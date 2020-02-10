@@ -9,10 +9,14 @@ class PaymentInfosController < ApplicationController
   def index
     params[:count] ? params[:count] : params[:count] = 50
     params[:page] ? params[:page] : params[:page] = 1
+
     #@payment_infos = PaymentReport.paginate(:page => params[:page], :per_page => params[:count]).order('created_at desc')
     if current_user.super_admin? || current_user.super_user?
+      @merchant_search = EntityInfo.where(active_status: true).order(entity_name: :asc)
+      @merchant_service_search = EntityDivision.where(active_status: true).order(division_name: :asc)
       @payment_infos = PaymentReport.paginate(:page => params[:page], :per_page => params[:count]).order('created_at desc')
     elsif current_user.merchant_admin?
+      @merchant_service_search = EntityDivision.where(active_status: true, entity_code: current_user.entity_code).order(division_name: :asc)
       entity_div_id_str = "'0'"
       @entity_divs = EntityDivision.where(entity_code: current_user.entity_code)
       @entity_divs.each do |entity_div|
@@ -166,25 +170,29 @@ class PaymentInfosController < ApplicationController
     logger.info "The Search :: #{the_search.inspect}"
 
     if current_user.super_admin? || current_user.super_user?
+      @merchant_search = EntityInfo.where(active_status: true).order(entity_name: :asc)
+      @merchant_service_search = EntityDivision.where(active_status: true).order(division_name: :asc)
       if params[:count] == "All"
         @payment_infos = PaymentReport.where(the_search).paginate(:page => params[:page], :per_page => 100000000000).order('created_at desc')
       else
         @payment_infos = PaymentReport.where(the_search).paginate(:page => params[:page], :per_page => params[:count]).order('created_at desc')
       end
     elsif current_user.merchant_admin?
+      @merchant_service_search = EntityDivision.where(active_status: true, entity_code: current_user.entity_code).order(division_name: :asc)
       entity_div_id_str = "'0'"
       @entity_divs = EntityDivision.where(entity_code: current_user.entity_code)
       @entity_divs.each do |entity_div|
         entity_div_id_str << ",'#{entity_div.assigned_code}'"
       end
       final_div_ids = "(#{entity_div_id_str})"
-      
+
       if params[:count] == "All"
         @payment_infos = PaymentReport.where("entity_div_code IN #{final_div_ids}").where(the_search).paginate(:page => params[:page], :per_page => 100000000000).order('created_at desc')
       else
         @payment_infos = PaymentReport.where("entity_div_code IN #{final_div_ids}").where(the_search).paginate(:page => params[:page], :per_page => params[:count]).order('created_at desc')
       end
     elsif current_user.merchant_service?
+
       if params[:count] == "All"
         @payment_infos = PaymentReport.where(entity_div_code: current_user.division_code).where(the_search).paginate(:page => params[:page], :per_page => 100000000000).order('created_at desc')
       else

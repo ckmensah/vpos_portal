@@ -1,7 +1,7 @@
 class EntityServiceAccountTrxnsController < ApplicationController
   before_action :set_entity_service_account_trxn, only: [:show, :edit, :update, :destroy]
   load_and_authorize_resource
-  before_filter :load_permissions
+  before_action :load_permissions
   # GET /entity_service_account_trxns
   # GET /entity_service_account_trxns.json
   def index

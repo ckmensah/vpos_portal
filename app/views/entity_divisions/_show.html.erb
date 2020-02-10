@@ -140,20 +140,25 @@
                     </thead>
                     <tbody>
 
-                    <% @service_account_details.each_with_index do |acount_details, num| %>
-                    <tr>
-                      <td><%= num + 1 %></td>
-                      <td><%= acount_details.processing_id %></td>
-                      <td><%= acount_details.gross_bal_bef %></td>
-                      <td><%= acount_details.gross_bal_aft %></td>
-                      <td><%= acount_details.net_bal_bef %></td>
-                      <td><%= acount_details.net_bal_aft %></td>
-                      <td><%= acount_details.charge %></td>
-                      <td><%= acount_details.trans_type %></td>
+                    <% if @service_account_details.exists? %>
 
-                    </tr>
+                      <% @service_account_details.each_with_index do |acount_details, num| %>
+                        <tr>
+                          <td><%= num + 1 %></td>
+                          <td><%= acount_details.processing_id %></td>
+                          <td><%= acount_details.gross_bal_bef %></td>
+                          <td><%= acount_details.gross_bal_aft %></td>
+                          <td><%= acount_details.net_bal_bef %></td>
+                          <td><%= acount_details.net_bal_aft %></td>
+                          <td><%= acount_details.charge %></td>
+                          <td><%= acount_details.trans_type %></td>
+
+                        </tr>
+
+                      <% end %>
 
                     <% end %>
+
                     </tbody>
                   </table>
 
