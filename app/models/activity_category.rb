@@ -7,7 +7,7 @@ class ActivityCategory < ApplicationRecord
 
   validates :assigned_code, presence: {message: " cannot be empty."}
   validates :activity_cat_desc, presence: {message: " cannot be empty."}
-  validates :image_data, presence: {message: " cannot be empty."}
-  validates :image_path, presence: {message: " cannot be empty."}
+  #validates :image_data, presence: {message: " cannot be empty."}
+  #validates :image_path, presence: {message: " cannot be empty."}
 
 end
