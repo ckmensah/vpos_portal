@@ -89,12 +89,12 @@
         <h4 class="show w3-center"><strong>Edit Merchant Information</strong></h4>
         <div id="entity_info_edit"></div>
         <%#= simple_form_for(@entity_info, :data => {  :remote => true, count: params[:count], page: params[:page]}) do |f| %>
-        <%= simple_form_for(@new_record, url: entity_infos_path(@new_record, count: params[:count], page: params[:page] ), remote: true) do |f| %>
+        <%= simple_form_for(@new_record, url: entity_infos_path(@new_record, entity_code: @entity_info.assigned_code, count: params[:count], page: params[:page] ), remote: true) do |f| %>
             <div class="w3-container w3-border w3-border-purple">
               <br/>
               <%= f.error_notification %>
               <%= f.error_notification message: f.object.errors[:base].to_sentence if f.object.errors[:base].present? %>
-              <%= f.input :assigned_code, :as => :hidden, input_html:{value: @entity_info.assigned_code} %>
+              <%#= f.input :assigned_code, :as => :hidden, input_html:{value: @entity_info.assigned_code} %>
               <%= f.input :action_type, :as => :hidden, input_html:{value: "for_update"} %>
               <div class="w3-half">
                 <%= f.input :entity_name,  label: "Merchant Name", required: true, input_html:{id: "entity_name", value: @entity_info.entity_name, autocomplete: "off",class:"form-control w3-input w3-border w3-white input-group input-append",style:"width: 90%;"}  %>

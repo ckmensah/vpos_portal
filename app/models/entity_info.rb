@@ -58,14 +58,15 @@ class EntityInfo < ApplicationRecord
             if action_type == "for_update"
               wallet_validity = true
             else
-              if @service_id || @secret_key || @client_key
-                logger.info "test 6"
-                wallet_validity = false
-                key_number = key
-                break
-              else
-                wallet_validity = true
-              end
+              #if @service_id || @secret_key || @client_key
+              #  logger.info "test 6"
+              #  wallet_validity = false
+              #  key_number = key
+              #  break
+              #else
+              #  wallet_validity = true
+              #end
+              wallet_validity = true
             end
           else
             logger.info "test 3"

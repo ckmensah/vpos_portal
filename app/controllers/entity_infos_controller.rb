@@ -118,6 +118,8 @@ class EntityInfosController < ApplicationController
     if entity_info_params[:action_type] != "for_update"
       @entity_info.assigned_code = EntityInfo.gen_entity_info_code
       logger.info "The Entity Information code is #{@entity_info.assigned_code.inspect}"
+    elsif entity_info_params[:action_type] == "for_update"
+      @entity_info.assigned_code = params[:entity_code]
     end
     @entity_categories = EntityCategory.where(active_status: true).order(assigned_code: :asc)
     @activity_types = ActivityType.where(active_status: true).order(assigned_code: :asc)
@@ -127,8 +129,11 @@ class EntityInfosController < ApplicationController
       if @entity_info.valid?
         if validity && entity_info_params[:wallet_query].present?
 
+
           if entity_info_params[:action_type] == "for_update"
             logger.info "UPDATING IN CREATE......... INTERESTING"
+            entity_info_params[:assigned_code] = params[:entity_code]
+            @new_record.assigned_code = params[:entity_code]
             @new_record.save(validate: false)
             EntityInfo.update_last_but_one('entity_info', 'assigned_code', @entity_info.assigned_code)
             EntityInfo.update_last_but_one('entity_info_extra', 'entity_code', @entity_info.assigned_code)
@@ -163,6 +168,7 @@ class EntityInfosController < ApplicationController
         end
 
       else
+        logger.info "Entity Error messages: #{@entity_info.errors.messages.inspect}"
         if validity && entity_info_params[:wallet_query].present? #|| entity_info_params[:wallet_query] == "no"
         else
           unless entity_info_params[:wallet_query] == "no"
@@ -175,6 +181,8 @@ class EntityInfosController < ApplicationController
         end
         format.html { render :new }
         if entity_info_params[:action_type] == "for_update"
+          logger.info "IN UPDATE ======================================="
+          @entity_info.assigned_code = params[:entity_code]
           @entity_info_extra = EntityInfoExtra.where(entity_code: @entity_info.assigned_code, active_status: true, del_status: false).order(created_at: :desc).first
           logger.info "Edit build 3 #{@entity_info_extra.inspect}"
           format.js {render :edit }

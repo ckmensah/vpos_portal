@@ -1,6 +1,6 @@
 
 
-<div class="w3-container w3-white w3-hover-shadow w3-card-4 w3-border w3-border-purple rcorners w3-center">
+<div class="w3-container w3-white w3-hover-shadow col-md-10 offset-md-1 w3-card-4 w3-border w3-border-purple rcorners w3-center">
   <!--<div class="row">-->
   <h4 style="text-decoration: underline;"><strong>KINDLY CHOOSE SERVICE SETUP TYPES   </strong></h4>
 
@@ -8,14 +8,14 @@
     <button type="button" class="btn btn-outline-purple div_tablink w3-vpos-purple" style="font-size: small; width: 200px;" onclick="openTab(event, 'with_wallet')">SERVICE WITH WALLET</button>
     <button type="button" class="btn btn-outline-purple div_tablink" style="font-size: small; width: 220px;" onclick="openTab(event, 'without_wallet')">SERVICE WITHOUT WALLET</button>
   </div>
-
+  <br/><br/>
 
   <div id="with_wallet" class="div_class active">
     <%#= render :partial=> "region_master_index" %>
 
     <div class="">
 
-      <div class="w3-white w3-hover-shadow col-md-6 offset-md-3 w3-card-4 w3-border w3-border-purple rcorners w3-center">
+      <div class="w3-white w3-hover-shadow col-md-8 offset-md-2 w3-card-4 w3-border w3-border-purple rcorners w3-center">
         <h4 class="show w3-center"><strong>New Merchant Divisions</strong></h4>
 
         <div class="w3-container">
@@ -39,7 +39,7 @@
                 <%= f.input :city_town_name, label: "City", collection: @city_town_masters, label_method: :city_town_name, value_method: :id, required: true, input_html:{id: "for_city", autocomplete: "off",class:"form-control w3-input w3-border w3-white input-group input-append",style:"width: 90%;"}  %>
                 <%= f.input :suburb_id, label: "Suburb", collection: @suburb_masters, label_method: :suburb_name, value_method: :id, required: true, input_html:{id: "for_suburb", autocomplete: "off",class:"form-control w3-input w3-border w3-white input-group input-append",style:"width: 90%;"}  %>
                 </div>
-            
+
             <div class="w3-third">
                 <%= f.simple_fields_for :entity_wallet_configs do |fff| %>
                   <%= fff.input :service_id, label: "Service ID", value_method: :id, required: true, input_html: {id: "serv_id", type: "number", min: "1", oninput: "validity.valid||(value='');", autocomplete: "off", class: "form-control w3-input w3-border w3-white input-group input-append", style: ""} %>
@@ -86,7 +86,7 @@
 
     <div class="">
 
-      <div class="w3-white w3-hover-shadow col-md-10 offset-md-1 w3-card-4 w3-border w3-border-purple rcorners w3-center">
+      <div class="w3-white w3-hover-shadow  w3-card-4 w3-border w3-border-purple rcorners w3-center">
         <h4 class="show w3-center"><strong>New Merchant Services</strong></h4>
         <div id="division_new"></div>
 
