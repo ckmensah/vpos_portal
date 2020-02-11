@@ -707,7 +707,7 @@ class EntityDivisionsController < ApplicationController
   # Never trust parameters from the scary internet, only allow the white list through.
   def entity_division_params
     params.require(:entity_division).permit(:entity_code, :assigned_code, :division_name, :division_alias, :action_type, :suburb_id,
-                                            :activity_type_code, :service_label, :region_name, :city_town_name, :comment,
+                                            :activity_type_code, :service_label, :region_name, :city_town_name, :comment, :link_master,
                                             :div_lov_query, :activity_query, :sub_activity_query,
                                             :active_status, :del_status, :user_id, :service_code, :for_update, divisions: [], :the_div_acts_lov => {})
     # entity_wallet_configs_attributes: [:id, :division_code, :service_id, :secret_key, :client_key, :comment, :active_status, :del_status, :user_id]

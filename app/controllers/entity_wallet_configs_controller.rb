@@ -99,6 +99,6 @@ class EntityWalletConfigsController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def entity_wallet_config_params
-      params.require(:entity_wallet_config).permit(:entity_code, :activity_type_code, :service_id, :secret_key, :client_key, :comment, :active_status, :del_status, :user_id)
+      params.require(:entity_wallet_config).permit(:entity_code, :division_code, :activity_type_code, :service_id, :secret_key, :client_key, :comment, :active_status, :del_status, :user_id)
     end
 end

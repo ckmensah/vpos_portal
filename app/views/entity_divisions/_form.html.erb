@@ -75,7 +75,6 @@
 
 
 
-
 <div class="">
 
     <div class="w3-white w3-hover-shadow col-md-10 offset-md-1 w3-card-4 w3-border w3-border-purple rcorners w3-center">
@@ -114,7 +113,7 @@
           <%= f.input :entity_code, :as => :hidden, input_html: {value: params[:entity_code]} %>
               <%= f.input :active_status, :as => :hidden, input_html: {value: true} %>
               <%= f.input :del_status, :as => :hidden, input_html: {value: false} %>
-              <%#= f.input :user_id, :as => :hidden, input_html:{value: current_user.id} %>
+              <%= f.input :user_id, :as => :hidden, input_html:{value: current_user.id} %>
 
               <div class="pre-scrollable table-responsive-md" style="max-height: 50vh">
           <table class="w3-table-all table-bordered w3-hoverable w3-card-4">
