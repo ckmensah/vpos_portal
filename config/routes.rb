@@ -51,6 +51,8 @@ Rails.application.routes.draw do
   get '/entity_infos/sports_index' => 'entity_infos#sports_index', :as => 'sports_index'
   get '/entity_divisions/main_sports_index/:entity_code' => 'entity_divisions#main_sports_index', :as => 'main_sports_index'
   get '/entity_divisions/main_sports_index' => 'entity_divisions#main_sports_index'
+  post '/entity_divisions/entity_div_create' => 'entity_divisions#entity_div_create', :as => 'entity_div_create'
+
 
   get '/entity_divisions/division_setup/:division_code' => 'entity_divisions#division_setup', :as => 'division_setup'
   post '/division_setup_creation' => 'entity_divisions#create_division_setup', :as => 'create_division_setup'

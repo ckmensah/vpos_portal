@@ -632,22 +632,24 @@ class EntityDivisionsController < ApplicationController
     end
 
     respond_to do |format|
+      @new_record.assigned_code = @entity_division.assigned_code
       if @new_record.valid?#.update(entity_division_params)
         logger.info "LOGGER 1 ====================================================="
         @new_record.assigned_code = @entity_division.assigned_code
-        @new_record.save
+        @new_record.save(validate: false)
         @assigned_service_code = AssignedServiceCode.where(del_status: false, entity_div_code: @entity_division.assigned_code).order(created_at: :desc)
         @active_service_code = @assigned_service_code.where(active_status: true).first
         unless entity_division_params[:service_code] == @active_service_code.service_code
           logger.info "LOGGER 2 ========================================================"
-          @active_service_code.update(service_code: entity_division_params[:service_code])
+          @active_service_code.update(service_code: entity_division_params[:service_code], user_id: current_user.id)
         end
-        update_last_but_one("entity_division", "assigned_code", @entity_division.assigned_code)
+        EntityDivision.update_last_but_one("entity_division", "assigned_code", @entity_division.assigned_code)
         format.html { redirect_to @entity_division, notice: 'Entity division was successfully updated.' }
         flash.now[:danger] = "Entity division was successfully updated."
         format.js { render :show}
         format.json { render :show, status: :ok, location: @entity_division }
       else
+
         logger.info "LOGGER 3 =============================================================="
         logger.info "Error message 1 :: #{@new_record.errors.messages.inspect}"
         # @entity_division = @new_record

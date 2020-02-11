@@ -1,146 +1,155 @@
 
-<!--<div class="">-->
 
-  <!--<div class="w3-white w3-hover-shadow col-md-6 offset-md-3 w3-card-4 w3-border w3-border-purple rcorners w3-center">-->
-    <!--<h4 class="show w3-center"><strong>New Merchant Divisions</strong></h4>-->
+<div class="w3-container w3-white w3-hover-shadow w3-card-4 w3-border w3-border-purple rcorners w3-center">
+  <!--<div class="row">-->
+  <h4 style="text-decoration: underline;"><strong>KINDLY CHOOSE SERVICE SETUP TYPES   </strong></h4>
 
-    <!--<div class="w3-container">-->
-      <!--<br/>-->
-      <!--<%#= simple_form_for(@entity_division, :data => {:remote => true, count: params[:count], page: params[:page]}) do |f| %>-->
-      <!--<%#= simple_form_for(@entity_division, url: entity_divisions_path(@entity_division, interface_type: params[:interface_type], entity_code: params[:entity_code], count: params[:count], page: params[:page] ),:remote => true) do |f| %>-->
-
-          <!--<%#= f.error_notification %>-->
-          <!--<%#= f.error_notification message: f.object.errors[:base].to_sentence if f.object.errors[:base].present? %>-->
-          <!--<div class="w3-half">-->
-            <!--<%#= f.input :division_name, label: "Division Name", required: true, input_html: {id: "div_name", autofocus: true, autocomplete: "off", class: "form-control w3-input w3-border w3-white input-group input-append", style: "width: 90%;"} %>-->
-            <!--# f.input :division_alias, label: "Division Alias", required: true, input_html: {id: "div_alias", autocomplete: "off", class: "form-control w3-input w3-border w3-white input-group input-append", style: "width: 90%;"} %>-->
-            <!--<%#= f.input :activity_type_code, label: "Activity Code", collection: @activity_types, label_method: :activity_name, value_method: :assigned_code, required: true, input_html: {id: "activity_key", autocomplete: "off", class: "form-control w3-input w3-border w3-white input-group input-append", style: "width: 90%;"} %>-->
-            <!--<%#= f.input :service_label, label: "Service Label", required: true, input_html: {id: "serv_label", autocomplete: "off", class: "form-control w3-input w3-border w3-white input-group input-append", style: "width: 90%;"} %>-->
-
-            <!--<%#= f.input :region_name, label: "Region", collection: @region_masters, label_method: :region_name, value_method: :id, required: true, input_html:{id: "for_region", autocomplete: "off",class:"form-control w3-input w3-border w3-white input-group input-append",style:"width: 90%;"}  %>-->
-            <!--<%#= f.input :city_town_name, label: "City", collection: @city_town_masters, label_method: :city_town_name, value_method: :id, required: true, input_html:{id: "for_city", autocomplete: "off",class:"form-control w3-input w3-border w3-white input-group input-append",style:"width: 90%;"}  %>-->
-            <!--<%#= f.input :suburb_id, label: "Suburb", collection: @suburb_masters, label_method: :suburb_name, value_method: :id, required: true, input_html:{id: "for_suburb", autocomplete: "off",class:"form-control w3-input w3-border w3-white input-group input-append",style:"width: 90%;"}  %>-->
-
-          <!--</div>-->
-
-          <!--<div class="w3-half">-->
-            <!--<%#= f.simple_fields_for :entity_wallet_configs do |fff| %>-->
-                <!--<%#= fff.input :service_id, label: "Service ID", value_method: :id, required: true, input_html: {id: "serv_id", type: "number", min: "1", oninput: "validity.valid||(value='');", autocomplete: "off", class: "form-control w3-input w3-border w3-white input-group input-append", style: ""} %>-->
-                <!--<%#= ff.input :api_key,  label: "Sms Key", value_method: :id, required: true, input_html:{id: "api_key", autocomplete: "off",class:"form-control w3-input w3-border w3-white input-group input-append",style:"width: 90%; height: 25px"}  %>-->
-                <!--<%#= fff.input :secret_key, label: "Secret Key", required: true, input_html: {id: "k_secret", autocomplete: "off", class: "form-control w3-input w3-border w3-white input-group input-append", style: ""} %>-->
-                <!--<%#= fff.input :client_key, label: "Client Key", required: true, input_html: {id: "k_client", autocomplete: "off", class: "form-control w3-input w3-border w3-white input-group input-append", style: ""} %>-->
-                <!--<%#= fff.input :active_status, :as => :hidden, input_html: {value: true} %>-->
-                <!--<%#= fff.input :del_status, :as => :hidden, input_html: {value: false} %>-->
-            <!--<%# end %>-->
+  <div class="w3-responsive">
+    <button type="button" class="btn btn-outline-purple div_tablink w3-vpos-purple" style="font-size: small; width: 200px;" onclick="openTab(event, 'with_wallet')">SERVICE WITH WALLET</button>
+    <button type="button" class="btn btn-outline-purple div_tablink" style="font-size: small; width: 220px;" onclick="openTab(event, 'without_wallet')">SERVICE WITHOUT WALLET</button>
+  </div>
 
 
-            <!--<%#= f.input :comment, label: "Comment", :as => :text, required: false, input_html: {rows: 5, cols: 3, autocomplete: "off", class: "form-control w3-border ", style: ""} %>-->
-          <!--</div>-->
+  <div id="with_wallet" class="div_class active">
+    <%#= render :partial=> "region_master_index" %>
 
-          <!--<%#= f.simple_fields_for :activity_divs do |ff| %>-->
-              <!--<%#= ff.input :activity_div_desc, label: "Activity Description", value_method: :id, required: true, input_html: {id: "activity_desc", autocomplete: "off", class: "form-control w3-input w3-border w3-white input-group input-append", style: "width: 90%;"} %>-->
-              <!--<%#= ff.input :api_key,  label: "Sms Key", value_method: :id, required: true, input_html:{id: "api_key", autocomplete: "off",class:"form-control w3-input w3-border w3-white input-group input-append",style:"width: 90%; height: 25px"}  %>-->
-              <!--<%#= ff.input :activity_date, label: "Activity Date", required: true, input_html: {id: "activity_date", autocomplete: "off", class: "form-control w3-input w3-border w3-white input-group input-append", style: "width: 90%;"} %>-->
-              <!--<%#= ff.input :active_status, :as => :hidden, input_html: {value: true} %>-->
-              <!--<%#= ff.input :del_status, :as => :hidden, input_html: {value: false} %>-->
+    <div class="">
 
-          <!--<%# end %>-->
-          <!--<%#= f.input :active_status, :as => :hidden, input_html: {value: true} %>-->
-          <!--<%#= f.input :del_status, :as => :hidden, input_html: {value: false} %>-->
-          <!--<%#= f.input :active_status, :as => :hidden, input_html:{value: true} %>-->
-          <!--<%#= f.input :user_id, :as => :hidden, input_html:{value: current_user.id} %>-->
-          <!--<div>-->
-            <!--<%#= f.submit "Submit", class: "w3-button w3-purple-vpos w3-border w3-border-purple w3-small w3-round-large", :data => {:disable_with => 'Please Wait...'}, style: "width:auto;float:center;", remote: true %>-->
-            <!--<%# if params[:interface_type] == "info" %>-->
-                <!--<%#= link_to 'Back', entity_index_path(entity_code: params[:entity_code], page: params[:page], count: params[:count]), class: "w3-button w3-white w3-border w3-border-purple w3-small w3-round-large", remote: true %>-->
-            <!--<%# else %>-->
-                <!--<%#= link_to 'Back', entity_division_index_path(entity_code: params[:entity_code], page: params[:page], count: params[:count]), class: "w3-button w3-white w3-border w3-border-purple w3-small w3-round-large", remote: true %>-->
-            <!--<%# end %>-->
-          <!--</div>-->
-      <!--<%# end %>-->
-      <!--<br/>-->
-    <!--</div>-->
-
-
-  <!--</div>-->
-
-<!--</div>-->
-
-
-<!--<div class="col-md-7 col-md-offset-5">-->
-<!--</div>-->
-
-
-
-
-
-
-<div class="">
-
-    <div class="w3-white w3-hover-shadow col-md-10 offset-md-1 w3-card-4 w3-border w3-border-purple rcorners w3-center">
-<h4 class="show w3-center"><strong>New Merchant Services</strong></h4>
-<div id="division_new"></div>
+      <div class="w3-white w3-hover-shadow col-md-6 offset-md-3 w3-card-4 w3-border w3-border-purple rcorners w3-center">
+        <h4 class="show w3-center"><strong>New Merchant Divisions</strong></h4>
 
         <div class="w3-container">
-          <% unless params[:display_cnt].present?  %>
-          <br>
-          <div>
-            <!--<div class="w3-half">-->
+          <br/>
+          <%#= simple_form_for(@entity_division, :data => {:remote => true, count: params[:count], page: params[:page]}) do |f| %>
+            <%= simple_form_for(@entity_division, url: entity_div_create_path(@entity_division, interface_type: params[:interface_type], entity_code: params[:entity_code], count: params[:count], page: params[:page] ),:remote => true) do |f| %>
 
-            <!--</div>-->
+              <%= f.error_notification %>
+              <%= f.error_notification message: f.object.errors[:base].to_sentence if f.object.errors[:base].present? %>
+              <div class="w3-third">
+                <%= f.input :division_name, label: "Division Name", required: true, input_html: {id: "div_name", autofocus: true, autocomplete: "off", class: "form-control w3-input w3-border w3-white input-group input-append", style: "width: 90%;"} %>
+                <%= f.input :division_alias, label: "Division Alias", required: true, input_html: {id: "div_alias", autocomplete: "off", class: "form-control w3-input w3-border w3-white input-group input-append", style: "width: 90%;"} %>
+                <%= f.input :activity_type_code, label: "Activity Code", collection: @activity_types, label_method: :activity_name, value_method: :assigned_code, required: true, input_html: {id: "activity_key", autocomplete: "off", class: "form-control w3-input w3-border w3-white input-group input-append", style: "width: 90%;"} %>
+                <%= f.input :service_code, as: :integer, label: "Shortcode Ext", required: true, input_html: {id: "serv_code", value: @service_code, autocomplete: "off", min: 1, max: 9999, oninput: "validity.valid||(value='');", class: "form-control w3-input w3-border w3-white input-group input-append", style: "width: 90%;"} %>
+              </div>
+                <div class="w3-third">
+                <%= f.input :service_label, label: "Service Label", required: true, input_html: {id: "serv_label", autocomplete: "off", class: "form-control w3-input w3-border w3-white input-group input-append", style: "width: 90%;"} %>
 
-            <div class="w3-half" id="div_num_id" >
+                <%= f.input :region_name, label: "Region", collection: @region_masters, label_method: :region_name, value_method: :id, required: true, input_html:{id: "for_region", autocomplete: "off",class:"form-control w3-input w3-border w3-white input-group input-append",style:"width: 90%;"}  %>
 
-              <%= select_tag :display_cnt, options_for_select([1,2,3,4,5,6,7,8,9,10], params[:display_cnt].to_i),
-                             :onchange => "divisionNumber()",
-                             :data => {  :remote => true, :url => url_for(params:{
-                                                                                  into_create: params[:into_create],
-                                                                                  interface_type: params[:interface_type],
-                                                                                  entity_code: params[:entity_code]},
-                                                                          :controller => "entity_divisions", :action => "new")},
-                             id:"record", class: "w3-button w3-white w3-border w3-border-purple w3-round-large",
-                             style: "width:auto; height:35px; float:right", remote:true %>
-              <h5><strong>Please select the number of services to add: </strong></h5>
+                <%= f.input :city_town_name, label: "City", collection: @city_town_masters, label_method: :city_town_name, value_method: :id, required: true, input_html:{id: "for_city", autocomplete: "off",class:"form-control w3-input w3-border w3-white input-group input-append",style:"width: 90%;"}  %>
+                <%= f.input :suburb_id, label: "Suburb", collection: @suburb_masters, label_method: :suburb_name, value_method: :id, required: true, input_html:{id: "for_suburb", autocomplete: "off",class:"form-control w3-input w3-border w3-white input-group input-append",style:"width: 90%;"}  %>
+                </div>
+            
+            <div class="w3-third">
+                <%= f.simple_fields_for :entity_wallet_configs do |fff| %>
+                  <%= fff.input :service_id, label: "Service ID", value_method: :id, required: true, input_html: {id: "serv_id", type: "number", min: "1", oninput: "validity.valid||(value='');", autocomplete: "off", class: "form-control w3-input w3-border w3-white input-group input-append", style: ""} %>
+                  <%#= ff.input :api_key,  label: "Sms Key", value_method: :id, required: true, input_html:{id: "api_key", autocomplete: "off",class:"form-control w3-input w3-border w3-white input-group input-append",style:"width: 90%; height: 25px"}  %>
+                  <%= fff.input :secret_key, label: "Secret Key", required: true, input_html: {id: "k_secret", autocomplete: "off", class: "form-control w3-input w3-border w3-white input-group input-append", style: ""} %>
+                  <%= fff.input :client_key, label: "Client Key", required: true, input_html: {id: "k_client", autocomplete: "off", class: "form-control w3-input w3-border w3-white input-group input-append", style: ""} %>
+                  <%= fff.input :active_status, :as => :hidden, input_html: {value: true} %>
+                  <%= fff.input :del_status, :as => :hidden, input_html: {value: false} %>
+                  <%= fff.input :user_id, :as => :hidden, input_html:{value: current_user.id} %>
+                <% end %>
+
+                <%#= f.input :comment, label: "Comment", :as => :text, required: false, input_html: {rows: 5, cols: 3, autocomplete: "off", class: "form-control w3-border ", style: ""} %>
+              </div>
+
+              <%= f.input :active_status, :as => :hidden, input_html: {value: true} %>
+              <%= f.input :del_status, :as => :hidden, input_html: {value: false} %>
+              <%= f.input :active_status, :as => :hidden, input_html:{value: true} %>
+              <%= f.input :user_id, :as => :hidden, input_html:{value: current_user.id} %>
+              <div>
+                <%= f.submit "Submit", class: "w3-button w3-purple-vpos w3-border w3-border-purple w3-small w3-round-large", :data => {:disable_with => 'Please Wait...'}, style: "width:auto;float:center;", remote: true %>
+                <% if params[:interface_type] == "info" %>
+                  <%= link_to 'Back', entity_index_path(entity_code: params[:entity_code], page: params[:page], count: params[:count]), class: "w3-button w3-white w3-border w3-border-purple w3-small w3-round-large", remote: true %>
+                <% else %>
+                  <%= link_to 'Back', entity_division_index_path(entity_code: params[:entity_code], page: params[:page], count: params[:count]), class: "w3-button w3-white w3-border w3-border-purple w3-small w3-round-large", remote: true %>
+                <% end %>
+              </div>
+            <% end %>
+            <br/>
             </div>
 
 
-          </div>
+            </div>
 
-          <br>
+            </div>
+
+
+            <div class="col-md-7 col-md-offset-5">
+            </div>
+
+  </div>
+
+  <div id="without_wallet" class="div_class" style="display:none">
+    <%#= render :partial=> "/city_town_masters/city_town_master_index" %>
+
+    <div class="">
+
+      <div class="w3-white w3-hover-shadow col-md-10 offset-md-1 w3-card-4 w3-border w3-border-purple rcorners w3-center">
+        <h4 class="show w3-center"><strong>New Merchant Services</strong></h4>
+        <div id="division_new"></div>
+
+        <div class="w3-container">
+          <% unless params[:display_cnt].present?  %>
+            <br>
+            <div>
+              <!--<div class="w3-half">-->
+
+              <!--</div>-->
+
+              <div class="w3-half" id="div_num_id" >
+
+                <%= select_tag :display_cnt, options_for_select([1,2,3,4,5,6,7,8,9,10], params[:display_cnt].to_i),
+                               :onchange => "divisionNumber()",
+                               :data => {  :remote => true, :url => url_for(params:{
+                                   into_create: params[:into_create],
+                                   interface_type: params[:interface_type],
+                                   entity_code: params[:entity_code]},
+                                                                            :controller => "entity_divisions", :action => "new")},
+                               id:"record", class: "w3-button w3-white w3-border w3-border-purple w3-round-large",
+                               style: "width:auto; height:35px; float:right", remote:true %>
+                <h5><strong>Please select the number of services to add: </strong></h5>
+              </div>
+
+
+            </div>
+
+            <br>
           <% end %>
           <%= simple_form_for(@entity_division, url: entity_divisions_path(@entity_division, interface_type: params[:interface_type], display_cnt: params[:display_cnt], entity_code: params[:entity_code], count: params[:count], page: params[:page] ),:remote => true) do |f| %>
 
-          <%= f.input :entity_code, :as => :hidden, input_html: {value: params[:entity_code]} %>
-              <%= f.input :active_status, :as => :hidden, input_html: {value: true} %>
-              <%= f.input :del_status, :as => :hidden, input_html: {value: false} %>
-              <%= f.input :user_id, :as => :hidden, input_html:{value: current_user.id} %>
+            <%= f.input :entity_code, :as => :hidden, input_html: {value: params[:entity_code]} %>
+            <%= f.input :active_status, :as => :hidden, input_html: {value: true} %>
+            <%= f.input :del_status, :as => :hidden, input_html: {value: false} %>
+            <%= f.input :user_id, :as => :hidden, input_html:{value: current_user.id} %>
 
-              <div class="pre-scrollable table-responsive-md" style="max-height: 50vh">
-          <table class="w3-table-all table-bordered w3-hoverable w3-card-4">
+            <div class="pre-scrollable table-responsive-md" style="max-height: 50vh">
+              <table class="w3-table-all table-bordered w3-hoverable w3-card-4">
 
-            <thead>
+                <thead>
 
-            <tr class="w3-vpos-purple">
-              <th><strong>No.</strong></th>
-              <th><strong>Service Name</strong></th>
-              <th><strong>Service Alias</strong></th>
-              <!--<th><strong>Name &emsp;&emsp;&emsp;&emsp;</strong></th>-->
-              <th><strong>Short Code Ext</strong></th>
-              <th><strong>Service Label</strong></th>
-              <th><strong>Activity Type</strong></th>
-              <th><strong>Region</strong></th>
-              <th><strong>City</strong></th>
-              <th><strong>Suburb</strong></th>
-              <!--<th><strong>Save</strong></th>-->
+                <tr class="w3-vpos-purple">
+                  <th><strong>No.</strong></th>
+                  <th><strong>Service Name</strong></th>
+                  <th><strong>Service Alias</strong></th>
+                  <!--<th><strong>Name &emsp;&emsp;&emsp;&emsp;</strong></th>-->
+                  <th><strong>Short Code Ext</strong></th>
+                  <th><strong>Service Label</strong></th>
+                  <th><strong>Activity Type</strong></th>
+                  <th><strong>Region</strong></th>
+                  <th><strong>City</strong></th>
+                  <th><strong>Suburb</strong></th>
+                  <!--<th><strong>Save</strong></th>-->
 
-              <!--<th colspan="1"></th>-->
-            </tr>
-            </thead>
-            <tbody>
-            <% if params[:into_create] == "into_create" %>
-                <% logger.info "FIRST +=============================================================" %>
-                <% count = 1 %>
-                <% @display.times.each do |value| %>
+                  <!--<th colspan="1"></th>-->
+                </tr>
+                </thead>
+                <tbody>
+                <% if params[:into_create] == "into_create" %>
+                  <% logger.info "FIRST +=============================================================" %>
+                  <% count = 1 %>
+                  <% @display.times.each do |value| %>
                     <% the_params = value %>
                     <%# logger.info "key: #{key.inspect}; value: #{value.inspect}; inner value: #{value["activity_type_code"].inspect}" %>
                     <%# act_type = ActivityType.where(assigned_code: the_params["activity_type_code"], active_status: true).last %>
@@ -163,91 +172,106 @@
                       <!--<input type="hidden" name="the_activity_wallets[<%#= count %>[id]]]" >-->
                       <% count = count + 1%>
                     </tr>
-                <% end %>
-            <% else %>
-                <% logger.info "SECOND +=============================================================" %>
-                <% count = 1 %>
-                <!--list.each do |row|-->
-                <!--the_params = row[1]-->
-                <% display_size = @display.nil? ? 0 : @display.to_enum.to_h.length.to_i %>
-                <% if @display != nil %>
+                  <% end %>
+                <% else %>
+                  <% logger.info "SECOND +=============================================================" %>
+                  <% count = 1 %>
+                  <!--list.each do |row|-->
+                  <!--the_params = row[1]-->
+                  <% display_size = @display.nil? ? 0 : @display.to_enum.to_h.length.to_i %>
+                  <% if @display != nil %>
                     <% @display.each do |key, value| %>
-                        <% the_params = value %>
-                        <%
-                           the_params[:region_name].present? ? @city_town_masters = CityTownMaster.where(active_status: true, region_id: the_params[:region_name]).order(city_town_name: :asc) : @city_town_masters = CityTownMaster.where(id: 0)
-                           the_params[:city_town_name].present? ? @suburb_masters = SuburbMaster.where(active_status: true, city_town_id: the_params[:city_town_name]).order(suburb_name: :asc) : @suburb_masters = SuburbMaster.where(id: 0)
-                        %>
-                        <%# pcs_do = ActivityType.where(id: the_params[:id]).last %>
+                      <% the_params = value %>
+                      <%
+                          the_params[:region_name].present? ? @city_town_masters = CityTownMaster.where(active_status: true, region_id: the_params[:region_name]).order(city_town_name: :asc) : @city_town_masters = CityTownMaster.where(id: 0)
+                          the_params[:city_town_name].present? ? @suburb_masters = SuburbMaster.where(active_status: true, city_town_id: the_params[:city_town_name]).order(suburb_name: :asc) : @suburb_masters = SuburbMaster.where(id: 0)
+                      %>
+                      <%# pcs_do = ActivityType.where(id: the_params[:id]).last %>
+                      <tr>
+                        <td><strong><%= count %></strong></td>
+                        <td><strong><input type="text" name="divisions[<%= count %>[division_name]]" value="<%= the_params["division_name"] %>" autocomplete="off" placeholder="Division Name" class="form-control w3-input w3-border w3-white input-group input-append" style="" /></strong></td>
+                        <td><strong><input type="text" name="divisions[<%= count %>[division_alias]]" value="<%= the_params["division_alias"] %>" autocomplete="off" placeholder="Division Alias" class="form-control w3-input w3-border w3-white input-group input-append" style="" /></strong></td>
+                        <td><strong><input type="number" name="divisions[<%= count %>[service_code]]" value="<%= the_params["service_code"] %>" autocomplete="off" min="1" max="9999" oninput="validity.valid||(value='');" placeholder="Service Code" class="form-control w3-input w3-border w3-white input-group input-append" style="" /></strong></td>
+                        <td><strong><input type="text" name="divisions[<%= count %>[service_label]]" value="<%= the_params["service_label"] %>" autocomplete="off" placeholder="Service Name" class="form-control w3-input w3-border w3-white input-group input-append" style="" /></strong></td>
+
+                        <td style=""><strong><%= collection_select :divisions, "#{count}[activity_type_code]", @activity_types, :id, :activity_name, { :prompt => 'Select an Activity type', :include_blank => true, selected: "#{the_params["activity_type_code"]}"}, {id: "act_type_#{count}", class:"form-control w3-input w3-border w3-white input-group input-append", style:"" } %></strong></td>
+                        <td style=""><strong><%= collection_select :divisions, "#{count}[region_name]", @region_masters, :id, :region_name, { :prompt => 'Select a Region', :include_blank => false, selected: "#{the_params["region_name"]}"}, {id: "for_region_#{count}", :onchange => "changeCity('for_region_#{count}', 'for_city_#{count}', 'for_suburb_#{count}')", class:"form-control w3-input w3-border w3-white input-group input-append", style:"" } %></strong></td>
+                        <td style=""><strong><%= collection_select :divisions, "#{count}[city_town_name]", @city_town_masters, :id, :city_town_name, { :prompt => 'Select a City/Town', :include_blank => false, selected: "#{the_params["city_town_name"]}"}, {id: "for_city_#{count}", :onchange => "changeSuburb('for_city_#{count}', 'for_suburb_#{count}')", class:"form-control w3-input w3-border w3-white input-group input-append", style:"" } %></strong></td>
+                        <td style=""><strong><%= collection_select :divisions, "#{count}[suburb_id]", @suburb_masters, :id, :suburb_name, {:prompt=> "Select a Suburb",  :include_blank => false, selected: "#{the_params["suburb_id"]}"}, {id: "for_suburb_#{count}",class:"form-control w3-input w3-border w3-white input-group input-append", style:"" } %></strong></td>
+
+
+                        <!--<td><strong><input type="checkbox" name="the_list[<%#= count %>[checkbox]]]" style="display: block;">-->
+                        <!--<input type="hidden" name="the_list[<%#= count %>[id]]]" value="<%#= person.last %>"><%# count = count + 1%></strong></td>-->
+                        <!--<input type="hidden" name="the_activity_wallets[<%#= count %>[id]]]" >-->
+                        <% count = count + 1%>
+                      </tr>
+                    <% end %>
+                    <% if display_size < @display_length.to_i %>
+                      <% logger.info "THIRD +=============================================================" %>
+                      <%# count =  %>
+                      <% new_display = @display_length.to_i - display_size %>
+                      <% new_display.times.each do |val| %>
                         <tr>
                           <td><strong><%= count %></strong></td>
-                          <td><strong><input type="text" name="divisions[<%= count %>[division_name]]" value="<%= the_params["division_name"] %>" autocomplete="off" placeholder="Division Name" class="form-control w3-input w3-border w3-white input-group input-append" style="" /></strong></td>
-                          <td><strong><input type="text" name="divisions[<%= count %>[division_alias]]" value="<%= the_params["division_alias"] %>" autocomplete="off" placeholder="Division Alias" class="form-control w3-input w3-border w3-white input-group input-append" style="" /></strong></td>
-                          <td><strong><input type="number" name="divisions[<%= count %>[service_code]]" value="<%= the_params["service_code"] %>" autocomplete="off" min="1" max="9999" oninput="validity.valid||(value='');" placeholder="Service Code" class="form-control w3-input w3-border w3-white input-group input-append" style="" /></strong></td>
-                          <td><strong><input type="text" name="divisions[<%= count %>[service_label]]" value="<%= the_params["service_label"] %>" autocomplete="off" placeholder="Service Name" class="form-control w3-input w3-border w3-white input-group input-append" style="" /></strong></td>
+                          <td><strong><input type="text" name="divisions[<%= count %>[division_name]]" autocomplete="off" placeholder="Division Name" class="form-control w3-input w3-border w3-white input-group input-append" style="" /></strong></td>
+                          <td><strong><input type="text" name="divisions[<%= count %>[division_alias]]" autocomplete="off" placeholder="Division Alias" class="form-control w3-input w3-border w3-white input-group input-append" style="" /></strong></td>
+                          <td><strong><input type="number" name="divisions[<%= count %>[service_code]]" autocomplete="off" min="1" max="9999" oninput="validity.valid||(value='');" placeholder="Service Code" class="form-control w3-input w3-border w3-white input-group input-append" style="" /></strong></td>
+                          <td><strong><input type="text" name="divisions[<%= count %>[service_label]]" autocomplete="off" placeholder="Service Name" class="form-control w3-input w3-border w3-white input-group input-append" style="" /></strong></td>
 
                           <td style=""><strong><%= collection_select :divisions, "#{count}[activity_type_code]", @activity_types, :id, :activity_name, { :prompt => 'Select an Activity type', :include_blank => true, selected: "#{the_params["activity_type_code"]}"}, {id: "act_type_#{count}", class:"form-control w3-input w3-border w3-white input-group input-append", style:"" } %></strong></td>
                           <td style=""><strong><%= collection_select :divisions, "#{count}[region_name]", @region_masters, :id, :region_name, { :prompt => 'Select a Region', :include_blank => false, selected: "#{the_params["region_name"]}"}, {id: "for_region_#{count}", :onchange => "changeCity('for_region_#{count}', 'for_city_#{count}', 'for_suburb_#{count}')", class:"form-control w3-input w3-border w3-white input-group input-append", style:"" } %></strong></td>
                           <td style=""><strong><%= collection_select :divisions, "#{count}[city_town_name]", @city_town_masters, :id, :city_town_name, { :prompt => 'Select a City/Town', :include_blank => false, selected: "#{the_params["city_town_name"]}"}, {id: "for_city_#{count}", :onchange => "changeSuburb('for_city_#{count}', 'for_suburb_#{count}')", class:"form-control w3-input w3-border w3-white input-group input-append", style:"" } %></strong></td>
-                          <td style=""><strong><%= collection_select :divisions, "#{count}[suburb_id]", @suburb_masters, :id, :suburb_name, {:prompt=> "Select a Suburb",  :include_blank => false, selected: "#{the_params["suburb_id"]}"}, {id: "for_suburb_#{count}",class:"form-control w3-input w3-border w3-white input-group input-append", style:"" } %></strong></td>
-
-
-                          <!--<td><strong><input type="checkbox" name="the_list[<%#= count %>[checkbox]]]" style="display: block;">-->
-                          <!--<input type="hidden" name="the_list[<%#= count %>[id]]]" value="<%#= person.last %>"><%# count = count + 1%></strong></td>-->
-                          <!--<input type="hidden" name="the_activity_wallets[<%#= count %>[id]]]" >-->
+                          <td style=""><strong><%= collection_select :divisions, "#{count}[suburb_id]", @suburb_masters, :id, :suburb_name, {:prompt=> "Select a Suburb",  :include_blank => false, selected: "#{the_params["suburb_id"]}"}, {id: "for_suburb_#{count}", class:"form-control w3-input w3-border w3-white input-group input-append", style:"" } %></strong></td>
                           <% count = count + 1%>
                         </tr>
+                      <% end %>
                     <% end %>
-                    <% if display_size < @display_length.to_i %>
-                        <% logger.info "THIRD +=============================================================" %>
-                        <%# count =  %>
-                        <% new_display = @display_length.to_i - display_size %>
-                        <% new_display.times.each do |val| %>
-                            <tr>
-                              <td><strong><%= count %></strong></td>
-                              <td><strong><input type="text" name="divisions[<%= count %>[division_name]]" autocomplete="off" placeholder="Division Name" class="form-control w3-input w3-border w3-white input-group input-append" style="" /></strong></td>
-                              <td><strong><input type="text" name="divisions[<%= count %>[division_alias]]" autocomplete="off" placeholder="Division Alias" class="form-control w3-input w3-border w3-white input-group input-append" style="" /></strong></td>
-                              <td><strong><input type="number" name="divisions[<%= count %>[service_code]]" autocomplete="off" min="1" max="9999" oninput="validity.valid||(value='');" placeholder="Service Code" class="form-control w3-input w3-border w3-white input-group input-append" style="" /></strong></td>
-                              <td><strong><input type="text" name="divisions[<%= count %>[service_label]]" autocomplete="off" placeholder="Service Name" class="form-control w3-input w3-border w3-white input-group input-append" style="" /></strong></td>
+                  <% end %>
 
-                              <td style=""><strong><%= collection_select :divisions, "#{count}[activity_type_code]", @activity_types, :id, :activity_name, { :prompt => 'Select an Activity type', :include_blank => true, selected: "#{the_params["activity_type_code"]}"}, {id: "act_type_#{count}", class:"form-control w3-input w3-border w3-white input-group input-append", style:"" } %></strong></td>
-                              <td style=""><strong><%= collection_select :divisions, "#{count}[region_name]", @region_masters, :id, :region_name, { :prompt => 'Select a Region', :include_blank => false, selected: "#{the_params["region_name"]}"}, {id: "for_region_#{count}", :onchange => "changeCity('for_region_#{count}', 'for_city_#{count}', 'for_suburb_#{count}')", class:"form-control w3-input w3-border w3-white input-group input-append", style:"" } %></strong></td>
-                              <td style=""><strong><%= collection_select :divisions, "#{count}[city_town_name]", @city_town_masters, :id, :city_town_name, { :prompt => 'Select a City/Town', :include_blank => false, selected: "#{the_params["city_town_name"]}"}, {id: "for_city_#{count}", :onchange => "changeSuburb('for_city_#{count}', 'for_suburb_#{count}')", class:"form-control w3-input w3-border w3-white input-group input-append", style:"" } %></strong></td>
-                              <td style=""><strong><%= collection_select :divisions, "#{count}[suburb_id]", @suburb_masters, :id, :suburb_name, {:prompt=> "Select a Suburb",  :include_blank => false, selected: "#{the_params["suburb_id"]}"}, {id: "for_suburb_#{count}", class:"form-control w3-input w3-border w3-white input-group input-append", style:"" } %></strong></td>
-                              <% count = count + 1%>
-                            </tr>
-                        <% end %>
-                    <% end %>
+
                 <% end %>
 
+                </tbody>
 
-            <% end %>
-
-            </tbody>
-
-          </table>
-              </div>
-              <br>
-              <div>
+              </table>
+            </div>
+            <br>
+            <div>
               <%= f.submit "Submit", class: "w3-button w3-purple-vpos w3-border w3-border-purple w3-small w3-round-large", :data => {:disable_with => 'Please Wait...'}, style: "width:auto;float:center;", remote: true %>
               <% if params[:interface_type] == "info" %>
-              <%= link_to 'Back', entity_index_path(entity_code: params[:entity_code], page: params[:page], count: params[:count]), class: "w3-button w3-white w3-border w3-border-purple w3-small w3-round-large", remote: true %>
+                <%= link_to 'Back', entity_index_path(entity_code: params[:entity_code], page: params[:page], count: params[:count]), class: "w3-button w3-white w3-border w3-border-purple w3-small w3-round-large", remote: true %>
               <% else %>
-              <%= link_to 'Back', entity_division_index_path(entity_code: params[:entity_code], page: params[:page], count: params[:count]), class: "w3-button w3-white w3-border w3-border-purple w3-small w3-round-large", remote: true %>
+                <%= link_to 'Back', entity_division_index_path(entity_code: params[:entity_code], page: params[:page], count: params[:count]), class: "w3-button w3-white w3-border w3-border-purple w3-small w3-round-large", remote: true %>
               <% end %>
-              </div>
+            </div>
 
           <% end %>
-<br/>
+          <br/>
         </div>
 
 
+      </div>
+
     </div>
 
+
+    <div class="col-md-7 col-md-offset-5">
+    </div>
+
+
+  </div>
+
+
+  <!--</div>-->
 </div>
 
 
-<div class="col-md-7 col-md-offset-5">
-</div>
+
+
+
+
+
+
 
 
 
@@ -264,6 +288,22 @@
 
 
 <script>
+
+    function openTab(evt, cityName) {
+        var i, x, tablinks;
+        x = document.getElementsByClassName("div_class");
+        for (i = 0; i < x.length; i++) {
+            x[i].style.display = "none";
+        }
+        tablinks = document.getElementsByClassName("div_tablink");
+        for (i = 0; i < x.length; i++) {
+            tablinks[i].className = tablinks[i].className.replace(" w3-vpos-purple", "");
+        }
+
+
+        document.getElementById(cityName).style.display = "block";
+        evt.currentTarget.className += " w3-vpos-purple";
+    }
 
     function changeCity(for_region_id, for_city_id, for_suburb_id) {
         var region_id = $('#' + for_region_id);

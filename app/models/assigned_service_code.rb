@@ -1,5 +1,6 @@
 class AssignedServiceCode < ApplicationRecord
   self.table_name="assigned_service_code"
+  self.primary_key = :id
   belongs_to :entity_division, class_name: 'EntityDivision', foreign_key: :entity_div_code
 
   validates :entity_div_code, presence: {message: " cannot be empty."}

@@ -17,7 +17,7 @@ class EntityDivision < ApplicationRecord
   has_many :assigned_fees, class_name: 'AssignedFee', foreign_key: :entity_div_code
   has_many :entity_service_accounts, class_name: "EntityServiceAccount", foreign_key: :entity_div_code
   has_many :entity_service_account_trxns, class_name: "EntityServiceAccountTrxn", foreign_key: :entity_div_code
-  
+
 
   # has_many :entity_wallet_configs, class_name: 'EntityWalletConfig', foreign_key: :division_code
   # has_many :assigned_service_code, class_name: 'AssignedServiceCode', foreign_key: :entity_div_code
@@ -205,7 +205,7 @@ class EntityDivision < ApplicationRecord
   def service_code_validation
     if self.service_code.present?
       logger.info "ME TOO I WAS HERE SOME..........................................."
-      @service_code = AssignedServiceCode.where("service_code = #{self.service_code} and assigned_code != #{self.assigned_code} and active_status = true and
+      @service_code = AssignedServiceCode.where("service_code = '#{self.service_code}' and entity_div_code != '#{self.assigned_code}' and active_status = true and
                                                 del_status = false").order(created_at: :desc).first
 
       if @service_code

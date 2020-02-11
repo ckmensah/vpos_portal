@@ -54,7 +54,8 @@
               <%= f.input :del_status, :as => :hidden, input_html: {value: false} %>
               <%= f.input :for_update, :as => :hidden, input_html: {value: true} %>
               <%#= f.input :active_status, :as => :hidden, input_html:{value: true} %>
-              <%#= f.input :user_id, :as => :hidden, input_html:{value: current_user.id} %>
+              <%= f.input :user_id, :as => :hidden, input_html:{value: current_user.id} %>
+            
               <div>
                 <%= f.submit "Submit", class: "w3-button w3-purple-vpos w3-border w3-border-purple w3-small w3-round-large", :data => {:disable_with => 'Please Wait...'}, style: "width:auto;float:center;", remote: true %>
                 <% if params[:interface_type] == "info" %>
