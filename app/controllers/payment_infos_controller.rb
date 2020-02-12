@@ -4,6 +4,7 @@ class PaymentInfosController < ApplicationController
   before_action :load_permissions
   require 'vpos_core'
 
+
   # GET /payment_infos
   # GET /payment_infos.json
   def index
@@ -99,26 +100,30 @@ class PaymentInfosController < ApplicationController
 
       if @entity_name.present?
         division_str = "'0'"
-        entity_str = "'0'"
-        @merchant = EntityInfo.where("LOWER(entity_name) LIKE '%#{@entity_name.downcase}%'")
-        @merchant.each { |entity_div| entity_str << ",'#{entity_div.assigned_code}'" } if @merchant.exists?
-        final_info_str = "(#{entity_str})"
-        @entity_divis = EntityDivision.where("entity_code IN #{final_info_str}")
+        #entity_str = "'0'"
+        #@merchant = EntityInfo.where("LOWER(entity_name) LIKE '%#{@entity_name.downcase}%'")
+        #@merchant.each { |entity_div| entity_str << ",'#{entity_div.assigned_code}'" } if @merchant.exists?
+        #final_info_str = "(#{entity_str})"
+        #@entity_divis = EntityDivision.where("entity_code IN #{final_info_str}")
+        @entity_divis = EntityDivision.where("entity_code = '#{@entity_name}'")
         @entity_divis.each { |entity_div| division_str << ",'#{entity_div.assigned_code}'" } if @entity_divis.exists?
         final_div_str = "(#{division_str})"
-        logger.info "Final Div Str :: #{final_div_str.inspect} and Final INfo Str :: #{final_info_str}"
+        #logger.info "Final Div Str :: #{final_div_str.inspect} and Final INfo Str :: #{final_info_str}"
         search_arr << "entity_div_code IN #{final_div_str}"
       end
 
 
       if @division_name.present?
-        division_str = "'0'"
-        @entity_divis = EntityDivision.where("LOWER(division_name) LIKE '%#{@division_name.downcase}%'")
-        @entity_divis.each { |entity_div| division_str << ",'#{entity_div.assigned_code}'" } if @entity_divis.exists?
-        final_div_str = "(#{division_str})"
-        logger.info "Final Div Str :: #{final_div_str.inspect}"
-        search_arr << "entity_div_code IN #{final_div_str}"
+        #division_str = "'0'"
+        #@entity_divis = EntityDivision.where("LOWER(division_name) LIKE '%#{@division_name.downcase}%'")
+        #@entity_divis.each { |entity_div| division_str << ",'#{entity_div.assigned_code}'" } if @entity_divis.exists?
+        #final_div_str = "(#{division_str})"
+        #logger.info "Final Div Str :: #{final_div_str.inspect}"
+        #search_arr << "entity_div_code IN #{final_div_str}"
+        search_arr << "entity_div_code = '#{@division_name}'"
       end
+
+
 
       if @activity_type.present?
         activity_str = "'0'"

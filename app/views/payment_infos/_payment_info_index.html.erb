@@ -239,6 +239,7 @@
 <!--                <fieldset>-->
 <!--                  <legend>Filter Report</legend>-->
 
+
         <% @activity_types = ActivityType.where(active_status: true) %>
         <% @networks = [["MTN", "MTN"], ["VOD", "VOD"], ["TIGO", "TIG"], ["AIRTEL", "AIR"]] %>
         <% @statuses = [["SUCCESS", "000"], ["FAIL", "001"], ["PENDING", "NIL"]] %>

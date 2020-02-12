@@ -26,7 +26,7 @@
                 <%= f.input :division_alias, label: "Service Alias", required: true, input_html: {id: "div_alias", value: @entity_division.division_alias, autocomplete: "off", class: "form-control w3-input w3-border w3-white input-group input-append", style: "width: 90%;"} %>
                 <%= f.input :activity_type_code, label: "Activity Code", selected: @entity_division.activity_type_code, collection: @activity_types, label_method: :activity_name, value_method: :assigned_code, required: true, input_html: {id: "activity_key", autocomplete: "off", class: "form-control w3-input w3-border w3-white input-group input-append", style: "width: 90%;"} %>
                 <%= f.input :service_code, as: :integer, label: "Shortcode Ext", required: true, input_html: {id: "serv_code", value: @service_code, autocomplete: "off", min: 1, max: 9999, oninput: "validity.valid||(value='');", class: "form-control w3-input w3-border w3-white input-group input-append", style: "width: 90%;"} %>
-                <%= f.input :service_label, label: "Service Name", required: true, input_html: {id: "serv_label", value: @entity_division.service_label, autocomplete: "off", class: "form-control w3-input w3-border w3-white input-group input-append", style: "width: 90%;"} %>
+                <%= f.input :service_label, label: "Service Label", required: true, input_html: {id: "serv_label", value: @entity_division.service_label, autocomplete: "off", class: "form-control w3-input w3-border w3-white input-group input-append", style: "width: 90%;"} %>
 
               </div>
 
@@ -55,7 +55,7 @@
               <%= f.input :for_update, :as => :hidden, input_html: {value: true} %>
               <%#= f.input :active_status, :as => :hidden, input_html:{value: true} %>
               <%= f.input :user_id, :as => :hidden, input_html:{value: current_user.id} %>
-            
+
               <div>
                 <%= f.submit "Submit", class: "w3-button w3-purple-vpos w3-border w3-border-purple w3-small w3-round-large", :data => {:disable_with => 'Please Wait...'}, style: "width:auto;float:center;", remote: true %>
                 <% if params[:interface_type] == "info" %>

@@ -8,7 +8,7 @@ module VposCore
   class CoreConnect
     HEADER={'Content-Type'=>'application/json','timeout'=>'180'}
     #R_HEADER={'Content-Type'=>'application/json','timeout'=>'600'}
-    URL = "http://10.105.85.78:7045" #"http://5.153.40.138:7045" #5.153.40.138, 10.105.85.78
+    URL = "http://#{ENV['VPOS_API_IP']}:#{ENV['VPOS_API_PORT']}" #"http://10.105.85.78:7045" #"http://5.153.40.138:7045" #5.153.40.138, 10.105.85.78
 
     def connection
       Faraday.new(:url => URL, :headers => HEADER, :ssl => {:verify => false}) do |faraday|
@@ -54,7 +54,6 @@ module VposCore
 
       return false
     end
-
 
   end
 

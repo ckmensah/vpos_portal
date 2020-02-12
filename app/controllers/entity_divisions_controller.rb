@@ -389,6 +389,8 @@ class EntityDivisionsController < ApplicationController
     @region_masters = RegionMaster.where(active_status: true).order(region_name: :asc)
     @city_town_masters = CityTownMaster.where(id: 0)
     @suburb_masters = SuburbMaster.where(id: 0)
+    @city_masters = CityTownMaster.where(id: 0)
+    @sub_masters = SuburbMaster.where(id: 0)
   end
 
 
@@ -554,6 +556,49 @@ class EntityDivisionsController < ApplicationController
 
 
 
+  def entity_div_create
+    @entity_division = EntityDivision.new(entity_division_params)
+    @display = @display.present? ? @display : params[:display_cnt].present? ? params[:display_cnt].to_i : 3
+    params[:into_create] = params[:division].nil? ? "into_create" : ""
+    @activity_types = ActivityType.where(active_status: true, del_status: false).order(assigned_code: :asc)
+    @region_masters = RegionMaster.where(active_status: true).order(region_name: :asc)
+    @city_town_masters = CityTownMaster.where(id: 0)
+    @suburb_masters = SuburbMaster.where(id: 0)
+
+    respond_to do |format|
+
+      assigned_code = EntityDivision.gen_entity_div_code
+      serv_code = @entity_division.service_code
+      logger.info "Assigned Code :: #{assigned_code.inspect} and Short Code :: #{@entity_division.service_code.inspect}"
+      if @entity_division.valid? && assigned_code.present?
+        @for_service_codes = AssignedServiceCode.new(entity_div_code: assigned_code, service_code: serv_code,
+                                                     active_status: true, del_status: false, user_id: current_user.id)
+        @for_service_codes.save(validate: false)
+
+        @entity_division.assigned_code = assigned_code
+        @entity_division.save(validate: false)
+
+        @entity_wallet_conf = EntityWalletConfig.new(entity_code: params[:entity_code], division_code: assigned_code,
+                                                     service_id: @entity_division.serv_id, secret_key: @entity_division.s_key,
+                                                     client_key: @entity_division.c_key, active_status: true, del_status: false,
+                                                     user_id: current_user.id)
+        @entity_wallet_conf.save(validate: false)
+
+        flash.now[:notice] == "Merchant Service has been created successfully."
+        format.js { render :show }
+      else
+        @city_masters = @entity_division.region_name.present? ? CityTownMaster.where(active_status: true, region_id: @entity_division.region_name) : CityTownMaster.where(id: 0)
+        @sub_masters = @entity_division.city_town_name.present? ? SuburbMaster.where(active_status: true, city_town_id: @entity_division.city_town_name) : SuburbMaster.where(id: 0)
+        @service_code = @entity_division.service_code.present? ? @entity_division.service_code : nil
+        logger.info "Alternative creation Error message:: #{@entity_division.errors.messages.inspect}"
+        format.js { render :new }
+      end
+
+    end
+
+  end
+
+
 
 
   def create
@@ -562,6 +607,10 @@ class EntityDivisionsController < ApplicationController
     @display_length = params[:display_cnt]
     @activity_types = ActivityType.where(active_status: true, del_status: false).order(assigned_code: :asc)
     @region_masters = RegionMaster.where(active_status: true).order(region_name: :asc)
+
+    @city_masters = @entity_division.region_name.present? ? CityTownMaster.where(active_status: true, region_id: @entity_division.region_name) : CityTownMaster.where(id: 0)
+    @sub_masters = @entity_division.city_town_name.present? ? SuburbMaster.where(active_status: true, city_town_id: @entity_division.city_town_name) : SuburbMaster.where(id: 0)
+
     entity_division_params[:region_name].present? ? @city_town_masters = CityTownMaster.where(active_status: true, region_id: entity_division_params[:region_name]).order(city_town_name: :asc).insert(0,['Please select a city', ""]) : @city_town_masters = [["", ""]].insert(0,['Please select a city', ""])# CityTownMaster.where(id: 0)
     entity_division_params[:city_town_name].present? ? @suburb_masters = SuburbMaster.where(active_status: true, city_town_id: entity_division_params[:city_town_name]).order(suburb_name: :asc).insert(0,['Please select a suburb', ""]) : @suburb_masters = [["", ""]].insert(0,['Please select a suburb', ""])# SuburbMaster.where(id: 0)
 
@@ -572,8 +621,8 @@ class EntityDivisionsController < ApplicationController
       if validity_result
         logger.info "I WAS HERE SOME...."
         EntityDivision.save_entity_divisions(@display, entity_division_params, current_user)
-        format.html { redirect_to @entity_division, notice: 'Entity division was successfully updated.' }
-        flash.now[:notice] = "Entity division was successfully updated."
+        format.html { redirect_to @entity_division, notice: 'Entity division was successfully created.' }
+        flash.now[:notice] = "Merchant Service was successfully created."
         format.js { render :show}
         format.json { render :show, status: :ok, location: @entity_division }
       else
@@ -710,7 +759,7 @@ class EntityDivisionsController < ApplicationController
   def entity_division_params
     params.require(:entity_division).permit(:entity_code, :assigned_code, :division_name, :division_alias, :action_type, :suburb_id,
                                             :activity_type_code, :service_label, :region_name, :city_town_name, :comment, :link_master,
-                                            :div_lov_query, :activity_query, :sub_activity_query,
+                                            :div_lov_query, :activity_query, :sub_activity_query, :serv_id, :s_key, :c_key,
                                             :active_status, :del_status, :user_id, :service_code, :for_update, divisions: [], :the_div_acts_lov => {})
     # entity_wallet_configs_attributes: [:id, :division_code, :service_id, :secret_key, :client_key, :comment, :active_status, :del_status, :user_id]
     #activity_divs_attributes: [:id, :division_code, :activity_div_desc, :activity_date, :comment, :active_status, :del_status, :user_id],

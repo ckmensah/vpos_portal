@@ -1,7 +1,7 @@
 class EntityDivision < ApplicationRecord
   self.table_name = "entity_division"
   self.primary_key = :assigned_code
-  attr_accessor :region_name, :city_town_name, :service_code, :action_type, :for_update, :div_lov_query, :activity_query, :sub_activity_query
+  attr_accessor :region_name, :city_town_name, :service_code, :action_type, :for_update, :div_lov_query, :activity_query, :sub_activity_query, :serv_id, :s_key, :c_key
   # validates_uniqueness_of :region_name
   has_many :entity_division_exts, class_name: 'EntityDivisionExt', foreign_key: :entity_div_code
   has_many :activity_divs, class_name: 'ActivityDiv', foreign_key: :division_code
@@ -39,9 +39,42 @@ class EntityDivision < ApplicationRecord
   validates :service_label, presence: {message: " cannot be empty."}
   validates :service_code, presence: {message: " cannot be empty."}, format: {with: /\A\d+\z/, message: "must be numbers only."}
   validate :service_code_validation, :if => :for_update
+  validate :create_serv_code_validation, :unless => :for_update
+  validate :secret_key_validation
+  validate :client_key_validation
+  validate :service_id_validation
 
   # accepts_nested_attributes_for :entity_wallet_configs#, :activity_divs
   # accepts_nested_attributes_for :assigned_service_codes
+
+  def secret_key_validation
+    unless self.link_master == true
+      unless self.s_key.present?
+        logger.info "Existing Service Code Error ........................................................................."
+        errors.add :s_key, " cannot be empty."
+      end
+    end
+  end
+
+  def client_key_validation
+    unless self.link_master == true
+      unless self.c_key.present?
+        logger.info "Existing Service Code Error ........................................................................."
+        errors.add :c_key, " cannot be empty."
+      end
+    end
+  end
+
+  def service_id_validation
+    unless self.link_master == true
+      unless self.serv_id.present?
+        logger.info "Existing Service Code Error ........................................................................."
+        errors.add :serv_id, " cannot be empty."
+      end
+    end
+  end
+
+
 
   def self.gen_entity_div_code
     sql = "select nextval('entity_division_codes')"
@@ -209,7 +242,22 @@ class EntityDivision < ApplicationRecord
                                                 del_status = false").order(created_at: :desc).first
 
       if @service_code
-        logger.info "Existing Service Code Error ........................................................................."
+        logger.info "Existing Service Code Error  Updating ........................................................................."
+        errors.add :service_code, " has already been taken."
+      end
+    end
+  end
+
+
+
+  def create_serv_code_validation
+    if self.service_code.present?
+      logger.info "ME TOO I WAS HERE SOME..........................................."
+      @service_code = AssignedServiceCode.where("service_code = '#{self.service_code}' and active_status = true and
+                                                del_status = false").order(created_at: :desc).first
+
+      if @service_code
+        logger.info "Existing Service Code Error ============= Creation ........................................................................."
         errors.add :service_code, " has already been taken."
       end
     end
@@ -285,7 +333,7 @@ class EntityDivision < ApplicationRecord
                                            active_status: true, del_status: false, user_id: current_user.id)
 
         for_service_codes = AssignedServiceCode.new(entity_div_code: assigned_code, service_code: value["service_code"],
-                                                    active_status: true, del_status: false)
+                                                    active_status: true, del_status: false, user_id: current_user.id)
         for_divisions.save(validate: false)
         for_service_codes.save(validate: false)
       end
