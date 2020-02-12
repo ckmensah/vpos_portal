@@ -5,8 +5,14 @@
   <h4 style="text-decoration: underline;"><strong>KINDLY CHOOSE SERVICE SETUP TYPES   </strong></h4>
 
   <div class="w3-responsive">
-    <button type="button" class="btn btn-outline-purple div_tablink w3-vpos-purple" style="font-size: small; width: 200px;" onclick="openTab(event, 'with_wallet')">SERVICE WITH WALLET</button>
-    <button type="button" class="btn btn-outline-purple div_tablink" style="font-size: small; width: 220px;" onclick="openTab(event, 'without_wallet')">SERVICE WITHOUT WALLET</button>
+    <% if params[:modal_appear] == "to_multiple" %>
+      <button type="button" class="btn btn-outline-purple div_tablink" style="font-size: small; width: 200px;" onclick="openTab(event, 'with_wallet')">SERVICE WITH WALLET</button>
+      <button type="button" class="btn btn-outline-purple div_tablink w3-vpos-purple" style="font-size: small; width: 220px;" onclick="openTab(event, 'without_wallet')">SERVICE WITHOUT WALLET</button>
+      <% else %>
+      <button type="button" class="btn btn-outline-purple div_tablink w3-vpos-purple" style="font-size: small; width: 200px;" onclick="openTab(event, 'with_wallet')">SERVICE WITH WALLET</button>
+      <button type="button" class="btn btn-outline-purple div_tablink" style="font-size: small; width: 220px;" onclick="openTab(event, 'without_wallet')">SERVICE WITHOUT WALLET</button>
+      <% end %>
+
   </div>
   <br/><br/>
 
@@ -112,6 +118,7 @@
                 <%= select_tag :display_cnt, options_for_select([1,2,3,4,5,6,7,8,9,10], params[:display_cnt].to_i),
                                :onchange => "divisionNumber()",
                                :data => {  :remote => true, :url => url_for(params:{
+                                   modal_appear: "to_multiple",
                                    into_create: params[:into_create],
                                    interface_type: params[:interface_type],
                                    entity_code: params[:entity_code]},
@@ -126,7 +133,7 @@
 
             <br>
           <% end %>
-          <%= simple_form_for(@entity_division, url: entity_divisions_path(@entity_division, interface_type: params[:interface_type], display_cnt: params[:display_cnt], entity_code: params[:entity_code], count: params[:count], page: params[:page] ),:remote => true) do |f| %>
+          <%= simple_form_for(@entity_division, url: entity_divisions_path(@entity_division, modal_appear: "to_multiple", interface_type: params[:interface_type], display_cnt: params[:display_cnt], entity_code: params[:entity_code], count: params[:count], page: params[:page] ),:remote => true) do |f| %>
             <%= f.input :link_master, :as => :hidden, input_html: {value: true} %>
             <%= f.input :entity_code, :as => :hidden, input_html: {value: params[:entity_code]} %>
             <%= f.input :active_status, :as => :hidden, input_html: {value: true} %>
@@ -314,6 +321,11 @@
         document.getElementById(cityName).style.display = "block";
         evt.currentTarget.className += " w3-vpos-purple";
     }
+
+    <% if params[:modal_appear] == "to_multiple" %>
+    document.getElementById("without_wallet").style.display = "block";
+    document.getElementById("with_wallet").style.display = "none";
+    <% end %>
 
     function changeCity(for_region_id, for_city_id, for_suburb_id) {
         var region_id = $('#' + for_region_id);
