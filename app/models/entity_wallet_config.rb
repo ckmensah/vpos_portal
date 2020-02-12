@@ -9,4 +9,21 @@ class EntityWalletConfig < ApplicationRecord
   validates :secret_key, presence: {message: " cannot be empty."}#, uniqueness: {message: " exists already" }
   validates :client_key, presence: {message: " cannot be empty."}#, uniqueness: {message: " exists already" }
 
+  #validate :activity_type_validity
+
+
+
+  def activity_type_validity
+
+    unless self.division_code.present?
+      unless self.activity_type_code.present?
+        logger.info "Existing Service Code Error ........................................................................."
+        errors.add :activity_type_code, " cannot be empty."
+      end
+    end
+  end
+
+
+
+
 end

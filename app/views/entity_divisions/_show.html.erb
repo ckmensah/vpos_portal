@@ -111,7 +111,7 @@
 
             <div class="w3-container">
               <br/>
-
+              <% entity_wallet_conf = EntityWalletConfig.where(active_status: true, division_code: @entity_division.assigned_code).order(created_at: :desc).first %>
               <% assigned_service = @entity_division.assigned_service_codes != nil ? @entity_division.assigned_service_codes.where(active_status: true, del_status: false).order("assigned_service_code.created_at desc").first : false %>
               <%  %>
               <div class="w3-container w3-responsive pre-scrollable w3-mobile">
@@ -149,6 +149,25 @@
                       </tr>
 
                   <% end %>
+
+                  <% if entity_wallet_conf %>
+                    <tr>
+                      <td class="raw_theme w3-border w3-border-black w3-leftbar"><strong>Service ID:</strong></td>
+                      <td><strong><%= entity_wallet_conf.service_id %></strong></td>
+                    </tr>
+
+                    <tr>
+                      <td class="raw_theme w3-border w3-border-black w3-leftbar"><strong>Client Key:</strong></td>
+                      <td><strong><%= entity_wallet_conf.client_key %></strong></td>
+                    </tr>
+
+                    <tr>
+                      <td class="raw_theme w3-border w3-border-black w3-leftbar"><strong>Secret Key:</strong></td>
+                      <td><strong><%= entity_wallet_conf.secret_key %></strong></td>
+                    </tr>
+
+                  <% end %>
+
 
                   <tr>
                     <td class="raw_theme w3-border w3-border-black w3-leftbar"><strong>Status:</strong></td>

@@ -38,7 +38,20 @@
 
                 <%= f.input :suburb_id, label: "Suburb", selected: @suburb_id, collection: @suburb_masters, label_method: :suburb_name, value_method: :id, required: true, input_html:{id: "for_suburb", autocomplete: "off",class:"form-control w3-input w3-border w3-white input-group input-append",style:""}  %>
 
-                <%= f.input :comment, label: "Comment", :as => :text, required: false, input_html: {rows: 3, cols: 3, autocomplete: "off", class: "form-control w3-border ", style: ""} %>
+                <% if @entity_division.link_master %>
+                  <%= f.input :comment, label: "Comment", :as => :text, required: false, input_html: {rows: 3, cols: 3, autocomplete: "off", class: "form-control w3-border ", style: ""} %>
+                  <%= f.input :link_master, :as => :hidden, input_html: {value: true} %>
+                <% elsif @entity_division.link_master == false %>
+                  <%= f.input :link_master, :as => :hidden, input_html: {value: false} %>
+                  <%= f.input :serv_id, as: :integer, label: "Service ID", required: true, input_html: {id: "serv_id", value: @service_id, autocomplete: "off", min: 1, max: 9999, oninput: "validity.valid||(value='');", class: "form-control w3-input w3-border w3-white input-group input-append", style: ""} %>
+                  <%= f.input :c_key, label: "Client Key", required: true, input_html: {id: "c_key", value: @client_key, autocomplete: "off", class: "form-control w3-input w3-border w3-white input-group input-append", style: ""} %>
+                  <%= f.input :s_key, label: "Secret Key", required: true, input_html: {id: "s_key", value: @secret_key, autocomplete: "off", class: "form-control w3-input w3-border w3-white input-group input-append", style: ""} %>
+
+                  
+                <% else %>
+                  <%= f.input :comment, label: "Comment", :as => :text, required: false, input_html: {rows: 3, cols: 3, autocomplete: "off", class: "form-control w3-border ", style: ""} %>
+                <% end %>
+
               </div>
 
               <%#= f.simple_fields_for :activity_divs do |ff| %>

@@ -400,16 +400,16 @@ class EntityDivisionsController < ApplicationController
     # @new_record.activity_divs.build
     # @entity_division.entity_wallet_configs.build
     # @new_record.entity_wallet_configs.build
-    # @entity_wallet_config = EntityWalletConfig.where(division_code: @entity_division.assigned_code, active_status: true, del_status: false).order(created_at: :desc).first
-    # if @entity_wallet_config
-    #   @service_id = @entity_division.service_id
-    #   @secret_key = @entity_division.secret_key
-    #   @client_key = @entity_division.client_key
-    # else
+     @entity_wallet_config = EntityWalletConfig.where(division_code: @entity_division.assigned_code, active_status: true, del_status: false).order(created_at: :desc).first
+     if @entity_wallet_config
+       @service_id = @entity_wallet_config.service_id
+       @secret_key = @entity_wallet_config.secret_key
+       @client_key = @entity_wallet_config.client_key
+     else
       @service_id = ""
       @secret_key = ""
       @client_key = ""
-    # end
+     end
 
     @region_masters = RegionMaster.where(active_status: true).order(region_name: :asc)
     @activity_types = ActivityType.where(active_status: true, del_status: false).order(assigned_code: :asc)
@@ -693,8 +693,23 @@ class EntityDivisionsController < ApplicationController
           @active_service_code.update(service_code: entity_division_params[:service_code], user_id: current_user.id)
         end
         EntityDivision.update_last_but_one("entity_division", "assigned_code", @entity_division.assigned_code)
+
+        @for_wallet_config = EntityWalletConfig.where(entity_code: params[:entity_code], division_code: @entity_division.assigned_code,
+                                                      active_status: true, del_status: false).order(created_at: :desc).first
+        if @entity_division.link_master == false && @for_wallet_config
+          unless entity_division_params[:serv_id] == @for_wallet_config.service_id && entity_division_params[:c_key] == @for_wallet_config.client_key && entity_division_params[:s_key] == @for_wallet_config.secret_key
+            #@for_wallet_config.update(entity_code: params[:entity_code], service_id: entity_division_params[:serv_id], client_key: entity_division_params[:c_key],
+            #                          secret_key: entity_division_params[:s_key], user_id: current_user.id)
+            logger.info "I PASSED FOR WALLET PER SERVICE SAVING =============================="
+            @for_wallet_config.service_id = entity_division_params[:serv_id]
+            @for_wallet_config.client_key = entity_division_params[:c_key]
+            @for_wallet_config.secret_key = entity_division_params[:s_key]
+            @for_wallet_config.save(validate: false)
+          end
+        end
+
         format.html { redirect_to @entity_division, notice: 'Entity division was successfully updated.' }
-        flash.now[:danger] = "Entity division was successfully updated."
+        flash.now[:notice] = "Merchant Service was successfully updated."
         format.js { render :show}
         format.json { render :show, status: :ok, location: @entity_division }
       else
@@ -704,6 +719,18 @@ class EntityDivisionsController < ApplicationController
         # @entity_division = @new_record
         # @entity_division.for_update = true
         #@entity_division.entity_code = ""
+
+        @entity_wallet_config = EntityWalletConfig.where(division_code: @entity_division.assigned_code, active_status: true, del_status: false).order(created_at: :desc).first
+        if @entity_wallet_config
+          @service_id = entity_division_params[:serv_id].present? ? entity_division_params[:serv_id] : ""
+          @secret_key = entity_division_params[:s_key].present? ? entity_division_params[:s_key] : ""
+          @client_key = entity_division_params[:c_key].present? ? entity_division_params[:c_key] : ""
+        else
+          @service_id = ""
+          @secret_key = ""
+          @client_key = ""
+        end
+
         entity_division_params[:entity_code] = ""
         @entity_division.update(entity_division_params)
         logger.info "Error message 2 :: #{@entity_division.errors.messages.inspect}"
