@@ -13,7 +13,7 @@ class ActivityFixturesController < ApplicationController
     params[:page] ? params[:page] : params[:page] = 1
     @entity_info = EntityInfo.where(assigned_code: params[:entity_code], active_status: true, del_status: false).order(created_at: :desc).first
     @entity_info ? @entity_name = "#{@entity_info.entity_name} (#{@entity_info.entity_alias})" : ""
-    @activity_fixtures = ActivityFixture.paginate(:page => params[:page], :per_page => params[:count]).order('created_at desc')
+    @activity_fixtures = ActivityFixture.where(del_status: false, division_code: params[:code]).paginate(:page => params[:page], :per_page => params[:count]).order('created_at desc')
   end
 
   # GET /activity_fixtures/1
@@ -83,7 +83,7 @@ class ActivityFixturesController < ApplicationController
     if @activity_fixture.active_status
       @activity_fixture.active_status = false
       @activity_fixture.save(validate: false)
-      @activity_fixtures = ActivityFixture.paginate(:page => params[:page], :per_page => params[:count]).order('created_at desc')
+      @activity_fixtures = ActivityFixture.where(del_status: false, division_code: params[:code]).paginate(:page => params[:page], :per_page => params[:count]).order('created_at desc')
       respond_to do |format|
         format.html { redirect_to activity_types_url, notice: 'Occupation master was successfully disabled.' }
         flash.now[:note] = 'Activity Fixture was successfully disabled.'
@@ -95,7 +95,7 @@ class ActivityFixturesController < ApplicationController
     else
       @activity_fixture.active_status = true
       @activity_fixture.save(validate: false)
-      @activity_fixtures = ActivityFixture.paginate(:page => params[:page], :per_page => params[:count]).order('created_at desc')
+      @activity_fixtures = ActivityFixture.where(del_status: false, division_code: params[:code]).paginate(:page => params[:page], :per_page => params[:count]).order('created_at desc')
       respond_to do |format|
         format.html { redirect_to activity_types_url, notice: 'Allergy master was successfully enabled.' }
         flash.now[:notice] = 'Activity Fixture was successfully enabled.'

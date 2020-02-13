@@ -123,6 +123,8 @@ class EntityDivisionsController < ApplicationController
     @activity_sub_div_cl = [["Double", 4], ["Single", 3], ["VIP", 1],  ["Standard", 2]]
     @activity_sub_div_classes = ActivitySubDivClass.where(entity_div_code: params[:code], active_status: true, del_status: false).order(class_desc: :asc)
     @act_sub_div_classes = @activity_sub_div_classes.map { |a| [a.class_desc, a.id] }.insert(0,['Select a class', ""])
+    @activity_div_fixtures = ActivityFixture.where(division_code: params[:code], active_status: true).order(created_at: :desc)
+    @activity_fixtures = @activity_div_fixtures.map { |a| ["#{a.activity_participanta.participant_name} VS #{a.activity_participantb.participant_name}", a.id] }.insert(0,['Select a fixtures', ""])
 
     logger.info "Activity Sub Division Classes: #{@activity_sub_div_classes.inspect} \n and Act Sub Division Classes: #{@act_sub_div_classes.inspect}"
       #region_update_city = region_id_record.cities.where(active_status: true).order(city_town_name: :asc).map { |a| [a.city_town_name, a.id] }.insert(0,['Please select a city', ""])
@@ -260,6 +262,8 @@ class EntityDivisionsController < ApplicationController
     @activity_sub_div_cl = [["Double", 4], ["Single", 3], ["VIP", 1],  ["Standard", 2]]
     @activity_sub_div_classes = ActivitySubDivClass.where(entity_div_code: params[:code], active_status: true, del_status: false).order(class_desc: :asc)
     @act_sub_div_classes = @activity_sub_div_classes.map { |a| [a.class_desc, a.id] }.insert(0,['Select a class', ""])
+    @activity_div_fixtures = ActivityFixture.where(division_code: params[:code], active_status: true).order(created_at: :desc)
+    @activity_fixtures = @activity_div_fixtures.map { |a| ["#{a.activity_participanta.participant_name} VS #{a.activity_participantb.participant_name}", a.id] }.insert(0,['Select a fixtures', ""])
 
     logger.info "Activity Sub Division Classes: #{@activity_sub_div_classes.inspect} \n and Act Sub Division Classes: #{@act_sub_div_classes.inspect}"
     #region_update_city = region_id_record.cities.where(active_status: true).order(city_town_name: :asc).map { |a| [a.city_town_name, a.id] }.insert(0,['Please select a city', ""])

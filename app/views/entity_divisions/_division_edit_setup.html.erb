@@ -167,10 +167,15 @@
                               <h6><strong>Description:</strong></h6>
                               <input type="text" name="the_activity_<%= div_count %>[0[activity_div_desc]]" value="<%= the_params["0"]["activity_div_desc"] %>" placeholder="Description" class="form-control w3-input w3-border w3-white input-group input-append">
                             </div>
+
                             <div class="w3-quarter">
                               <h6><strong>Activity Date:</strong></h6>
                               <input type="date" name="the_activity_<%= div_count %>[0[activity_date]]" style="width: 95%; float: right;" value="<%= the_params["0"]["activity_date"] %>" placeholder="Select Date" class="form-control w3-input w3-border w3-white input-group input-append">
                             </div>
+
+<!--                            <div class="w3-half">-->
+                              <%#= collection_select "the_activity_#{ div_count }", "0[activity_fixture_id]", @activity_fixtures, :last, :first, {selected: the_params["0"]["activity_fixture_id"], :prompt => 'Select a match fixture', :include_blank => true}, {id: "fixture#{count}", class:"form-control w3-input w3-border w3-white input-group input-append", style:"" } %>
+<!--                            </div>-->
                             <input type="hidden" name="the_activity_<%= div_count %>[0[activity_id]]" value="<%= the_params["0"]["activity_id"] %>" >
                           <% end %>
 
@@ -259,6 +264,9 @@
                             <input type="date" name="the_activity_<%= div_count %>[0[activity_date]]" style="width: 95%; float: right;" value="<%= activity_div.activity_date %>" placeholder="Select Date" class="form-control w3-input w3-border w3-white input-group input-append">
 
                           </div>
+<!--                        <div class="w3-half">-->
+                          <%#= collection_select "the_activity_#{ div_count }", "0[activity_fixture_id]", @activity_fixtures, :last, :first, {selected: "#{activity_div.activity_fixture_id}", :prompt => 'Select a match fixture', :include_blank => true}, {id: "fixture#{count}", class:"form-control w3-input w3-border w3-white input-group input-append", style:"" } %>
+<!--                        </div>-->
                           <input type="hidden" name="the_activity_<%= div_count %>[0[activity_id]]" value="<%= activity_div.id %>" >
 
 

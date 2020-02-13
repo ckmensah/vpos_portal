@@ -48,6 +48,7 @@ class PaymentInfosController < ApplicationController
         @entity_name = filter_params[:entity_name]
         @division_name = filter_params[:division_name]
         @activity_type = filter_params[:activity_type]
+        @lov_name = filter_params[:lov_name]
         @cust_num = filter_params[:cust_num]
         @trans_id = filter_params[:trans_id]
         @nw = filter_params[:nw]
@@ -57,6 +58,7 @@ class PaymentInfosController < ApplicationController
         params[:entity_name] = filter_params[:entity_name]
         params[:division_name] = filter_params[:division_name]
         params[:activity_type] = filter_params[:activity_type]
+        params[:lov_name] = filter_params[:lov_name]
         params[:cust_num] = filter_params[:cust_num]
         params[:trans_id] = filter_params[:trans_id]
         params[:nw] = filter_params[:nw]
@@ -64,11 +66,12 @@ class PaymentInfosController < ApplicationController
         params[:start_date] = filter_params[:start_date]
         params[:end_date] = filter_params[:end_date]
       else
-        if  params[:entity_name].present? || params[:division_name].present? || params[:activity_type].present? || params[:cust_num].present? || params[:trans_id].present? || params[:nw].present? || params[:status].present? || params[:start_date].present? || params[:end_date].present?
+        if  params[:entity_name].present? || params[:division_name].present? || params[:activity_type].present? || params[:lov_name].present? || params[:cust_num].present? || params[:trans_id].present? || params[:nw].present? || params[:status].present? || params[:start_date].present? || params[:end_date].present?
 
           @entity_name = params[:entity_name]
           @division_name = params[:division_name]
           @activity_type = params[:activity_type]
+          @lov_name = params[:lov_name]
           @cust_num = params[:cust_num]
           @trans_id = params[:trans_id]
           @nw = params[:nw]
@@ -78,6 +81,7 @@ class PaymentInfosController < ApplicationController
           params[:entity_name] = @entity_name
           params[:division_name] = @division_name
           params[:activity_type] = @activity_type
+          params[:lov_name] = @lov_name
           params[:cust_num] = @cust_num
           params[:trans_id] = @trans_id
           params[:nw] = @nw
@@ -88,6 +92,7 @@ class PaymentInfosController < ApplicationController
           params[:entity_name] = filter_params[:entity_name]
           params[:division_name] = filter_params[:division_name]
           params[:activity_type] = filter_params[:activity_type]
+          params[:lov_name] = filter_params[:lov_name]
           params[:cust_num] = filter_params[:cust_num]
           params[:trans_id] = filter_params[:trans_id]
           params[:nw] = filter_params[:nw]
@@ -137,6 +142,22 @@ class PaymentInfosController < ApplicationController
         logger.info "Final Act Str :: #{f_div_str.inspect}"
         search_arr << "entity_div_code IN #{f_div_str}"
       end
+
+
+      if @lov_name.present?
+        lov_str = "'0'"
+        #pay_lov_str = "'0'"
+        @div_lov = DivisionActivityLov.where("LOWER(lov_desc) LIKE '%#{@lov_name.downcase}%'")
+        @div_lov.each { |div_lov| lov_str << ",'#{div_lov.id}'" } if @div_lov.exists?
+        final_lov_str = "(#{lov_str})"
+        #@entity_divisi = EntityDivision.where("activity_type_code IN #{final_lov_str}")
+        #@entity_divisi.each { |entity_div| pay_lov_str << ",'#{entity_div.assigned_code}'" } if @entity_divisi.exists?
+        #f_lov_str = "(#{pay_lov_str})"
+        logger.info "Final Lov Str :: #{final_lov_str.inspect}"
+        search_arr << "activity_lov_id IN #{final_lov_str}"
+      end
+
+
 
       if @cust_num.present?
         search_arr << "customer_number LIKE '%#{@cust_num}%'"

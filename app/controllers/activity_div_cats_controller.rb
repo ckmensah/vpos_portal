@@ -14,7 +14,7 @@ class ActivityDivCatsController < ApplicationController
     params[:count] ? params[:count] : params[:count] = 50
     params[:page] ? params[:page] : params[:page] = 1
 
-    @activity_div_cats = ActivityDivCat.paginate(:page => params[:page], :per_page => params[:count]).order('created_at desc')
+    @activity_div_cats = ActivityDivCat.where(del_status: false, division_code: params[:code]).paginate(:page => params[:page], :per_page => params[:count]).order('created_at desc')
   end
 
   # GET /activity_div_cats/1
@@ -78,7 +78,7 @@ class ActivityDivCatsController < ApplicationController
     if @activity_div_cat.active_status
       @activity_div_cat.active_status = false
       @activity_div_cat.save(validate: false)
-      @activity_div_cats = ActivityDivCat.paginate(:page => params[:page], :per_page => params[:count]).order('created_at desc')
+      @activity_div_cats = ActivityDivCat.where(del_status: false, division_code: params[:code]).paginate(:page => params[:page], :per_page => params[:count]).order('created_at desc')
       respond_to do |format|
         format.html { redirect_to activity_types_url, notice: 'Occupation master was successfully disabled.' }
         flash.now[:note] = 'Activity Sub Category was successfully disabled.'
@@ -90,7 +90,7 @@ class ActivityDivCatsController < ApplicationController
     else
       @activity_div_cat.active_status = true
       @activity_div_cat.save(validate: false)
-      @activity_div_cats = ActivityDivCat.paginate(:page => params[:page], :per_page => params[:count]).order('created_at desc')
+      @activity_div_cats = ActivityDivCat.where(del_status: false, division_code: params[:code]).paginate(:page => params[:page], :per_page => params[:count]).order('created_at desc')
       respond_to do |format|
         format.html { redirect_to activity_types_url, notice: 'Allergy master was successfully enabled.' }
         flash.now[:notice] = 'Activity Sub Category was successfully enabled.'

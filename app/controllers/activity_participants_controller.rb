@@ -15,7 +15,7 @@ class ActivityParticipantsController < ApplicationController
     @entity_info = EntityInfo.where(assigned_code: params[:entity_code], active_status: true, del_status: false).order(created_at: :desc).first
     @entity_info ? @entity_name = "#{@entity_info.entity_name} (#{@entity_info.entity_alias})" : ""
 
-    @activity_participants = ActivityParticipant.paginate(:page => params[:page], :per_page => params[:count]).order('created_at desc')
+    @activity_participants = ActivityParticipant.where(del_status: false, division_code: params[:code]).paginate(:page => params[:page], :per_page => params[:count]).order('created_at desc')
   end
 
   # GET /activity_participants/1
@@ -84,7 +84,7 @@ class ActivityParticipantsController < ApplicationController
     if @activity_participant.active_status
       @activity_participant.active_status = false
       @activity_participant.save(validate: false)
-      @activity_participants = ActivityParticipant.paginate(:page => params[:page], :per_page => params[:count]).order('created_at desc')
+      @activity_participants = ActivityParticipant.where(del_status: false, division_code: params[:code]).paginate(:page => params[:page], :per_page => params[:count]).order('created_at desc')
       respond_to do |format|
         format.html { redirect_to activity_types_url, notice: 'Occupation master was successfully disabled.' }
         flash.now[:note] = 'Activity Participant was successfully disabled.'
@@ -96,7 +96,7 @@ class ActivityParticipantsController < ApplicationController
     else
       @activity_participant.active_status = true
       @activity_participant.save(validate: false)
-      @activity_participants = ActivityParticipant.paginate(:page => params[:page], :per_page => params[:count]).order('created_at desc')
+      @activity_participants = ActivityParticipant.where(del_status: false, division_code: params[:code]).paginate(:page => params[:page], :per_page => params[:count]).order('created_at desc')
       respond_to do |format|
         format.html { redirect_to activity_types_url, notice: 'Allergy master was successfully enabled.' }
         flash.now[:notice] = 'Activity Participant was successfully enabled.'

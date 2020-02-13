@@ -29,6 +29,7 @@
             <input class="form-control" name="entity_name" value="<%= params[:entity_name] %>"/>
             <input class="form-control" name="division_name" value="<%= params[:division_name] %>"/>
             <input class="form-control" name="activity_type" value="<%= params[:activity_type] %>"/>
+            <input class="form-control" name="lov_name" value="<%= params[:lov_name] %>"/>
             <input class="form-control" name="cust_num" value="<%= params[:cust_num] %>"/>
             <input class="form-control" name="trans_id" value="<%= params[:trans_id] %>"/>
             <input class="form-control" name="nw" value="<%= params[:nw] %>"/>
@@ -53,6 +54,7 @@
             <input class="form-control" name="entity_name" value="<%= params[:entity_name] %>"/>
             <input class="form-control" name="division_name" value="<%= params[:division_name] %>"/>
             <input class="form-control" name="activity_type" value="<%= params[:activity_type] %>"/>
+            <input class="form-control" name="lov_name" value="<%= params[:lov_name] %>"/>
             <input class="form-control" name="cust_num" value="<%= params[:cust_num] %>"/>
             <input class="form-control" name="trans_id" value="<%= params[:trans_id] %>"/>
             <input class="form-control" name="nw" value="<%= params[:nw] %>"/>
@@ -92,6 +94,7 @@
                                                                   :params => {entity_name: params[:entity_name],
                                                                               division_name: params[:division_name],
                                                                               activity_type: params[:activity_type],
+                                                                              lov_name: params[:lov_name],
                                                                               cust_num: params[:cust_num], trans_id: params[:trans_id],
                                                                               nw: params[:nw], status: params[:status],
                                                                               start_date: params[:start_date],
@@ -264,6 +267,9 @@
 
             <%#= f.label :activity_type,"Activity Type", style:"" %>
             <%= f.input :activity_type, collection: @activity_types, label_method: :activity_type_desc, value_method: :assigned_code, class:"form-control", input_html: {style: "width: 90%;"}, label: "Activity Type", boolean_style: :inline %>
+
+            <%= f.input :lov_name, class:"form-control", input_html: {style: "width: 90%"}, label: "Selected Option on USSD (LOV)", boolean_style: :inline %>
+
 
             <%#= f.label :cust_num,"Customer Number", style:"" %>
             <%= f.input :cust_num, class:"form-control", input_html: {style: "width: 90%"}, label: "Customer Number", boolean_style: :inline %>
