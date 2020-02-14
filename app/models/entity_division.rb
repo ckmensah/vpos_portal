@@ -279,7 +279,7 @@ class EntityDivision < ApplicationRecord
           logger.info "test 2"
           @service_code = AssignedServiceCode.where(service_code: value["service_code"], active_status: true, del_status: false).order(created_at: :desc).first
           for_divisions = EntityDivision.new(entity_code: entity_div_params[:entity_code], activity_type_code: value["activity_type_code"], region_name: value["region_name"], city_town_name: value["city_town_name"],
-                                             division_name: value["division_name"], service_label: value["service_label"], service_code: value["service_code"],
+                                             link_master: true, division_name: value["division_name"], service_label: value["service_label"], service_code: value["service_code"],
                                              suburb_id: value["suburb_id"], division_alias: value["division_alias"], active_status: true, del_status: false)
           logger.info "object is #{for_divisions.inspect}"
           if for_divisions.valid?
@@ -323,11 +323,12 @@ class EntityDivision < ApplicationRecord
 
 
 
+
   def self.save_entity_divisions(division_params, entity_div_params, current_user)
     division_params.each do |key, value|
       if value["division_name"].present? && value["division_alias"].present? && value["service_label"].present? && value["service_code"].present? && value["activity_type_code"].present? && value["region_name"].present? && value["city_town_name"].present? && value["suburb_id"].present?
         assigned_code = gen_entity_div_code
-        for_divisions = EntityDivision.new(entity_code: entity_div_params[:entity_code], assigned_code: assigned_code,
+        for_divisions = EntityDivision.new(entity_code: entity_div_params[:entity_code], assigned_code: assigned_code, link_master: true,
                                            activity_type_code: value["activity_type_code"], division_name: value["division_name"],
                                            service_label: value["service_label"], suburb_id: value["suburb_id"], division_alias: value["division_alias"],
                                            active_status: true, del_status: false, user_id: current_user.id)
@@ -339,6 +340,7 @@ class EntityDivision < ApplicationRecord
       end
     end
   end
+
 
 
 
