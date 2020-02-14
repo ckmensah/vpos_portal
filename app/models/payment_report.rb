@@ -2,8 +2,8 @@ class PaymentReport < ApplicationRecord
   self.table_name="payment_reports"
   self.primary_key = "id"
   has_many :payment_requests, class_name: 'PaymentRequest', foreign_key: :payment_info_id
-  belongs_to :entity_division, class_name: 'EntityDivision', foreign_key: :entity_div_code
-  belongs_to :division_activity_lov, class_name: 'DivisionActivityLov', foreign_key: :activity_lov_id
+  belongs_to :entity_division, -> { where active_status: true}, class_name: 'EntityDivision', foreign_key: :entity_div_code
+  belongs_to :division_activity_lov, -> { where active_status: true}, class_name: 'DivisionActivityLov', foreign_key: :activity_lov_id
 
 
   def self.to_csv(general_report)

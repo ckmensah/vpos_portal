@@ -9,7 +9,7 @@ class HomeController < ApplicationController
     if current_user.super_admin? || current_user.super_user?
       @payment_merchant = EntityInfo.where(active_status: true)
       @payment_service = EntityDivision.where(active_status: true)
-      @payment_reports = PaymentReport.where("created_at BETWEEN '#{Time.now.strftime('%Y-%m-%d')} 00:00:00' AND '#{Time.now.strftime('%Y-%m-%d')} 11:59:59' AND nw IS NOT NULL")
+      @payment_reports = PaymentReport.where("created_at BETWEEN '#{Time.now.strftime('%Y-%m-%d')} 00:00:00' AND '#{Time.now.strftime('%Y-%m-%d')} 23:59:59' AND nw IS NOT NULL")
       #@payment_success_count = PaymentReport.where("split_part(trans_status, '/', 1) = '000'").count
       @pay_success = @payment_reports.where("split_part(trans_status, '/', 1) = '000'")
       @pay_fail = @payment_reports.where("split_part(trans_status, '/', 1) != '000' AND trans_status IS NOT NULL")
@@ -25,12 +25,12 @@ class HomeController < ApplicationController
       final_div_str = "(#{division_str})"
       logger.info "Final Div Str :: #{final_div_str.inspect}"
 
-      @payment_reports = PaymentReport.where("created_at BETWEEN '#{Time.now.strftime('%Y-%m-%d')} 00:00:00' AND '#{Time.now.strftime('%Y-%m-%d')} 11:59:59' AND entity_div_code IN #{final_div_str} AND nw IS NOT NULL")
+      @payment_reports = PaymentReport.where("created_at BETWEEN '#{Time.now.strftime('%Y-%m-%d')} 00:00:00' AND '#{Time.now.strftime('%Y-%m-%d')} 23:59:59' AND entity_div_code IN #{final_div_str} AND nw IS NOT NULL")
       #@payment_success_count = PaymentReport.where("split_part(trans_status, '/', 1) = '000' AND entity_div_code IN #{final_info_str}").count
       @pay_success = @payment_reports.where("split_part(trans_status, '/', 1) = '000'")
       @pay_fail = @payment_reports.where("split_part(trans_status, '/', 1) != '000' AND trans_status IS NOT NULL")
     elsif current_user.merchant_service?
-      @payment_reports = PaymentReport.where("created_at BETWEEN '#{Time.now.strftime('%Y-%m-%d')} 00:00:00' AND '#{Time.now.strftime('%Y-%m-%d')} 11:59:59' AND entity_div_code = '#{current_user.division_code}' AND nw IS NOT NULL")
+      @payment_reports = PaymentReport.where("created_at BETWEEN '#{Time.now.strftime('%Y-%m-%d')} 00:00:00' AND '#{Time.now.strftime('%Y-%m-%d')} 23:59:59' AND entity_div_code = '#{current_user.division_code}' AND nw IS NOT NULL")
       #@payment_success_count = PaymentReport.where("split_part(trans_status, '/', 1) = '000' AND entity_div_code = #{current_user.division_code}").count
       @pay_success = @payment_reports.where("split_part(trans_status, '/', 1) = '000'")
       @pay_fail = @payment_reports.where("split_part(trans_status, '/', 1) != '000' AND trans_status IS NOT NULL")
@@ -147,7 +147,7 @@ class HomeController < ApplicationController
 
     the_search = search_arr.join(" AND ")
     unless the_search.present?
-      the_search << "created_at BETWEEN '#{Time.now.strftime('%Y-%m-%d')} 00:00:00' AND '#{Time.now.strftime('%Y-%m-%d')} 11:59:59'"
+      the_search << "created_at BETWEEN '#{Time.now.strftime('%Y-%m-%d')} 00:00:00' AND '#{Time.now.strftime('%Y-%m-%d')} 23:59:59'"
     end
 
 
