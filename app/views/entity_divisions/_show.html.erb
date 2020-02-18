@@ -61,83 +61,78 @@
               </table>
 
 
-              <!--                <table class="w3-table-all table table-bordered w3-hoverable w3-card-4">-->
-
-              <!--                  <tr>-->
-              <!--                    <td class="raw_theme w3-border w3-border-black w3-leftbar"><strong>Service Name:</strong></td>-->
-              <!--                    <td><strong><%#= @entity_division.division_name %> (<%#= @entity_division.division_alias %>)</strong></td>-->
-              <!--                  </tr>-->
-
-              <!--                  <tr>-->
-              <!--                    <td class="raw_theme w3-border w3-border-black w3-leftbar"><strong>Location:</strong></td>-->
-              <!--                    <td><strong>-->
-              <%# if @entity_division.suburb_id.present? %>
-              <%#= @entity_division.suburb_master.a_city.a_region.region_name %>
-              <!--                        (<%#= @entity_division.suburb_master.a_city.city_town_name %> --->
-              <!--                        <%#= @entity_division.suburb_master.suburb_name %>)-->
-              <%# end %>
-              <!--                    </strong></td>-->
-              <!--                  </tr>-->
-
-              <!--                  <tr>-->
-              <!--                    <td class="raw_theme w3-border w3-border-black w3-leftbar"><strong>Activity Type:</strong></td>-->
-              <!--                    <td><strong><%#= @entity_division.activity_type.activity_type_desc %></strong></td>-->
-              <!--                  </tr>-->
-
-              <!--                  <tr>-->
-              <!--                    <td class="raw_theme w3-border w3-border-black w3-leftbar"><strong>Service Label:</strong></td>-->
-              <!--                    <td><strong><%#= @entity_division.service_label %></strong></td>-->
-              <!--                  </tr>-->
-              <%# if assigned_service %>
-              <!--                    <tr>-->
-              <!--                      <td class="raw_theme w3-border w3-border-black w3-leftbar"><strong>Short Code Ext:</strong></td>-->
-              <!--                      <td><strong><%#= assigned_service.service_code %></strong></td>-->
-              <!--                    </tr>-->
-
-              <%# end %>
-
-              <%# if entity_wallet_conf %>
-              <!--                    <tr>-->
-              <!--                      <td class="raw_theme w3-border w3-border-black w3-leftbar"><strong>Service ID:</strong></td>-->
-              <!--                      <td><strong><%#= entity_wallet_conf.service_id %></strong></td>-->
-              <!--                    </tr>-->
-
-              <!--                    <tr>-->
-              <!--                      <td class="raw_theme w3-border w3-border-black w3-leftbar"><strong>Client Key:</strong></td>-->
-              <!--                      <td><strong><%#= entity_wallet_conf.client_key %></strong></td>-->
-              <!--                    </tr>-->
-
-              <!--                    <tr>-->
-              <!--                      <td class="raw_theme w3-border w3-border-black w3-leftbar"><strong>Secret Key:</strong></td>-->
-              <!--                      <td><strong><%#= entity_wallet_conf.secret_key %></strong></td>-->
-              <!--                    </tr>-->
-
-              <%# end %>
-
-              <!--                  <tr>-->
-              <!--                    <td class="raw_theme w3-border w3-border-black w3-leftbar"><strong>Status:</strong></td>-->
-              <%# if @entity_division.active_status %>
-              <!--                      <td><strong>Active</strong></td>-->
-              <%# else %>
-              <!--                      <td><strong>Inactive</strong></td>-->
-              <%# end %>
-              <!--                  </tr>-->
-
-              <!--                  <tr>-->
-              <!--                    <td class="raw_theme w3-border w3-border-black w3-leftbar"><strong>Comment:</strong></td>-->
-              <!--                    <td><strong><%#= @entity_division.comment %></strong></td>-->
-              <!--                  </tr>-->
-
-              <!--                  <tr>-->
-              <!--                    <td class="raw_theme w3-border w3-border-black w3-leftbar"><strong>Date:</strong></td>-->
-              <!--                    <td>-->
-              <!--                      <strong><%#= @entity_division.created_at %></strong>-->
-              <!--                    </td>-->
-              <!--                  </tr>-->
-
-              <!--                </table>-->
-
             </div>
+
+            <br/>
+            <% @service_account = EntityServiceAccount.where(entity_div_code: @entity_division.assigned_code).order(created_at: :desc).first %>
+            <% @service_account_details = EntityServiceAccountTrxn.where(entity_div_code: @entity_division.assigned_code).order(created_at: :desc) %>
+
+
+            <% if @service_account %>
+              <% logger.info "SERVICE ACCOUNT CONDITION PASSED ===============================" %>
+              <br/><br/>
+              <div class="w3-container w3-responsive pre-scrollable w3-mobile table-responsive-md">
+
+                <table class=" w3-responsive table-striped w3-table-all table-bordered w3-hoverable w3-card-4">
+                  <thead>
+
+                  <tr>
+                    <th class="w3-topbar" colspan="2"></th>
+                    <th class="w3-topbar" colspan="2">GROSS BALANCE</th>
+                    <th class="w3-topbar" colspan="2">NET BALANCE</th>
+                    <th class="w3-topbar" colspan="2"></th>
+                  </tr>
+
+                  <tr>
+                    <td class="" colspan="2"></td>
+                    <td class="" colspan="2"><%= @service_account.gross_bal %></td>
+                    <td class="" colspan="2"><%= @service_account.net_bal %></td>
+                    <td class="" colspan="2"></td>
+                  </tr>
+
+                  <tr class="w3-vpos-purple">
+                    <th>No.</th>
+                    <th>Trans. ID</th>
+                    <th>Gross Bal (Before)</th>
+                    <th>Gross Bal (After)</th>
+                    <th>Net Bal (Before)</th>
+                    <th>Net Bal (After)</th>
+                    <th>Charges</th>
+                    <th>Trans Type</th>
+                    <!--                      <th></th>-->
+                  </tr>
+                  </thead>
+                  <tbody>
+
+
+                  <% if @service_account_details.exists? %>
+                    <% logger.info "SERVICE ACCOUNT DETAILS PASSED ===============================" %>
+                    <% @service_account_details.each_with_index do |acount_details, num| %>
+                      <tr>
+                        <td><%= num + 1 %></td>
+                        <td><%= acount_details.processing_id %></td>
+                        <td><%= acount_details.gross_bal_bef %></td>
+                        <td><%= acount_details.gross_bal_aft %></td>
+                        <td><%= acount_details.net_bal_bef %></td>
+                        <td><%= acount_details.net_bal_aft %></td>
+                        <td><%= acount_details.charge %></td>
+                        <td><%= acount_details.trans_type %></td>
+
+                      </tr>
+
+                    <% end %>
+
+                  <% end %>
+
+                  </tbody>
+                </table>
+
+              </div>
+            <% end %>
+
+
+            <br/>
+
             <br/>
             <div class="w3-center">
               <%= link_to 'Back', entity_division_index_path(entity_code: params[:entity_code], page: params[:page], count: params[:count]), class: 'w3-bar-item w3-btn w3-ripple w3-round-large w3-dark-gray', remote: true %>

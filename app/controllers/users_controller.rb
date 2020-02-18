@@ -32,25 +32,29 @@ class UsersController < ApplicationController
   # GET /users/new
   def new
     @user = User.new
-    @entity_infos = EntityInfo.where(active_status: true).order(entity_name: :asc)
     if current_user.super_admin? || current_user.super_user?
+      @entity_infos = EntityInfo.where(active_status: true).order(entity_name: :asc)
       @entity_divisions = EntityDivision.where(id: 0, active_status: true).order(division_name: :asc)
     elsif current_user.merchant_admin?
-      @entity_divisions = EntityDivision.where(active_status: true).order(division_name: :asc)
+      #@entity_divisions = EntityDivision.where(active_status: true).order(division_name: :asc)
     end
   end
 
   # GET /users/1/edit
   def edit
-    @entity_infos = EntityInfo.where(active_status: true).order(entity_name: :asc)
-    @entity_divisions = EntityDivision.where(id: 0, active_status: true).order(division_name: :asc)
+    if current_user.super_admin? || current_user.super_user?
+      @entity_infos = EntityInfo.where(active_status: true).order(entity_name: :asc)
+      @entity_divisions = EntityDivision.where(id: 0, active_status: true).order(division_name: :asc)
+    end
   end
 
   # POST /users
   # POST /users.json
   def create
     @user = User.new(user_params)
-    @entity_infos = EntityInfo.where(active_status: true).order(entity_name: :asc)
+    if current_user.super_admin? || current_user.super_user?
+      @entity_infos = EntityInfo.where(active_status: true).order(entity_name: :asc)
+    end
     unless user_params[:role_id] == "1" || user_params[:role_id] == "2"
       if user_params[:role_id] == "3"
         @user.access_type = "M"
@@ -80,7 +84,9 @@ class UsersController < ApplicationController
   # PATCH/PUT /users/1
   # PATCH/PUT /users/1.json
   def update
-    @entity_infos = EntityInfo.where(active_status: true).order(entity_name: :asc)
+    if current_user.super_admin? || current_user.super_user?
+      @entity_infos = EntityInfo.where(active_status: true).order(entity_name: :asc)
+    end
     #unless user_params[:role_id] == "1" || user_params[:role_id] == "2"
       if user_params[:role_id] == "3"
         @user.access_type = "M"

@@ -6,8 +6,10 @@
   <br>
   <div>
     <div class="w3-half">
-      <%= link_to 'NEW', user_new_path(count: params[:count], page: params[:page]), style: "width:120px;",
-                  class: 'w3-button w3-purple-vpos w3-border w3-border-purple w3-small w3-round-large',remote:true %>
+      <% if current_user.super_admin? || current_user.super_user?  %>
+        <%= link_to 'NEW', user_new_path(count: params[:count], page: params[:page]), style: "width:120px;",
+                    class: 'w3-button w3-purple-vpos w3-border w3-border-purple w3-small w3-round-large',remote:true %>
+        <% end %>
     </div>
     <div class="w3-half">
       <%= select_tag :count, options_for_select([50, 100, 150, 200, 500], params[:count].to_i),
@@ -36,6 +38,7 @@
       <tbody>
       <% @users.each do |user| %>
 
+
           <tr>
             <td><%= link_to 'VIEW', user_show_path(user, count: params[:count], page: params[:page]),
                             style: "width:70px; height: 30px;",
@@ -51,19 +54,21 @@
             <% end %>
             <td><strong><%= user.created_at %></strong></td>
             <td>
-              <%= link_to 'EDIT', user_edit_path(user, count: params[:count], page: params[:page]),
-                          style: "width:70px; height: 30px; color: #800754 !important",
-                          class: 'w3-button w3-white w3-border w3-border-purple w3-tiny w3-round-large', remote:true%>
-              <% if user.active_status %>
+              <% if current_user.super_admin? || current_user.super_user?  %>
+                <%= link_to 'EDIT', user_edit_path(user, count: params[:count], page: params[:page]),
+                            style: "width:70px; height: 30px; color: #800754 !important",
+                            class: 'w3-button w3-white w3-border w3-border-purple w3-tiny w3-round-large', remote:true%>
+                <% if user.active_status %>
                   <%= link_to 'DISABLE', user_delete_path(user, count: params[:count], page: params[:page]),
                               style: "width:80px; height: 30px; color: #800754 !important",
                               method: :delete, data: { confirm: "Do you wish to disable: #{user.user_name}?" },
                               class: 'w3-button w3-white w3-border w3-border-purple w3-tiny w3-round-large', remote:true%>
-              <% else %>
+                <% else %>
                   <%= link_to 'ENABLE', user_delete_path(user, count: params[:count], page: params[:page]),
                               style: "width:80px; height: 30px;",
                               method: :delete, data: { confirm: "Do you wish to enable: #{user.user_name}?" },
                               class: 'w3-button w3-vpos-purple w3-border w3-border-purple w3-tiny w3-round-large', remote:true%>
+                <% end %>
               <% end %>
 
             </td>

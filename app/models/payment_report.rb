@@ -6,8 +6,8 @@ class PaymentReport < ApplicationRecord
   belongs_to :division_activity_lov, -> { where active_status: true}, class_name: 'DivisionActivityLov', foreign_key: :activity_lov_id
 
 
-  def self.to_csv(general_report)
-    CSV.generate do |csv|
+  def self.to_csv(general_report, options = {})
+    CSV.generate(options) do |csv|
       headers = %w{Merchant Service Reference Selected_Option Activity_Type Mobile_No Network Tranx_ID Amount Source Status Date}
       csv << headers
       general_report.each do |summary|

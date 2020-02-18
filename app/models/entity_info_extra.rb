@@ -3,7 +3,7 @@ class EntityInfoExtra < ApplicationRecord
   belongs_to :entity_info, class_name: 'EntityInfo', foreign_key: :entity_code, primary_key: :assigned_code
 
   validates :contact_number, presence: {message: " cannot be empty"}, format: { with: /\A\d+\z/, message: "must be numbers only." }#, uniqueness: { message: "Momo Number has already been set up." } #numericality: { only_integer: {message: "Please enter only numbers"} }
-  validates :web_url, presence: {message: " cannot be empty."}
+  #validates :web_url, presence: {message: " cannot be empty."}
   validates :contact_email, presence: {message: " cannot be empty."}
   validate :email_probably_valid
   validate :web_probably_valid

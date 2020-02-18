@@ -60,6 +60,13 @@ Rails.application.routes.draw do
   post '/division_setup_update' => 'entity_divisions#update_division_setup', :as => 'update_division_setup'
 
 
+  get '/entity_divisions/sport_setup/:division_code' => 'entity_divisions#sport_setup', :as => 'sport_setup'
+  post '/sport_setup_creation' => 'entity_divisions#create_sport_setup', :as => 'create_sport_setup'
+  get '/entity_divisions/sport_edit_setup/:division_code' => 'entity_divisions#sport_edit_setup', :as => 'sport_edit_setup'
+  post '/sport_setup_update' => 'entity_divisions#update_sport_setup', :as => 'update_sport_setup'
+
+
+
   get '/payment_infos/payment_info_index' => 'payment_infos#payment_info_index', :as => 'payment_info_index'
   get '/payment_infos/transaction_resend/:id' => 'payment_infos#transaction_resend', :as => 'transaction_resend'
 
