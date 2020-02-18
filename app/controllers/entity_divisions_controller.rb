@@ -118,7 +118,7 @@ class EntityDivisionsController < ApplicationController
     @display_num = 3
     @display_div_num = 1
     @display_act_sub_num = 1
-    @activity_codes = [["Donations (DON)", "DON"], ["Levy (LVY)", "LVY"], ["Project (PRJ)", "PRJ"]]
+    @activity_codes = [["Donations (DON)", "DON"], ["Levy (LVY)", "LVY"], ["Project (PRJ)", "PRJ"], ["Pledges (PLG)", "PLG"]]
     @activity_sub_div_class = [['Select a class', ""], ["Double", 4], ["Single", 3], ["VIP", 1],  ["Standard", 2]]
     @activity_sub_div_cl = [["Double", 4], ["Single", 3], ["VIP", 1],  ["Standard", 2]]
     @activity_sub_div_classes = ActivitySubDivClass.where(entity_div_code: params[:code], active_status: true, del_status: false).order(class_desc: :asc)
@@ -166,7 +166,7 @@ class EntityDivisionsController < ApplicationController
     @main_params.each do |prm|
       logger.info "Keys for #{prm} are :: #{params["#{prm}"].keys.inspect}"
     end
-    @activity_codes = [["Donations (DON)", "DON"], ["Levy (LVY)", "LVY"], ["Project (PRJ)", "PRJ"]]
+    @activity_codes = [["Donations (DON)", "DON"], ["Levy (LVY)", "LVY"], ["Project (PRJ)", "PRJ"], ["Pledges (PLG)", "PLG"]]
     @activity_sub_div_class = [['Select a class', ""], ["Double", 4], ["Single", 3], ["VIP", 1],  ["Standard", 2]]
     @activity_sub_div_cl = [["Double", 4], ["Single", 3], ["VIP", 1],  ["Standard", 2]]
     @activity_sub_div_classes = ActivitySubDivClass.where(entity_div_code: params[:code], active_status: true, del_status: false).order(class_desc: :asc)
@@ -257,7 +257,7 @@ class EntityDivisionsController < ApplicationController
     @division_activity_lovs = DivisionActivityLov.where(division_code: params[:code], active_status: true).order(created_at: :desc)
 
     @display_div_num = @activity_divs.size
-    @activity_codes = [["Donations (DON)", "DON"], ["Levy (LVY)", "LVY"], ["Project (PRJ)", "PRJ"]]
+    @activity_codes = [["Donations (DON)", "DON"], ["Levy (LVY)", "LVY"], ["Project (PRJ)", "PRJ"], ["Pledges (PLG)", "PLG"]]
     @activity_sub_div_class = [['Select a class', ""], ["Double", 4], ["Single", 3], ["VIP", 1],  ["Standard", 2]]
     @activity_sub_div_cl = [["Double", 4], ["Single", 3], ["VIP", 1],  ["Standard", 2]]
     @activity_sub_div_classes = ActivitySubDivClass.where(entity_div_code: params[:code], active_status: true, del_status: false).order(class_desc: :asc)
@@ -304,7 +304,9 @@ class EntityDivisionsController < ApplicationController
     end
 
 
-    @activity_codes = [["Donations (DON)", "DON"], ["Levy (LVY)", "LVY"], ["Project (PRJ)", "PRJ"]]
+
+
+    @activity_codes = [["Donations (DON)", "DON"], ["Levy (LVY)", "LVY"], ["Project (PRJ)", "PRJ"], ["Pledges (PLG)", "PLG"]]
     @activity_sub_div_class = [['Select a class', ""], ["Double", 4], ["Single", 3], ["VIP", 1],  ["Standard", 2]]
     @activity_sub_div_cl = [["Double", 4], ["Single", 3], ["VIP", 1],  ["Standard", 2]]
     @activity_sub_div_classes = ActivitySubDivClass.where(entity_div_code: params[:code], active_status: true, del_status: false).order(class_desc: :asc)
