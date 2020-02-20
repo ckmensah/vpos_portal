@@ -165,7 +165,7 @@
                               <% the_params = value %>
                               <% logger.info "key: #{key.inspect}; value: #{value.inspect}; inner value: #{value["activity_type_code"].inspect}" %>
                               <% act_type = ActivityType.where(assigned_code: the_params["activity_type_code"], active_status: true).last %>
-                              <% activity_wallet_all = EntityWalletConfig.where(entity_code: @entity_info.assigned_code, activity_type_code: the_params["activity_type_code"]).order(created_at: :desc) %>
+                              <% activity_wallet_all = EntityWalletConfig.where(active_status: true, entity_code: @entity_info.assigned_code, activity_type_code: the_params["activity_type_code"]).order(created_at: :desc) %>
                               <%
 
                                  if activity_wallet_all.first
@@ -205,9 +205,10 @@
                           <!--the_params = row[1]-->
                           <% @activity_types.each do |activity_type| %>
                               <%# the_params = person[1] %>
-                              <% activity_wallet_all = EntityWalletConfig.where(entity_code: @entity_info.assigned_code, activity_type_code: activity_type.assigned_code).order(created_at: :desc) %>
+                              <% activity_wallet_all = EntityWalletConfig.where(active_status: true, entity_code: @entity_info.assigned_code, activity_type_code: activity_type.assigned_code).order(created_at: :desc) %>
                               <%
 
+                                
                                  if activity_wallet_all.first
                                    activity_wallet = activity_wallet_all.where(active_status: true, del_status: false).first
                                    disabled = activity_wallet ? "" : "disabled".html_safe

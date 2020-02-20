@@ -184,7 +184,7 @@
                       <tr>
 
                         <!--<td><strong><%#= entity_info.entity_category.category_name %> (<%#= entity_info.entity_category.assigned_code %>)</strong></td>-->
-                        <td><strong><%#= entity_wallet_config.activity_type.activity_type_desc %> <%= entity_wallet_config.activity_type.assigned_code %></strong></td>
+                        <td><strong><%#= entity_wallet_config.activity_type.activity_type_desc %> <%= entity_wallet_config.activity_type.assigned_code if entity_wallet_config.activity_type_code != nil %></strong></td>
                         <td><strong><%= entity_wallet_config.service_id %></strong></td>
 <!--                        <td><strong><%#= entity_wallet_config.secret_key[0..7] %>...</strong></td>-->
                         <td><strong><%= entity_wallet_config.client_key[0..7] %>...</strong></td>
@@ -201,12 +201,12 @@
                           <% if entity_wallet_config.active_status %>
                               <%= link_to 'DISABLE', entity_wallet_config_path(entity_wallet_config, count: params[:count], page: params[:page]),
                                           style: "width:80px; height: 30px; color: #800754 !important",
-                                          method: :delete, data: { confirm: "Do you wish to disable: #{entity_wallet_config.activity_type.activity_type_desc} (#{entity_wallet_config.activity_type.assigned_code}) wallet?" },
+                                          method: :delete, data: { confirm: "Do you wish to disable: #{entity_wallet_config.activity_type_code != nil ? entity_wallet_config.activity_type.activity_type_desc : entity_wallet_config.entity_division.division_name} (#{entity_wallet_config.activity_type.assigned_code if entity_wallet_config.activity_type_code.present?}) wallet?" },
                                           class: 'w3-button w3-white w3-border w3-border-purple w3-tiny w3-round-large', remote:true%>
                           <% else %>
                               <%= link_to 'ENABLE', entity_wallet_config_path(entity_wallet_config, count: params[:count], page: params[:page]),
                                           style: "width:80px; height: 30px;",
-                                          method: :delete, data: { confirm: "Do you wish to enable: #{entity_wallet_config.activity_type.activity_type_desc} (#{entity_wallet_config.activity_type.assigned_code}) wallet?" },
+                                          method: :delete, data: { confirm: "Do you wish to enable: #{entity_wallet_config.activity_type_code != nil ? entity_wallet_config.activity_type.activity_type_desc : entity_wallet_config.entity_division.division_name} (#{entity_wallet_config.activity_type.assigned_code if entity_wallet_config.activity_type_code.present?}) wallet?" },
                                           class: 'w3-button w3-purple-vpos w3-border w3-border-purple w3-tiny w3-round-large', remote:true%>
                           <% end %>
 

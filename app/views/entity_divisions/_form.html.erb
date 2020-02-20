@@ -37,7 +37,11 @@
                 <%= f.input :division_alias, label: "Service Alias", required: true, input_html: {id: "div_alias", autocomplete: "off", class: "form-control w3-input w3-border w3-white input-group input-append", style: "width: 90%;"} %>
                 <%= f.input :activity_type_code, label: "Activity Code", collection: @activity_types, label_method: :activity_name, value_method: :assigned_code, required: true, input_html: {id: "activity_key", autocomplete: "off", class: "form-control w3-input w3-border w3-white input-group input-append", style: "width: 90%;"} %>
                 <%= f.input :service_code, as: :integer, label: "Shortcode Ext", required: true, input_html: {id: "serv_code", value: @service_code, autocomplete: "off", min: 1, max: 9999, oninput: "validity.valid||(value='');", class: "form-control w3-input w3-border w3-white input-group input-append", style: "width: 90%;"} %>
+                <%= f.input :sms_sender_id, label: "SMS Sender ID", required: true, input_html: {id: "sender_id", value: @entity_division.sms_sender_id, autocomplete: "off", class: "form-control w3-input w3-border w3-white input-group input-append", style: "width: 90%"} %>
+
               </div>
+
+
                 <div class="w3-third">
                 <%= f.input :service_label, label: "Service Label", required: true, input_html: {id: "serv_label", autocomplete: "off", class: "form-control w3-input w3-border w3-white input-group input-append", style: "width: 90%;"} %>
 
@@ -152,6 +156,7 @@
                   <!--<th><strong>Name &emsp;&emsp;&emsp;&emsp;</strong></th>-->
                   <th><strong>Short Code Ext</strong></th>
                   <th><strong>Service Label</strong></th>
+                  <th><strong>Sender ID</strong></th>
                   <th><strong>Activity Type</strong></th>
                   <th><strong>Region</strong></th>
                   <th><strong>City</strong></th>
@@ -175,6 +180,7 @@
                       <td><strong><input type="text" name="divisions[<%= count %>[division_alias]]" autocomplete="off" placeholder="Division Alias" class="form-control w3-input w3-border w3-white input-group input-append" style="" /></strong></td>
                       <td><strong><input type="number" name="divisions[<%= count %>[service_code]]" autocomplete="off" min="1" max="9999" oninput="validity.valid||(value='');" placeholder="Service Code" class="form-control w3-input w3-border w3-white input-group input-append" style="" /></strong></td>
                       <td><strong><input type="text" name="divisions[<%= count %>[service_label]]" autocomplete="off" placeholder="Service Name" class="form-control w3-input w3-border w3-white input-group input-append" style="" /></strong></td>
+                      <td><strong><input type="text" name="divisions[<%= count %>[sms_sender_id]]" autocomplete="off" placeholder="Sender ID" class="form-control w3-input w3-border w3-white input-group input-append" style="" /></strong></td>
 
                       <td style=""><strong><%= collection_select :divisions, "#{count}[activity_type_code]", @activity_types, :id, :activity_name, { :prompt => 'Select an Activity type', :include_blank => true}, {id: "act_type_#{count}", class:"form-control w3-input w3-border w3-white input-group input-append", style:"" } %></strong></td>
                       <td style=""><strong><%= collection_select :divisions, "#{count}[region_name]", @region_masters, :id, :region_name, {:prompt => 'Select a Region', :include_blank => false}, {id: "for_region_#{count}", :onchange => "changeCity('for_region_#{count}', 'for_city_#{count}', 'for_suburb_#{count}')", class:"form-control w3-input w3-border w3-white input-group input-append", style:"" } %></strong></td>
@@ -209,6 +215,7 @@
                         <td><strong><input type="text" name="divisions[<%= count %>[division_alias]]" value="<%= the_params["division_alias"] %>" autocomplete="off" placeholder="Division Alias" class="form-control w3-input w3-border w3-white input-group input-append" style="" /></strong></td>
                         <td><strong><input type="number" name="divisions[<%= count %>[service_code]]" value="<%= the_params["service_code"] %>" autocomplete="off" min="1" max="9999" oninput="validity.valid||(value='');" placeholder="Service Code" class="form-control w3-input w3-border w3-white input-group input-append" style="" /></strong></td>
                         <td><strong><input type="text" name="divisions[<%= count %>[service_label]]" value="<%= the_params["service_label"] %>" autocomplete="off" placeholder="Service Name" class="form-control w3-input w3-border w3-white input-group input-append" style="" /></strong></td>
+                        <td><strong><input type="text" name="divisions[<%= count %>[sms_sender_id]]" value="<%= the_params["sms_sender_id"] %>" autocomplete="off" placeholder="Sender ID" class="form-control w3-input w3-border w3-white input-group input-append" style="" /></strong></td>
 
                         <td style=""><strong><%= collection_select :divisions, "#{count}[activity_type_code]", @activity_types, :id, :activity_name, { :prompt => 'Select an Activity type', :include_blank => true, selected: "#{the_params["activity_type_code"]}"}, {id: "act_type_#{count}", class:"form-control w3-input w3-border w3-white input-group input-append", style:"" } %></strong></td>
                         <td style=""><strong><%= collection_select :divisions, "#{count}[region_name]", @region_masters, :id, :region_name, { :prompt => 'Select a Region', :include_blank => false, selected: "#{the_params["region_name"]}"}, {id: "for_region_#{count}", :onchange => "changeCity('for_region_#{count}', 'for_city_#{count}', 'for_suburb_#{count}')", class:"form-control w3-input w3-border w3-white input-group input-append", style:"" } %></strong></td>
@@ -233,6 +240,7 @@
                           <td><strong><input type="text" name="divisions[<%= count %>[division_alias]]" autocomplete="off" placeholder="Division Alias" class="form-control w3-input w3-border w3-white input-group input-append" style="" /></strong></td>
                           <td><strong><input type="number" name="divisions[<%= count %>[service_code]]" autocomplete="off" min="1" max="9999" oninput="validity.valid||(value='');" placeholder="Service Code" class="form-control w3-input w3-border w3-white input-group input-append" style="" /></strong></td>
                           <td><strong><input type="text" name="divisions[<%= count %>[service_label]]" autocomplete="off" placeholder="Service Name" class="form-control w3-input w3-border w3-white input-group input-append" style="" /></strong></td>
+                          <td><strong><input type="text" name="divisions[<%= count %>[sms_sender_id]]" autocomplete="off" placeholder="Sender ID" class="form-control w3-input w3-border w3-white input-group input-append" style="" /></strong></td>
 
                           <td style=""><strong><%= collection_select :divisions, "#{count}[activity_type_code]", @activity_types, :id, :activity_name, { :prompt => 'Select an Activity type', :include_blank => true, selected: "#{the_params["activity_type_code"]}"}, {id: "act_type_#{count}", class:"form-control w3-input w3-border w3-white input-group input-append", style:"" } %></strong></td>
                           <td style=""><strong><%= collection_select :divisions, "#{count}[region_name]", @region_masters, :id, :region_name, { :prompt => 'Select a Region', :include_blank => false, selected: "#{the_params["region_name"]}"}, {id: "for_region_#{count}", :onchange => "changeCity('for_region_#{count}', 'for_city_#{count}', 'for_suburb_#{count}')", class:"form-control w3-input w3-border w3-white input-group input-append", style:"" } %></strong></td>

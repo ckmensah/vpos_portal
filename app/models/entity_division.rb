@@ -1,7 +1,8 @@
 class EntityDivision < ApplicationRecord
   self.table_name = "entity_division"
   self.primary_key = :assigned_code
-  attr_accessor :region_name, :city_town_name, :service_code, :action_type, :for_update, :div_lov_query, :activity_query, :sub_activity_query, :serv_id, :s_key, :c_key
+  attr_accessor :region_name, :city_town_name, :service_code, :action_type, :for_update, :div_lov_query, :activity_query,
+                :sub_activity_query, :serv_id, :s_key, :c_key, :sport_type, :sport_category, :category_type
   # validates_uniqueness_of :region_name
   has_many :entity_division_exts, class_name: 'EntityDivisionExt', foreign_key: :entity_div_code
   has_many :activity_divs, class_name: 'ActivityDiv', foreign_key: :division_code
@@ -17,6 +18,7 @@ class EntityDivision < ApplicationRecord
   has_many :assigned_fees, class_name: 'AssignedFee', foreign_key: :entity_div_code
   has_many :entity_service_accounts, class_name: "EntityServiceAccount", foreign_key: :entity_div_code
   has_many :entity_service_account_trxns, class_name: "EntityServiceAccountTrxn", foreign_key: :entity_div_code
+  has_many :entity_wallet_configs, class_name: "EntityWalletConfig", foreign_key: :division_code
 
 
   # has_many :entity_wallet_configs, class_name: 'EntityWalletConfig', foreign_key: :division_code
@@ -30,6 +32,7 @@ class EntityDivision < ApplicationRecord
   validates :entity_code, presence: {message: " cannot be empty."}
   validates :division_name, presence: {message: " cannot be empty."}
   validates :division_alias, presence: {message: " cannot be empty."}
+  validates :sms_sender_id, presence: {message: " cannot be empty."}, length: {minimum: 3, maximum: 9}
 
   validates :region_name, presence: {message: " cannot be empty."}
 
@@ -267,6 +270,7 @@ class EntityDivision < ApplicationRecord
   def self.validate_entity_divisions(division_params, entity_div_params)
     division_validity = false
     service_code_exist = false
+    incorrect_sender_id = false
     same_incoming_service_code = false
     incoming_service_code = []
     key_number = 0
@@ -275,42 +279,50 @@ class EntityDivision < ApplicationRecord
       logger.info "test 1"
       logger.info "Divisions Parameter Class #{division_params.class}"
       division_params.each do |key, value|
-        if value["division_name"].present? || value["division_alias"].present? || value["service_label"].present? || value["service_code"].present? || value["activity_type_code"].present? || value["region_name"].present? || value["city_town_name"].present? || value["suburb_id"].present?
-          logger.info "test 2"
-          @service_code = AssignedServiceCode.where(service_code: value["service_code"], active_status: true, del_status: false).order(created_at: :desc).first
-          for_divisions = EntityDivision.new(entity_code: entity_div_params[:entity_code], activity_type_code: value["activity_type_code"], region_name: value["region_name"], city_town_name: value["city_town_name"],
-                                             link_master: true, division_name: value["division_name"], service_label: value["service_label"], service_code: value["service_code"],
-                                             suburb_id: value["suburb_id"], division_alias: value["division_alias"], active_status: true, del_status: false)
-          logger.info "object is #{for_divisions.inspect}"
-          if for_divisions.valid?
-            if @service_code
-              logger.info "test 6"
-              service_code_exist = true
-              division_validity = false
-              key_number = key
-              break
-            else
-              if incoming_service_code.include? (value["service_code"])
-                same_incoming_service_code = true
+        if value["sms_sender_id"].present? && value["sms_sender_id"].size <= 9
+          if value["division_name"].present? || value["division_alias"].present? || value["sms_sender_id"].present? || value["service_label"].present? || value["service_code"].present? || value["activity_type_code"].present? || value["region_name"].present? || value["city_town_name"].present? || value["suburb_id"].present?
+            logger.info "test 2"
+            @service_code = AssignedServiceCode.where(service_code: value["service_code"], active_status: true, del_status: false).order(created_at: :desc).first
+            for_divisions = EntityDivision.new(entity_code: entity_div_params[:entity_code], activity_type_code: value["activity_type_code"], region_name: value["region_name"], city_town_name: value["city_town_name"],
+                                               link_master: true, division_name: value["division_name"], service_label: value["service_label"], service_code: value["service_code"],
+                                               suburb_id: value["suburb_id"], division_alias: value["division_alias"], sms_sender_id: value["sms_sender_id"], active_status: true, del_status: false)
+            logger.info "object is #{for_divisions.inspect}"
+            if for_divisions.valid?
+              if @service_code
+                logger.info "test 6"
+                service_code_exist = true
                 division_validity = false
                 key_number = key
                 break
               else
-                incoming_service_code << value["service_code"]
-                division_validity = true
+                if incoming_service_code.include? (value["service_code"])
+                  same_incoming_service_code = true
+                  division_validity = false
+                  key_number = key
+                  break
+                else
+                  incoming_service_code << value["service_code"]
+                  division_validity = true
+                end
+                logger.info "Incoming service code array :: #{incoming_service_code.inspect}"
               end
-              logger.info "Incoming service code array :: #{incoming_service_code.inspect}"
+            else
+              logger.info "VALIDITY Errors: #{for_divisions.errors.messages.inspect}"
+              logger.info "test 3"
+              division_validity = false
+              key_number = key
+              break
             end
           else
-            logger.info "VALIDITY Errors: #{for_divisions.errors.messages.inspect}"
-            logger.info "test 3"
-            division_validity = false
-            key_number = key
-            break
+            logger.info "test 4"
+            # division_validity = true
           end
         else
-          logger.info "test 4"
-          # division_validity = true
+          logger.info "test 7"
+          division_validity = false
+          key_number = key
+          incorrect_sender_id = true
+          break
         end
       end
     else
@@ -318,7 +330,7 @@ class EntityDivision < ApplicationRecord
       division_validity = false
     end
 
-    return division_validity, key_number, service_code_exist, same_incoming_service_code
+    return division_validity, key_number, service_code_exist, same_incoming_service_code, incorrect_sender_id
   end
 
 
@@ -326,12 +338,12 @@ class EntityDivision < ApplicationRecord
 
   def self.save_entity_divisions(division_params, entity_div_params, current_user)
     division_params.each do |key, value|
-      if value["division_name"].present? && value["division_alias"].present? && value["service_label"].present? && value["service_code"].present? && value["activity_type_code"].present? && value["region_name"].present? && value["city_town_name"].present? && value["suburb_id"].present?
+      if value["division_name"].present? && value["division_alias"].present? && value["sms_sender_id"].present? && value["sms_sender_id"].size <= 9 && value["service_label"].present? && value["service_code"].present? && value["activity_type_code"].present? && value["region_name"].present? && value["city_town_name"].present? && value["suburb_id"].present?
         assigned_code = gen_entity_div_code
         for_divisions = EntityDivision.new(entity_code: entity_div_params[:entity_code], assigned_code: assigned_code, link_master: true,
                                            activity_type_code: value["activity_type_code"], division_name: value["division_name"],
                                            service_label: value["service_label"], suburb_id: value["suburb_id"], division_alias: value["division_alias"],
-                                           active_status: true, del_status: false, user_id: current_user.id)
+                                           sms_sender_id: value["sms_sender_id"], active_status: true, del_status: false, user_id: current_user.id)
 
         for_service_codes = AssignedServiceCode.new(entity_div_code: assigned_code, service_code: value["service_code"],
                                                     active_status: true, del_status: false, user_id: current_user.id)

@@ -102,6 +102,64 @@ class EntityDivisionsController < ApplicationController
 
   end
 
+  def sport_setup
+    @entity_div_name = EntityDivision.where(assigned_code: params[:code], active_status: true).order(created_at: :desc).first
+    @entity_div_name = @entity_div_name ? "#{@entity_div_name.division_name} (#{@entity_div_name.division_alias})" : ""
+    @activity_divs = ActivityDiv.where(division_code: params[:code], del_status: false).paginate(:page => params[:page], :per_page => params[:count]).order('created_at desc')
+
+  end
+
+
+  def fixture_new
+    @activity_categories = ActivityCategory.where(active_status: true).order(activity_cat_desc: :asc)
+    @activity_div_cats = ActivityDivCat.where(active_status: true, division_code: params[:code]).order(div_cat_desc: :asc)
+    @activity_category_divs = ActivityCategoryDiv.where(id: 0, active_status: true, division_code: params[:code]).order(category_div_desc: :desc) # ActivityCategoryDiv.where(active_status: true, division_code: params[:code]).order(category_div_desc: :desc)
+    @activity_fixtures = ActivityFixture.where(id: 0, active_status: true, division_code: params[:code])
+
+  end
+
+  def fixture_edit
+    @activity_div = ActivityDiv.where(id: params[:act_div_id], active_status: true, division_code: params[:code]).order(created_at: :desc).first
+    @activity_categories = ActivityCategory.where(active_status: true).order(activity_cat_desc: :asc)
+
+    if @ctivity_div
+      if @activity_div.activity_fixture_id.present?
+        @sport_type = @activity_div.activity_fixture.activity_category_div.activity_category_id
+        @sport_category = @activity_div.activity_fixture.activity_category_div.activity_cat_div_id
+        @category_type = @activity_div.activity_fixture.activity_category_div_id
+        #@fixtures = @ctivity_div.activity_fixture_id
+
+        @activity_div_cats = ActivityDivCat.where(id: @sport_category,active_status: true, division_code: params[:code]).order(div_cat_desc: :asc)
+        @activity_category_divs = ActivityCategoryDiv.where(id: @category_type, active_status: true, division_code: params[:code]).order(category_div_desc: :desc) # ActivityCategoryDiv.where(active_status: true, division_code: params[:code]).order(category_div_desc: :desc)
+        @activity_fixtures = ActivityFixture.where(id: @activity_div.activity_fixture_id, active_status: true, division_code: params[:code])
+
+      else
+        @sport_type = ""
+        @sport_category = ""
+        @category_type = ""
+        #@fixtures = ""
+
+        @activity_div_cats = ActivityDivCat.where(active_status: true, division_code: params[:code]).order(div_cat_desc: :asc)
+        @activity_category_divs = ActivityCategoryDiv.where(id: 0, active_status: true, division_code: params[:code]).order(category_div_desc: :desc) # ActivityCategoryDiv.where(active_status: true, division_code: params[:code]).order(category_div_desc: :desc)
+        @activity_fixtures = ActivityFixture.where(id: 0, active_status: true, division_code: params[:code])
+
+      end
+    else
+      @sport_type = ""
+      @sport_category = ""
+      @category_type = ""
+    end
+
+  end
+
+  def create_fixture
+
+  end
+
+  def update_fixture
+
+  end
+
 
   def division_setup
     if current_user.merchant_admin?
@@ -621,7 +679,7 @@ class EntityDivisionsController < ApplicationController
     entity_division_params[:city_town_name].present? ? @suburb_masters = SuburbMaster.where(active_status: true, city_town_id: entity_division_params[:city_town_name]).order(suburb_name: :asc).insert(0,['Please select a suburb', ""]) : @suburb_masters = [["", ""]].insert(0,['Please select a suburb', ""])# SuburbMaster.where(id: 0)
 
     logger.info "Display :: #{@display.inspect} and Display Length :: #{@display_length.inspect}"
-    validity_result, div_num, service_code_exist, same_incoming_service_code = EntityDivision.validate_entity_divisions(@display, entity_division_params)
+    validity_result, div_num, service_code_exist, same_incoming_service_code, incorrect_sender_id = EntityDivision.validate_entity_divisions(@display, entity_division_params)
     logger.info "Validity result is :: #{validity_result.inspect} and division number is :: #{div_num.inspect} and service code existence :: #{service_code_exist.inspect} and same incoming service code :: #{same_incoming_service_code.inspect}"
     respond_to do |format|
       if validity_result
@@ -635,16 +693,21 @@ class EntityDivisionsController < ApplicationController
         if service_code_exist
           flash.now[:danger] = "Sorry, the service code extension at number #{div_num} already exist. Try again."
         else
-          if same_incoming_service_code
-            flash.now[:danger] = "Sorry, the service code extension at number #{div_num} is a repetition. Please check and try again."
+          if incorrect_sender_id
+            flash.now[:danger] = "Sorry, maximum characters for SMS sender ID is 9. Check number #{div_num} and try again."
           else
-            if params[:display_cnt] == nil || params[:display_cnt] == 0
-              flash.now[:danger] = div_num == 0 ? "Kindly select the number of divisions." : "Please ensure that every field has been filled at number #{div_num}."
+            if same_incoming_service_code
+              flash.now[:danger] = "Sorry, the service code extension at number #{div_num} is a repetition. Please check and try again."
             else
-              flash.now[:danger] = div_num == 0 ? "You haven't entered anything yet. Please try again." : "Please ensure that every field has been filled at number #{div_num}."
+              if params[:display_cnt] == nil || params[:display_cnt] == 0
+                flash.now[:danger] = div_num == 0 ? "Kindly select the number of divisions." : "Please ensure that every field has been filled at number #{div_num}."
+              else
+                flash.now[:danger] = div_num == 0 ? "You haven't entered anything yet. Please try again." : "Please ensure that every field has been filled at number #{div_num}."
+              end
             end
           end
         end
+        
         format.html { render :new }
         format.js {render :new }
         format.json { render json: @entity_division.errors, status: :unprocessable_entity }
@@ -793,6 +856,7 @@ class EntityDivisionsController < ApplicationController
     params.require(:entity_division).permit(:entity_code, :assigned_code, :division_name, :division_alias, :action_type, :suburb_id,
                                             :activity_type_code, :service_label, :region_name, :city_town_name, :comment, :link_master,
                                             :div_lov_query, :activity_query, :sub_activity_query, :serv_id, :s_key, :c_key,
+                                            :sport_type, :sport_category, :category_type, :sms_sender_id,
                                             :active_status, :del_status, :user_id, :service_code, :for_update, divisions: [], :the_div_acts_lov => {})
     # entity_wallet_configs_attributes: [:id, :division_code, :service_id, :secret_key, :client_key, :comment, :active_status, :del_status, :user_id]
     #activity_divs_attributes: [:id, :division_code, :activity_div_desc, :activity_date, :comment, :active_status, :del_status, :user_id],

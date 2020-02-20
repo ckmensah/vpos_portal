@@ -1,0 +1,58 @@
+
+
+
+<div class="w3-container" >
+  <div id="id01" class="w3-modal w3-animate-opacity" style=" display: block">
+    <!--<div class="w3-modal-content w3-card-4" >-->
+    <br/>
+
+    <div class="">
+
+      <div class="w3-white w3-hover-shadow col-md-4 offset-md-4 w3-card-4 w3-border w3-border-purple rcorners w3-center">
+        <h4 class="show w3-center"><strong>Setup Fixture</strong></h4>
+
+        <div class="w3-container">
+          <br/>
+          <%#= simple_form_for(@activity_type, :data => {  :remote => true, :param => {entity_code: params[:entity_code], code: params[:code], count: params[:count], page: params[:page]} }) do |f| %>
+          <%= simple_form_for(@activity_div, url: update_fixture_path(@activity_div, entity_code: params[:entity_code], code: params[:code], count: params[:count], page: params[:page] ),:remote => true) do |f| %>
+            <%= f.error_notification %>
+            <%= f.error_notification message: f.object.errors[:base].to_sentence if f.object.errors[:base].present? %>
+            <%= f.input :sport_type,  label: "Sports", collection: @activity_categories, label_method: :activity_cat_desc, value_method: :id, selected: @sport_type, required: true, input_html:{id: "for_sports_type", autocomplete: "off",class:"form-control w3-input w3-border w3-white input-group input-append",style:""}  %>
+            <%= f.input :sport_category,  label: "Sports Category", collection: @activity_div_cats, label_method: :div_cat_desc, value_method: :id, selected: @sport_category, required: true, input_html:{id: "for_sport_cat", autocomplete: "off",class:"form-control w3-input w3-border w3-white input-group input-append",style:""}  %>
+            <%= f.input :category_type,  label: "Category types", collection: @activity_category_divs, label_method: :category_div_desc,  value_method: :id, selected: @category_type, required: true, input_html:{id: "for_cat_type", readonly: true, autocomplete: "off",class:"form-control w3-input w3-border w3-white input-group input-append",style:""}  %>
+            <%= f.input :activity_fixture_id,  label: "Fixture", collection: @activity_fixtures, label_method: :full_fixture,  value_method: :id, required: true, input_html:{id: "for_fixture", readonly: true, autocomplete: "off",class:"form-control w3-input w3-border w3-white input-group input-append",style:""}  %>
+
+            <%#= f.input :comment,  label: "Comment", :as => :text, value_method: :id, required: false, input_html:{rows: 5, cols: 3, autocomplete: "off",class:"form-control w3-border ",style:""}  %>
+            <%= f.input :active_status, :as => :hidden, input_html:{value: true} %>
+            <%= f.input :del_status, :as => :hidden, input_html:{value: false} %>
+            <%= f.input :user_id, :as => :hidden, input_html:{value: current_user.id} %>
+            <div>
+              <%= f.submit "Submit", class: "w3-button w3-purple-vpos w3-border w3-border-purple w3-small w3-round-large", :data => {:disable_with => 'Please Wait...'}, style: "width:auto;float:center;",remote:true %>
+              <%= link_to 'Back', sport_setup_index_path(entity_code: params[:entity_code], code: params[:code], page: params[:page], count: params[:count]), class: "w3-button w3-white w3-border w3-border-purple w3-small w3-round-large",remote:true %>
+            </div>
+          <% end %>
+          <br/>
+        </div>
+
+
+      </div>
+
+    </div>
+
+
+    <div class="col-md-7 col-md-offset-5">
+    </div>
+
+
+
+
+    <br/>
+    <div class="col-md-7 col-md-offset-5">
+      <br/>
+      <br/>
+    </div>
+    <!--</div>-->
+
+  </div>
+</div>
+

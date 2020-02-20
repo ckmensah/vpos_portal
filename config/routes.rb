@@ -66,6 +66,11 @@ Rails.application.routes.draw do
   post '/sport_setup_update' => 'entity_divisions#update_sport_setup', :as => 'update_sport_setup'
 
 
+  get '/entity_divisions/fixture_new/:division_code' => 'entity_divisions#fixture_new', :as => 'fixture_new'
+  post '/fixture_creation' => 'entity_divisions#create_fixture', :as => 'create_fixture'
+  get '/entity_divisions/fixture_edit/:act_div_id' => 'entity_divisions#fixture_edit', :as => 'fixture_edit'
+  post '/fixture_update' => 'entity_divisions#update_fixture', :as => 'update_fixture'
+
 
   get '/payment_infos/payment_info_index' => 'payment_infos#payment_info_index', :as => 'payment_info_index'
   get '/payment_infos/transaction_resend/:id' => 'payment_infos#transaction_resend', :as => 'transaction_resend'
@@ -78,6 +83,8 @@ Rails.application.routes.draw do
 
   post '/suburb_masters/city_update', :as => 'suburb_city_ajax_call'
   post '/suburb_masters/suburb_update', :as => 'general_suburb_ajax_call'
+  post '/entity_divisions/category_div_update', :as => 'div_cat_to_cat_div_ajax_call'
+  post '/entity_divisions/fixture_update', :as => 'cat_div_to_fixture_ajax_call'
   post '/entity_divisions/division_update', :as => 'general_division_ajax_call'
   #post '/users/divisions', :as => 'general_role_ajax_call'
 
