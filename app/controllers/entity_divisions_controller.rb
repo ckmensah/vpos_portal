@@ -693,21 +693,22 @@ class EntityDivisionsController < ApplicationController
         if service_code_exist
           flash.now[:danger] = "Sorry, the service code extension at number #{div_num} already exist. Try again."
         else
-          if incorrect_sender_id
-            flash.now[:danger] = "Sorry, maximum characters for SMS sender ID is 9. Check number #{div_num} and try again."
+
+          if same_incoming_service_code
+            flash.now[:danger] = "Sorry, the service code extension at number #{div_num} is a repetition. Please check and try again."
           else
-            if same_incoming_service_code
-              flash.now[:danger] = "Sorry, the service code extension at number #{div_num} is a repetition. Please check and try again."
+            if params[:display_cnt] == nil || params[:display_cnt] == 0
+              flash.now[:danger] = div_num == 0 ? "Kindly select the number of divisions." : "Please ensure that every field has been filled at number #{div_num}."
             else
-              if params[:display_cnt] == nil || params[:display_cnt] == 0
-                flash.now[:danger] = div_num == 0 ? "Kindly select the number of divisions." : "Please ensure that every field has been filled at number #{div_num}."
+              if incorrect_sender_id
+                flash.now[:danger] = "Sorry, minimum characters for SMS sender ID is 3 and maximum is 9. Check number #{div_num} and try again."
               else
-                flash.now[:danger] = div_num == 0 ? "You haven't entered anything yet. Please try again." : "Please ensure that every field has been filled at number #{div_num}."
+              flash.now[:danger] = div_num == 0 ? "You haven't entered anything yet. Please try again." : "Please ensure that every field has been filled at number #{div_num}."
               end
             end
           end
         end
-        
+
         format.html { render :new }
         format.js {render :new }
         format.json { render json: @entity_division.errors, status: :unprocessable_entity }

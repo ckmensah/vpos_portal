@@ -279,7 +279,7 @@ class EntityDivision < ApplicationRecord
       logger.info "test 1"
       logger.info "Divisions Parameter Class #{division_params.class}"
       division_params.each do |key, value|
-        if value["sms_sender_id"].present? && value["sms_sender_id"].size <= 9
+
           if value["division_name"].present? || value["division_alias"].present? || value["sms_sender_id"].present? || value["service_label"].present? || value["service_code"].present? || value["activity_type_code"].present? || value["region_name"].present? || value["city_town_name"].present? || value["suburb_id"].present?
             logger.info "test 2"
             @service_code = AssignedServiceCode.where(service_code: value["service_code"], active_status: true, del_status: false).order(created_at: :desc).first
@@ -307,23 +307,25 @@ class EntityDivision < ApplicationRecord
                 logger.info "Incoming service code array :: #{incoming_service_code.inspect}"
               end
             else
-              logger.info "VALIDITY Errors: #{for_divisions.errors.messages.inspect}"
-              logger.info "test 3"
-              division_validity = false
-              key_number = key
-              break
+
+              if value["sms_sender_id"].size >= 3 && value["sms_sender_id"].size <= 9
+                logger.info "VALIDITY Errors: #{for_divisions.errors.messages.inspect}"
+                logger.info "test 3"
+                division_validity = false
+                key_number = key
+                break
+              else
+                logger.info "test 7"
+                division_validity = false
+                key_number = key
+                incorrect_sender_id = true
+                break
+              end
             end
           else
             logger.info "test 4"
             # division_validity = true
           end
-        else
-          logger.info "test 7"
-          division_validity = false
-          key_number = key
-          incorrect_sender_id = true
-          break
-        end
       end
     else
       logger.info "test 5"
