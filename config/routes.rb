@@ -69,7 +69,7 @@ Rails.application.routes.draw do
   get '/entity_divisions/fixture_new/:division_code' => 'entity_divisions#fixture_new', :as => 'fixture_new'
   post '/fixture_creation' => 'entity_divisions#create_fixture', :as => 'create_fixture'
   get '/entity_divisions/fixture_edit/:act_div_id' => 'entity_divisions#fixture_edit', :as => 'fixture_edit'
-  post '/fixture_update' => 'entity_divisions#update_fixture', :as => 'update_fixture'
+  patch '/fixture_update/:act_div_id' => 'entity_divisions#update_fixture', :as => 'update_fixture'
 
 
   get '/payment_infos/payment_info_index' => 'payment_infos#payment_info_index', :as => 'payment_info_index'

@@ -5,7 +5,7 @@ class EntityDivisionsController < ApplicationController
   # GET /entity_divisions
   # GET /entity_divisions.json
   def index
-    params[:count] ? params[:count] : params[:count] = 10
+    params[:count] ? params[:count] : params[:count] = 50
     params[:page] ? params[:page] : params[:page] = 1
 
     if current_user.merchant_admin?
@@ -17,7 +17,7 @@ class EntityDivisionsController < ApplicationController
   end
 
   def entity_division_index
-    params[:count] ? params[:count] : params[:count] = 10
+    params[:count] ? params[:count] : params[:count] = 50
     params[:page] ? params[:page] : params[:page] = 1
 
     if current_user.super_admin? || current_user.super_user?
@@ -41,7 +41,7 @@ class EntityDivisionsController < ApplicationController
   end
 
   def main_sports_index
-    params[:count] ? params[:count] : params[:count] = 10
+    params[:count] ? params[:count] : params[:count] = 50
     params[:page] ? params[:page] : params[:page] = 1
 
     if current_user.super_admin? || current_user.super_user?
@@ -95,7 +95,7 @@ class EntityDivisionsController < ApplicationController
   # end
 
   def entity_index
-    params[:count] ? params[:count] : params[:count] = 10
+    params[:count] ? params[:count] : params[:count] = 50
     params[:page] ? params[:page] : params[:page] = 1
 
     @entity_infos = EntityInfo.where(del_status: false).paginate(:page => params[:page], :per_page => params[:count]).order('created_at desc')
@@ -122,18 +122,23 @@ class EntityDivisionsController < ApplicationController
     @activity_div = ActivityDiv.where(id: params[:act_div_id], active_status: true, division_code: params[:code]).order(created_at: :desc).first
     @activity_categories = ActivityCategory.where(active_status: true).order(activity_cat_desc: :asc)
 
-    if @ctivity_div
-      if @activity_div.activity_fixture_id.present?
-        @sport_type = @activity_div.activity_fixture.activity_category_div.activity_category_id
-        @sport_category = @activity_div.activity_fixture.activity_category_div.activity_cat_div_id
-        @category_type = @activity_div.activity_fixture.activity_category_div_id
-        #@fixtures = @ctivity_div.activity_fixture_id
+    logger.info "Activity Division:: #{@activity_div.inspect}"
 
-        @activity_div_cats = ActivityDivCat.where(id: @sport_category,active_status: true, division_code: params[:code]).order(div_cat_desc: :asc)
+    if @activity_div
+      if @activity_div.activity_fixture_id.present?
+        logger.info "===================================== PRESENT "
+        @sport_type = @activity_div.activity_fixture.activity_category_div.activity_category_id
+        @sport_category = @activity_div.activity_fixture.activity_category_div.activity_div_cat_id
+        @category_type = @activity_div.activity_fixture.activity_category_div_id
+        #@fixtures = @activity_div.activity_fixture_id
+
+
+        @activity_div_cats = ActivityDivCat.where(id: @sport_category, active_status: true, division_code: params[:code]).order(div_cat_desc: :asc)
         @activity_category_divs = ActivityCategoryDiv.where(id: @category_type, active_status: true, division_code: params[:code]).order(category_div_desc: :desc) # ActivityCategoryDiv.where(active_status: true, division_code: params[:code]).order(category_div_desc: :desc)
         @activity_fixtures = ActivityFixture.where(id: @activity_div.activity_fixture_id, active_status: true, division_code: params[:code])
 
       else
+        logger.info "=============================== NOT PRESENT "
         @sport_type = ""
         @sport_category = ""
         @category_type = ""
@@ -145,6 +150,7 @@ class EntityDivisionsController < ApplicationController
 
       end
     else
+      logger.info "================================== NOT PRESENT OUT"
       @sport_type = ""
       @sport_category = ""
       @category_type = ""
@@ -156,7 +162,30 @@ class EntityDivisionsController < ApplicationController
 
   end
 
+
   def update_fixture
+    @activity_div = ActivityDiv.where(id: params[:act_div_id], active_status: true).first
+
+    respond_to do |format|
+      logger.info "================== INSIDE RESPOND TO ======================"
+      if @activity_div
+        @activity_div = ActivityDiv.find(params[:act_div_id])
+        #@activity_div.activity_fixture_id = params[:activity_div][:activity_fixture_id]
+        #@activity_div.sport_type = ""
+        if @activity_div.update(division_code: @activity_div.division_code, activity_div_desc: @activity_div.activity_div_desc,
+                                activity_date: @activity_div.activity_date, sport_type: params[:activity_div][:sport_type],
+                                sport_category: params[:activity_div][:sport_category], for_fixture: true,
+                                category_type: params[:activity_div][:category_type], activity_fixture_id: params[:activity_div][:activity_fixture_id])
+          logger.info "=========================== I AM VALID ========================"
+          flash.now[:notice] = "Fixture was successfully created."
+          format.js { render :sport_setup }
+        else
+          logger.info "============================= I AM NOT VALID =========================="
+          logger.info "Error Messages:: #{@activity_div.errors.messages.inspect}"
+          format.js { render :fixture_edit }
+        end
+      end
+    end
 
   end
 
@@ -339,7 +368,7 @@ class EntityDivisionsController < ApplicationController
     end
     @entity_division = EntityDivision.new(entity_division_params)
     logger.info "==================== I WAS HIT HERE ====================="
-    params[:count] ? params[:count] : params[:count] = 10
+    params[:count] ? params[:count] : params[:count] = 50
     params[:page] ? params[:page] : params[:page] = 1
     @entity_div = EntityDivision.where(assigned_code: params[:code], active_status: true).order(created_at: :desc).first
     @div_activity_type = @entity_div.activity_type.assigned_code
@@ -622,7 +651,8 @@ class EntityDivisionsController < ApplicationController
 
   def entity_div_create
     @entity_division = EntityDivision.new(entity_division_params)
-    @display = @display.present? ? @display : params[:display_cnt].present? ? params[:display_cnt].to_i : 3
+    #@display = @display.present? ? @display : params[:display_cnt].present? ? params[:display_cnt].to_i : 3
+    @display = nil
     params[:into_create] = params[:division].nil? ? "into_create" : ""
     @activity_types = ActivityType.where(active_status: true, del_status: false).order(assigned_code: :asc)
     @region_masters = RegionMaster.where(active_status: true).order(region_name: :asc)

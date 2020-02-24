@@ -2,7 +2,7 @@ class EntityDivision < ApplicationRecord
   self.table_name = "entity_division"
   self.primary_key = :assigned_code
   attr_accessor :region_name, :city_town_name, :service_code, :action_type, :for_update, :div_lov_query, :activity_query,
-                :sub_activity_query, :serv_id, :s_key, :c_key, :sport_type, :sport_category, :category_type
+                :sub_activity_query, :serv_id, :s_key, :c_key, :sport_type, :sport_category, :category_type, :for_fixture
   # validates_uniqueness_of :region_name
   has_many :entity_division_exts, class_name: 'EntityDivisionExt', foreign_key: :entity_div_code
   has_many :activity_divs, class_name: 'ActivityDiv', foreign_key: :division_code
@@ -49,6 +49,8 @@ class EntityDivision < ApplicationRecord
 
   # accepts_nested_attributes_for :entity_wallet_configs#, :activity_divs
   # accepts_nested_attributes_for :assigned_service_codes
+
+
 
   def secret_key_validation
     unless self.link_master == true

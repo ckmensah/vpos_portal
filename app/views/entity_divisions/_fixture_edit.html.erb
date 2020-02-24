@@ -23,12 +23,13 @@
             <%= f.input :activity_fixture_id,  label: "Fixture", collection: @activity_fixtures, label_method: :full_fixture,  value_method: :id, required: true, input_html:{id: "for_fixture", readonly: true, autocomplete: "off",class:"form-control w3-input w3-border w3-white input-group input-append",style:""}  %>
 
             <%#= f.input :comment,  label: "Comment", :as => :text, value_method: :id, required: false, input_html:{rows: 5, cols: 3, autocomplete: "off",class:"form-control w3-border ",style:""}  %>
+            <%= f.input :for_fixture, :as => :hidden, input_html:{value: true} %>
             <%= f.input :active_status, :as => :hidden, input_html:{value: true} %>
             <%= f.input :del_status, :as => :hidden, input_html:{value: false} %>
             <%= f.input :user_id, :as => :hidden, input_html:{value: current_user.id} %>
             <div>
               <%= f.submit "Submit", class: "w3-button w3-purple-vpos w3-border w3-border-purple w3-small w3-round-large", :data => {:disable_with => 'Please Wait...'}, style: "width:auto;float:center;",remote:true %>
-              <%= link_to 'Back', sport_setup_index_path(entity_code: params[:entity_code], code: params[:code], page: params[:page], count: params[:count]), class: "w3-button w3-white w3-border w3-border-purple w3-small w3-round-large",remote:true %>
+              <%= link_to 'Back', sport_setup_path(params[:code], entity_code: params[:entity_code], code: params[:code], page: params[:page], count: params[:count]), class: "w3-button w3-white w3-border w3-border-purple w3-small w3-round-large",remote:true %>
             </div>
           <% end %>
           <br/>

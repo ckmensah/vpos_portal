@@ -76,17 +76,17 @@
                     <button class="w3-button w3-white w3-border w3-disabled w3-border-purple w3-tiny w3-round-large" style="width:100px; height: 30px; color: #800754 !important">EDIT</button>
                   <% end %>
 
-                  <% if activity_div.active_status %>
-                    <%= link_to 'DISABLE', sport_setup_path(params[:code], class_div_top: params[:class_div_top], code: params[:code], entity_code: params[:entity_code], count: params[:count], page: params[:page]),
+                  <%# if activity_div.active_status %>
+                    <%#= link_to 'DISABLE', activity_div_path(activity_div, class_div_top: params[:class_div_top], code: params[:code], entity_code: params[:entity_code], count: params[:count], page: params[:page]),
                                 style: "width:100px; height: 30px; color: #800754 !important",
                                 method: :delete, data: { confirm: "Do you wish to disable: #{activity_div.activity_div_desc}?" },
                                 class: 'w3-button w3-white w3-border w3-border-purple w3-tiny w3-round-large', remote:true%>
-                  <% else %>
-                    <%= link_to 'ENABLE', sport_setup_path(params[:code], class_div_top: params[:class_div_top], code: params[:code], entity_code: params[:entity_code], count: params[:count], page: params[:page]),
+                  <%# else %>
+                    <%#= link_to 'ENABLE', activity_div_path(activity_div, class_div_top: params[:class_div_top], code: params[:code], entity_code: params[:entity_code], count: params[:count], page: params[:page]),
                                 style: "width:100px; height: 30px;",
                                 method: :delete, data: { confirm: "Do you wish to enable: #{activity_div.activity_div_desc}?" },
                                 class: 'w3-button w3-purple-vpos w3-border w3-border-purple w3-tiny w3-round-large', remote:true%>
-                  <% end %>
+                  <%# end %>
 
                 </td>
               </tr>
