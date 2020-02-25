@@ -43,8 +43,9 @@ class PaymentReport < ApplicationRecord
             total_amt = summary.amount.to_f
           end
         end
-
         
+
+
         charge = charge.round(3)
         total_amt = total_amt.round(3)
 
