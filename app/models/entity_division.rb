@@ -51,7 +51,6 @@ class EntityDivision < ApplicationRecord
   # accepts_nested_attributes_for :assigned_service_codes
 
 
-
   def secret_key_validation
     unless self.link_master == true
       unless self.s_key.present?
@@ -78,7 +77,6 @@ class EntityDivision < ApplicationRecord
       end
     end
   end
-
 
 
   def self.gen_entity_div_code
@@ -183,42 +181,48 @@ class EntityDivision < ApplicationRecord
   end
 
 
-
-  def self.division_lov_validation(div_lov_params, division_code, entity_division_params)
+  def self.division_lov_validation(div_lov_params, division_code, entity_division_params, div_activity_type)
     lov_row_num = 0
     lov_error_num = "0"
     lov_validate_result = false
 
     count = 1
-    if entity_division_params[:div_lov_query] == 'yes'
-      if div_lov_params != nil
-        div_lov_params_size = div_lov_params.keys.size
-        logger.info "Division Lov Params Size is #{div_lov_params_size.inspect}"
-        div_lov_params.each do |key, value|
-          lov_row_num = lov_row_num + 1
-          if division_code.present? && value["activity_code"].present? && value["lov_desc"].present?
-            lov_validate_result = true
-          elsif !value["activity_code"].present? && !value["lov_desc"].present? && lov_validate_result == false && div_lov_params_size == count
-            lov_validate_result = false
-            lov_error_num = "1"
-            break
-          elsif !value["activity_code"].present? && !value["lov_desc"].present?
-          else
-            logger.info "LOV:: Some fields are left out."
-            lov_validate_result = false
-            lov_error_num = "3"
-            break
+    if div_activity_type == "SHW" || div_activity_type == "SPO"
+      lov_validate_result = true
+    else
+
+      if entity_division_params[:div_lov_query] == 'yes'
+        if div_lov_params != nil
+          div_lov_params_size = div_lov_params.keys.size
+          logger.info "Division Lov Params Size is #{div_lov_params_size.inspect}"
+          div_lov_params.each do |key, value|
+            lov_row_num = lov_row_num + 1
+            if division_code.present? && value["activity_code"].present? && value["lov_desc"].present?
+              lov_validate_result = true
+            elsif !value["activity_code"].present? && !value["lov_desc"].present? && lov_validate_result == false && div_lov_params_size == count
+              lov_validate_result = false
+              lov_error_num = "1"
+              break
+            elsif !value["activity_code"].present? && !value["lov_desc"].present?
+            else
+              logger.info "LOV:: Some fields are left out."
+              lov_validate_result = false
+              lov_error_num = "3"
+              break
+            end
+            count = count + 1
           end
-          count = count + 1
+        else
+
+          lov_validate_result = false
+          lov_error_num = "2"
         end
       else
+        logger.info "Kindly choose an option for div_lov."
         lov_validate_result = false
-        lov_error_num = "2"
+        lov_error_num = "4"
       end
-    else
-      logger.info "Kindly choose an option for div_lov."
-      lov_validate_result = false
-      lov_error_num = "4"
+
     end
 
     return lov_validate_result, lov_error_num, lov_row_num
@@ -254,7 +258,6 @@ class EntityDivision < ApplicationRecord
   end
 
 
-
   def create_serv_code_validation
     if self.service_code.present?
       logger.info "ME TOO I WAS HERE SOME..........................................."
@@ -282,52 +285,52 @@ class EntityDivision < ApplicationRecord
       logger.info "Divisions Parameter Class #{division_params.class}"
       division_params.each do |key, value|
 
-          if value["division_name"].present? || value["division_alias"].present? || value["sms_sender_id"].present? || value["service_label"].present? || value["service_code"].present? || value["activity_type_code"].present? || value["region_name"].present? || value["city_town_name"].present? || value["suburb_id"].present?
-            logger.info "test 2"
-            @service_code = AssignedServiceCode.where(service_code: value["service_code"], active_status: true, del_status: false).order(created_at: :desc).first
-            for_divisions = EntityDivision.new(entity_code: entity_div_params[:entity_code], activity_type_code: value["activity_type_code"], region_name: value["region_name"], city_town_name: value["city_town_name"],
-                                               link_master: true, division_name: value["division_name"], service_label: value["service_label"], service_code: value["service_code"],
-                                               suburb_id: value["suburb_id"], division_alias: value["division_alias"], sms_sender_id: value["sms_sender_id"], active_status: true, del_status: false)
-            logger.info "object is #{for_divisions.inspect}"
-            if for_divisions.valid?
-              if @service_code
-                logger.info "test 6"
-                service_code_exist = true
-                division_validity = false
-                key_number = key
-                break
-              else
-                if incoming_service_code.include? (value["service_code"])
-                  same_incoming_service_code = true
-                  division_validity = false
-                  key_number = key
-                  break
-                else
-                  incoming_service_code << value["service_code"]
-                  division_validity = true
-                end
-                logger.info "Incoming service code array :: #{incoming_service_code.inspect}"
-              end
+        if value["division_name"].present? || value["division_alias"].present? || value["sms_sender_id"].present? || value["service_label"].present? || value["service_code"].present? || value["activity_type_code"].present? || value["region_name"].present? || value["city_town_name"].present? || value["suburb_id"].present?
+          logger.info "test 2"
+          @service_code = AssignedServiceCode.where(service_code: value["service_code"], active_status: true, del_status: false).order(created_at: :desc).first
+          for_divisions = EntityDivision.new(entity_code: entity_div_params[:entity_code], activity_type_code: value["activity_type_code"], region_name: value["region_name"], city_town_name: value["city_town_name"],
+                                             link_master: true, division_name: value["division_name"], service_label: value["service_label"], service_code: value["service_code"],
+                                             suburb_id: value["suburb_id"], division_alias: value["division_alias"], sms_sender_id: value["sms_sender_id"], active_status: true, del_status: false)
+          logger.info "object is #{for_divisions.inspect}"
+          if for_divisions.valid?
+            if @service_code
+              logger.info "test 6"
+              service_code_exist = true
+              division_validity = false
+              key_number = key
+              break
             else
-
-              if value["sms_sender_id"].size >= 3 && value["sms_sender_id"].size <= 9
-                logger.info "VALIDITY Errors: #{for_divisions.errors.messages.inspect}"
-                logger.info "test 3"
+              if incoming_service_code.include? (value["service_code"])
+                same_incoming_service_code = true
                 division_validity = false
                 key_number = key
                 break
               else
-                logger.info "test 7"
-                division_validity = false
-                key_number = key
-                incorrect_sender_id = true
-                break
+                incoming_service_code << value["service_code"]
+                division_validity = true
               end
+              logger.info "Incoming service code array :: #{incoming_service_code.inspect}"
             end
           else
-            logger.info "test 4"
-            # division_validity = true
+
+            if value["sms_sender_id"].size >= 3 && value["sms_sender_id"].size <= 9
+              logger.info "VALIDITY Errors: #{for_divisions.errors.messages.inspect}"
+              logger.info "test 3"
+              division_validity = false
+              key_number = key
+              break
+            else
+              logger.info "test 7"
+              division_validity = false
+              key_number = key
+              incorrect_sender_id = true
+              break
+            end
           end
+        else
+          logger.info "test 4"
+          # division_validity = true
+        end
       end
     else
       logger.info "test 5"
@@ -336,8 +339,6 @@ class EntityDivision < ApplicationRecord
 
     return division_validity, key_number, service_code_exist, same_incoming_service_code, incorrect_sender_id
   end
-
-
 
 
   def self.save_entity_divisions(division_params, entity_div_params, current_user)
@@ -358,9 +359,8 @@ class EntityDivision < ApplicationRecord
   end
 
 
-
-
   def self.division_lov_save(div_lov_params, division_code, entity_division_params, current_user)
+
     if entity_division_params[:div_lov_query] == 'yes'
       if div_lov_params != nil
         div_lov_params_size = div_lov_params.keys.size
@@ -368,7 +368,7 @@ class EntityDivision < ApplicationRecord
         div_lov_params.each do |key, value|
           if division_code.present? && value["activity_code"].present? && value["lov_desc"].present?
             logger.info "SAVING ..................."
-            for_division_lov = DivisionActivityLov.new(activity_code: value["activity_code"], lov_desc: value["lov_desc"],
+            for_division_lov = DivisionActivityLov.new(activity_code: value["activity_code"], lov_desc: value["lov_desc"], user_id: current_user.id,
                                                        division_code: division_code, active_status: true, del_status: false)
 
             for_division_lov.save(validate: false)
@@ -379,12 +379,12 @@ class EntityDivision < ApplicationRecord
       else
         logger.info "== No Data :: The rows are all deleted."
       end
+
     else
       logger.info "== Kindly choose an option for div_lov."
     end
 
   end
-
 
 
   def self.division_setup_save(params, main_param_keys, div_activity_type, entity_division_params, current_user)
@@ -410,7 +410,7 @@ class EntityDivision < ApplicationRecord
                 if value["activity_time"].present? && value["classification"].present? && value["amount"].present?
                   logger.info "SAVING ...... "
                   for_sub_activity_div = ActivitySubDiv.new(activity_div_id: activity_div_id, activity_time: value["activity_time"], classification: value["classification"],
-                                                        amount: value["amount"], active_status: true, del_status: false)
+                                                            amount: value["amount"], active_status: true, del_status: false)
 
                   for_sub_activity_div.save(validate: false)
                 end
@@ -457,7 +457,11 @@ class EntityDivision < ApplicationRecord
                     if activity_div
                       logger.info "=== UPDATE ACTIVITY ........"
                       activity_arr_ids << value["activity_id"].to_i
-                      activity_div.update!(activity_div_desc: value["activity_div_desc"], activity_date: value["activity_date"], user_id: current_user.id)
+                      #activity_div.update!(activity_div_desc: value["activity_div_desc"], activity_date: value["activity_date"], user_id: current_user.id)
+                      activity_div.activity_div_desc = value["activity_div_desc"]
+                      activity_div.activity_date = value["activity_date"]
+                      activity_div.user_id = current_user.id
+                      activity_div.save(validate: false)
                     end
                     activity_div_id = value["activity_id"]
                     update_act_div_id = value["activity_id"].to_i
@@ -508,7 +512,6 @@ class EntityDivision < ApplicationRecord
       logger.info "=== Division Activities are not allowed for these activity codes."
     end
   end
-
 
 
   def self.object_ids(model_obj)
@@ -574,7 +577,6 @@ class EntityDivision < ApplicationRecord
   end
 
 
-
   def self.division_lov_update(div_lov_params, division_code, entity_division_params, current_user)
     if entity_division_params[:div_lov_query] == 'yes'
       if div_lov_params != nil
@@ -615,7 +617,6 @@ class EntityDivision < ApplicationRecord
       logger.info "=== Kindly choose an option for div_lov."
     end
   end
-
 
 
   def self.update_last_but_one(table, id_field, id)

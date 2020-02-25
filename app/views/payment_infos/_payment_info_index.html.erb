@@ -1,4 +1,3 @@
-
 <div>
   <br>
   <p id="notes1"><%#= notice %></p>
@@ -7,7 +6,7 @@
     <div class="w3-third">
       <%#= link_to 'NEW', new_entity_info_path(count: params[:count], page: params[:page]), style: "width:120px;", class: 'w3-button w3-purple-vpos w3-border w3-border-purple w3-small w3-round-large',remote:true %>
       <%#= link_to 'Filter',"#reports", :data =>{ toggle:'modal'}, class: 'w3-bar-item w3-btn w3-card-4 w3-blue w3-small w3-ripple w3-round-xlarge' %>
-      <%= link_to 'FILTER',"#reports", :data =>{ toggle:'modal'}, style: "font-size: small; width: 150px;", class: 'btn btn-outline-purple tablink w3-vpos-purple' %>
+      <%= link_to 'FILTER', "#reports", :data => {toggle: 'modal'}, style: "font-size: small; width: 150px;", class: 'btn btn-outline-purple tablink w3-vpos-purple' %>
       <br>
     </div>
 
@@ -41,7 +40,7 @@
         </div>
 
         <%= link_to "Excel", '#', id: "excel", class: 'w3-bar-item w3-btn w3-card-4 w3-black w3-small w3-round-xlarge w3-ripple' %>
-<!--        |-->
+        <!--        |-->
         <div class="excel_div hidden" style="display: none">
           <%= form_tag payment_info_index_path(format: "xls"), method: :get, input_html: {display: "block", id: "excel_form"} do %>
             <!--<input id="excel_perpage" class="form-control" name="per_page"/>-->
@@ -49,8 +48,8 @@
             <!--<input id="excel_page" class="form-control" name="page"/>-->
             <input class="form-control" name="count" value="<%= params[:count] %>"/>
             <input class="form-control" name="page" value="<%= params[:page] %>"/>
-<!--            <input class="form-control" name="counter" value="<%#= params[:counter] %>"/>-->
-<!--            <input class="form-control" name="pager" value="<%#= params[:pager] %>"/>-->
+            <!--            <input class="form-control" name="counter" value="<%#= params[:counter] %>"/>-->
+            <!--            <input class="form-control" name="pager" value="<%#= params[:pager] %>"/>-->
             <input class="form-control" name="entity_name" value="<%= params[:entity_name] %>"/>
             <input class="form-control" name="division_name" value="<%= params[:division_name] %>"/>
             <input class="form-control" name="activity_type" value="<%= params[:activity_type] %>"/>
@@ -67,40 +66,40 @@
 
 
         <%#= link_to "PDF", '#', id: "pdf", class: 'w3-bar-item w3-btn w3-card-4 w3-teal w3-small w3-round-xlarge w3-ripple' %>
-<!--        <div class="csv_div hidden">-->
-          <%#= form_tag payment_info_index_path(format: "pdf"), method: :get, input_html: {display: "block", id: "pdf_form"} do %>
-            <!--<input id="pdf_perpage" class="form-control" name="per_page"/>-->
-            <!--<input id="pdf_count" class="form-control" name="count"/>-->
-            <!--<input id="pdf_page" class="form-control" name="page"/>-->
-<!--            <input class="form-control" name="count" value="<%#= params[:count] %>"/>-->
-<!--            <input class="form-control" name="page" value="<%#= params[:page] %>"/>-->
-<!--            <input class="form-control" name="counter" value="<%#= params[:counter] %>"/>-->
-<!--            <input class="form-control" name="pager" value="<%#= params[:pager] %>"/>-->
-<!--            <input class="form-control" name="pc_name" value="<%#= params[:pc_name] %>"/>-->
-<!--            <input class="form-control" name="do_name" value="<%#= params[:do_name] %>"/>-->
-<!--            <input class="form-control" name="momo_number" value="<%#= params[:momo_number] %>"/>-->
-<!--            <input class="form-control" name="product_name" value="<%#= params[:product_name] %>"/>-->
-<!--            <input class="form-control" name="start_date" value="<%#= params[:start_date] %>"/>-->
-<!--            <input class="form-control" name="end_date" value="<%#= params[:end_date] %>"/>-->
-<!--            <input type="submit" value="Search" class="btn btn-primary" id="pdf_submit">-->
-          <%# end %>
-<!--        </div>-->
+        <!--        <div class="csv_div hidden">-->
+        <%#= form_tag payment_info_index_path(format: "pdf"), method: :get, input_html: {display: "block", id: "pdf_form"} do %>
+        <!--<input id="pdf_perpage" class="form-control" name="per_page"/>-->
+        <!--<input id="pdf_count" class="form-control" name="count"/>-->
+        <!--<input id="pdf_page" class="form-control" name="page"/>-->
+        <!--            <input class="form-control" name="count" value="<%#= params[:count] %>"/>-->
+        <!--            <input class="form-control" name="page" value="<%#= params[:page] %>"/>-->
+        <!--            <input class="form-control" name="counter" value="<%#= params[:counter] %>"/>-->
+        <!--            <input class="form-control" name="pager" value="<%#= params[:pager] %>"/>-->
+        <!--            <input class="form-control" name="pc_name" value="<%#= params[:pc_name] %>"/>-->
+        <!--            <input class="form-control" name="do_name" value="<%#= params[:do_name] %>"/>-->
+        <!--            <input class="form-control" name="momo_number" value="<%#= params[:momo_number] %>"/>-->
+        <!--            <input class="form-control" name="product_name" value="<%#= params[:product_name] %>"/>-->
+        <!--            <input class="form-control" name="start_date" value="<%#= params[:start_date] %>"/>-->
+        <!--            <input class="form-control" name="end_date" value="<%#= params[:end_date] %>"/>-->
+        <!--            <input type="submit" value="Search" class="btn btn-primary" id="pdf_submit">-->
+        <%# end %>
+        <!--        </div>-->
       <% end %>
     </div>
 
     <div class="w3-third">
       <%= select_tag :count, options_for_select([50, 100, 150, 200, 500, "All"], params[:count]),
-                     :data => {  :remote => true, :url => url_for(:controller => "payment_infos", :action => "payment_info_index",
-                                                                  :params => {entity_name: params[:entity_name],
-                                                                              division_name: params[:division_name],
-                                                                              activity_type: params[:activity_type],
-                                                                              lov_name: params[:lov_name],
-                                                                              cust_num: params[:cust_num], trans_id: params[:trans_id],
-                                                                              nw: params[:nw], status: params[:status],
-                                                                              start_date: params[:start_date],
-                                                                              end_date: params[:end_date]})},
-                     id:"record", class: "w3-button w3-white w3-border w3-border-purple w3-round-large",
-                     style: "width:auto; height:35px; float:right", remote:true %>
+                     :data => {:remote => true, :url => url_for(:controller => "payment_infos", :action => "payment_info_index",
+                                                                :params => {entity_name: params[:entity_name],
+                                                                            division_name: params[:division_name],
+                                                                            activity_type: params[:activity_type],
+                                                                            lov_name: params[:lov_name],
+                                                                            cust_num: params[:cust_num], trans_id: params[:trans_id],
+                                                                            nw: params[:nw], status: params[:status],
+                                                                            start_date: params[:start_date],
+                                                                            end_date: params[:end_date]})},
+                     id: "record", class: "w3-button w3-white w3-border w3-border-purple w3-round-large",
+                     style: "width:auto; height:35px; float:right", remote: true %>
 
     </div>
 
@@ -113,19 +112,21 @@
     <table class=" w3-responsive table-striped w3-table-all table-bordered w3-hoverable w3-card-4">
       <thead>
       <tr class="w3-vpos-purple">
-<!--        <th></th>-->
-<!--        <th>Merchant Name (Merchant Alias)</th>-->
+        <!--        <th></th>-->
+        <!--        <th>Merchant Name (Merchant Alias)</th>-->
         <th>No.</th>
         <% if current_user.super_admin? || current_user.super_user? %>
           <th>Merchant Name</th>
-          <% elsif current_user.merchant_admin? || current_user.merchant_service? %>
+        <% elsif current_user.merchant_admin? || current_user.merchant_service? %>
         <% end %>
 
         <th>Customer No.</th>
         <th>Trans. ID</th>
-        <th>Amount</th>
+        <th>Gross Amt</th>
+        <th>Charge</th>
+        <th>Actual Amt</th>
         <th>Network</th>
-        <th>Source</th>
+<!--        <th>Source</th>-->
         <th>Status</th>
         <th>Date</th>
         <th></th>
@@ -133,27 +134,57 @@
       </thead>
 
       <tbody>
-      <% amount = 0.00 %>
+      <% amount = 0.000 %>
+      <% gross_amt = 0.000 %>
+      <% total_charge = 0.000 %>
       <% @payment_infos.each.with_index(@payment_infos.offset + 1) do |payment_info, num| %>
-      <% @merchant = EntityDivision.where(active_status: true, assigned_code: payment_info.entity_div_code).order(created_at: :desc).first %>
+        <% @merchant = EntityDivision.where(active_status: true, assigned_code: payment_info.entity_div_code).order(created_at: :desc).first %>
+        <% @merchant_service_trxn = EntityServiceAccountTrxn.where(entity_div_code: payment_info.entity_div_code, processing_id: payment_info.processing_id).order(created_at: :desc).first %>
+        <% @assigned_fee = AssignedFee.where(entity_div_code: payment_info.entity_div_code).order(created_at: :desc).first %>
         <% amount = amount + payment_info.amount %>
+        <% total_amt = 0.000 %>
+        <% charge = 0.000 %>
 
+        <% if @assigned_fee.charged_to == "M" %>
+          <% if @merchant_service_trxn && @merchant_service_trxn.charge != nil %>
+            <% charge = @merchant_service_trxn.charge %>
+            <% total_amt = payment_info.amount.to_f + @merchant_service_trxn.charge.to_f %>
+          <% else %>
+            <% total_amt = payment_info.amount.to_f %>
+          <% end %>
+        <% elsif @assigned_fee.charged_to == "C" %>
+          <% if payment_info.charge != nil %>
+            <% charge = payment_info.charge %>
+            <% total_amt = payment_info.amount.to_f + payment_info.charge.to_f %>
+          <% else %>
+            <% total_amt = payment_info.amount.to_f %>
+          <% end %>
+        <% end %>
+        <% total_amt = total_amt.round(3) %>
+
+        <% gross_amt = gross_amt.round(3) %>
+        <% total_charge = total_charge + charge %>
+        <% gross_amt = gross_amt + total_amt %>
+        <% logger.info "Merchant Service Transaction:: #{@merchant_service_trxn.inspect}" %>
         <tr>
           <td><%= num %></td>
-<!--          <td><%#= payment_info.entity_division.entity_info.entity_name %> (<%#= payment_info.entity_division.entity_info.entity_alias %>)</td>-->
+          <!--          <td><%#= payment_info.entity_division.entity_info.entity_name %> (<%#= payment_info.entity_division.entity_info.entity_alias %>)</td>-->
           <% if current_user.super_admin? || current_user.super_user? %>
             <td><%= payment_info.entity_division.division_name %> <%#= payment_info.entity_division.division_alias %></td>
           <% elsif current_user.merchant_admin? || current_user.merchant_service? %>
           <% end %>
           <td><%= payment_info.customer_number %></td>
           <td><%= payment_info.processing_id if payment_info.processing_id.present? %></td>
+          <td><%= total_amt %></td>
+          <td><%= charge.round(3) %></td>
           <td><%= payment_info.amount %></td>
           <td><%= payment_info.nw %></td>
-          <% if payment_info.src =="USSD" %>
-            <td>USS</td>
-          <% else %>
-            <td><%= payment_info.src %></td>
-          <% end %>
+          <%# if payment_info.src == "USSD" %>
+<!--            <td>USS</td>-->
+          <%# else %>
+<!--            <td><%#= payment_info.src %></td>-->
+          <%# end %>
+
           <% status = payment_info.trans_status.present? ? payment_info.trans_status.split("/") : "nil" %>
           <% logger.info "Status :: #{status.inspect}" %>
           <% if status[0] == "000" %>
@@ -167,14 +198,14 @@
           <td><%= payment_info.created_at %></td>
           <td><%= link_to 'VIEW', payment_info_path(payment_info, params: params.to_unsafe_h, count: params[:count], page: params[:page]),
                           style: "width:70px; height: 30px;",
-                          class: 'w3-button w3-purple-vpos w3-border w3-border-purple w3-tiny w3-round-large', remote:true%>
-            <% if current_user.super_admin? || current_user.super_user? || current_user.merchant_admin?  %>
+                          class: 'w3-button w3-purple-vpos w3-border w3-border-purple w3-tiny w3-round-large', remote: true %>
+            <% if current_user.super_admin? || current_user.super_user? || current_user.merchant_admin? %>
               <% if @merchant && (@merchant.activity_type_code == "SHW" || @merchant.activity_type_code == "SPO") %>
                 <% if status[0] == "000" %>
                   <%= link_to 'RESEND', transaction_resend_path(payment_info, params: params.to_unsafe_h, count: params[:count], page: params[:page]),
                               style: "width:80px; height: 30px;",
-                              data: { confirm: "Do you wish to resend transaction for: #{payment_info.customer_number}?" },
-                              class: 'w3-button w3-white w3-border w3-border-purple w3-tiny w3-round-large', remote:true%>
+                              data: {confirm: "Do you wish to resend transaction for: #{payment_info.customer_number}?"},
+                              class: 'w3-button w3-white w3-border w3-border-purple w3-tiny w3-round-large', remote: true %>
                 <% else %>
                   <button class="w3-button w3-white w3-border w3-disabled w3-border-purple w3-tiny w3-round-large" style="width:80px; height: 30px; color: #800754 !important">RESEND</button>
                 <% end %>
@@ -190,16 +221,19 @@
         </tr>
 
 
-<!--      <tr>-->
-<!--        <td class="w3-vpos-purple" colspan="2"></td>-->
-<!--        <td colspan="2"></td>-->
-<!--      </tr>-->
+        <!--      <tr>-->
+        <!--        <td class="w3-vpos-purple" colspan="2"></td>-->
+        <!--        <td colspan="2"></td>-->
+        <!--      </tr>-->
 
       <% end %>
+
       <tr>
         <td class="w3-vpos-purple" colspan="2"></td>
-        <td class="w3-vpos-purple" colspan="2"><strong>Total Amount</strong></td>
-        <td colspan="1"><strong>GHS <%= amount %></strong> <%# count %></td>
+        <td class="w3-vpos-purple" colspan="2"><strong>Total Amount (GHS)</strong></td>
+        <td colspan="1"><strong><%= gross_amt.round(3) %></strong> <%# count %></td>
+        <td colspan="1"><strong><%= total_charge.round(3) %></strong> <%# count %></td>
+        <td colspan="1"><strong><%= amount.round(3) %></strong> <%# count %></td>
         <td class="w3-vpos-purple" colspan="5"></td>
       </tr>
 
@@ -208,11 +242,11 @@
     </table>
     <br>
     <% unless params[:count] == "All" %>
-      <div class="flickr_pagination"  style="float: right">
-        <%= will_paginate @payment_infos, class: "w3-card", renderer: BootstrapPagination::Rails, :params => { :controller => "payment_infos", :action => "payment_info_index", count: params[:count], page: params[:page] } %>
+      <div class="flickr_pagination" style="float: right">
+        <%= will_paginate @payment_infos, class: "w3-card", renderer: BootstrapPagination::Rails, :params => {:controller => "payment_infos", :action => "payment_info_index", count: params[:count], page: params[:page]} %>
         <%#= js_will_paginate @payment_infos, :params => { :controller => "payment_infos", :action => "payment_info_index" } %>
       </div>
-      <% end %>
+    <% end %>
   </div>
 
 </div>
@@ -230,44 +264,44 @@
           <span aria-hidden="true">x</span>
           <span class="sr-only">Close</span>
         </button>
-<!--        <br/>-->
+        <!--        <br/>-->
         <!--<h4 class="modal-title" id="myModalLabel">Payments Filter</h4>-->
       </div>
 
       <div class="modal-body">
-<!--        <div class="center jumbotron" style="background-color:#fff;" >-->
-<!--            <br/>-->
-<!--            <div class="row">-->
-<!--              <div class="col-md-10 col-md-offset-1">-->
-<!--                <fieldset>-->
-<!--                  <legend>Filter Report</legend>-->
+        <!--        <div class="center jumbotron" style="background-color:#fff;" >-->
+        <!--            <br/>-->
+        <!--            <div class="row">-->
+        <!--              <div class="col-md-10 col-md-offset-1">-->
+        <!--                <fieldset>-->
+        <!--                  <legend>Filter Report</legend>-->
 
 
         <% @activity_types = ActivityType.where(active_status: true) %>
         <% @networks = [["MTN", "MTN"], ["VOD", "VOD"], ["TIGO", "TIG"], ["AIRTEL", "AIR"]] %>
         <% @statuses = [["SUCCESS", "000"], ["FAIL", "001"], ["PENDING", "NIL"]] %>
-                  <%= simple_form_for :filter_main, :url => (payment_info_index_path(count: params[:count], page: params[:page])), :method =>'get', html: { class: 'form-horizontal' }, remote: true do |f| %>
+        <%= simple_form_for :filter_main, :url => (payment_info_index_path(count: params[:count], page: params[:page])), :method => 'get', html: {class: 'form-horizontal'}, remote: true do |f| %>
 
-                    <input type="hidden" class="form-control" name="count" value="<%= params[:count] %>"/>
-                    <input type="hidden" class="form-control" name="page" value="<%= params[:page] %>"/>
-<!--                    <input type="hidden" class="form-control" name="counter" value="<%#= params[:counter] %>"/>-->
-<!--                    <input type="hidden" class="form-control" name="pager" value="<%#= params[:pager] %>"/>-->
+          <input type="hidden" class="form-control" name="count" value="<%= params[:count] %>"/>
+          <input type="hidden" class="form-control" name="page" value="<%= params[:page] %>"/>
+          <!--                    <input type="hidden" class="form-control" name="counter" value="<%#= params[:counter] %>"/>-->
+          <!--                    <input type="hidden" class="form-control" name="pager" value="<%#= params[:pager] %>"/>-->
           <input type="hidden" class="form-control" name="entity_code" value="<%= @entity_code %>"/>
           <input type="hidden" class="form-control" name="code" value="<%= @code %>"/>
           <div class="w3-half">
 
 
             <% if current_user.super_admin? || current_user.super_user? %>
-              <%= f.input :entity_name, class:"form-control", collection: @merchant_search, label_method: :entity_name, value_method: :assigned_code, input_html: {id: "id_entity_info", style: "width: 90%;", autocomplete: "off"}, label: "Merchant Name", boolean_style: :inline %>
+              <%= f.input :entity_name, class: "form-control", collection: @merchant_search, label_method: :entity_name, value_method: :assigned_code, input_html: {id: "id_entity_info", style: "width: 90%;", autocomplete: "off"}, label: "Merchant Name", boolean_style: :inline %>
               <%#= f.label :division_name,"Merchant Service", style:"" %>
-              <%= f.input :division_name, class:"form-control", collection: @merchant_service_search, label_method: :division_name, value_method: :assigned_code, input_html: {id: "id_entity_div", style: "width: 90%;", autocomplete: "off"}, label: "Merchant Service", boolean_style: :inline %>
+              <%= f.input :division_name, class: "form-control", collection: @merchant_service_search, label_method: :division_name, value_method: :assigned_code, input_html: {id: "id_entity_div", style: "width: 90%;", autocomplete: "off"}, label: "Merchant Service", boolean_style: :inline %>
 
-          <% elsif current_user.merchant_admin? %>
+            <% elsif current_user.merchant_admin? %>
               <%#= f.label :division_name,"Merchant Service", style:"" %>
-              <%= f.input :division_name, class:"form-control", collection: @merchant_service_search, label_method: :division_name, value_method: :assigned_code, input_html: {id: "id_entity_div", style: "width: 90%;", autocomplete: "off"}, label: "Merchant Service", boolean_style: :inline %>
+              <%= f.input :division_name, class: "form-control", collection: @merchant_service_search, label_method: :division_name, value_method: :assigned_code, input_html: {id: "id_entity_div", style: "width: 90%;", autocomplete: "off"}, label: "Merchant Service", boolean_style: :inline %>
 
-          <% #elsif current_user.merchant_service? %>
-              <% end %>
+              <% #elsif current_user.merchant_service? %>
+            <% end %>
 
 
             <%#= f.label :entity_name,"Merchant Name", style:"" %>
@@ -277,39 +311,39 @@
 
             <%#= f.label :activity_type,"Activity Type", style:"" %>
             <% unless current_user.merchant_service? %>
-            <%= f.input :activity_type, collection: @activity_types, label_method: :activity_type_desc, value_method: :assigned_code, class:"form-control", input_html: {style: "width: 90%;"}, label: "Activity Type", boolean_style: :inline %>
+              <%= f.input :activity_type, collection: @activity_types, label_method: :activity_type_desc, value_method: :assigned_code, class: "form-control", input_html: {style: "width: 90%;"}, label: "Activity Type", boolean_style: :inline %>
             <% end %>
 
-            <%= f.input :lov_name, collection: @division_lovs, label_method: :lov_desc, value_method: :id, class:"form-control", input_html: {style: "width: 90%"}, label: "Service Option", boolean_style: :inline %>
+            <%= f.input :lov_name, collection: @division_lovs, label_method: :lov_desc, value_method: :id, class: "form-control", input_html: {style: "width: 90%"}, label: "Service Option", boolean_style: :inline %>
 
             <%#= f.input :lov_name, class:"form-control", input_html: {style: "width: 90%"}, label: "Service Option", boolean_style: :inline %>
 
 
             <%#= f.label :cust_num,"Customer Number", style:"" %>
-            <%= f.input :cust_num, class:"form-control", input_html: {style: "width: 90%"}, label: "Customer Number", boolean_style: :inline %>
+            <%= f.input :cust_num, class: "form-control", input_html: {style: "width: 90%"}, label: "Customer Number", boolean_style: :inline %>
 
           </div>
 
 
           <div class="w3-half">
             <%#= f.label :trans_id,"Transaction ID", style:"" %>
-            <%= f.input :trans_id, label: "Transaction ID", class:"form-control", input_html: {style: ""},  boolean_style: :inline %>
+            <%= f.input :trans_id, label: "Transaction ID", class: "form-control", input_html: {style: ""}, boolean_style: :inline %>
 
             <%#= f.label :nw,"Network", style:"" %>
-            <%= f.input :nw, collection: @networks, label_method: :first, value_method: :last, class:"form-control", input_html: {style: ""}, label: "Network", boolean_style: :inline %>
+            <%= f.input :nw, collection: @networks, label_method: :first, value_method: :last, class: "form-control", input_html: {style: ""}, label: "Network", boolean_style: :inline %>
 
             <%#= f.label :status,"Status", style:"" %>
-            <%= f.input :status, collection: @statuses, label_method: :first, value_method: :last, class:"form-control", input_html: {style: ""}, label: "Status", boolean_style: :inline %>
+            <%= f.input :status, collection: @statuses, label_method: :first, value_method: :last, class: "form-control", input_html: {style: ""}, label: "Status", boolean_style: :inline %>
 
             <!--<input type="text" data-behaviour='datepicker' >-->
             <%#= f.label :start_date,"Start Date", style:"float:left" %>
             <div class="w3-half">
-              <%= f.input :start_date, :id => "datepicker1", as: :date, html5: true, class:"form-control input-group date", label: "Start Date", boolean_style: :inline, input_html: {style: "width: 90%", data: {behaviour: 'datepicker', provide: 'datepicker'}, autocomplete: "off"} %>
+              <%= f.input :start_date, :id => "datepicker1", as: :date, html5: true, class: "form-control input-group date", label: "Start Date", boolean_style: :inline, input_html: {style: "width: 90%", data: {behaviour: 'datepicker', provide: 'datepicker'}, autocomplete: "off"} %>
 
             </div>
 
             <div class="w3-half">
-              <%= f.input :end_date, :id => "datepicker2", as: :date, html5: true, class:"form-control", label: "End Date", boolean_style: :inline, input_html: {style: "", data: {behaviour: 'datepicker', provide: 'datepicker'}, autocomplete: "off"} %>
+              <%= f.input :end_date, :id => "datepicker2", as: :date, html5: true, class: "form-control", label: "End Date", boolean_style: :inline, input_html: {style: "", data: {behaviour: 'datepicker', provide: 'datepicker'}, autocomplete: "off"} %>
 
             </div>
             <%#= f.label :end_date,"End Date", style:"" %>
@@ -317,16 +351,16 @@
           </div>
 
           <div class="w3-center">
-            <%= f.submit "Filter", :data =>{ :disable_with => 'Searching..'}, class: "w3-button w3-blue w3-hover-black w3-card w3-round-xxlarge", style: "width:auto;" %>
+            <%= f.submit "Filter", :data => {:disable_with => 'Searching..'}, class: "w3-button w3-blue w3-hover-black w3-card w3-round-xxlarge", style: "width:auto;" %>
           </div>
 
-                  <% end %>
+        <% end %>
 
-<!--                </fieldset>-->
-<!--              </div>-->
-<!--            </div>-->
+        <!--                </fieldset>-->
+        <!--              </div>-->
+        <!--            </div>-->
 
-<!--        </div>-->
+        <!--        </div>-->
       </div>
     </div>
   </div>
@@ -338,6 +372,7 @@
   .modal-open {
     padding-right: 0 !important;
   }
+
   html {
     overflow-y: scroll !important;
   }
@@ -348,19 +383,19 @@
 
 
 <script>
-    $(function(){
+    $(function () {
 
-      $('.pagination a').attr('data-remote', 'true');
-      $('.modal-backdrop').remove();
+        $('.pagination a').attr('data-remote', 'true');
+        $('.modal-backdrop').remove();
     });
 
 
-    $(document).ready(function(){
+    $(document).ready(function () {
         $('[data-toggle="tooltip"]').tooltip();
         var entity_info_id = $('#id_entity_info');
-        var entity_div_id  = $('#id_entity_div');
+        var entity_div_id = $('#id_entity_div');
 
-        entity_info_id.change(function() {
+        entity_info_id.change(function () {
             console.log("For entity_info id:: " + entity_info_id.val());
             entity_div_id.attr("title", "Now select a service.");
             Rails.ajax({
