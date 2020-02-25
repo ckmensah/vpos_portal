@@ -231,7 +231,12 @@
       <% end %>
 
       <tr>
-        <td class="w3-vpos-purple" colspan="2"></td>
+        <% if current_user.super_admin? || current_user.super_user? %>
+          <td class="w3-vpos-purple" colspan="2"></td>
+        <% elsif current_user.merchant_admin? || current_user.merchant_service? %>
+          <td class="w3-vpos-purple" colspan="1"></td>
+        <% end %>
+
         <td class="w3-vpos-purple" colspan="2"><strong>Total Amount (GHS)</strong></td>
         <td colspan="1"><strong><%= gross_amt.round(3) %></strong> <%# count %></td>
         <td colspan="1"><strong><%= total_charge.round(3) %></strong> <%# count %></td>
