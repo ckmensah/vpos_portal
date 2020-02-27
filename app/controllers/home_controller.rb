@@ -162,6 +162,9 @@ class HomeController < ApplicationController
 
     #@payment_reports = PaymentReport.all
     if current_user.super_admin? || current_user.super_user?
+      @service_account = EntityServiceAccount.where(entity_div_code: "0").order(created_at: :desc).first
+      @service_account_details = EntityServiceAccountTrxn.where(entity_div_code: "0").order(created_at: :desc)
+
       @payment_reports = PaymentReport.where("nw IS NOT NULL").where(the_search)
       #@pay_success_count = @payment_reports.where("split_part(trans_status, '/', 1) = '000'")
       @pay_success = @payment_reports.where("split_part(trans_status, '/', 1) = '000'")
@@ -181,6 +184,10 @@ class HomeController < ApplicationController
       #@pay_success_count = @payment_reports.where("split_part(trans_status, '/', 1) = '000'")
       @pay_success = @payment_reports.where("split_part(trans_status, '/', 1) = '000'")
       @pay_fail = @payment_reports.where("split_part(trans_status, '/', 1) != '000' AND trans_status IS NOT NULL")
+
+      @service_account = EntityServiceAccount.where("entity_div_code IN #{final_div_str}").order(created_at: :desc).first
+      @service_account_details = EntityServiceAccountTrxn.where("entity_div_code IN #{final_div_str}").order(created_at: :desc)
+
     elsif current_user.merchant_service?
       #if params[:filtered] == "filtered"
       #  @payment_reports = PaymentReport.where("entity_div_code = #{current_user.division_code}").where(the_search)
@@ -190,6 +197,10 @@ class HomeController < ApplicationController
       #  @pay_success_count = @payment_reports.where("split_part(trans_status, '/', 1) = '000'")
         @pay_success = @payment_reports.where("split_part(trans_status, '/', 1) = '000'")
         @pay_fail = @payment_reports.where("split_part(trans_status, '/', 1) != '000' AND trans_status IS NOT NULL")
+
+        @service_account = EntityServiceAccount.where(entity_div_code: current_user.division_code).order(created_at: :desc).first
+        @service_account_details = EntityServiceAccountTrxn.where(entity_div_code: current_user.division_code).order(created_at: :desc).limit(5)
+
     else
     end
     if @pay_success.exists?

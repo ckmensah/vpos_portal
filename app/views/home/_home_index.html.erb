@@ -236,40 +236,42 @@
               <td class="" colspan="2"></td>
             </tr>
 
-            <tr class="w3-vpos-purple">
-              <th>No.</th>
-              <th>Trans. ID</th>
-              <th>Gross Bal (Before)</th>
-              <th>Gross Bal (After)</th>
-              <th>Net Bal (Before)</th>
-              <th>Net Bal (After)</th>
-              <th>Charges</th>
-              <th>Trans Type</th>
+<!--            <tr class="w3-vpos-purple">-->
+<!--              <th>No.</th>-->
+<!--              <th>Trans. ID</th>-->
+<!--              <th>Gross Bal (Before)</th>-->
+<!--              <th>Gross Bal (After)</th>-->
+<!--              <th>Net Bal (Before)</th>-->
+<!--              <th>Net Bal (After)</th>-->
+<!--              <th>Charges</th>-->
+<!--              <th>Trans Type</th>-->
               <!--                      <th></th>-->
-            </tr>
+<!--            </tr>-->
             </thead>
-            <tbody>
+<!--            <tbody>-->
 
 
-            <% if @service_account_details.exists? %>
-              <% logger.info "SERVICE ACCOUNT DETAILS PASSED ===============================" %>
-              <% @service_account_details.each_with_index do |acount_details, num| %>
-                <tr>
-                  <td><%= num + 1 %></td>
-                  <td><%= acount_details.processing_id %></td>
-                  <td><%= acount_details.gross_bal_bef %></td>
-                  <td><%= acount_details.gross_bal_aft %></td>
-                  <td><%= acount_details.net_bal_bef %></td>
-                  <td><%= acount_details.net_bal_aft %></td>
-                  <td><%= acount_details.charge %></td>
-                  <td><%= acount_details.trans_type %></td>
+            <%# if @service_account_details.exists? %>
+              <%# logger.info "SERVICE ACCOUNT DETAILS PASSED ===============================" %>
+              <%# @service_account_details.each_with_index do |acount_details, num| %>
+<!--                <tr>-->
+<!--                  <td><%#= num + 1 %></td>-->
+<!--                  <td><%#= acount_details.processing_id %></td>-->
+<!--                  <td><%#= acount_details.gross_bal_bef %></td>-->
+<!--                  <td><%#= acount_details.gross_bal_aft %></td>-->
+<!--                  <td><%#= acount_details.net_bal_bef %></td>-->
+<!--                  <td><%#= acount_details.net_bal_aft %></td>-->
+<!--                  <td><%#= acount_details.charge.round(3) %></td>-->
+<!--                  <td><%#= acount_details.trans_type %></td>-->
 
-                </tr>
-              <% end %>
 
-            <% end %>
+<!--                </tr>-->
+              <%# end %>
 
-            </tbody>
+            <%# end %>
+
+<!--            </tbody>-->
+
           </table>
 
 <!--        </div>-->
