@@ -86,6 +86,26 @@ class EntityDivisionsController < ApplicationController
     logger.info "For Suburbs :: #{@info_update_division.inspect}"
   end
 
+
+  def lov_update
+    # converted_params = ActiveSupport::JSON.decode( params[:s] )
+    logger.info "Params:: #{params[:id_for_entity_service].inspect}"
+    if params[:id_for_entity_service].empty?
+      # @region_update_city = [["", ""]]
+      @info_update_div_lov = [["", ""]].insert(0,['Please select a service option', ""])
+    else
+      info_id_record = EntityDivision.find(params[:id_for_entity_service])
+      info_update_div_lov = info_id_record.division_activity_lovs.where(active_status: true).order(lov_desc: :asc).map { |a| [a.lov_desc, a.id] }.insert(0,['Please select a service option', ""])
+      if info_update_div_lov.empty?
+        @info_update_div_lov = [["", ""]].insert(0,['Please select a service option', ""])
+      else
+        @info_update_div_lov = info_update_div_lov
+      end
+    end
+    logger.info "For Suburbs :: #{@info_update_div_lov.inspect}"
+  end
+
+
   # def entity_division_index
   #   params[:count] ? params[:count] : params[:count] = 10
   #   params[:page] ? params[:page] : params[:page] = 1

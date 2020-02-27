@@ -1,5 +1,5 @@
 class PaymentInfosController < ApplicationController
-  before_action :set_payment_info, only: [:show, :transaction_resend]
+  before_action :set_payment_info, only: [:show, :transaction_resend, :resend_form]
   load_and_authorize_resource
   before_action :load_permissions
   require 'vpos_core'
@@ -254,111 +254,146 @@ class PaymentInfosController < ApplicationController
   end
 
 
+  def resend_form
+    @pay_info = PaymentReport.where(id: @payment_report.id).order(created_at: :desc).first
+    @payment_info = PaymentInfo.where(id: @payment_report.id).order(created_at: :desc).first
+    @recipient_mail = ""
+    @copy_email = ""
+    logger.info "Resend Payment Info :: #{@pay_info.inspect}"
+    logger.info "Resend Cust number :: #{@pay_info.customer_number.inspect}"
+  end
+
+
 
 
   def transaction_resend
     @pay_info = PaymentReport.where(id: @payment_report.id).order(created_at: :desc).first
-
+    @recipient_mail = payment_info_params[:recipient_mail]
+    @copy_email = payment_info_params[:copy_email]
     logger.info "Payment ID :: #{params[:payment_id].inspect}"
     endpoint = '/resend_cust_code'
-    payload = {:payment_info_id => @payment_report.id}
-    json_payload=JSON.generate(payload)
-    @merchant_service = EntityDivision.where(active_status: true, assigned_code: @payment_report.entity_div_code).order(created_at: :desc).first
-    logger.info "Merchant Service :: #{@merchant_service.inspect}"
-    if @merchant_service
-      entity_wallet_config = EntityWalletConfig.where(entity_code: @merchant_service.entity_code, service_id: @payment_report.service_id,
-                                                      activity_type_code: @merchant_service.activity_type_code, active_status: true)
-                                 .order(created_at: :desc).first
-      logger.info "Wallet Config:: #{entity_wallet_config.inspect}"
-      if entity_wallet_config
-        logger.info "Passed ============="
-        _secret_key = entity_wallet_config.secret_key
-        _client_key = entity_wallet_config.client_key
-      else
-        logger.info "Wallet Failed =============="
-        _secret_key = ""
-        _client_key = ""
-      end
-    else
-      logger.info "Failed ================="
-      _secret_key = ""
-      _client_key = ""
-    end
-    core_connection = VposCore::CoreConnect.new
-    connection = core_connection.connection
-    signature = core_connection.compute_signature(_secret_key, json_payload)
 
-    logger.info "Core connection: #{core_connection.inspect}"
-    begin
-      result=connection.post do |req|
-        req.url endpoint
-        req.options.timeout = 90           # open/read timeout in seconds
-        req.options.open_timeout = 90      # connection open timeout in seconds
-        req["Authorization"]="#{_client_key}:#{signature}"
-        req.body = json_payload
-      end
+    #@merchant_service = EntityDivision.where(active_status: true, assigned_code: @payment_report.entity_div_code).order(created_at: :desc).first
+    #logger.info "Merchant Service :: #{@merchant_service.inspect}"
+    #if @merchant_service
+    #  entity_wallet_config = EntityWalletConfig.where(entity_code: @merchant_service.entity_code, service_id: @payment_report.service_id,
+    #                                                  activity_type_code: @merchant_service.activity_type_code, active_status: true)
+    #                             .order(created_at: :desc).first
+    #  logger.info "Wallet Config:: #{entity_wallet_config.inspect}"
+    #  if entity_wallet_config
+    #    logger.info "Passed ============="
+    #    _secret_key = entity_wallet_config.secret_key
+    #    _client_key = entity_wallet_config.client_key
+    #  else
+    #    logger.info "Wallet Failed =============="
+    #    _secret_key = ""
+    #    _client_key = ""
+    #  end
+    #else
+    #  logger.info "Failed ================="
+    #  _secret_key = ""
+    #  _client_key = ""
+    #end
+
+    @payment_info = PaymentInfo.new(id: @payment_report.id, recipient_mail: payment_info_params[:recipient_mail], copy_email: payment_info_params[:copy_email])
+    if @payment_info.valid?
+
+      payload = {:payment_info_id => @payment_report.id, :recipient_email => payment_info_params[:recipient_mail],
+                 :copy_email => payment_info_params[:copy_email]}
+      json_payload=JSON.generate(payload)
+      core_connection = VposCore::CoreConnect.new
+      connection = core_connection.connection
+      #signature = core_connection.compute_signature(_secret_key, json_payload)
+
+      logger.info "Core connection: #{core_connection.inspect}"
+      begin
+        result=connection.post do |req|
+          req.url endpoint
+          req.options.timeout = 90           # open/read timeout in seconds
+          req.options.open_timeout = 90      # connection open timeout in seconds
+          #req["Authorization"]="#{_client_key}:#{signature}"
+          req.body = json_payload
+        end
 
 
-      logger.info "Response:: #{result.inspect}"
-      json_valid_res = core_connection.json_validate(result.body)
+        logger.info "Response:: #{result.inspect}"
+        json_valid_res = core_connection.json_validate(result.body)
 
-      if json_valid_res
-        logger.info "Valid JSON ================"
-        the_resp = JSON.parse(result.body)
+        if json_valid_res
+          logger.info "Valid JSON ================"
+          the_resp = JSON.parse(result.body)
 
-        resp_code = the_resp["resp_code"]
-        resp_desc = the_resp["resp_desc"]
-        logger.info "Response Description :: #{resp_desc.inspect}"
-        if resp_code == "00"
-          payment_info_index
-          flash.now[:notice] = "Resend was successful."
-          respond_to do |format|
-            format.js { render :payment_info_index }
+          resp_code = the_resp["resp_code"]
+          resp_desc = the_resp["resp_desc"]
+          logger.info "Response Description :: #{resp_desc.inspect}"
+          if resp_code == "00"
+            payment_info_index
+            flash.now[:notice] = "Resend was successful."
+            respond_to do |format|
+              format.js { render :resend_show }
+            end
+          else
+            payment_info_index
+            flash.now[:danger] = "Sorry, resend failed. Kindly try again."
+            respond_to do |format|
+              format.js { render :resend_form }
+            end
           end
         else
           payment_info_index
-          flash.now[:danger] = "Sorry, resend failed. Kindly try again."
+          lgger.info "Not a Valid JSON ==============="
+          flash.now[:danger] = "Sorry, There was an issue. Kindly check and try again."
           respond_to do |format|
-            format.js { render :payment_info_index }
+            format.js { render :resend_form }
           end
         end
-      else
+      rescue Faraday::SSLError
         payment_info_index
-        lgger.info "Not a Valid JSON ==============="
+        logger.info "SSL Error ==============="
         flash.now[:danger] = "Sorry, There was an issue. Kindly check and try again."
         respond_to do |format|
-          format.js { render :payment_info_index }
+          format.js { render :resend_form }
+        end
+      rescue Faraday::TimeoutError
+        payment_info_index
+        logger.info "Timeout Error ================="
+        flash.now[:danger] = "Sorry, There was a timeout issue. Kindly check and try again."
+        respond_to do |format|
+          format.js { render :resend_form }
+        end
+      rescue Faraday::Error::ConnectionFailed => e
+        payment_info_index
+        logger.info "Connection Failed ================"
+        logger.info "Error message :: #{e} ==================="
+        flash.now[:danger] = "Sorry, There was a connection issue. Kindly check and try again."
+        respond_to do |format|
+          format.js { render :resend_form }
         end
       end
-    rescue Faraday::SSLError
+    else
       payment_info_index
-      logger.info "SSL Error ==============="
-      flash.now[:danger] = "Sorry, There was an issue. Kindly check and try again."
+      flash.now[:danger] = "Failed Validation."
+      logger.info "Error messages :: #{@payment_info.errors.messages.inspect}"
+      @pay_info = PaymentReport.where(id: @payment_report.id).order(created_at: :desc).first
       respond_to do |format|
-        format.js { render :payment_info_index }
-      end
-    rescue Faraday::TimeoutError
-      payment_info_index
-      logger.info "Timeout Error ================="
-      flash.now[:danger] = "Sorry, There was a timeout issue. Kindly check and try again."
-      respond_to do |format|
-        format.js { render :payment_info_index }
-      end
-    rescue Faraday::Error::ConnectionFailed => e
-      payment_info_index
-      logger.info "Connection Failed ================"
-      logger.info "Error message :: #{e} ==================="
-      flash.now[:danger] = "Sorry, There was a connection issue. Kindly check and try again."
-      respond_to do |format|
-        format.js { render :payment_info_index }
+        format.js { render :resend_form }
       end
     end
 
+
+
   end
+
 
   # GET /payment_infos/1
   # GET /payment_infos/1.json
   def show
+    @pay_info = PaymentReport.where(id: @payment_report.id).order(created_at: :desc).first
+    logger.info "Payment Info :: #{@pay_info.inspect}"
+    logger.info "Cust number :: #{@pay_info.customer_number.inspect}"
+  end
+
+  def resend_show
     @pay_info = PaymentReport.where(id: @payment_report.id).order(created_at: :desc).first
     logger.info "Payment Info :: #{@pay_info.inspect}"
     logger.info "Cust number :: #{@pay_info.customer_number.inspect}"
@@ -423,6 +458,9 @@ class PaymentInfosController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def payment_info_params
-      params.require(:payment_info).permit(:session_id, :entity_div_code, :activity_lov_id, :activity_div_id, :activity_sub_div_id, :processed, :src, :payment_mode, :amount, :customer_number, :trans_type, :charge, :active_status, :del_status, :user_id)
+      params.require(:payment_info).permit(:session_id, :entity_div_code, :activity_lov_id, :activity_div_id,
+                                           :activity_sub_div_id, :processed, :src, :payment_mode, :amount,
+                                           :customer_number, :trans_type, :charge, :active_status, :del_status,
+                                           :user_id, :copy_email, :recipient_mail)
     end
 end

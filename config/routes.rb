@@ -73,7 +73,11 @@ Rails.application.routes.draw do
 
 
   get '/payment_infos/payment_info_index' => 'payment_infos#payment_info_index', :as => 'payment_info_index'
-  get '/payment_infos/transaction_resend/:id' => 'payment_infos#transaction_resend', :as => 'transaction_resend'
+  #get '/payment_infos/transaction_resend/:id' => 'payment_infos#transaction_resend', :as => 'transaction_resend'
+  patch '/payment_infos/transaction_resend/:id' => 'payment_infos#transaction_resend', :as => 'transaction_resend'
+  get '/payment_infos/resend_form/:id' => 'payment_infos#resend_form', :as => 'resend_form'
+  get '/payment_infos/resend_show/:id' => 'payment_infos#resend_show', :as => 'resend_show'
+
 
   get '/activity_participants/activity_participant_index' => 'activity_participants#activity_participant_index', :as => 'activity_participant_index'
   get '/activity_fixtures/activity_fixture_index' => 'activity_fixtures#activity_fixture_index', :as => 'activity_fixture_index'
@@ -86,6 +90,7 @@ Rails.application.routes.draw do
   post '/entity_divisions/category_div_update', :as => 'div_cat_to_cat_div_ajax_call'
   post '/entity_divisions/fixture_update', :as => 'cat_div_to_fixture_ajax_call'
   post '/entity_divisions/division_update', :as => 'general_division_ajax_call'
+  post '/entity_divisions/lov_update', :as => 'general_lov_ajax_call'
   #post '/users/divisions', :as => 'general_role_ajax_call'
 
   resources :suburb_masters

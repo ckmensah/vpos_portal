@@ -13,6 +13,9 @@ class HomeController < ApplicationController
       #@payment_success_count = PaymentReport.where("split_part(trans_status, '/', 1) = '000'").count
       @pay_success = @payment_reports.where("split_part(trans_status, '/', 1) = '000'")
       @pay_fail = @payment_reports.where("split_part(trans_status, '/', 1) != '000' AND trans_status IS NOT NULL")
+      @service_account = EntityServiceAccount.where(entity_div_code: "0").order(created_at: :desc).first
+      @service_account_details = EntityServiceAccountTrxn.where(entity_div_code: "0").order(created_at: :desc)
+
     elsif current_user.merchant_admin?
       @payment_service = EntityDivision.where(active_status: true, assigned_code: current_user.division_code)
       division_str = "'0'"
@@ -25,11 +28,17 @@ class HomeController < ApplicationController
       final_div_str = "(#{division_str})"
       logger.info "Final Div Str :: #{final_div_str.inspect}"
 
+      @service_account = EntityServiceAccount.where("entity_div_code IN #{final_div_str}").order(created_at: :desc).first
+      @service_account_details = EntityServiceAccountTrxn.where("entity_div_code IN #{final_div_str}").order(created_at: :desc)
+
       @payment_reports = PaymentReport.where("created_at BETWEEN '#{Time.now.strftime('%Y-%m-%d')} 00:00:00' AND '#{Time.now.strftime('%Y-%m-%d')} 23:59:59' AND entity_div_code IN #{final_div_str} AND nw IS NOT NULL")
       #@payment_success_count = PaymentReport.where("split_part(trans_status, '/', 1) = '000' AND entity_div_code IN #{final_info_str}").count
       @pay_success = @payment_reports.where("split_part(trans_status, '/', 1) = '000'")
       @pay_fail = @payment_reports.where("split_part(trans_status, '/', 1) != '000' AND trans_status IS NOT NULL")
     elsif current_user.merchant_service?
+      @service_account = EntityServiceAccount.where(entity_div_code: current_user.division_code).order(created_at: :desc).first
+      @service_account_details = EntityServiceAccountTrxn.where(entity_div_code: current_user.division_code).order(created_at: :desc).limit(5)
+
       @payment_reports = PaymentReport.where("created_at BETWEEN '#{Time.now.strftime('%Y-%m-%d')} 00:00:00' AND '#{Time.now.strftime('%Y-%m-%d')} 23:59:59' AND entity_div_code = '#{current_user.division_code}' AND nw IS NOT NULL")
       #@payment_success_count = PaymentReport.where("split_part(trans_status, '/', 1) = '000' AND entity_div_code = #{current_user.division_code}").count
       @pay_success = @payment_reports.where("split_part(trans_status, '/', 1) = '000'")

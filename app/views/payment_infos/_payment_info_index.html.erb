@@ -197,6 +197,7 @@
             <td>Failed</td>
           <% end %>
 
+
           <td><%= payment_info.created_at %></td>
           <td><%= link_to 'VIEW', payment_info_path(payment_info, params: params.to_unsafe_h, count: params[:count], page: params[:page]),
                           style: "width:70px; height: 30px;",
@@ -204,10 +205,16 @@
             <% if current_user.super_admin? || current_user.super_user? || current_user.merchant_admin? %>
               <% if @merchant && (@merchant.activity_type_code == "SHW" || @merchant.activity_type_code == "SPO") %>
                 <% if status[0] == "000" %>
-                  <%= link_to 'RESEND', transaction_resend_path(payment_info, params: params.to_unsafe_h, count: params[:count], page: params[:page]),
+                  <%#= link_to 'RESEND', transaction_resend_path(payment_info, params: params.to_unsafe_h, count: params[:count], page: params[:page]),
                               style: "width:80px; height: 30px;",
                               data: {confirm: "Do you wish to resend transaction for: #{payment_info.customer_number}?"},
                               class: 'w3-button w3-white w3-border w3-border-purple w3-tiny w3-round-large', remote: true %>
+
+                  <%= link_to 'RESEND', resend_form_path(payment_info, params: params.to_unsafe_h, count: params[:count], page: params[:page]),
+                              style: "width:80px; height: 30px;",
+                              data: {},
+                              class: 'w3-button w3-white w3-border w3-border-purple w3-tiny w3-round-large', remote: true %>
+
                 <% else %>
                   <button class="w3-button w3-white w3-border w3-disabled w3-border-purple w3-tiny w3-round-large" style="width:80px; height: 30px; color: #800754 !important">RESEND</button>
                 <% end %>
@@ -243,7 +250,6 @@
         <td colspan="1"><strong><%= amount.round(3) %></strong> <%# count %></td>
         <td class="w3-vpos-purple" colspan="5"></td>
       </tr>
-
 
       </tbody>
     </table>
@@ -321,7 +327,7 @@
               <%= f.input :activity_type, collection: @activity_types, label_method: :activity_type_desc, value_method: :assigned_code, class: "form-control", input_html: {style: "width: 90%;"}, label: "Activity Type", boolean_style: :inline %>
             <% end %>
 
-            <%= f.input :lov_name, collection: @division_lovs, label_method: :lov_desc, value_method: :id, class: "form-control", input_html: {style: "width: 90%"}, label: "Service Option", boolean_style: :inline %>
+            <%= f.input :lov_name, collection: @division_lovs, label_method: :lov_desc, value_method: :id, class: "form-control", input_html: {id: "id_div_lov", style: "width: 90%"}, label: "Service Option", boolean_style: :inline %>
 
             <%#= f.input :lov_name, class:"form-control", input_html: {style: "width: 90%"}, label: "Service Option", boolean_style: :inline %>
 
@@ -401,6 +407,7 @@
         $('[data-toggle="tooltip"]').tooltip();
         var entity_info_id = $('#id_entity_info');
         var entity_div_id = $('#id_entity_div');
+        var div_lov_id = $('#id_div_lov');
 
         entity_info_id.change(function () {
             console.log("For entity_info id:: " + entity_info_id.val());
@@ -412,6 +419,18 @@
                 dataType: "script"
             });
         });
+
+        entity_div_id.change(function () {
+            console.log("For entity service id:: " + entity_div_id.val());
+            div_lov_id.attr("title", "Now select a service option.");
+            Rails.ajax({
+                type: "POST",
+                url: "<%= general_lov_ajax_call_path %>",
+                data: "id_for_entity_service=" + entity_div_id.val(),
+                dataType: "script"
+            });
+        });
+
     });
 
     $('#csv').click(function () {

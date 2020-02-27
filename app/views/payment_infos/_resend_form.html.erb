@@ -1,0 +1,119 @@
+
+
+<div class="w3-container" >
+  <div id="id01" class="w3-modal w3-animate-opacity" style=" display: block">
+    <!--<div class="w3-modal-content w3-card-4" >-->
+    <!--<br/>-->
+
+    <div class="">
+
+      <div class="w3-white w3-hover-shadow col-md-6 offset-md-3 w3-card-4 w3-border w3-border-purple rcorners w3-center">
+        <h4 class="show w3-center"><strong>RESEND TICKET</strong></h4>
+        <p id="notice2"><strong></strong></p>
+
+        <div class="w3-container w3-border w3-border-purple">
+          <br/>
+          <%  %>
+          <% #entity_extra = @entity_info.entity_info_extras.where(active_status: true, del_status: false).order("entity_info_extra.created_at desc").first
+             #entity_extra = EntityInfoExtra.where(entity_code: @entity_info.assigned_code, active_status: true, del_status: false).order(created_at: :desc).first
+
+          %>
+          <%  %>
+          <div class="w3-container w3-responsive pre-scrollable w3-mobile w3-border w3-border-purple" style="max-height: 30vh">
+            <br/>
+            <table class="w3-table-all table table-bordered w3-hoverable w3-card-4">
+
+              <tr>
+                <td class="raw_theme w3-border w3-border-black w3-leftbar"><strong>Merchant Name:</strong></td>
+                <td><strong><%= @pay_info.entity_division.entity_info.entity_name %> (<%= @pay_info.entity_division.entity_info.entity_alias %>)</strong></td>
+              </tr>
+
+              <tr>
+                <td class="raw_theme w3-border w3-border-black w3-leftbar"><strong>Service Name:</strong></td>
+                <td><strong><%= @pay_info.entity_division.division_name %> (<%= @pay_info.entity_division.division_alias %>)</strong></td>
+              </tr>
+
+              <tr>
+                <td class="raw_theme w3-border w3-border-black w3-leftbar"><strong>Activity Type:</strong></td>
+                <td><strong><%= @pay_info.entity_division.activity_type.activity_type_desc %></strong></td>
+              </tr>
+
+              <%# if entity_extra %>
+              <tr>
+                <td class="raw_theme w3-border w3-border-black w3-leftbar"><strong>Contact No.(s):</strong></td>
+                <td><strong><%= @pay_info.customer_number if @pay_info.customer_number.present? %></strong></td>
+              </tr>
+
+              <tr>
+                <td class="raw_theme w3-border w3-border-black w3-leftbar"><strong>Recipient No.(s):</strong></td>
+                <td><strong><%= @pay_info.recipient_number if @pay_info.recipient_number.present? %></strong></td>
+              </tr>
+
+              <tr>
+                <td class="raw_theme w3-border w3-border-black w3-leftbar"><strong>Recipient Email:</strong></td>
+                <td><strong><%= @pay_info.recipient_email if @pay_info.recipient_email.present? %></strong></td>
+              </tr>
+
+              <tr>
+                <td class="raw_theme w3-border w3-border-black w3-leftbar"><strong>Transaction ID.:</strong></td>
+                <td><strong><%= @pay_info.processing_id %></strong></td>
+              </tr>
+
+              <tr>
+                <td class="raw_theme w3-border w3-border-black w3-leftbar"><strong>Amount:</strong></td>
+                <td><strong><%= @pay_info.amount %></strong></td>
+              </tr>
+
+              <%# end %>
+              <tr>
+                <td class="raw_theme w3-border w3-border-black w3-leftbar"><strong>Date:</strong></td>
+                <td>
+                  <strong><%= @pay_info.created_at %></strong>
+                </td>
+              </tr>
+
+            </table>
+          </div>
+          <br/>
+
+          <%= simple_form_for(@payment_info, url: transaction_resend_path(@payment_info, params: params.to_unsafe_h, code: params[:code], entity_code: params[:entity_code], count: params[:count], page: params[:page] ),:remote => true) do |f| %>
+
+        <div class="w3-container w3-border w3-border-purple">
+
+              <div class="w3-half">
+                <%= f.input :recipient_mail, label: "Recipient Email", required: true, input_html: {id: "rec_email", value: @recipient_mail, autofocus: true, autocomplete: "off", class: "form-control w3-input w3-border w3-white input-group input-append", style: "width: 90%;"} %>
+              </div>
+            <div class="w3-half">
+              <%= f.input :copy_email, label: "Copy Email", required: true, input_html: {id: "copy_email", value: @copy_email, autocomplete: "off", class: "form-control w3-input w3-border w3-white input-group input-append", style: "width: 90%;"} %>
+            </div>
+
+          </div>
+
+          <br/>
+          <div class="w3-center">
+            <%= f.submit "Submit", class: "w3-button w3-purple-vpos w3-border w3-border-purple w3-small w3-round-large", :data => {:disable_with => 'Please Wait...'}, style: "width:auto;float:center;", remote: true %>
+            <%= link_to 'Back', payment_info_index_path(params: params.to_unsafe_h, page: params[:page], count: params[:count]), class: 'w3-button w3-white w3-border w3-border-purple w3-small w3-round-large', remote: true %>
+          </div>
+            <% end %>
+          <br/>
+        </div>
+        <br>
+      </div>
+
+    </div>
+
+    <!--</div>-->
+    <!--<br>-->
+    <div class="">
+      <br><br>
+    </div>
+  </div>
+
+</div>
+
+
+
+
+
+
+

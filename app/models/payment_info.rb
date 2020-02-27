@@ -1,9 +1,14 @@
 class PaymentInfo < ApplicationRecord
   self.table_name="payment_info"
   self.primary_key = :id
-  has_many :payment_requests, class_name: 'PaymentRequest', foreign_key: :payment_info_id
+  attr_accessor :copy_email, :recipient_mail
 
+  has_many :payment_requests, class_name: 'PaymentRequest', foreign_key: :payment_info_id
   belongs_to :entity_division, class_name: 'EntityDivision', foreign_key: :entity_div_code
+
+  validates :recipient_mail, format: { with: URI::MailTo::EMAIL_REGEXP }
+  validates :copy_email, format: { with: URI::MailTo::EMAIL_REGEXP }
+
 
 
   def self.payments_join
@@ -13,5 +18,6 @@ class PaymentInfo < ApplicationRecord
  payment_info.created_at, payment_info.payment_mode, payment_info.amount, payment_info.customer_number, payment_info.trans_type,
  charge, processing_id, nw, service_id, reference, trans_ref, nw_trans_id, trans_msg, trans_status")
   end
+
 
 end
