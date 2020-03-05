@@ -1,0 +1,2 @@
+module EntityAdminWhitelistsHelper
+end

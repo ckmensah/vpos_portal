@@ -8,7 +8,7 @@ class PaymentReport < ApplicationRecord
 
   def self.to_csv(general_report, options = {})
     CSV.generate(options) do |csv|
-      headers = %w{Merchant Service Reference Selected_Option Activity_Type Mobile_No Network Tranx_ID Gross_Amount Charge Actual_Amount Source Status Date}
+      headers = %w{Merchant Service Reference Selected_Option Activity_Type Mobile_No Customer_Name Network Tranx_ID Gross_Amount Charge Actual_Amount Source Status Date}
       csv << headers
       general_report.each do |summary|
         # ------code comes here
@@ -20,6 +20,7 @@ class PaymentReport < ApplicationRecord
         lov_name = summary.division_activity_lov ? summary.division_activity_lov.lov_desc : ""
         activity_type = summary.entity_division.activity_type ? summary.entity_division.activity_type.activity_type_desc : ""
         mobile_num = summary.customer_number
+        customer_name = summary.customer_name
         network = summary.nw
         transaction_id = summary.processing_id
         amount = summary.amount
@@ -63,11 +64,11 @@ class PaymentReport < ApplicationRecord
           status = "Failed"
         end
         date = summary.created_at
-        csv << [merchant, service, reference, lov_name, activity_type, mobile_num, network, transaction_id, total_amt, charge, amount, source, status, date] #[merchant, rec_name, summary.pc_name, summary.momo_number, summary.product_name, bags, quantity, summary.amount, summary.exttrid, status, summary.date]
+        csv << [merchant, service, reference, lov_name, activity_type, mobile_num, customer_name, network, transaction_id, total_amt, charge, amount, source, status, date] #[merchant, rec_name, summary.pc_name, summary.momo_number, summary.product_name, bags, quantity, summary.amount, summary.exttrid, status, summary.date]
       end
     end
   end
 
-  
+
 
 end

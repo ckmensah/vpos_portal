@@ -1,0 +1,37 @@
+<p id="notice"><%= notice %></p>
+
+<h1>Entity Admin Whitelists</h1>
+
+<table>
+  <thead>
+    <tr>
+      <th>Entity division code</th>
+      <th>Full name</th>
+      <th>Mobile number</th>
+      <th>Active status</th>
+      <th>Del status</th>
+      <th>User</th>
+      <th colspan="3"></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @entity_admin_whitelists.each do |entity_admin_whitelist| %>
+      <tr>
+        <td><%= entity_admin_whitelist.entity_division_code %></td>
+        <td><%= entity_admin_whitelist.full_name %></td>
+        <td><%= entity_admin_whitelist.mobile_number %></td>
+        <td><%= entity_admin_whitelist.active_status %></td>
+        <td><%= entity_admin_whitelist.del_status %></td>
+        <td><%= entity_admin_whitelist.user_id %></td>
+        <td><%= link_to 'Show', entity_admin_whitelist %></td>
+        <td><%= link_to 'Edit', edit_entity_admin_whitelist_path(entity_admin_whitelist) %></td>
+        <td><%= link_to 'Destroy', entity_admin_whitelist, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<br>
+
+<%= link_to 'New Entity Admin Whitelist', new_entity_admin_whitelist_path %>

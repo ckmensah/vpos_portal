@@ -1,0 +1,17 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  entity_division_code: MyString
+  full_name: MyString
+  mobile_number: MyString
+  active_status: false
+  del_status: false
+  user_id: 1
+
+two:
+  entity_division_code: MyString
+  full_name: MyString
+  mobile_number: MyString
+  active_status: false
+  del_status: false
+  user_id: 1

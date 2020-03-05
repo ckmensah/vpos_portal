@@ -19,6 +19,7 @@ class EntityDivision < ApplicationRecord
   has_many :entity_service_accounts, class_name: "EntityServiceAccount", foreign_key: :entity_div_code
   has_many :entity_service_account_trxns, class_name: "EntityServiceAccountTrxn", foreign_key: :entity_div_code
   has_many :entity_wallet_configs, class_name: "EntityWalletConfig", foreign_key: :division_code
+  has_many :entity_admin_whitelists, class_name: "EntityAdminWhitelist", foreign_key: :entity_division_code
 
 
   # has_many :entity_wallet_configs, class_name: 'EntityWalletConfig', foreign_key: :division_code

@@ -667,12 +667,11 @@ class EntityDivisionsController < ApplicationController
 
 
 
-
-
+  
   def entity_div_create
     @entity_division = EntityDivision.new(entity_division_params)
-    #@display = @display.present? ? @display : params[:display_cnt].present? ? params[:display_cnt].to_i : 3
-    @display = nil
+    @display = @display.present? ? @display : params[:display_cnt].present? ? params[:display_cnt].to_i : 3
+    #@display = nil
     params[:into_create] = params[:division].nil? ? "into_create" : ""
     @activity_types = ActivityType.where(active_status: true, del_status: false).order(assigned_code: :asc)
     @region_masters = RegionMaster.where(active_status: true).order(region_name: :asc)

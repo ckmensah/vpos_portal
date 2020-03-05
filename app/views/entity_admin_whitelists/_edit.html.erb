@@ -1,0 +1,60 @@
+
+<div class="w3-container" >
+  <div id="id01" class="w3-modal w3-animate-opacity" style=" display: block">
+    <!--<div class="w3-modal-content w3-card-4" >-->
+    <br/>
+
+
+    <div class="">
+
+      <div class="w3-white w3-hover-shadow col-md-4 offset-md-4 w3-card-4 w3-border w3-border-purple rcorners w3-center">
+        <h4 class="show w3-center"><strong>Edit Merchant Admin Whitelist</strong></h4>
+
+        <div class="w3-container">
+          <br/>
+
+          <%#= simple_form_for(@entity_admin_whitelist, :data => {  :remote => true, count: params[:count], page: params[:page]}) do |f| %>
+          <%= simple_form_for(@entity_admin_whitelist, url: entity_admin_whitelist_path(@entity_admin_whitelist, modal_appear: "to_multiple", interface_type: params[:interface_type], entity_code: params[:entity_code], code: params[:code], count: params[:count], page: params[:page] ),:remote => true) do |f| %>
+            <%= f.error_notification %>
+            <%= f.error_notification message: f.object.errors[:base].to_sentence if f.object.errors[:base].present? %>
+            <%= f.input :mobile_number,  label: "Mobile Number",  value_method: :id, required: true, input_html:{id: "for_mobile_num", readonly: true, autocomplete: "off",class:"form-control w3-input w3-border w3-white input-group input-append",style:""}  %>
+            <%= f.input :full_name,  label: "Full Name", value_method: :id, required: true, input_html:{id: "for_full_name", autocomplete: "off",class:"form-control w3-input w3-border w3-white input-group input-append",style:""}  %>
+            
+            <%= f.input :entity_division_code, :as => :hidden, input_html:{value: @entity_admin_whitelist.entity_division_code} %>
+            <%= f.input :for_whitelist_update, :as => :hidden, input_html:{value: true} %>
+            <%= f.input :active_status, :as => :hidden, input_html:{value: true} %>
+            <%= f.input :del_status, :as => :hidden, input_html:{value: false} %>
+            <%= f.input :user_id, :as => :hidden, input_html:{value: current_user.id} %>
+            <div>
+              <%= f.submit "Submit", class: "w3-button w3-purple-vpos w3-border w3-border-purple w3-small w3-round-large", :data => {:disable_with => 'Please Wait...'}, style: "width:auto;float:center;",remote:true %>
+              <%= link_to 'Back', entity_admin_whitelist_index_path(entity_code: params[:entity_code], code: params[:code], page: params[:page], count: params[:count]), class: "w3-button w3-white w3-border w3-border-purple w3-small w3-round-large",remote:true %>
+            </div>
+          <% end %>
+          <br/>
+        </div>
+
+
+      </div>
+
+    </div>
+
+
+    <div class="col-md-7 col-md-offset-5">
+    </div>
+
+
+
+
+    <br/>
+    <div class="col-md-7 col-md-offset-5">
+      <br/>
+      <br/>
+    </div>
+    <!--</div>-->
+
+  </div>
+</div>
+
+
+
+

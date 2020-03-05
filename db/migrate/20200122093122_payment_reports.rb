@@ -15,6 +15,7 @@ class PaymentReports < ActiveRecord::Migration[5.2]
        payment_info.payment_mode,
        payment_info.amount,
        payment_info.customer_number,
+       payment_info.customer_name,
        payment_info.recipient_number,
        payment_info.recipient_type,
        payment_info.recipient_email,

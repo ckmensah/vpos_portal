@@ -223,6 +223,19 @@ ActiveRecord::Schema.define(version: 2020_01_28_110840) do
     t.datetime "created_at", default: -> { "CURRENT_TIMESTAMP" }, null: false
   end
 
+  create_table "entity_admin_whitelist", id: false, force: :cascade do |t|
+    t.serial "id", null: false
+    t.string "entity_division_code", limit: 10
+    t.string "mobile_number", limit: 20
+    t.string "comment", limit: 255
+    t.integer "user_id"
+    t.boolean "active_status", default: true
+    t.boolean "del_status", default: false
+    t.datetime "created_at", default: -> { "CURRENT_TIMESTAMP" }
+    t.datetime "updated_at"
+    t.string "full_name", limit: 150
+  end
+
   create_table "entity_categories", force: :cascade do |t|
     t.string "assigned_code"
     t.string "category_name"
@@ -252,6 +265,7 @@ ActiveRecord::Schema.define(version: 2020_01_28_110840) do
     t.boolean "allow_qr"
     t.string "msg_sender_id", limit: 10
     t.string "sms_sender_id", limit: 10
+    t.boolean "link_master"
   end
 
   create_table "entity_info", id: false, force: :cascade do |t|
@@ -319,6 +333,7 @@ ActiveRecord::Schema.define(version: 2020_01_28_110840) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "activity_type_code"
+    t.string "division_code", limit: 50
   end
 
   create_table "err_log", id: false, force: :cascade do |t|
@@ -363,6 +378,7 @@ ActiveRecord::Schema.define(version: 2020_01_28_110840) do
     t.string "recipient_email", limit: 255
     t.string "narration", limit: 255
     t.integer "qty"
+    t.string "customer_name", limit: 255
   end
 
   create_table "payment_request", id: false, force: :cascade do |t|
@@ -639,16 +655,16 @@ ActiveRecord::Schema.define(version: 2020_01_28_110840) do
     t.string "activity_type_lov_id"
     t.string "activity_type_lov_desc"
     t.string "reference"
-    t.string "amount"
+    t.decimal "amount", precision: 10, scale: 2, default: "0.0"
     t.string "activity_purpose"
     t.datetime "created_at", null: false
     t.datetime "updated_at"
     t.string "fullname"
     t.string "month_code"
     t.string "month_full"
-    t.decimal "charge", default: "0.0"
+    t.decimal "charge", precision: 10, scale: 2, default: "0.0"
     t.string "activity_main_code"
-    t.string "total_amount"
+    t.decimal "total_amount", precision: 10, scale: 2, default: "0.0"
     t.string "payment_reference"
     t.integer "activity_sub_plan_id"
     t.string "activity_date"
@@ -673,6 +689,8 @@ ActiveRecord::Schema.define(version: 2020_01_28_110840) do
     t.string "activity_plan_id"
     t.string "recipient_number"
     t.string "recipient_type"
+    t.string "customer_number"
+    t.string "nw"
   end
 
   create_table "ussd_tracker_logs", id: :integer, default: -> { "nextval('tracker_logs_id_seq'::regclass)" }, force: :cascade do |t|

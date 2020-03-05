@@ -72,6 +72,9 @@ Rails.application.routes.draw do
   patch '/fixture_update/:act_div_id' => 'entity_divisions#update_fixture', :as => 'update_fixture'
 
 
+  get '/entity_admin_whitelists/entity_admin_whitelist_index' => 'entity_admin_whitelists#entity_admin_whitelist_index', :as => 'entity_admin_whitelist_index'
+
+
   get '/payment_infos/payment_info_index' => 'payment_infos#payment_info_index', :as => 'payment_info_index'
   #get '/payment_infos/transaction_resend/:id' => 'payment_infos#transaction_resend', :as => 'transaction_resend'
   patch '/payment_infos/transaction_resend/:id' => 'payment_infos#transaction_resend', :as => 'transaction_resend'
@@ -92,6 +95,7 @@ Rails.application.routes.draw do
   post '/entity_divisions/division_update', :as => 'general_division_ajax_call'
   post '/entity_divisions/lov_update', :as => 'general_lov_ajax_call'
   #post '/users/divisions', :as => 'general_role_ajax_call'
+
 
   resources :suburb_masters
   resources :city_town_masters
@@ -121,6 +125,10 @@ Rails.application.routes.draw do
   resources :permissions
   resources :roles
   resources :assigned_fees
+  resources :entity_admin_whitelists
+
+
+
 
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".

@@ -59,6 +59,11 @@
                 </tr>
 
               <tr>
+                <td class="raw_theme w3-border w3-border-black w3-leftbar"><strong>Customer Name:</strong></td>
+                <td><strong><%= @pay_info.customer_name if @pay_info.customer_name.present? %></strong></td>
+              </tr>
+
+              <tr>
                 <td class="raw_theme w3-border w3-border-black w3-leftbar"><strong>Recipient No.(s):</strong></td>
                 <td><strong><%= @pay_info.recipient_number if @pay_info.recipient_number.present? %></strong></td>
               </tr>
@@ -104,7 +109,7 @@
                 <% elsif @merchant_service_trxn && @assigned_fee && @assigned_fee.charged_to == "M" %>
                   <td><strong><%= @merchant_service_trxn.charge %></strong></td>
                 <% else %>
-                  <td><strong>No Assigned Charges set for this Service.</strong></td>
+                  <td><strong></strong></td>
                 <% end %>
               </tr>
 

@@ -13,8 +13,8 @@
 
         <div class="w3-container w3-border w3-border-purple">
           <br/>
-          <%  %>
-          <% @entity_wallet_config = EntityWalletConfig.where(entity_code: params[:entity_code], active_status: true, del_status: false).order("created_at desc").first
+          <% logger.info "Original wallet object:: #{@entity_wallet_config.inspect}" %>
+          <%# @entity_wallet_config = EntityWalletConfig.where(entity_code: params[:entity_code], active_status: true, del_status: false).order("created_at desc").first
 
           %>
           <%  %>
@@ -23,7 +23,22 @@
 
               <tr>
                 <td class="raw_theme w3-border w3-border-black w3-leftbar"><strong>Activity Type (Alias):</strong></td>
-                <td><strong><%= @entity_wallet_config.activity_type.activity_type_desc %> (<%= @entity_wallet_config.activity_type.assigned_code %>)</strong></td>
+                <td><strong>
+                  <% if @entity_wallet_config.activity_type_code != nil %>
+                  <%= @entity_wallet_config.activity_type.activity_type_desc %> (<%= @entity_wallet_config.activity_type.assigned_code %>)
+                    <% end %>
+                </strong></td>
+              </tr>
+
+              <tr>
+                <td class="raw_theme w3-border w3-border-black w3-leftbar"><strong>Merchant Service:</strong></td>
+                <td><strong>
+                  <% logger.info "Wallet :: #{@entity_wallet_config.entity_division.inspect}" %>
+                  <% logger.info "Wallet and division :: #{@entity_wallet_config.entity_division.inspect}" %>
+                  <% if @entity_wallet_config.entity_division != nil %>
+                    <%= @entity_wallet_config.entity_division.division_name %> (<%= @entity_wallet_config.entity_division.division_alias %>)
+                  <% end %>
+                </strong></td>
               </tr>
 
               <tr>

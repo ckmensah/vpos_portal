@@ -104,21 +104,28 @@
 
                   <!--                  </li>-->
                 <% else %>
-                  <% if division_act_lov.exists? || activity_div.exists? %>
-                    <%= link_to 'SETUP', division_edit_setup_path(entity_division, code: entity_division.assigned_code, entity_code: params[:entity_code], count: params[:count], page: params[:page]),
+                  <% if entity_division.activity_type.assigned_code == "MIP" %>
+                    <%= link_to 'SETUP', entity_admin_whitelist_index_path(code: entity_division.assigned_code, entity_code: params[:entity_code], count: params[:count], page: params[:page]),
                                 style: "width:65px; height: 30px; color: #800754 !important",
                                 class: 'w3-button w3-white w3-border w3-border-purple w3-tiny w3-round-large', remote:true%>
-
                   <% else %>
-                    <%= link_to 'SETUP', division_setup_path(entity_division, code: entity_division.assigned_code, entity_code: params[:entity_code], count: params[:count], page: params[:page]),
-                                style: "width:65px; height: 30px; color: #800754 !important",
-                                class: 'w3-button w3-white w3-border w3-border-purple w3-tiny w3-round-large', remote:true%>
+                    <% if division_act_lov.exists? || activity_div.exists? %>
+                      <%= link_to 'SETUP', division_edit_setup_path(entity_division, code: entity_division.assigned_code, entity_code: params[:entity_code], count: params[:count], page: params[:page]),
+                                  style: "width:65px; height: 30px; color: #800754 !important",
+                                  class: 'w3-button w3-white w3-border w3-border-purple w3-tiny w3-round-large', remote:true%>
+
+                    <% else %>
+                      <%= link_to 'SETUP', division_setup_path(entity_division, code: entity_division.assigned_code, entity_code: params[:entity_code], count: params[:count], page: params[:page]),
+                                  style: "width:65px; height: 30px; color: #800754 !important",
+                                  class: 'w3-button w3-white w3-border w3-border-purple w3-tiny w3-round-large', remote:true%>
+                    <% end %>
                   <% end %>
+
                 <% end %>
 
                   <%= link_to 'EDIT', edit_entity_division_path(entity_division, code: entity_division.assigned_code, entity_code: params[:entity_code], count: params[:count], page: params[:page]),
                               style: "width:50px; height: 30px; color: #800754 !important",
-                              class: 'w3-button w3-white w3-border w3-border-purple w3-tiny w3-round-large', remote:true%>
+                              class: 'w3-button w3-white w3-border w3-border-purple w3-tiny w3-round-large', remote:true %>
               <% else %>
                   <button class="w3-button w3-white w3-border w3-disabled w3-border-purple w3-tiny w3-round-large" style="width:100px; height: 30px; color: #800754 !important">SERVICE FEES</button>
                   <button class="w3-button w3-white w3-border w3-disabled w3-border-purple w3-tiny w3-round-large" style="width:65px; height: 30px; color: #800754 !important">SETUP</button>

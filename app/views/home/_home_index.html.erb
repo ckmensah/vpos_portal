@@ -329,11 +329,11 @@
       <% elsif current_user.merchant_service? %>
 
           <% end %>
-
+          
             <!--<input type="text" data-behaviour='datepicker' >-->
             <%#= f.label :start_date,"Start Date", style:"float:left" %>
             <div class="w3-half">
-              <%= f.input :start_date, :id => "datepicker1", as: :date, html5: true, class:"form-control input-group date", label: "Start Date", boolean_style: :inline, input_html: {style: "width: 90%", data: {behaviour: 'datepicker', provide: 'datepicker'}, autocomplete: "off"} %>
+              <%= f.input :start_date, as: :date, html5: true, class:"form-control input-group date", label: "Start Date", boolean_style: :inline, input_html: {style: "width: 90%", autocomplete: "off"} %>
             </div>
 
             <div class="w3-half">

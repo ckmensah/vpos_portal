@@ -5,7 +5,17 @@
 
     <div class="">
 
-      <% if @display != nil %>
+      <%
+        def is_number?(string)
+          true if Float(string) rescue false
+        end
+        #my_string = '12.34'
+        #is_number?( my_string )
+        logger.info "Validity:: #{is_number?("#{@display}")}"
+
+      %>
+
+      <% if @display != nil && !is_number?("#{@display}") %>
         <div class="w3-white w3-hover-shadow col-md-8 offset-md-2 w3-card-4 w3-border w3-border-purple rcorners w3-center">
           <h4 class="show w3-center"><strong>Merchant Service Details</strong></h4>
           <p id="notice2"><strong></strong></p>
@@ -320,9 +330,9 @@
     <!--</div>-->
 
   </div>
-  <br/>
+<!--  <br/>-->
   <div class="col-md-7 offset-md-5">
-    <br><br>
+<!--    <br><br>-->
   </div>
 </div>
 
