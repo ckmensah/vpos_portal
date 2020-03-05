@@ -1,5 +1,6 @@
 class PaymentReports < ActiveRecord::Migration[5.2]
   def up
+    
     self.connection.execute %Q( CREATE MATERIALIZED VIEW payment_reports AS
         SELECT
        payment_info.id,
