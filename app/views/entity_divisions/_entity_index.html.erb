@@ -24,7 +24,8 @@
       <tr>
         <!--<th></th>-->
         <th>Merchant Name (Merchant Alias)</th>
-        <!--<th>Category Name (Category code)</th>-->
+<!--        <th>Activity Code</th>-->
+        <th>Category</th>
         <th>Status</th>
         <th>Date</th>
         <th></th>
@@ -38,7 +39,8 @@
                             style: "width:100px; height: 30px;",
                             class: 'w3-button w3-purple-vpos w3-border w3-border-purple w3-tiny w3-round-large', remote:true%></td>-->
             <td><strong><%= entity_info.entity_name %> (<%= entity_info.entity_alias %>)</strong></td>
-            <!--<td><strong><%#= entity_info.entity_category.category_name %> (<%#= entity_info.entity_category.assigned_code %>)</strong></td>-->
+<!--            <td><strong><%#= entity_info.entity_name %></strong></td>-->
+            <td><strong><%= entity_info.entity_cat_id if entity_info.entity_cat_id != nil %> <%#= entity_info.entity_category.assigned_code %></strong></td>
             <% if entity_info.active_status %>
                 <td><strong>Active</strong></td>
             <% else %>

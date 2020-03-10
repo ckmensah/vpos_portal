@@ -667,7 +667,7 @@ class EntityDivisionsController < ApplicationController
 
 
 
-  
+
   def entity_div_create
     @entity_division = EntityDivision.new(entity_division_params)
     @display = @display.present? ? @display : params[:display_cnt].present? ? params[:display_cnt].to_i : 3
@@ -778,7 +778,7 @@ class EntityDivisionsController < ApplicationController
 
     @suburb_id = entity_division_params[:suburb_id]
     if @suburb_id.present?
-      logger.info "Long chain :: #{@entity_division.suburb_master.a_city.a_region.inspect}"
+      #logger.info "Long chain :: #{@entity_division.suburb_master.a_city.a_region.inspect}"
       logger.info "For suburb id :: #{@suburb_id.inspect}"
       @sub_masters = SuburbMaster.where(id: @suburb_id).last
       logger.info "Sub Master #{@sub_masters.inspect}"
