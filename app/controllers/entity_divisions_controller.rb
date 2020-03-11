@@ -906,10 +906,11 @@ class EntityDivisionsController < ApplicationController
     params.require(:entity_division).permit(:entity_code, :assigned_code, :division_name, :division_alias, :action_type, :suburb_id,
                                             :activity_type_code, :service_label, :region_name, :city_town_name, :comment, :link_master,
                                             :div_lov_query, :activity_query, :sub_activity_query, :serv_id, :s_key, :c_key,
-                                            :sport_type, :sport_category, :category_type, :sms_sender_id,
+                                            :sport_type, :sport_category, :category_type, :sms_sender_id, :allow_qr,
                                             :active_status, :del_status, :user_id, :service_code, :for_update, divisions: [], :the_div_acts_lov => {})
     # entity_wallet_configs_attributes: [:id, :division_code, :service_id, :secret_key, :client_key, :comment, :active_status, :del_status, :user_id]
     #activity_divs_attributes: [:id, :division_code, :activity_div_desc, :activity_date, :comment, :active_status, :del_status, :user_id],
+
 
   end
 end

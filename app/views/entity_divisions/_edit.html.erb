@@ -21,7 +21,15 @@
 
               <%= f.error_notification %>
               <%= f.error_notification message: f.object.errors[:base].to_sentence if f.object.errors[:base].present? %>
+            <div class="w3-container col-md-4 offset-md-4" style="width: 40%">
+              <div class="w3-half"><label>Allow QR</label></div>
               <div class="w3-half">
+                <%= f.input :allow_qr, label: false, as: :boolean, required: false, input_html: {id: "allow_qr", autocomplete: "off", class: "", style: "display: block; float: left; width: 50%"} %>
+              </div>
+              <br><br>
+            </div>
+
+            <div class="w3-half">
                 <%= f.input :division_name, label: "Service Name", required: true, input_html: {id: "div_name", value: @entity_division.division_name, autofocus: true, autocomplete: "off", class: "form-control w3-input w3-border w3-white input-group input-append", style: "width: 90%;"} %>
                 <%= f.input :division_alias, label: "Service Alias", required: true, input_html: {id: "div_alias", value: @entity_division.division_alias, autocomplete: "off", class: "form-control w3-input w3-border w3-white input-group input-append", style: "width: 90%;"} %>
                 <%= f.input :activity_type_code, label: "Activity Code", selected: @entity_division.activity_type_code, collection: @activity_types, label_method: :activity_name, value_method: :assigned_code, required: true, input_html: {id: "activity_key", autocomplete: "off", class: "form-control w3-input w3-border w3-white input-group input-append", style: "width: 90%;"} %>

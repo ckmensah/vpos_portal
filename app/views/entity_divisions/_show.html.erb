@@ -33,6 +33,7 @@
               <table class=" w3-responsive table-striped w3-table-all table-bordered w3-hoverable w3-card-4">
                 <thead>
                 <tr class="w3-vpos-purple">
+                  <th>Allow QR</th>
                   <th>No.</th>
                   <th>Service</th>
                   <th>Service Label</th>
@@ -54,6 +55,11 @@
                       <tr>
                         <td><%= num %></td>
                         <td><%= value["division_name"] %> (<%= value["division_alias"] %>) </td>
+                        <% if value.key?("allow_qr") && value["allow_qr"] == "on" %>
+                          <td>Yes</td>
+                        <% else %>
+                          <td>No</td>
+                        <% end %>
                         <td><%= value["service_label"] %></td>
                         <td><%= value["service_code"] %></td>
                         <td><%= value["activity_type_code"] %></td>
@@ -168,6 +174,15 @@
                   <td class="raw_theme w3-border w3-border-black w3-leftbar"><strong>Service Name:</strong></td>
                   <td><strong><%= @entity_division.division_name %> (<%= @entity_division.division_alias %>)</strong>
                   </td>
+                </tr>
+
+                <tr>
+                  <td class="raw_theme w3-border w3-border-black w3-leftbar"><strong>Allow QR:</strong></td>
+                  <% if @entity_division.allow_qr != nil && @entity_division.allow_qr %>
+                    <td><strong>Yes</strong></td>
+                  <% else %>
+                    <td><strong>No</strong></td>
+                  <% end %>
                 </tr>
 
                 <tr>
