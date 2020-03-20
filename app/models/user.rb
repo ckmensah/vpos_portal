@@ -6,7 +6,8 @@ class User < ApplicationRecord
   belongs_to :entity_info, class_name: "EntityInfo", foreign_key: :entity_code
   belongs_to :entity_division, class_name: "EntityDivision", foreign_key: :division_code
 
-  default_scope {where(active_status: true)}
+  default_scope {where(active_status: true, for_portal: true)}
+
   validates :user_name, presence: {message: " cannot be empty."} #, uniqueness: {scope: :entity_id, message: "Momo Number has already been set up." }
   validates :last_name, presence: {message: " cannot be empty."}
   validates :first_name, presence: {message: " cannot be empty."}
@@ -23,7 +24,7 @@ class User < ApplicationRecord
 
 
   def validate_division_code
-    if self.role_id == 4
+    if self.role_id == 4 || self.role_id == 5
       unless self.division_code.present?
         errors.add :division_code, " cannot be empty."
       end
@@ -32,7 +33,7 @@ class User < ApplicationRecord
 
 
   def validate_entity_code
-    if self.role_id == 3 || self.role_id == 4
+    if self.role_id == 3 || self.role_id == 4 || self.role_id == 5
       unless self.entity_code.present?
         errors.add :entity_code, " cannot be empty."
       end
@@ -73,6 +74,11 @@ class User < ApplicationRecord
   def merchant_service?
     self.role.id == 4
   end
+
+  def validator?
+    self.role.id == 5
+  end
+
 
   #def merchant_user?
   #  self.role.id == 3

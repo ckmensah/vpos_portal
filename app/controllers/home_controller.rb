@@ -45,25 +45,29 @@ class HomeController < ApplicationController
       @pay_fail = @payment_reports.where("split_part(trans_status, '/', 1) != '000' AND trans_status IS NOT NULL")
     else
     end
-    if @pay_success.exists?
-      @payment_success_count = @pay_success.count
-      @payment_success_amount = @pay_success.sum(:amount)
-    else
-      @payment_success_count = 0
-      @payment_success_amount = 0.0
-    end
 
-    if @pay_fail.exists?
-      @payment_fail_count = @pay_fail.count
-    else
-      @payment_fail_count = 0
-    end
+    unless current_user.validator?
+      if @pay_success.exists?
+        @payment_success_count = @pay_success.count
+        @payment_success_amount = @pay_success.sum(:amount)
+      else
+        @payment_success_count = 0
+        @payment_success_amount = 0.0
+      end
 
-    @payment_success_amount = number_to_currency(@payment_success_amount, unit: "GHS ")
-    logger.info "Payment Report: #{@payment_reports.inspect}"
-    logger.info "Success count:: #{@payment_success_count.inspect}"
-    logger.info "Success amount:: #{@payment_success_amount.inspect}"
-    logger.info "Failed count:: #{@payment_fail_count.inspect}"
+      if @pay_fail.exists?
+        @payment_fail_count = @pay_fail.count
+      else
+        @payment_fail_count = 0
+      end
+
+      @payment_success_amount = number_to_currency(@payment_success_amount, unit: "GHS ")
+      logger.info "Payment Report: #{@payment_reports.inspect}"
+      logger.info "Success count:: #{@payment_success_count.inspect}"
+      logger.info "Success amount:: #{@payment_success_amount.inspect}"
+      logger.info "Failed count:: #{@payment_fail_count.inspect}"
+
+    end
 
   end
 

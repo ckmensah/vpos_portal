@@ -5,10 +5,15 @@
 
   <div class="w3-responsive">
     <button type="button" class="btn btn-outline-purple tablink w3-vpos-purple" style="font-size: small; width: 120px;" onclick="openCity(event, 'user')">USERS SETUP</button>
+    <button type="button" class="btn btn-outline-purple tablink" style="font-size: small; width: 160px;" onclick="openCity(event, 'validator')">VALIDATORS SETUP</button>
   </div>
 
   <div id="user" class="city active">
     <%= render :partial=> "user_index" %>
+  </div>
+
+  <div id="validator" class="city" style="display: none;">
+    <%= render :partial=> "validator_index" %>
   </div>
 
 

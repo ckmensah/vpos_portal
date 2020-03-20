@@ -9,7 +9,9 @@ class UsersController < ApplicationController
     params[:count] ? params[:count] : params[:count] = 50
     params[:page].present? ? page = params[:page].to_i : page = 1
 
-    @users = User.unscoped.where(creator_id: current_user.id).paginate(:page => page, :per_page => params[:count]).order(created_at: :desc)
+    @validators = User.unscoped.where(creator_id: current_user.id, for_portal: false).paginate(:page => page, :per_page => params[:count]).order('created_at desc')
+    @users = User.unscoped.where(creator_id: current_user.id, for_portal: true).paginate(:page => page, :per_page => params[:count]).order('created_at desc')
+
   end
 
 
@@ -17,8 +19,23 @@ class UsersController < ApplicationController
 
     params[:count] ? params[:count] : params[:count] = 50
     params[:page].present? ? page = params[:page].to_i : page = 1
+    #if params[:validator] == "validator"
+    #  @validators = User.unscoped.where(creator_id: current_user.id, for_portal: false).paginate(:page => page, :per_page => params[:count]).order('created_at desc')
+    #else
+      @users = User.unscoped.where(creator_id: current_user.id, for_portal: true).paginate(:page => page, :per_page => params[:count]).order('created_at desc')
+    #end
+  end
 
-    @users = User.unscoped.where(creator_id: current_user.id).paginate(:page => page, :per_page => params[:count]).order(created_at: :desc)
+
+  def validator_index
+
+    params[:count] ? params[:count] : params[:count] = 50
+    params[:page].present? ? page = params[:page].to_i : page = 1
+    #if params[:validator] == "validator"
+    @validators = User.unscoped.where(creator_id: current_user.id, for_portal: false).paginate(:page => page, :per_page => params[:count]).order('created_at desc')
+    #else
+    #  @users = User.unscoped.where(creator_id: current_user.id, for_portal: true).paginate(:page => page, :per_page => params[:count]).order('created_at desc')
+    #end
   end
 
 
@@ -55,6 +72,8 @@ class UsersController < ApplicationController
     if current_user.super_admin? || current_user.super_user?
       @entity_infos = EntityInfo.where(active_status: true).order(entity_name: :asc)
     end
+    @user.for_portal = user_params[:role_id] == "5" ? false : true
+
     unless user_params[:role_id] == "1" || user_params[:role_id] == "2"
       if user_params[:role_id] == "3"
         @user.access_type = "M"
@@ -87,6 +106,8 @@ class UsersController < ApplicationController
     if current_user.super_admin? || current_user.super_user?
       @entity_infos = EntityInfo.where(active_status: true).order(entity_name: :asc)
     end
+
+    #@user.for_portal = user_params[:role_id] == "5" ? false : true
     #unless user_params[:role_id] == "1" || user_params[:role_id] == "2"
       if user_params[:role_id] == "3"
         @user.access_type = "M"
@@ -118,7 +139,6 @@ class UsersController < ApplicationController
   # DELETE /users/1
   # DELETE /users/1.json
   def destroy
-
     puts page = params[:page]
     puts "JUST STARTING.................."
 
@@ -126,10 +146,15 @@ class UsersController < ApplicationController
       puts "HAS STARTED NOW..................."
       @user.active_status = 0
       @user.save(validate: false)
-      @users = User.unscoped.where(creator_id: current_user.id).paginate(:page => page, :per_page => params[:count]).order('created_at desc')
+      if params[:validator] == "validator"
+        flash.now[:note] = 'Validator was successfully disabled.'
+        @validators = User.unscoped.where(creator_id: current_user.id, for_portal: false).paginate(:page => page, :per_page => params[:count]).order('created_at desc')
+      else
+        flash.now[:note] = 'User was successfully disabled.'
+        @users = User.unscoped.where(creator_id: current_user.id, for_portal: true).paginate(:page => page, :per_page => params[:count]).order('created_at desc')
+      end
       respond_to do |format|
         format.html { redirect_to users_url, notice: 'Occupation master was successfully disabled.' }
-        flash.now[:note] = 'User was successfully disabled.'
         format.js { render :layout => false, notice: 'Course was successfully disabled.' }
         format.json { head :no_content }
         # window.location.href = "<%= recipe_path(@recipe) %>"
@@ -137,10 +162,15 @@ class UsersController < ApplicationController
     else
       @user.active_status = 1
       @user.save(validate: false)
-      @users = User.unscoped.where(creator_id: current_user.id).paginate(:page => page, :per_page => params[:count]).order('created_at desc')
+      if params[:validator] == "validator"
+        flash.now[:notice] = 'Validator was successfully enabled.'
+        @validators = User.unscoped.where(creator_id: current_user.id, for_portal: false).paginate(:page => page, :per_page => params[:count]).order('created_at desc')
+      else
+        flash.now[:notice] = 'User was successfully enabled.'
+        @users = User.unscoped.where(creator_id: current_user.id, for_portal: true).paginate(:page => page, :per_page => params[:count]).order('created_at desc')
+      end
       respond_to do |format|
         format.html { redirect_to users_url, notice: 'Allergy master was successfully enabled.' }
-        flash.now[:notice] = 'User was successfully enabled.'
         format.js { render :layout => false, notice: 'Course was successfully enabled.' }
         format.json { head :no_content }
       end
@@ -158,7 +188,7 @@ class UsersController < ApplicationController
 
   # Never trust parameters from the scary internet, only allow the white list through.
   def user_params
-    params.require(:user).permit(:user_name, :last_name, :first_name, :email, :access_type, :entity_code, :division_code, :contact_number, :password, :password_confirmation, :free_id, :role_id, :creator_id, :active_status, :del_status)
+    params.require(:user).permit(:user_name, :last_name, :first_name, :email, :access_type, :entity_code, :division_code, :contact_number, :password, :password_confirmation, :for_portal, :free_id, :role_id, :creator_id, :active_status, :del_status)
   end
 
 end

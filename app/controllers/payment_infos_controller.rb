@@ -4,7 +4,6 @@ class PaymentInfosController < ApplicationController
   before_action :load_permissions
   require 'vpos_core'
 
-
   # GET /payment_infos
   # GET /payment_infos.json
   def index
@@ -297,7 +296,6 @@ class PaymentInfosController < ApplicationController
 
     @payment_info = PaymentInfo.new(id: @payment_report.id, recipient_mail: payment_info_params[:recipient_mail], copy_email: payment_info_params[:copy_email])
     if @payment_info.valid?
-
       payload = {:payment_info_id => @payment_report.id, :recipient_email => payment_info_params[:recipient_mail],
                  :copy_email => payment_info_params[:copy_email]}
       json_payload=JSON.generate(payload)
@@ -371,10 +369,27 @@ class PaymentInfosController < ApplicationController
         end
       end
     else
+
       payment_info_index
-      flash.now[:danger] = "Failed Validation."
+      if @payment_info.errors.messages.key?('recipient_mail') && @payment_info.errors.messages.key?('copy_email')
+        if @payment_info.errors.messages[:recipient_mail][0].present? && @payment_info.errors.messages[:copy_email][0].present?
+          flash.now[:danger] = "Failed Validation: Recipient email #{@payment_info.errors.messages[:recipient_mail][0]} and Copy email #{@payment_info.errors.messages[:copy_email][0]}"
+        else
+          flash.now[:danger] = "Failed Validation."
+        end
+      else
+        if @payment_info.errors.messages.key?('recipient_mail')
+          flash.now[:danger] = "Failed Validation: Recipient email #{@payment_info.errors.messages[:recipient_mail][0]}"
+        elsif @payment_info.errors.messages.key?('copy_email')
+          flash.now[:danger] = "Failed Validation: Copy email #{@payment_info.errors.messages[:copy_email][0]}"
+        else
+          flash.now[:danger] = "Failed Validation."
+        end
+      end
       logger.info "Error messages :: #{@payment_info.errors.messages.inspect}"
       @pay_info = PaymentReport.where(id: @payment_report.id).order(created_at: :desc).first
+      @payment_info = PaymentInfo.new(id: @payment_report.id, recipient_mail: payment_info_params[:recipient_mail], copy_email: payment_info_params[:copy_email])
+      #@payment_info.valid?
       respond_to do |format|
         format.js { render :resend_form }
       end
@@ -458,7 +473,7 @@ class PaymentInfosController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def payment_info_params
-      params.require(:payment_info).permit(:session_id, :entity_div_code, :activity_lov_id, :activity_div_id,
+      params.require(:payment_info).permit(:session_id, :entity_div_code, :activity_lov_id, :activity_div_id, :pay_id,
                                            :activity_sub_div_id, :processed, :src, :payment_mode, :amount,
                                            :customer_number, :trans_type, :charge, :active_status, :del_status,
                                            :user_id, :copy_email, :recipient_mail)

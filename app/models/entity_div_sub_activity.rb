@@ -1,0 +1,2 @@
+class EntityDivSubActivity < ApplicationRecord
+end

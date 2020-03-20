@@ -8,7 +8,7 @@ class PaymentReport < ApplicationRecord
 
   def self.to_csv(general_report, options = {})
     CSV.generate(options) do |csv|
-      headers = %w{Merchant Service Reference Selected_Option Activity_Type Mobile_No Customer_Name Network Tranx_ID Gross_Amount Charge Actual_Amount Source Status Date}
+      headers = %w{Merchant Service Reference Selected_Option Activity_Type Mobile_No Name/Reference Network Tranx_ID Gross_Amount Charge Actual_Amount Source Status Date}
       csv << headers
       general_report.each do |summary|
         # ------code comes here

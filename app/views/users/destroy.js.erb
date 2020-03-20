@@ -1,3 +1,8 @@
+<% if params[:validator] == "validator" %>
+$("#validator").html("<%= escape_javascript(render(:partial =>"validator_index")) %>");
+$('#notes2').html("<%= escape_javascript(render 'layouts/messages') %>");
+<% else %>
 $("#user").html("<%= escape_javascript(render(:partial =>"user_index")) %>");
 $('#notes1').html("<%= escape_javascript(render 'layouts/messages') %>");
+<% end %>
 $('.pagination a').attr('data-remote', 'true');

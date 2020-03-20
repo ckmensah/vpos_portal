@@ -31,6 +31,7 @@
 
               <%= f.error_notification %>
               <%= f.error_notification message: f.object.errors[:base].to_sentence if f.object.errors[:base].present? %>
+
             <div class="w3-container col-md-4 offset-md-4" style="width: 40%">
               <div class="w3-half"><label>Allow QR</label></div>
               <div class="w3-half">
@@ -127,10 +128,9 @@
               <!--<div class="w3-half">-->
 
               <!--</div>-->
-
               <div class="w3-half" id="div_num_id" >
 
-                <%= select_tag :display_cnt, options_for_select([1,2,3,4,5,6,7,8,9,10], params[:display_cnt].to_i),
+                <%= select_tag :display_cnt, options_for_select([0,1,2,3,4,5,6,7,8,9,10], params[:display_cnt].to_i),
                                :onchange => "divisionNumber()",
                                :data => {  :remote => true, :url => url_for(params:{
                                    modal_appear: "to_multiple",

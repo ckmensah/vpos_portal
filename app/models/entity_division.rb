@@ -278,6 +278,7 @@ class EntityDivision < ApplicationRecord
     service_code_exist = false
     incorrect_sender_id = false
     same_incoming_service_code = false
+    master_wallet_exist = true
     incoming_service_code = []
     key_number = 0
     logger.info "Divisions Parameter Class #{division_params.class}"
@@ -294,7 +295,16 @@ class EntityDivision < ApplicationRecord
                                              suburb_id: value["suburb_id"], division_alias: value["division_alias"], sms_sender_id: value["sms_sender_id"], active_status: true, del_status: false)
           logger.info "object is #{for_divisions.inspect}"
           if for_divisions.valid?
-            division_validity = true
+            @entity_wallet_dependent = EntityWalletConfig.where("activity_type_code = '#{value["activity_type_code"]}' AND division_code IS NULL AND entity_code = '#{entity_div_params[:entity_code]}' AND active_status = true").order(created_at: :desc).first
+            if @entity_wallet_dependent
+              division_validity = true
+            else
+              logger.info "test 6"
+              master_wallet_exist = false
+              division_validity = false
+              key_number = key
+              break
+            end
             #if @service_code
             #  logger.info "test 6"
             #  service_code_exist = true
@@ -339,7 +349,7 @@ class EntityDivision < ApplicationRecord
       division_validity = false
     end
 
-    return division_validity, key_number, service_code_exist, same_incoming_service_code, incorrect_sender_id
+    return division_validity, key_number, service_code_exist, same_incoming_service_code, incorrect_sender_id, master_wallet_exist
   end
 
 

@@ -1,2 +1,7 @@
+<% if params[:validator] == "validator" %>
+$("#notes2").html("<%= escape_javascript(render(:partial =>"show")) %>");
+<% else %>
 $("#notes1").html("<%= escape_javascript(render(:partial =>"show")) %>");
+<% end %>
 $('#notice1').html("<%= escape_javascript(render 'layouts/messages') %>");
+

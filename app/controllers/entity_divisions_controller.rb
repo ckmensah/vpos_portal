@@ -664,7 +664,23 @@ class EntityDivisionsController < ApplicationController
 
 
 
-
+  #@entity_master = EntityWalletConfig.where("activity_type_code = '#{@entity_division.activity_type_code}' AND division_code IS NULL AND entity_code = #{@entity_division.entity_code} AND active_status = true")
+  #if @entity_master
+  #  @for_service_codes = AssignedServiceCode.new(entity_div_code: assigned_code, service_code: serv_code,
+  #                                               active_status: true, del_status: false, user_id: current_user.id)
+  #  @for_service_codes.save(validate: false)
+  #
+  #  @entity_division.assigned_code = assigned_code
+  #  @entity_division.save(validate: false)
+  #
+  #  @entity_wallet_conf = EntityWalletConfig.new(entity_code: params[:entity_code], division_code: assigned_code,
+  #                                               service_id: @entity_division.serv_id, secret_key: @entity_division.s_key,
+  #                                               client_key: @entity_division.c_key, active_status: true, del_status: false,
+  #                                               user_id: current_user.id)
+  #  @entity_wallet_conf.save(validate: false)
+  #
+  #  flash.now[:notice] == "Merchant Service has been created successfully."
+  #  format.js { render :show }
 
 
 
@@ -728,7 +744,7 @@ class EntityDivisionsController < ApplicationController
     entity_division_params[:city_town_name].present? ? @suburb_masters = SuburbMaster.where(active_status: true, city_town_id: entity_division_params[:city_town_name]).order(suburb_name: :asc).insert(0,['Please select a suburb', ""]) : @suburb_masters = [["", ""]].insert(0,['Please select a suburb', ""])# SuburbMaster.where(id: 0)
 
     logger.info "Display :: #{@display.inspect} and Display Length :: #{@display_length.inspect}"
-    validity_result, div_num, service_code_exist, same_incoming_service_code, incorrect_sender_id = EntityDivision.validate_entity_divisions(@display, entity_division_params)
+    validity_result, div_num, service_code_exist, same_incoming_service_code, incorrect_sender_id, master_wallet_exist = EntityDivision.validate_entity_divisions(@display, entity_division_params)
     logger.info "Validity result is :: #{validity_result.inspect} and division number is :: #{div_num.inspect} and service code existence :: #{service_code_exist.inspect} and same incoming service code :: #{same_incoming_service_code.inspect}"
     respond_to do |format|
       if validity_result
@@ -752,7 +768,11 @@ class EntityDivisionsController < ApplicationController
               if incorrect_sender_id
                 flash.now[:danger] = "Sorry, minimum characters for SMS sender ID is 3 and maximum is 9. Check number #{div_num} and try again."
               else
-              flash.now[:danger] = div_num == 0 ? "You haven't entered anything yet. Please try again." : "Please ensure that every field has been filled at number #{div_num}."
+                if master_wallet_exist
+                  flash.now[:danger] = div_num == 0 ? "You haven't entered anything yet. Please try again." : "Please ensure that every field has been filled at number #{div_num}."
+                else
+                  flash.now[:danger] = "Sorry, Kindly setup merchant wallet for the activity type at number #{div_num}."
+                end
               end
             end
           end

@@ -1,0 +1,29 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <strong>Assigned code:</strong>
+  <%= @sub_activity_master.assigned_code %>
+</p>
+
+<p>
+  <strong>Activity desc:</strong>
+  <%= @sub_activity_master.activity_desc %>
+</p>
+
+<p>
+  <strong>User:</strong>
+  <%= @sub_activity_master.user_id %>
+</p>
+
+<p>
+  <strong>Active status:</strong>
+  <%= @sub_activity_master.active_status %>
+</p>
+
+<p>
+  <strong>Del status:</strong>
+  <%= @sub_activity_master.del_status %>
+</p>
+
+<%= link_to 'Edit', edit_sub_activity_master_path(@sub_activity_master) %> |
+<%= link_to 'Back', sub_activity_masters_path %>

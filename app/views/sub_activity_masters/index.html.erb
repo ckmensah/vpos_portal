@@ -1,0 +1,35 @@
+<p id="notice"><%= notice %></p>
+
+<h1>Sub Activity Masters</h1>
+
+<table>
+  <thead>
+    <tr>
+      <th>Assigned code</th>
+      <th>Activity desc</th>
+      <th>User</th>
+      <th>Active status</th>
+      <th>Del status</th>
+      <th colspan="3"></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @sub_activity_masters.each do |sub_activity_master| %>
+      <tr>
+        <td><%= sub_activity_master.assigned_code %></td>
+        <td><%= sub_activity_master.activity_desc %></td>
+        <td><%= sub_activity_master.user_id %></td>
+        <td><%= sub_activity_master.active_status %></td>
+        <td><%= sub_activity_master.del_status %></td>
+        <td><%= link_to 'Show', sub_activity_master %></td>
+        <td><%= link_to 'Edit', edit_sub_activity_master_path(sub_activity_master) %></td>
+        <td><%= link_to 'Destroy', sub_activity_master, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<br>
+
+<%= link_to 'New Sub Activity Master', new_sub_activity_master_path %>

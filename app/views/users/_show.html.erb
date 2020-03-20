@@ -36,6 +36,15 @@
               <td><strong><%= @user.contact_number %></strong></td>
             </tr>
 
+            <tr>
+              <td class="raw_theme w3-border cell-cust-grad w3-leftbar"><strong>Portal Credentials:</strong></td>
+              <% if @user.for_portal != nil && @user.for_portal %>
+                <td><strong>Yes</strong></td>
+              <% else %>
+                <td><strong>No</strong></td>
+              <% end %>
+            </tr>
+
 <!--            <tr>-->
 <!--              <td class="raw_theme w3-border cell-cust-grad w3-leftbar"><strong>Role Name:</strong></td>-->
 <!--              <td><strong><%#= @user.role.role_name %></strong></td>-->
@@ -73,8 +82,11 @@
 
           <br/>
           <div class="w3-center">
-            <%= link_to 'Back', user_index_path(page: params[:page], count: params[:count]), class: 'w3-bar-item w3-btn w3-ripple w3-round-large w3-dark-gray', remote: true %>
-          </div>
+            <% if params[:validator] == "validator" %>
+              <%= link_to 'Back', validator_index_path(page: params[:page], count: params[:count]), class: "w3-button w3-white w3-border w3-border-purple w3-small w3-round-large",remote:true %>
+            <% else %>
+              <%= link_to 'Back', user_index_path(page: params[:page], count: params[:count]), class: "w3-button w3-white w3-border w3-border-purple w3-small w3-round-large",remote:true %>
+            <% end %>          </div>
           <br/>
         </div>
 

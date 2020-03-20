@@ -1,5 +1,7 @@
 Rails.application.routes.draw do
 
+  resources :sub_activity_masters
+  resources :entity_div_sub_activities
   root 'home#index'
   #devise_for :users
    get "/users" => redirect("/")
@@ -14,6 +16,7 @@ Rails.application.routes.draw do
   # end
 
   get '/users/user_index' => 'users#user_index', :as => 'user_index'
+  get '/users/validator_index' => 'users#validator_index', :as => 'validator_index'
   get '/users/index' => 'users#index', :as => 'main_users'
   get '/users/new' => 'users#new', :as => 'user_new'
   post '/users/create' => 'users#create', :as => 'user_create'
@@ -78,6 +81,7 @@ Rails.application.routes.draw do
   get '/payment_infos/payment_info_index' => 'payment_infos#payment_info_index', :as => 'payment_info_index'
   #get '/payment_infos/transaction_resend/:id' => 'payment_infos#transaction_resend', :as => 'transaction_resend'
   patch '/payment_infos/transaction_resend/:id' => 'payment_infos#transaction_resend', :as => 'transaction_resend'
+  post '/payment_infos/transaction_resend' => 'payment_infos#transaction_resend', :as => 'transactions_resend'
   get '/payment_infos/resend_form/:id' => 'payment_infos#resend_form', :as => 'resend_form'
   get '/payment_infos/resend_show/:id' => 'payment_infos#resend_show', :as => 'resend_show'
 
