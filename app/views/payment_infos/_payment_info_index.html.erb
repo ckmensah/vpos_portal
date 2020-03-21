@@ -172,7 +172,7 @@
           <td><%= num %></td>
           <!--          <td><%#= payment_info.entity_division.entity_info.entity_name %> (<%#= payment_info.entity_division.entity_info.entity_alias %>)</td>-->
           <% if current_user.super_admin? || current_user.super_user? %>
-            <td><%= payment_info.entity_division.division_name %> <%#= payment_info.entity_division.division_alias %></td>
+            <td><%= payment_info.entity_division.division_name if payment_info.entity_division != nil %> <%#= payment_info.entity_division.division_alias %></td>
           <% elsif current_user.merchant_admin? || current_user.merchant_service? %>
           <% end %>
           <td><%= payment_info.customer_number %></td>

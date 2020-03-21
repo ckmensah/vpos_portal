@@ -1,0 +1,93 @@
+
+<div>
+  <br>
+  <p id="notes14"><%#= notice %></p>
+  <% entity_div = EntityDivision.where(assigned_code: params[:code], active_status: true).order(created_at: :desc).first %>
+  <h4>Merchant Activity Code(s) for <%= entity_div.division_name if entity_div %></h4>
+  <br>
+  <div>
+    <div class="w3-half">
+      <%= link_to 'NEW', new_entity_div_sub_activity_path(entity_code: params[:entity_code], code: params[:code], count: params[:count], page: params[:page]), style: "width:120px;",
+                  class: 'w3-button w3-purple-vpos w3-border w3-border-purple w3-small w3-round-large',remote:true %>
+      <%= link_to 'BACK', entity_division_index_path(entity_code: params[:entity_code], code: params[:code], count: params[:count], page: params[:page]), style: "width:120px;",
+                  class: 'w3-button w3-white w3-border w3-border-purple w3-small w3-round-large',remote:true %>
+    </div>
+    <div class="w3-half">
+      <%= select_tag :count, options_for_select([50, 100, 150, 200, 500], params[:count].to_i),
+                     :data => {  :remote => true, :url => url_for(:controller => "entity_div_sub_activities", :action => "entity_div_sub_activity_index",
+                                                                  :params => {entity_code: params[:entity_code], code: params[:code]})},
+                     id:"record", class: "w3-button w3-white w3-border w3-border-purple w3-round-large",
+                     style: "width:auto; height:35px; float:right", remote:true %>
+    </div>
+  </div>
+  <br>
+  <div class="table-responsive-md">
+    <br>
+    <table class="table w3-responsive table-striped">
+      <thead>
+      <tr>
+        <th></th>
+        <th>Activity Code</th>
+        <th>Code desc</th>
+        <th>Status</th>
+        <th>Date</th>
+        <th>Actions</th>
+      </tr>
+      </thead>
+      <tbody>
+      <% @entity_div_sub_activities.each do |entity_div_sub_activity| %>
+
+
+        <tr>
+          <td><%= link_to 'VIEW', entity_div_sub_activity_path(entity_div_sub_activity, entity_code: params[:entity_code], code: params[:code], count: params[:count], page: params[:page]),
+                          style: "width:100px; height: 30px;",
+                          class: 'w3-button w3-purple-vpos w3-border w3-border-purple w3-tiny w3-round-large', remote:true%></td>
+          <td><strong><%= entity_div_sub_activity.sub_activity_master.activity_desc %> (<%= entity_div_sub_activity.sub_activity_master.assigned_code %>)</strong></td>
+          <td><strong><%= entity_div_sub_activity.div_sub_activity_desc %></strong></td>
+          <% if entity_div_sub_activity.active_status %>
+            <td><strong>Active</strong></td>
+          <% else %>
+            <td><strong>Inactive</strong></td>
+          <% end %>
+          <td><strong><%= entity_div_sub_activity.created_at %></strong></td>
+          <td>
+            <%= link_to 'EDIT', edit_entity_div_sub_activity_path(entity_div_sub_activity, entity_code: params[:entity_code], code: params[:code], count: params[:count], page: params[:page]),
+                        style: "width:100px; height: 30px; color: #800754 !important",
+                        class: 'w3-button w3-white w3-border w3-border-purple w3-tiny w3-round-large', remote:true%>
+            <% if entity_div_sub_activity.active_status %>
+              <%= link_to 'DISABLE', entity_div_sub_activity_path(entity_div_sub_activity, entity_code: params[:entity_code], code: params[:code], count: params[:count], page: params[:page]),
+                          style: "width:100px; height: 30px; color: #800754 !important",
+                          method: :delete, data: { confirm: "Do you wish to disable: #{entity_div_sub_activity.div_sub_activity_desc}?" },
+                          class: 'w3-button w3-white w3-border w3-border-purple w3-tiny w3-round-large', remote:true%>
+            <% else %>
+              <%= link_to 'ENABLE', entity_div_sub_activity_path(entity_div_sub_activity, entity_code: params[:entity_code], code: params[:code], count: params[:count], page: params[:page]),
+                          style: "width:100px; height: 30px;",
+                          method: :delete, data: { confirm: "Do you wish to enable: #{entity_div_sub_activity.div_sub_activity_desc}?" },
+                          class: 'w3-button w3-purple-vpos w3-border w3-border-purple w3-tiny w3-round-large', remote:true%>
+            <% end %>
+
+          </td>
+        </tr>
+
+      <% end %>
+      </tbody>
+    </table>
+    <% unless params[:count] == "All" %>
+      <div class="flickr_pagination"  style="float: right">
+        <%= will_paginate @entity_div_sub_activities, class: "w3-card", renderer: BootstrapPagination::Rails,
+                          :params => { :controller => "entity_div_sub_activities", :action => "entity_div_sub_activity_index", entity_code: params[:entity_code], code: params[:code], count: params[:count], page: params[:page] } %>
+        <%#= js_will_paginate @payment_infos, :params => { :controller => "payment_infos", :action => "payment_info_index" } %>
+      </div>
+    <% end %>
+  </div>
+
+
+</div>
+
+
+<script>
+    $(function(){
+        $('.pagination a').attr('data-remote', 'true')
+    });
+
+</script>

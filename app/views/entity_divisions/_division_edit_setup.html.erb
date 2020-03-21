@@ -624,9 +624,11 @@
         element.setAttribute('class', 'form-control w3-input w3-border w3-white input-group input-append');
         element.setAttribute('style', 'font-weight: bold');
 
+
         // element.setAttribute('prompt', 'Select an Activity Code');
         //Append the options from the arraylist to the "select" element
-        var arraylist = [["Select an Activity Code", ""], ["", ""], ["Donations (DON)", "DON"], ["Levy (LVY)", "LVY"], ["Project (PRJ)", "PRJ"], ["Pledges (PLG)", "PLG"]];
+        // var arraylist = [["Select an Activity Code", ""], ["", ""], ["Donations (DON)", "DON"], ["Levy (LVY)", "LVY"], ["Project (PRJ)", "PRJ"], ["Pledges (PLG)", "PLG"]];
+        var arraylist = <%= @activity_codes.to_json.html_safe %>;
         for (var i = 0; i < arraylist.length; i++) {
             var option = document.createElement("option");
             option.value = arraylist[i][1];

@@ -76,6 +76,7 @@
             <td><strong><%= entity_division.created_at %></strong></td>
             <td>
               <% if entity_division.active_status && entity_division.del_status == false %>
+
                 <% if current_user.super_admin? || current_user.super_user? %>
                   <%= link_to 'SERVICE FEES', assigned_fee_index_path(entity_code: params[:entity_code], code: entity_division.assigned_code, count: params[:count], page: params[:page]),
                               style: "width:100px; height: 30px; color: #800754 !important",
@@ -84,6 +85,12 @@
                   <%#= link_to 'ADD SERVICES', new_entity_division_path(entity_code: entity_info, interface_type: "info", count: params[:count], page: params[:page]),
                               style: "width:120px; height: 30px;",
                               class: 'w3-button w3-purple-vpos w3-border w3-border-purple w3-tiny w3-round-large', remote:true%>
+                <% end %>
+                <% if entity_division.activity_type.assigned_code == "CHC" #|| entity_division.activity_type.assigned_code == "DON" || entity_division.activity_type.assigned_code == "GEN" %>
+                  <%= link_to 'ACTIVITY CODE', entity_div_sub_activity_index_path(entity_code: params[:entity_code], code: entity_division.assigned_code, count: params[:count], page: params[:page]),
+                              style: "width:110px; height: 30px; color: #800754 !important",
+                              class: 'w3-button w3-white w3-border w3-border-purple w3-tiny w3-round-large', remote:true%>
+                <% else %>
                 <% end %>
                 <% if entity_division.activity_type.assigned_code == "SPO" %>
 
@@ -128,7 +135,8 @@
                               class: 'w3-button w3-white w3-border w3-border-purple w3-tiny w3-round-large', remote:true %>
               <% else %>
                   <button class="w3-button w3-white w3-border w3-disabled w3-border-purple w3-tiny w3-round-large" style="width:100px; height: 30px; color: #800754 !important">SERVICE FEES</button>
-                  <button class="w3-button w3-white w3-border w3-disabled w3-border-purple w3-tiny w3-round-large" style="width:65px; height: 30px; color: #800754 !important">SETUP</button>
+                <button class="w3-button w3-white w3-border w3-disabled w3-border-purple w3-tiny w3-round-large" style="width:100px; height: 30px; color: #800754 !important">ACTIVITY CODE</button>
+                <button class="w3-button w3-white w3-border w3-disabled w3-border-purple w3-tiny w3-round-large" style="width:65px; height: 30px; color: #800754 !important">SETUP</button>
                   <button class="w3-button w3-white w3-border w3-disabled w3-border-purple w3-tiny w3-round-large" style="width:50px; height: 30px; color: #800754 !important">EDIT</button>
               <% end %>
 

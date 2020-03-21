@@ -1,7 +1,6 @@
 Rails.application.routes.draw do
 
-  resources :sub_activity_masters
-  resources :entity_div_sub_activities
+
   root 'home#index'
   #devise_for :users
    get "/users" => redirect("/")
@@ -91,6 +90,9 @@ Rails.application.routes.draw do
   get '/activity_div_cats/activity_div_cat_index' => 'activity_div_cats#activity_div_cat_index', :as => 'activity_div_cat_index'
   get '/activity_category_divs/activity_category_div_index/:div_cat_id' => 'activity_category_divs#activity_category_div_index', :as => 'activity_category_div_index'
 
+  get '/sub_activity_masters/sub_activity_master_index' => 'sub_activity_masters#sub_activity_master_index', :as => 'sub_activity_master_index'
+  get '/entity_div_sub_activities/entity_div_sub_activity_index' => 'entity_div_sub_activities#entity_div_sub_activity_index', :as => 'entity_div_sub_activity_index'
+
 
   post '/suburb_masters/city_update', :as => 'suburb_city_ajax_call'
   post '/suburb_masters/suburb_update', :as => 'general_suburb_ajax_call'
@@ -130,6 +132,8 @@ Rails.application.routes.draw do
   resources :roles
   resources :assigned_fees
   resources :entity_admin_whitelists
+  resources :sub_activity_masters
+  resources :entity_div_sub_activities
 
 
 
