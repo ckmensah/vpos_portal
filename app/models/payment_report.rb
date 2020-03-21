@@ -10,6 +10,8 @@ class PaymentReport < ApplicationRecord
     CSV.generate(options) do |csv|
       headers = %w{Merchant Service Reference Selected_Option Activity_Type Mobile_No Name/Reference Network Tranx_ID Gross_Amount Charge Actual_Amount Source Status Date}
       csv << headers
+      actual_amt = 0.000
+      for_gross_amt = 0.000
       general_report.each do |summary|
         # ------code comes here
 
@@ -33,18 +35,28 @@ class PaymentReport < ApplicationRecord
           if @merchant_service_trxn && @merchant_service_trxn.charge != nil
           charge = @merchant_service_trxn.charge
             total_amt = summary.amount.to_f + @merchant_service_trxn.charge.to_f
+            actual_amt = summary.amount.to_f - @merchant_service_trxn.charge.to_f
+          for_gross_amt = summary.amount.to_f
           else
             total_amt = summary.amount.to_f
+            actual_amt = 0.000
+            for_gross_amt = 0.000
           end
         elsif @assigned_fee && @assigned_fee.charged_to == "C"
           if summary.charge != nil
           charge = summary.charge
             total_amt = summary.amount.to_f + summary.charge.to_f
+          actual_amt = summary.amount.to_f
+            for_gross_amt = summary.amount.to_f + summary.charge.to_f
           else
             total_amt = summary.amount.to_f
+            actual_amt = 0.000
+            for_gross_amt = 0.000
           end
         end
 
+        actual_amt = actual_amt.round(3)
+        for_gross_amt = for_gross_amt.round(3)
 
         charge = charge.round(3)
         total_amt = total_amt.round(3)
@@ -64,7 +76,8 @@ class PaymentReport < ApplicationRecord
           status = "Failed"
         end
         date = summary.created_at
-        csv << [merchant, service, reference, lov_name, activity_type, mobile_num, customer_name, network, transaction_id, total_amt, charge, amount, source, status, date] #[merchant, rec_name, summary.pc_name, summary.momo_number, summary.product_name, bags, quantity, summary.amount, summary.exttrid, status, summary.date]
+        #csv << [merchant, service, reference, lov_name, activity_type, mobile_num, customer_name, network, transaction_id, total_amt, charge, amount, source, status, date] #[merchant, rec_name, summary.pc_name, summary.momo_number, summary.product_name, bags, quantity, summary.amount, summary.exttrid, status, summary.date]
+        csv << [merchant, service, reference, lov_name, activity_type, mobile_num, customer_name, network, transaction_id, for_gross_amt, charge, actual_amt, source, status, date] #[merchant, rec_name, summary.pc_name, summary.momo_number, summary.product_name, bags, quantity, summary.amount, summary.exttrid, status, summary.date]
       end
     end
   end

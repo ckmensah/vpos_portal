@@ -137,6 +137,10 @@
       <% amount = 0.000 %>
       <% gross_amt = 0.000 %>
       <% total_charge = 0.000 %>
+      <% total_actual_amt = 0.000 %>
+      <% total_gross_amt = 0.000 %>
+      <% actual_amt = 0.000 %>
+      <% for_gross_amt = 0.000 %>
       <% @payment_infos.each.with_index(@payment_infos.offset + 1) do |payment_info, num| %>
         <% @merchant = EntityDivision.where(active_status: true, assigned_code: payment_info.entity_div_code).order(created_at: :desc).first %>
         <% @merchant_service_trxn = EntityServiceAccountTrxn.where(entity_div_code: payment_info.entity_div_code, processing_id: payment_info.processing_id).order(created_at: :desc).first %>
@@ -150,22 +154,35 @@
           <% if @merchant_service_trxn && @merchant_service_trxn.charge != nil %>
             <% charge = @merchant_service_trxn.charge %>
             <% total_amt = payment_info.amount.to_f + @merchant_service_trxn.charge.to_f %>
+            <% actual_amt = payment_info.amount.to_f - @merchant_service_trxn.charge.to_f %>
+            <% for_gross_amt = payment_info.amount.to_f %>
           <% else %>
             <% total_amt = payment_info.amount.to_f %>
+            <% actual_amt = 0.000 %>
+            <% for_gross_amt = 0.000 %>
           <% end %>
 
         <% elsif @assigned_fee && @assigned_fee.charged_to == "C" %>
           <% if payment_info.charge != nil %>
             <% charge = payment_info.charge %>
             <% total_amt = payment_info.amount.to_f + payment_info.charge.to_f %>
+            <% actual_amt = payment_info.amount.to_f %>
+            <% for_gross_amt = payment_info.amount.to_f + payment_info.charge.to_f %>
           <% else %>
             <% total_amt = payment_info.amount.to_f %>
+            <% actual_amt = 0.000 %>
+            <% for_gross_amt = 0.000 %>
           <% end %>
         <% end %>
+
+        <% total_actual_amt = total_actual_amt + actual_amt %>
+        <% total_gross_amt = total_gross_amt + for_gross_amt %>
+        <% total_charge = total_charge + charge %>
+
         <% total_amt = total_amt.round(3) %>
 
         <% gross_amt = gross_amt.round(3) %>
-        <% total_charge = total_charge + charge %>
+        <%# total_charge = total_charge + charge %>
         <% gross_amt = gross_amt + total_amt %>
         <% logger.info "Merchant Service Transaction:: #{@merchant_service_trxn.inspect}" %>
         <tr>
@@ -188,9 +205,13 @@
           <% end %>
           <td><%= payment_info.customer_number %></td>
           <td><%= payment_info.processing_id if payment_info.processing_id.present? %></td>
-          <td><%= total_amt %></td>
+          <td><%= for_gross_amt.round(3) %></td>
           <td><%= charge.round(3) %></td>
-          <td><%= payment_info.amount %></td>
+          <td><%= actual_amt.round(3) %></td>
+
+<!--          <td><%#= actual_amt %></td>-->
+<!--          <td><%#= charge.round(3) %></td>-->
+<!--          <td><%#= payment_info.amount %></td>-->
           <td><%= payment_info.nw %></td>
           <%# if payment_info.src == "USSD" %>
 <!--            <td>USS</td>-->
@@ -256,9 +277,12 @@
         <% end %>
 
         <td class="w3-vpos-purple" colspan="2"><strong>Total Amount (GHS)</strong></td>
-        <td colspan="1"><strong><%= gross_amt.round(3) %></strong> <%# count %></td>
+<!--        <td colspan="1"><strong><%#= gross_amt.round(3) %></strong> <%## count %></td>-->
+<!--        <td colspan="1"><strong><%#= total_charge.round(3) %></strong> <%## count %></td>-->
+<!--        <td colspan="1"><strong><%#= amount.round(3) %></strong> <%## count %></td> -->
+        <td colspan="1"><strong><%= total_gross_amt.round(3) %></strong> <%# count %></td>
         <td colspan="1"><strong><%= total_charge.round(3) %></strong> <%# count %></td>
-        <td colspan="1"><strong><%= amount.round(3) %></strong> <%# count %></td>
+        <td colspan="1"><strong><%= total_actual_amt.round(3) %></strong> <%# count %></td>
         <td class="w3-vpos-purple" colspan="5"></td>
       </tr>
 
