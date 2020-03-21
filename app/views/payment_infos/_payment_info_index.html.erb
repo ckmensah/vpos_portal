@@ -172,7 +172,18 @@
           <td><%= num %></td>
           <!--          <td><%#= payment_info.entity_division.entity_info.entity_name %> (<%#= payment_info.entity_division.entity_info.entity_alias %>)</td>-->
           <% if current_user.super_admin? || current_user.super_user? %>
-            <td><%= payment_info.entity_division.division_name if payment_info.entity_division != nil %> <%#= payment_info.entity_division.division_alias %></td>
+            <% logger.info "======================================================================" %>
+            <% logger.info "======================================================================" %>
+            <% logger.info "======================================================================" %>
+            <% logger.info "======================================================================" %>
+            <% logger.info "========================== #{payment_info.inspect} =======================" %>
+            <% entity_divi = EntityDivision.where(active_status: true, del_status: false, assigned_code: payment_info.entity_div_code).order(created_at: :desc).first %>
+            <% if entity_divi %>
+              <td><%= payment_info.entity_division.division_name %> <%#= payment_info.entity_division.division_alias %></td>
+            <% else %>
+              <td></td>
+
+            <% end %>
           <% elsif current_user.merchant_admin? || current_user.merchant_service? %>
           <% end %>
           <td><%= payment_info.customer_number %></td>

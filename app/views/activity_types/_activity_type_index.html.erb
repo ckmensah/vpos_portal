@@ -23,6 +23,7 @@
       <thead>
       <tr>
         <th></th>
+        <th>Assigned Code</th>
         <th>Type desc</th>
         <th>Status</th>
         <th>Date</th>
@@ -36,6 +37,7 @@
             <td><%= link_to 'VIEW', activity_type_path(activity_type, count: params[:count], page: params[:page]),
                             style: "width:100px; height: 30px;",
                             class: 'w3-button w3-purple-vpos w3-border w3-border-purple w3-tiny w3-round-large', remote:true%></td>
+            <td><strong><%= activity_type.assigned_code %></td>
             <td><strong><%= activity_type.activity_type_desc %></td>
             <% if activity_type.active_status %>
                 <td><strong>Active</strong></td>
