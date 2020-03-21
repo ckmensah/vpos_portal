@@ -6,7 +6,7 @@ class User < ApplicationRecord
   belongs_to :entity_info, class_name: "EntityInfo", foreign_key: :entity_code
   belongs_to :entity_division, class_name: "EntityDivision", foreign_key: :division_code
 
-  #default_scope {where(active_status: true, for_portal: true)}
+  default_scope {where(active_status: true, for_portal: true)}
 
   validates :user_name, presence: {message: " cannot be empty."} #, uniqueness: {scope: :entity_id, message: "Momo Number has already been set up." }
   validates :last_name, presence: {message: " cannot be empty."}
