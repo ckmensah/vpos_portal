@@ -161,13 +161,13 @@
             <% actual_amt = 0.000 %>
             <% for_gross_amt = 0.000 %>
           <% end %>
-
+      
         <% elsif @assigned_fee && @assigned_fee.charged_to == "C" %>
           <% if payment_info.charge != nil %>
             <% charge = payment_info.charge %>
             <% total_amt = payment_info.amount.to_f + payment_info.charge.to_f %>
-            <% actual_amt = payment_info.amount.to_f %>
-            <% for_gross_amt = payment_info.amount.to_f + payment_info.charge.to_f %>
+            <% actual_amt = payment_info.amount.to_f - payment_info.charge.to_f %>
+            <% for_gross_amt = payment_info.amount.to_f #+ payment_info.charge.to_f %>
           <% else %>
             <% total_amt = payment_info.amount.to_f %>
             <% actual_amt = 0.000 %>
