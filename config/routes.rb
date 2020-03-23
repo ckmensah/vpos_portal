@@ -80,7 +80,7 @@ Rails.application.routes.draw do
   get '/payment_infos/payment_info_index' => 'payment_infos#payment_info_index', :as => 'payment_info_index'
   #get '/payment_infos/transaction_resend/:id' => 'payment_infos#transaction_resend', :as => 'transaction_resend'
   patch '/payment_infos/transaction_resend/:id' => 'payment_infos#transaction_resend', :as => 'transaction_resend'
-  post '/payment_infos/transaction_resend' => 'payment_infos#transaction_resend', :as => 'transactions_resend'
+  post '/payment_infos/transaction_resend/:id' => 'payment_infos#transaction_resend', :as => 'transactions_resend'
   get '/payment_infos/resend_form/:id' => 'payment_infos#resend_form', :as => 'resend_form'
   get '/payment_infos/resend_show/:id' => 'payment_infos#resend_show', :as => 'resend_show'
 

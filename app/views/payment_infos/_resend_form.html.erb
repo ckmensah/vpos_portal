@@ -1,6 +1,4 @@
-
-
-<div class="w3-container" >
+<div class="w3-container">
   <div id="id01" class="w3-modal w3-animate-opacity" style=" display: block">
     <!--<div class="w3-modal-content w3-card-4" >-->
     <!--<br/>-->
@@ -13,24 +11,26 @@
 
         <div class="w3-container w3-border w3-border-purple">
           <br/>
-          <%  %>
+          <% %>
           <% #entity_extra = @entity_info.entity_info_extras.where(active_status: true, del_status: false).order("entity_info_extra.created_at desc").first
              #entity_extra = EntityInfoExtra.where(entity_code: @entity_info.assigned_code, active_status: true, del_status: false).order(created_at: :desc).first
 
           %>
-          <%  %>
+          <% %>
           <div class="w3-container w3-responsive pre-scrollable w3-mobile w3-border w3-border-purple" style="max-height: 30vh">
             <br/>
             <table class="w3-table-all table table-bordered w3-hoverable w3-card-4">
 
               <tr>
                 <td class="raw_theme w3-border w3-border-black w3-leftbar"><strong>Merchant Name:</strong></td>
-                <td><strong><%= @pay_info.entity_division.entity_info.entity_name %> (<%= @pay_info.entity_division.entity_info.entity_alias %>)</strong></td>
+                <td><strong><%= @pay_info.entity_division.entity_info.entity_name %>
+                  (<%= @pay_info.entity_division.entity_info.entity_alias %>)</strong></td>
               </tr>
 
               <tr>
                 <td class="raw_theme w3-border w3-border-black w3-leftbar"><strong>Service Name:</strong></td>
-                <td><strong><%= @pay_info.entity_division.division_name %> (<%= @pay_info.entity_division.division_alias %>)</strong></td>
+                <td><strong><%= @pay_info.entity_division.division_name %>
+                  (<%= @pay_info.entity_division.division_alias %>)</strong></td>
               </tr>
 
               <tr>
@@ -76,10 +76,39 @@
           </div>
           <br/>
 
-          <% if params[:after_submit] == "after_submit"%>
-            <%= simple_form_for(@payment_info, url: transactions_resend_path(@payment_info, params: params.to_unsafe_h, code: params[:code], entity_code: params[:entity_code], count: params[:count], page: params[:page] ),:remote => true) do |f| %>
+          <%# if params[:after_submit] == "after_submit" %>
+            <%#= simple_form_for(@payment_info, url: transactions_resend_path(@payment_info, params: params.to_unsafe_h, code: params[:code], entity_code: params[:entity_code], count: params[:count], page: params[:page]), :remote => true) do |f| %>
 
 
+<!--              <div class="w3-container w3-border w3-border-purple">-->
+
+<!--                <div class="w3-half">-->
+                  <%#= f.input :recipient_mail, label: "Recipient Email", required: true, input_html: {id: "rec_email", value: @recipient_mail, autofocus: true, autocomplete: "off", class: "form-control w3-input w3-border w3-white input-group input-append", style: "width: 90%;"} %>
+<!--                </div>-->
+<!--                <div class="w3-half">-->
+                  <%#= f.input :copy_email, label: "Copy Email", required: true, input_html: {id: "copy_email", value: @copy_email, autocomplete: "off", class: "form-control w3-input w3-border w3-white input-group input-append", style: "width: 90%;"} %>
+<!--                </div>-->
+                <%#= f.input :pay_id, as: :hidden, input_html: {value: @payment_info.id} %>
+
+<!--              </div>-->
+
+<!--              <br/>-->
+<!--              <div class="w3-center">-->
+                <%#= f.submit "Submit", class: "w3-button w3-purple-vpos w3-border w3-border-purple w3-small w3-round-large", :data => {:disable_with => 'Please Wait...'}, style: "width:auto;float:center;", remote: true %>
+                <%#= link_to 'Back', payment_info_index_path(params: params.to_unsafe_h, page: params[:page], count: params[:count]), class: 'w3-button w3-white w3-border w3-border-purple w3-small w3-round-large', remote: true %>
+<!--              </div>-->
+            <%# end %>
+
+          <%# else %>
+
+          <%#
+            if params != nil
+              logger.info "Params object :: #{params.inspect}"
+              #params = params.to_unsafe_h#.except(:payment_info)
+            end
+             logger.info "Params without payment_info key :: #{params.inspect}"
+          %>
+            <%= simple_form_for(@payment_info, url: transaction_resend_path(@payment_info, params: params.to_unsafe_h, code: params[:code], after_submit: "after_submit", entity_code: params[:entity_code], count: params[:count], page: params[:page]), :remote => true) do |f| %>
 
               <div class="w3-container w3-border w3-border-purple">
 
@@ -89,7 +118,8 @@
                 <div class="w3-half">
                   <%= f.input :copy_email, label: "Copy Email", required: true, input_html: {id: "copy_email", value: @copy_email, autocomplete: "off", class: "form-control w3-input w3-border w3-white input-group input-append", style: "width: 90%;"} %>
                 </div>
-                <%#= f.input :pay_id, as: :hidden, input_html: {value: @payment_info.id} %>
+                <%#= f.input :pay_id, as: :hidden, input_html: {value: @pay_info.id} %>
+
 
               </div>
 
@@ -99,33 +129,7 @@
                 <%= link_to 'Back', payment_info_index_path(params: params.to_unsafe_h, page: params[:page], count: params[:count]), class: 'w3-button w3-white w3-border w3-border-purple w3-small w3-round-large', remote: true %>
               </div>
             <% end %>
-
-            <% else %>
-
-              <%= simple_form_for(@payment_info, url: transaction_resend_path(@payment_info, params: params.to_unsafe_h, code: params[:code], after_submit: "after_submit", entity_code: params[:entity_code], count: params[:count], page: params[:page] ),:remote => true) do |f| %>
-
-
-
-                <div class="w3-container w3-border w3-border-purple">
-
-                  <div class="w3-half">
-                    <%= f.input :recipient_mail, label: "Recipient Email", required: true, input_html: {id: "rec_email", value: @recipient_mail, autofocus: true, autocomplete: "off", class: "form-control w3-input w3-border w3-white input-group input-append", style: "width: 90%;"} %>
-                  </div>
-                  <div class="w3-half">
-                    <%= f.input :copy_email, label: "Copy Email", required: true, input_html: {id: "copy_email", value: @copy_email, autocomplete: "off", class: "form-control w3-input w3-border w3-white input-group input-append", style: "width: 90%;"} %>
-                  </div>
-                  <%= f.input :pay_id, as: :hidden, input_html: {value: @pay_info.id} %>
-
-
-                </div>
-
-                <br/>
-                <div class="w3-center">
-                  <%= f.submit "Submit", class: "w3-button w3-purple-vpos w3-border w3-border-purple w3-small w3-round-large", :data => {:disable_with => 'Please Wait...'}, style: "width:auto;float:center;", remote: true %>
-                  <%= link_to 'Back', payment_info_index_path(params: params.to_unsafe_h, page: params[:page], count: params[:count]), class: 'w3-button w3-white w3-border w3-border-purple w3-small w3-round-large', remote: true %>
-                </div>
-              <% end %>
-              <% end %>
+          <%# end %>
 
           <br/>
         </div>

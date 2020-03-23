@@ -262,13 +262,19 @@ class PaymentInfosController < ApplicationController
     logger.info "Resend Cust number :: #{@pay_info.customer_number.inspect}"
   end
 
-
-
+  
 
   def transaction_resend
+    #if params != nil
+    #  logger.info "Params object :: #{params.inspect}"
+    #  params = params.to_enum.to_unsafe_h#.except(:payment_info)
+    #end
+    #logger.info "Params without payment_info key :: #{params.inspect}"
+
     @pay_info = PaymentReport.where(id: @payment_report.id).order(created_at: :desc).first
     @recipient_mail = payment_info_params[:recipient_mail]
     @copy_email = payment_info_params[:copy_email]
+    logger.info "Pay parameters:: recipient mail:: #{@recipient_mail.inspect} and Copy email :: #{@copy_email.inspect}"
     logger.info "Payment ID :: #{params[:payment_id].inspect}"
     endpoint = '/resend_cust_code'
 
@@ -377,6 +383,7 @@ class PaymentInfosController < ApplicationController
         else
           flash.now[:danger] = "Failed Validation."
         end
+
       else
         if @payment_info.errors.messages.key?('recipient_mail')
           flash.now[:danger] = "Failed Validation: Recipient email #{@payment_info.errors.messages[:recipient_mail][0]}"
@@ -466,7 +473,7 @@ class PaymentInfosController < ApplicationController
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_payment_info
-      #@payment_info = PaymentInfo.find(params[:id])
+      @payment_info = PaymentInfo.find(params[:id])
       @payment_report = PaymentReport.find(params[:id])
     end
 

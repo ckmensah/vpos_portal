@@ -226,6 +226,7 @@ class EntityDivisionsController < ApplicationController
     @display_div_num = 1
     @display_act_sub_num = 1
     @entity_division_sub = EntityDivision.where(assigned_code: params[:code], active_status: true).order(created_at: :desc).first
+
     if @entity_division_sub && @entity_division_sub.activity_type_code == "DON"
       @activity_codes = [["Donations (DON)", "DON"]]
     else

@@ -6,7 +6,7 @@ class PaymentInfo < ApplicationRecord
   has_many :payment_requests, class_name: 'PaymentRequest', foreign_key: :payment_info_id
   belongs_to :entity_division, class_name: 'EntityDivision', foreign_key: :entity_div_code
 
-  validates :pay_id, presence: true
+  #validates :pay_id, presence: true
   validates :recipient_mail, format: { with: URI::MailTo::EMAIL_REGEXP }
   validates :copy_email, format: { with: URI::MailTo::EMAIL_REGEXP }
 
