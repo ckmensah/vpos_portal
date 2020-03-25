@@ -108,7 +108,7 @@
             end
              logger.info "Params without payment_info key :: #{params.inspect}"
           %>
-            <%= simple_form_for(@payment_info, url: transaction_resend_path(@payment_info, params: params.to_unsafe_h, code: params[:code], after_submit: "after_submit", entity_code: params[:entity_code], count: params[:count], page: params[:page]), :remote => true) do |f| %>
+            <%= simple_form_for(@payment_info, url: transaction_resend_path(@payment_info, filter_main: params[:filter_main].to_unsafe_h, code: params[:code], after_submit: "after_submit", entity_code: params[:entity_code], count: params[:count], page: params[:page]), :remote => true) do |f| %>
 
               <div class="w3-container w3-border w3-border-purple">
 
@@ -126,7 +126,7 @@
               <br/>
               <div class="w3-center">
                 <%= f.submit "Submit", class: "w3-button w3-purple-vpos w3-border w3-border-purple w3-small w3-round-large", :data => {:disable_with => 'Please Wait...'}, style: "width:auto;float:center;", remote: true %>
-                <%= link_to 'Back', payment_info_index_path(params: params.to_unsafe_h, page: params[:page], count: params[:count]), class: 'w3-button w3-white w3-border w3-border-purple w3-small w3-round-large', remote: true %>
+                <%= link_to 'Back', payment_info_index_path(filter_main: params[:filter_main].to_unsafe_h, page: params[:page], count: params[:count]), class: 'w3-button w3-white w3-border w3-border-purple w3-small w3-round-large', remote: true %>
               </div>
             <% end %>
           <%# end %>

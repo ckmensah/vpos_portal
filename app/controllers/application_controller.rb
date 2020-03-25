@@ -15,6 +15,19 @@ class ApplicationController < ActionController::Base
   #
   #end
   #
+  rescue_from ActionController::InvalidAuthenticityToken do
+
+    respond_to do |format|
+      if request.format.html?
+        flash[:danger] = "Sorry, your session has expired. Kindly try again!"
+        format.html { redirect_to root_url }
+      else
+        flash.now[:note] = "Sorry, your session has expired. Kindly try again!!"
+        format.js { render '/home/index' }
+      end
+
+    end
+  end
 
   rescue_from CanCan::AccessDenied do |exception|
     # redirect_to request.referer

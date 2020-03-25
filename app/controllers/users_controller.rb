@@ -9,8 +9,26 @@ class UsersController < ApplicationController
     params[:count] ? params[:count] : params[:count] = 50
     params[:page].present? ? page = params[:page].to_i : page = 1
 
-    @validators = User.unscoped.where(creator_id: current_user.id, for_portal: false).paginate(:page => page, :per_page => params[:count]).order('created_at desc')
-    @users = User.unscoped.where(creator_id: current_user.id, for_portal: true).paginate(:page => page, :per_page => params[:count]).order('created_at desc')
+
+    if current_user.super_admin?
+      @validators = User.unscoped.where(for_portal: false).paginate(:page => page, :per_page => params[:count]).order('created_at desc')
+      @users = User.unscoped.where(for_portal: true).paginate(:page => page, :per_page => params[:count]).order('created_at desc')
+
+    elsif current_user.super_user?
+      @validators = User.unscoped.where("for_portal = false").paginate(:page => page, :per_page => params[:count]).order('created_at desc')
+      @users = User.unscoped.where("role_id != 1 AND id != #{current_user.id} AND for_portal = true").paginate(:page => page, :per_page => params[:count]).order('created_at desc')
+
+    elsif current_user.merchant_admin?
+      @validators = User.unscoped.where(entity_code: current_user.entity_code, for_portal: false).paginate(:page => page, :per_page => params[:count]).order('created_at desc')
+      @users = User.unscoped.where(entity_code: current_user.entity_code, for_portal: true).paginate(:page => page, :per_page => params[:count]).order('created_at desc')
+
+    elsif current_user.merchant_service?
+      #@validators = User.unscoped.where(entity_code: current_user.entity_code, division_code: current_user.division_code, for_portal: false).paginate(:page => page, :per_page => params[:count]).order('created_at desc')
+      #@users = User.unscoped.where(entity_code: current_user.entity_code, division_code: current_user.division_code, for_portal: true).paginate(:page => page, :per_page => params[:count]).order('created_at desc')
+
+    end
+
+
 
   end
 
@@ -22,8 +40,23 @@ class UsersController < ApplicationController
     #if params[:validator] == "validator"
     #  @validators = User.unscoped.where(creator_id: current_user.id, for_portal: false).paginate(:page => page, :per_page => params[:count]).order('created_at desc')
     #else
-      @users = User.unscoped.where(creator_id: current_user.id, for_portal: true).paginate(:page => page, :per_page => params[:count]).order('created_at desc')
+    #  @users = User.unscoped.where(creator_id: current_user.id, for_portal: true).paginate(:page => page, :per_page => params[:count]).order('created_at desc')
     #end
+    if current_user.super_admin?
+      @validators = User.unscoped.where(for_portal: false).paginate(:page => page, :per_page => params[:count]).order('created_at desc')
+      @users = User.unscoped.where(for_portal: true).paginate(:page => page, :per_page => params[:count]).order('created_at desc')
+
+    elsif current_user.super_user?
+      @validators = User.unscoped.where("for_portal = false").paginate(:page => page, :per_page => params[:count]).order('created_at desc')
+      @users = User.unscoped.where("role_id != 1 AND id != #{current_user.id} AND for_portal = true").paginate(:page => page, :per_page => params[:count]).order('created_at desc')
+
+    elsif current_user.merchant_admin?
+      @validators = User.unscoped.where(entity_code: current_user.entity_code, for_portal: false).paginate(:page => page, :per_page => params[:count]).order('created_at desc')
+      @users = User.unscoped.where(entity_code: current_user.entity_code, for_portal: true).paginate(:page => page, :per_page => params[:count]).order('created_at desc')
+    else
+
+    end
+
   end
 
 
@@ -36,6 +69,15 @@ class UsersController < ApplicationController
     #else
     #  @users = User.unscoped.where(creator_id: current_user.id, for_portal: true).paginate(:page => page, :per_page => params[:count]).order('created_at desc')
     #end
+    #
+    if current_user.super_admin?
+      @validators = User.unscoped.where(for_portal: false).paginate(:page => page, :per_page => params[:count]).order('created_at desc')
+    elsif current_user.super_user?
+      @validators = User.unscoped.where("for_portal = false").paginate(:page => page, :per_page => params[:count]).order('created_at desc')
+    elsif current_user.merchant_admin?
+      @validators = User.unscoped.where(entity_code: current_user.entity_code, for_portal: false).paginate(:page => page, :per_page => params[:count]).order('created_at desc')
+    else
+    end
   end
 
 
@@ -148,10 +190,26 @@ class UsersController < ApplicationController
       @user.save(validate: false)
       if params[:validator] == "validator"
         flash.now[:note] = 'Validator was successfully disabled.'
-        @validators = User.unscoped.where(creator_id: current_user.id, for_portal: false).paginate(:page => page, :per_page => params[:count]).order('created_at desc')
+        #@validators = User.unscoped.where(creator_id: current_user.id, for_portal: false).paginate(:page => page, :per_page => params[:count]).order('created_at desc')
+        if current_user.super_admin?
+          @validators = User.unscoped.where(for_portal: false).paginate(:page => page, :per_page => params[:count]).order('created_at desc')
+        elsif current_user.super_user?
+          @validators = User.unscoped.where("for_portal = false").paginate(:page => page, :per_page => params[:count]).order('created_at desc')
+        elsif current_user.merchant_admin?
+          @validators = User.unscoped.where(entity_code: current_user.entity_code, for_portal: false).paginate(:page => page, :per_page => params[:count]).order('created_at desc')
+        else
+        end
       else
         flash.now[:note] = 'User was successfully disabled.'
-        @users = User.unscoped.where(creator_id: current_user.id, for_portal: true).paginate(:page => page, :per_page => params[:count]).order('created_at desc')
+        #@users = User.unscoped.where(creator_id: current_user.id, for_portal: true).paginate(:page => page, :per_page => params[:count]).order('created_at desc')
+        if current_user.super_admin?
+          @users = User.unscoped.where(for_portal: true).paginate(:page => page, :per_page => params[:count]).order('created_at desc')
+        elsif current_user.super_user?
+          @users = User.unscoped.where("role_id != 1 AND id != #{current_user.id} AND for_portal = true").paginate(:page => page, :per_page => params[:count]).order('created_at desc')
+        elsif current_user.merchant_admin?
+          @users = User.unscoped.where(entity_code: current_user.entity_code, for_portal: true).paginate(:page => page, :per_page => params[:count]).order('created_at desc')
+        else
+        end
       end
       respond_to do |format|
         format.html { redirect_to users_url, notice: 'Occupation master was successfully disabled.' }
@@ -164,10 +222,26 @@ class UsersController < ApplicationController
       @user.save(validate: false)
       if params[:validator] == "validator"
         flash.now[:notice] = 'Validator was successfully enabled.'
-        @validators = User.unscoped.where(creator_id: current_user.id, for_portal: false).paginate(:page => page, :per_page => params[:count]).order('created_at desc')
+        #@validators = User.unscoped.where(creator_id: current_user.id, for_portal: false).paginate(:page => page, :per_page => params[:count]).order('created_at desc')
+        if current_user.super_admin?
+          @validators = User.unscoped.where(for_portal: false).paginate(:page => page, :per_page => params[:count]).order('created_at desc')
+        elsif current_user.super_user?
+          @validators = User.unscoped.where("for_portal = false").paginate(:page => page, :per_page => params[:count]).order('created_at desc')
+        elsif current_user.merchant_admin?
+          @validators = User.unscoped.where(entity_code: current_user.entity_code, for_portal: false).paginate(:page => page, :per_page => params[:count]).order('created_at desc')
+        else
+        end
       else
         flash.now[:notice] = 'User was successfully enabled.'
-        @users = User.unscoped.where(creator_id: current_user.id, for_portal: true).paginate(:page => page, :per_page => params[:count]).order('created_at desc')
+        #@users = User.unscoped.where(creator_id: current_user.id, for_portal: true).paginate(:page => page, :per_page => params[:count]).order('created_at desc')
+        if current_user.super_admin?
+          @users = User.unscoped.where(for_portal: true).paginate(:page => page, :per_page => params[:count]).order('created_at desc')
+        elsif current_user.super_user?
+          @users = User.unscoped.where("role_id != 1 AND id != #{current_user.id} AND for_portal = true").paginate(:page => page, :per_page => params[:count]).order('created_at desc')
+        elsif current_user.merchant_admin?
+          @users = User.unscoped.where(entity_code: current_user.entity_code, for_portal: true).paginate(:page => page, :per_page => params[:count]).order('created_at desc')
+        else
+        end
       end
       respond_to do |format|
         format.html { redirect_to users_url, notice: 'Allergy master was successfully enabled.' }
@@ -176,6 +250,7 @@ class UsersController < ApplicationController
       end
     end
 
+    
   end
 
 

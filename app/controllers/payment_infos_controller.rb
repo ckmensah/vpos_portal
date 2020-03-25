@@ -262,14 +262,15 @@ class PaymentInfosController < ApplicationController
     logger.info "Resend Cust number :: #{@pay_info.customer_number.inspect}"
   end
 
-  
+
 
   def transaction_resend
     #if params != nil
     #  logger.info "Params object :: #{params.inspect}"
-    #  params = params.to_enum.to_unsafe_h#.except(:payment_info)
+    #  params = params.permit([:payment_info]).to_h#.except(:payment_info)
     #end
     #logger.info "Params without payment_info key :: #{params.inspect}"
+
 
     @pay_info = PaymentReport.where(id: @payment_report.id).order(created_at: :desc).first
     @recipient_mail = payment_info_params[:recipient_mail]
@@ -331,20 +332,20 @@ class PaymentInfosController < ApplicationController
           resp_desc = the_resp["resp_desc"]
           logger.info "Response Description :: #{resp_desc.inspect}"
           if resp_code == "00"
-            payment_info_index
+            #payment_info_index
             flash.now[:notice] = "Resend was successful."
             respond_to do |format|
               format.js { render :resend_show }
             end
           else
-            payment_info_index
+            #payment_info_index
             flash.now[:danger] = "Sorry, resend failed. Kindly try again."
             respond_to do |format|
               format.js { render :resend_form }
             end
           end
         else
-          payment_info_index
+          #payment_info_index
           lgger.info "Not a Valid JSON ==============="
           flash.now[:danger] = "Sorry, There was an issue. Kindly check and try again."
           respond_to do |format|
@@ -352,21 +353,21 @@ class PaymentInfosController < ApplicationController
           end
         end
       rescue Faraday::SSLError
-        payment_info_index
+        #payment_info_index
         logger.info "SSL Error ==============="
         flash.now[:danger] = "Sorry, There was an issue. Kindly check and try again."
         respond_to do |format|
           format.js { render :resend_form }
         end
       rescue Faraday::TimeoutError
-        payment_info_index
+        #payment_info_index
         logger.info "Timeout Error ================="
         flash.now[:danger] = "Sorry, There was a timeout issue. Kindly check and try again."
         respond_to do |format|
           format.js { render :resend_form }
         end
       rescue Faraday::Error::ConnectionFailed => e
-        payment_info_index
+        #payment_info_index
         logger.info "Connection Failed ================"
         logger.info "Error message :: #{e} ==================="
         flash.now[:danger] = "Sorry, There was a connection issue. Kindly check and try again."
@@ -376,8 +377,9 @@ class PaymentInfosController < ApplicationController
       end
     else
 
-      payment_info_index
-      if @payment_info.errors.messages.key?('recipient_mail') && @payment_info.errors.messages.key?('copy_email')
+      #payment_info_index
+      if @payment_info.errors.messages.key?(:recipient_mail) && @payment_info.errors.messages.key?(:copy_email)
+        logger.info "First Phase"
         if @payment_info.errors.messages[:recipient_mail][0].present? && @payment_info.errors.messages[:copy_email][0].present?
           flash.now[:danger] = "Failed Validation: Recipient email #{@payment_info.errors.messages[:recipient_mail][0]} and Copy email #{@payment_info.errors.messages[:copy_email][0]}"
         else
@@ -385,12 +387,13 @@ class PaymentInfosController < ApplicationController
         end
 
       else
-        if @payment_info.errors.messages.key?('recipient_mail')
+        logger.info "Second Phase"
+        if @payment_info.errors.messages.key?(:recipient_mail)
           flash.now[:danger] = "Failed Validation: Recipient email #{@payment_info.errors.messages[:recipient_mail][0]}"
-        elsif @payment_info.errors.messages.key?('copy_email')
+        elsif @payment_info.errors.messages.key?(:copy_email)
           flash.now[:danger] = "Failed Validation: Copy email #{@payment_info.errors.messages[:copy_email][0]}"
         else
-          flash.now[:danger] = "Failed Validation."
+          flash.now[:danger] = "Failed Validation.."
         end
       end
       logger.info "Error messages :: #{@payment_info.errors.messages.inspect}"
