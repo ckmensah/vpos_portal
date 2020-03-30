@@ -72,9 +72,11 @@
           <% end %>
           <td><%= assigned_fee.created_at %></td>
           <td>
+            <% if current_user.super_admin? %>
             <%= link_to 'EDIT', edit_assigned_fee_path(assigned_fee, code: params[:code], entity_code: params[:entity_code], count: params[:count], page: params[:page]),
                         style: "width:60px; height: 30px; color: #800754 !important",
                         class: 'w3-button w3-white w3-border w3-border-purple w3-tiny w3-round-large', remote:true%>
+              <% end %>
             <% if assigned_fee.active_status %>
               <%= link_to 'DISABLE', assigned_fee_path(assigned_fee, code: params[:code], entity_code: params[:entity_code], count: params[:count], page: params[:page]),
                           style: "width:70px; height: 30px; color: #800754 !important",

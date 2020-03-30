@@ -100,14 +100,13 @@
 
               <% @merchant_service_trxn = EntityServiceAccountTrxn.where(entity_div_code: @pay_info.entity_div_code, processing_id: @pay_info.processing_id).order(created_at: :desc).first %>
               <% @assigned_fee = AssignedFee.where(entity_div_code: @pay_info.entity_div_code).order(created_at: :desc).first %>
-
-
+              
               <tr>
                 <td class="raw_theme w3-border w3-border-black w3-leftbar"><strong>Charge:</strong></td>
                 <%# if @assigned_fee && @assigned_fee.charged_to == "C" %>
                 <% logger.info "========================== Charge on pay table is #{@pay_info.charge}, class : #{@pay_info.charge.class}" %>
-                <% if@pay_info.charge == 0.000 %>
-                  <% logger.info "========================== Charge is #{@merchant_service_trxn.charge}" %>
+                <% if @pay_info.charge == 0.000 %>
+                  <% logger.info "========================== Charge is #{@merchant_service_trxn.charge.inspect}" %>
                   <td><strong><%= @merchant_service_trxn.charge %></strong></td>
 
                 <%# elsif @merchant_service_trxn && @assigned_fee && @assigned_fee.charged_to == "M" %>
