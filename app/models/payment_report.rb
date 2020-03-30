@@ -31,7 +31,8 @@ class PaymentReport < ApplicationRecord
         @merchant_service_trxn = EntityServiceAccountTrxn.where(entity_div_code: summary.entity_div_code, processing_id: summary.processing_id).order(created_at: :desc).first
         @assigned_fee = AssignedFee.where(entity_div_code: summary.entity_div_code).order(created_at: :desc).first
 
-        if @assigned_fee && @assigned_fee.charged_to == "M"
+        #if @assigned_fee && @assigned_fee.charged_to == "M"
+        if summary.charge == 0.000
           if @merchant_service_trxn && @merchant_service_trxn.charge != nil
           charge = @merchant_service_trxn.charge
             total_amt = summary.amount.to_f + @merchant_service_trxn.charge.to_f
@@ -42,12 +43,13 @@ class PaymentReport < ApplicationRecord
             actual_amt = 0.000
             for_gross_amt = 0.000
           end
-        elsif @assigned_fee && @assigned_fee.charged_to == "C"
+        #elsif @assigned_fee && @assigned_fee.charged_to == "C"
+        else
           if summary.charge != nil
           charge = summary.charge
             total_amt = summary.amount.to_f + summary.charge.to_f
-          actual_amt = summary.amount.to_f
-            for_gross_amt = summary.amount.to_f + summary.charge.to_f
+          actual_amt = summary.amount.to_f - summary.charge.to_f
+            for_gross_amt = summary.amount.to_f #+ summary.charge.to_f
           else
             total_amt = summary.amount.to_f
             actual_amt = 0.000

@@ -25,7 +25,7 @@
 
             </div>
 
-            
+
             <div class="w3-half">
               <%= f.input :limit_capped,  label: "Capped Limit", value_method: :id, required: false, input_html:{id: "limit_capped", autocomplete: "off",class:"form-control w3-input w3-border w3-white input-group input-append",style:""}  %>
               <%= f.input :charged_to,  label: "Charged To:", collection: [["Merchant", "M"], ["Customer", "C"]], label_method: :first, value_method: :last, required: true, input_html:{id: "charge", autocomplete: "off",class:"form-control w3-input w3-border w3-white input-group input-append",style:""}  %>
@@ -35,6 +35,7 @@
 
 
             <%#= f.input :trans_type, :as => :hidden, input_html:{value: "CTM"} %>
+            <%= f.input :entity_div_code, :as => :hidden, input_html:{value: @assigned_fee.entity_div_code} %>
             <%= f.input :active_status, :as => :hidden, input_html:{value: true} %>
             <%= f.input :del_status, :as => :hidden, input_html:{value: false} %>
             <%= f.input :user_id, :as => :hidden, input_html:{value: current_user.id} %>

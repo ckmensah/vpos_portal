@@ -63,20 +63,48 @@ class AssignedFeesController < ApplicationController
   # PATCH/PUT /assigned_fees/1
   # PATCH/PUT /assigned_fees/1.json
   def update
-    respond_to do |format|
-      if @assigned_fee.update(assigned_fee_params)
+    @new_record = AssignedFee.new(assigned_fee_params)
 
-        flash.now[:notice] = "Assigned Fee was successfully updated."
-        format.js { render :show}
-        format.html { redirect_to @assigned_fee, notice: 'Assigned fee was successfully updated.' }
-        format.json { render :show, status: :ok, location: @assigned_fee }
+    respond_to do |format|
+      if @new_record.valid?
+        #@assigned_fee.update(assigned_fee_params)
+        if @new_record.save
+          AssignedFee.update_last_but_one("assigned_fees", "entity_div_code", @assigned_fee.entity_div_code)
+          flash.now[:notice] = "Assigned Fee was successfully updated."
+          format.js { render :show}
+          format.html { redirect_to @assigned_fee, notice: 'Assigned fee was successfully updated.' }
+          format.json { render :show, status: :ok, location: @assigned_fee }
+        else
+          #@assigned_fee.update(assigned_fee_params)
+          flash.now[:notice] = "Assigned Fee was successfully updated."
+          format.js { render :edit }
+          format.html { render :edit }
+          format.json { render json: @assigned_fee.errors, status: :unprocessable_entity }
+        end
+
       else
+        flash.now[:notice] = "Assigned Fee was successfully updated."
         format.js { render :edit }
         format.html { render :edit }
         format.json { render json: @assigned_fee.errors, status: :unprocessable_entity }
       end
 
     end
+
+    #respond_to do |format|
+    #  if @assigned_fee.update(assigned_fee_params)
+    #
+    #    flash.now[:notice] = "Assigned Fee was successfully updated."
+    #    format.js { render :show}
+    #    format.html { redirect_to @assigned_fee, notice: 'Assigned fee was successfully updated.' }
+    #    format.json { render :show, status: :ok, location: @assigned_fee }
+    #  else
+    #    format.js { render :edit }
+    #    format.html { render :edit }
+    #    format.json { render json: @assigned_fee.errors, status: :unprocessable_entity }
+    #  end
+    #
+    #end
   end
 
   # DELETE /assigned_fees/1
@@ -114,7 +142,9 @@ class AssignedFeesController < ApplicationController
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_assigned_fee
-      @assigned_fee = AssignedFee.find(params[:id])
+      #@assigned_fee = AssignedFee.find(params[:id])
+      @assigned_fee = AssignedFee.where(entity_div_code: params[:id], active_status: true, del_status: false).order('id desc').first
+
     end
 
     # Never trust parameters from the scary internet, only allow the white list through.
