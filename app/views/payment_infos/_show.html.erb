@@ -104,24 +104,28 @@
 
               <tr>
                 <td class="raw_theme w3-border w3-border-black w3-leftbar"><strong>Charge:</strong></td>
-                <% if @assigned_fee && @assigned_fee.charged_to == "C" %>
-                  <td><strong><%= @pay_info.charge %></strong></td>
-                <% elsif @merchant_service_trxn && @assigned_fee && @assigned_fee.charged_to == "M" %>
+                <%# if @assigned_fee && @assigned_fee.charged_to == "C" %>
+                <% if@pay_info.charge == 0.000 %>
                   <td><strong><%= @merchant_service_trxn.charge %></strong></td>
+
+                <%# elsif @merchant_service_trxn && @assigned_fee && @assigned_fee.charged_to == "M" %>
+
                 <% else %>
-                  <td><strong></strong></td>
+                  <td><strong><%= @pay_info.charge %></strong></td>
                 <% end %>
               </tr>
 
                 <tr>
                   <td class="raw_theme w3-border w3-border-black w3-leftbar"><strong>Charge To:</strong></td>
 
-                  <% if @assigned_fee && @assigned_fee.charged_to == "C" %>
-                    <td><strong>Customer</strong></td>
-                  <% elsif @assigned_fee && @assigned_fee.charged_to == "M" %>
+                  <%# if @assigned_fee && @assigned_fee.charged_to == "C" %>
+                  <% if @pay_info.charge == 0.000 %>
+                    <% logger.info "Charge for Merchant" %>
                     <td><strong>Merchant</strong></td>
+                  <%# elsif @assigned_fee && @assigned_fee.charged_to == "M" %>
                   <% else %>
-                    <td><strong>No Charges Recorded</strong></td>
+                    <td><strong>Customer</strong></td>
+<!--                    <td><strong>No Charges Recorded</strong></td>-->
                   <% end %>
                 </tr>
 
