@@ -15,7 +15,7 @@ class PaymentInfosController < ApplicationController
       @merchant_search = EntityInfo.where(active_status: true).order(entity_name: :asc)
       @merchant_service_search = EntityDivision.where(active_status: true).order(division_name: :asc)
       @division_lovs = DivisionActivityLov.where(active_status: true).order(lov_desc: :asc)
-      @payment_infos = PaymentReport.paginate(:page => params[:page], :per_page => params[:count]).order('created_at desc')
+      @payment_infos = PaymentReport.where("split_part(trans_status, '/', 1) = '000'").paginate(:page => params[:page], :per_page => params[:count]).order('created_at desc')
     elsif current_user.merchant_admin?
       @merchant_service_search = EntityDivision.where(active_status: true, entity_code: current_user.entity_code).order(division_name: :asc)
       entity_div_id_str = "'0'"
@@ -24,7 +24,7 @@ class PaymentInfosController < ApplicationController
         entity_div_id_str << ",'#{entity_div.assigned_code}'"
       end
       final_div_ids = "(#{entity_div_id_str})"
-      @payment_infos = PaymentReport.where("entity_div_code IN #{final_div_ids}").paginate(:page => params[:page], :per_page => params[:count]).order('created_at desc')
+      @payment_infos = PaymentReport.where("split_part(trans_status, '/', 1) = '000' AND entity_div_code IN #{final_div_ids} ").paginate(:page => params[:page], :per_page => params[:count]).order('created_at desc')
       @division_lovs = DivisionActivityLov.where("active_status = true AND division_code IN #{final_div_ids}").order(lov_desc: :asc)
     elsif current_user.merchant_service?
       entity_div_id_str = "'0'"
@@ -35,8 +35,8 @@ class PaymentInfosController < ApplicationController
         end
       end
       final_div_ids = "(#{entity_div_id_str})"
-      @division_lovs = DivisionActivityLov.where("active_status = true AND division_code IN #{final_div_ids}").order(lov_desc: :asc)
-      @payment_infos = PaymentReport.where(entity_div_code: current_user.division_code).paginate(:page => params[:page], :per_page => params[:count]).order('created_at desc')
+      @division_lovs = DivisionActivityLov.where("division_code IN #{final_div_ids}").order(lov_desc: :asc)
+      @payment_infos = PaymentReport.where("split_part(trans_status, '/', 1) = '000' AND entity_div_code =' #{current_user.division_code}'").paginate(:page => params[:page], :per_page => params[:count]).order('created_at desc')
     end
     #logger.info "Report #{@payment_infos.inspect}"
   end
@@ -185,9 +185,12 @@ class PaymentInfosController < ApplicationController
       if @status.present?
         if @status == "NIL"
           search_arr << "trans_status IS NULL"
+          #search_arr << "split_part(trans_status, '/', 1) = '000'"
         else
           search_arr << "split_part(trans_status, '/', 1) = '#{@status}'"
         end
+      else
+        search_arr << "split_part(trans_status, '/', 1) = '000'"
       end
 
       if @start_date.present? && @end_date.present?
