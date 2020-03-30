@@ -201,6 +201,8 @@ class PaymentInfosController < ApplicationController
         end
       end
       logger.info "Values :: #{filter_params.inspect}"
+    else
+      search_arr << "split_part(trans_status, '/', 1) = '000'"
     end
     the_search = search_arr.join(" AND ")
 
