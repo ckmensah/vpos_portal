@@ -36,10 +36,11 @@ class PaymentInfosController < ApplicationController
       end
       final_div_ids = "(#{entity_div_id_str})"
       @division_lovs = DivisionActivityLov.where("division_code IN #{final_div_ids}").order(lov_desc: :asc)
-      @payment_infos = PaymentReport.where("split_part(trans_status, '/', 1) = '000' AND entity_div_code =' #{current_user.division_code}'").paginate(:page => params[:page], :per_page => params[:count]).order('created_at desc')
+      @payment_infos = PaymentReport.where("split_part(trans_status, '/', 1) = '000' AND entity_div_code = '#{current_user.division_code}'").paginate(:page => params[:page], :per_page => params[:count]).order('created_at desc')
     end
     #logger.info "Report #{@payment_infos.inspect}"
   end
+  
 
 
   def payment_info_index
