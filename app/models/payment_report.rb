@@ -31,7 +31,7 @@ class PaymentReport < ApplicationRecord
         service = summary.entity_division ? summary.entity_division.division_name : ""
         reference = summary.reference.present? ? summary.reference : ""
         lov_name = summary.division_activity_lov ? summary.division_activity_lov.lov_desc : ""
-        activity_type = summary.entity_division.activity_type ? summary.entity_division.activity_type.activity_type_desc : ""
+        activity_type = (summary.entity_division != nil && summary.entity_division.activity_type) ? summary.entity_division.activity_type.activity_type_desc : ""
         mobile_num = summary.customer_number
         customer_name = summary.customer_name
         network = summary.nw
