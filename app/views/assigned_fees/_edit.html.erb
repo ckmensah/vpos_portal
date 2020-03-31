@@ -34,7 +34,7 @@
             </div>
 
 
-            <%#= f.input :trans_type, :as => :hidden, input_html:{value: "CTM"} %>
+            <%= f.input :trans_type, :as => :hidden, input_html:{value: @assigned_fee.trans_type} %>
             <%= f.input :entity_div_code, :as => :hidden, input_html:{value: @assigned_fee.entity_div_code} %>
             <%= f.input :active_status, :as => :hidden, input_html:{value: true} %>
             <%= f.input :del_status, :as => :hidden, input_html:{value: false} %>

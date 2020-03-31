@@ -40,7 +40,8 @@ class PaymentInfosController < ApplicationController
     end
     #logger.info "Report #{@payment_infos.inspect}"
   end
-  
+
+
 
 
   def payment_info_index

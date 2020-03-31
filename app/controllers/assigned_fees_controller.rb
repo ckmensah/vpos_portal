@@ -66,7 +66,11 @@ class AssignedFeesController < ApplicationController
     @new_record = AssignedFee.new(assigned_fee_params)
 
     respond_to do |format|
-      if @new_record.valid?
+      @assigned_fee.fee = assigned_fee_params[:fee]
+      @assigned_fee.flat_percent = assigned_fee_params[:flat_percent]
+      @assigned_fee.charged_to = assigned_fee_params[:charged_to]
+      #@assigned_fee.entity_div_code = assigned_fee_params[:entity_div_code]
+      if @assigned_fee.valid? && @new_record.valid?
         #@assigned_fee.update(assigned_fee_params)
         if @new_record.save
           AssignedFee.update_last_but_one("assigned_fees", "entity_div_code", @assigned_fee.entity_div_code)
@@ -76,13 +80,16 @@ class AssignedFeesController < ApplicationController
           format.json { render :show, status: :ok, location: @assigned_fee }
         else
           #@assigned_fee.update(assigned_fee_params)
-          flash.now[:notice] = "Assigned Fee was successfully updated."
+          logger.info "Error messages 2 :: #{@new_record.errors.messages.inspect}"
+          flash.now[:notice] = "Fees could not edit."
           format.js { render :edit }
           format.html { render :edit }
           format.json { render json: @assigned_fee.errors, status: :unprocessable_entity }
         end
 
       else
+        logger.info "Error messages 1 :: #{@new_record.errors.messages.inspect}"
+        logger.info "Error messages 3 :: #{@assigned_fee.errors.messages.inspect}"
         flash.now[:notice] = "Assigned Fee was successfully updated."
         format.js { render :edit }
         format.html { render :edit }
