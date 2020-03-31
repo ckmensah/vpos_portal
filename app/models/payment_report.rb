@@ -16,7 +16,7 @@ class PaymentReport < ApplicationRecord
         # ------code comes here
 
         logger.info "General report :: #{summary.inspect}"
-        merchant = summary.entity_division.entity_info ? summary.entity_division.entity_info.entity_name : ""
+        merchant = (summary.entity_division.entity_info && summary.entity_division != nil) ? summary.entity_division.entity_info.entity_name : ""
         service = summary.entity_division ? summary.entity_division.division_name : ""
         reference = summary.reference.present? ? summary.reference : ""
         lov_name = summary.division_activity_lov ? summary.division_activity_lov.lov_desc : ""
