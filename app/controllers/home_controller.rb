@@ -17,7 +17,7 @@ class HomeController < ApplicationController
       @service_account_details = EntityServiceAccountTrxn.where(entity_div_code: "0").order(created_at: :desc)
 
     elsif current_user.merchant_admin?
-      @payment_service = EntityDivision.where(active_status: true, assigned_code: current_user.division_code)
+      #@payment_service = EntityDivision.where(active_status: true, assigned_code: current_user.division_code)
       division_str = "'0'"
       entity_str = "'0'"
       #@merchant = EntityInfo.where("LOWER(entity_name) LIKE '%#{@entity_name.downcase}%'")
@@ -27,9 +27,13 @@ class HomeController < ApplicationController
       @entity_divis.each { |entity_div| division_str << ",'#{entity_div.assigned_code}'" } if @entity_divis.exists?
       final_div_str = "(#{division_str})"
       logger.info "Final Div Str :: #{final_div_str.inspect}"
+      @payment_service = EntityDivision.where("active_status = true AND assigned_code IN #{final_div_str}")
 
-      @service_account = EntityServiceAccount.where("entity_div_code IN #{final_div_str}").order(created_at: :desc).first
-      @service_account_details = EntityServiceAccountTrxn.where("entity_div_code IN #{final_div_str}").order(created_at: :desc)
+
+      @service_account_gross = EntityServiceAccount.where("entity_div_code IN #{final_div_str}").order(created_at: :desc).sum(:gross_bal)
+      @service_account_net = EntityServiceAccount.where("entity_div_code IN #{final_div_str}").order(created_at: :desc).sum(:net_bal)
+      @service_account = EntityServiceAccount.where("entity_div_code IN #{final_div_str}").order(created_at: :desc)
+      @service_account_details = EntityServiceAccountTrxn.where("entity_div_code IN #{final_div_str}").order(created_at: :desc).limit(5)
 
       @payment_reports = PaymentReport.where("created_at BETWEEN '#{Time.now.strftime('%Y-%m-%d')} 00:00:00' AND '#{Time.now.strftime('%Y-%m-%d')} 23:59:59' AND entity_div_code IN #{final_div_str} AND nw IS NOT NULL")
       #@payment_success_count = PaymentReport.where("split_part(trans_status, '/', 1) = '000' AND entity_div_code IN #{final_info_str}").count
@@ -143,7 +147,13 @@ class HomeController < ApplicationController
         search_arr << "entity_div_code = '#{@division_name}'"
       end
     elsif current_user.merchant_admin?
-      @payment_service = EntityDivision.where(active_status: true, assigned_code: current_user.division_code)
+      #@payment_service = EntityDivision.where(active_status: true, assigned_code: current_user.division_code)
+      division_str = "'0'"
+      @entity_divis = EntityDivision.where("active_status = true AND entity_code = '#{current_user.entity_code}'")
+      @entity_divis.each { |entity_div| division_str << ",'#{entity_div.assigned_code}'" } if @entity_divis.exists?
+      final_div_str = "(#{division_str})"
+      logger.info "Final Div Str  :: #{final_div_str.inspect}"
+      @payment_service = EntityDivision.where("active_status = true AND assigned_code IN #{final_div_str}")
 
       if @division_name.present?
         search_arr << "entity_div_code = '#{@division_name}'"
@@ -189,8 +199,15 @@ class HomeController < ApplicationController
       @pay_success = @payment_reports.where("split_part(trans_status, '/', 1) = '000'")
       @pay_fail = @payment_reports.where("split_part(trans_status, '/', 1) != '000' AND trans_status IS NOT NULL")
 
-      @service_account = EntityServiceAccount.where("entity_div_code IN #{final_div_str}").order(created_at: :desc).first
-      @service_account_details = EntityServiceAccountTrxn.where("entity_div_code IN #{final_div_str}").order(created_at: :desc)
+      if @division_name.present?
+        @service_account = EntityServiceAccount.where(entity_div_code: @division_name).order(created_at: :desc).first
+        @service_account_details = EntityServiceAccountTrxn.where(entity_div_code: @division_name).order(created_at: :desc).limit(5)
+      else
+        @service_account_gross = EntityServiceAccount.where("entity_div_code IN #{final_div_str}").order(created_at: :desc).sum(:gross_bal)
+        @service_account_net = EntityServiceAccount.where("entity_div_code IN #{final_div_str}").order(created_at: :desc).sum(:net_bal)
+        @service_account = EntityServiceAccount.where("entity_div_code IN #{final_div_str}").order(created_at: :desc).first
+        @service_account_details = EntityServiceAccountTrxn.where("entity_div_code IN #{final_div_str}").order(created_at: :desc).limit(5)
+      end
 
     elsif current_user.merchant_service?
       #if params[:filtered] == "filtered"

@@ -64,7 +64,9 @@ class DivisionActivityLovsController < ApplicationController
     end
   end
 
+
   private
+
     # Use callbacks to share common setup or constraints between actions.
     def set_division_activity_lov
       @division_activity_lov = DivisionActivityLov.find(params[:id])
@@ -72,6 +74,7 @@ class DivisionActivityLovsController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def division_activity_lov_params
-      params.require(:division_activity_lov).permit(:activity_code, :division_code, :lov_desc, :comment, :active_status, :del_status, :user_id)
+      params.require(:division_activity_lov).permit(:activity_code, :division_code, :lov_desc, :assigned_amount, :comment, :active_status, :del_status, :user_id)
     end
+
 end

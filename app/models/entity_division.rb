@@ -391,8 +391,15 @@ class EntityDivision < ApplicationRecord
         div_lov_params.each do |key, value|
           if division_code.present? && value["activity_code"].present? && value["lov_desc"].present?
             logger.info "SAVING ..................."
-            for_division_lov = DivisionActivityLov.new(activity_code: value["activity_code"], lov_desc: value["lov_desc"], user_id: current_user.id,
-                                                       division_code: division_code, active_status: true, del_status: false)
+            if value.key?("assigned_amount")
+              for_division_lov = DivisionActivityLov.new(activity_code: value["activity_code"], lov_desc: value["lov_desc"], user_id: current_user.id,
+                                                         division_code: division_code, assigned_amount: value["assigned_amount"], active_status: true, del_status: false)
+
+            else
+              for_division_lov = DivisionActivityLov.new(activity_code: value["activity_code"], lov_desc: value["lov_desc"], user_id: current_user.id,
+                                                         division_code: division_code, assigned_amount: nil, active_status: true, del_status: false)
+
+            end
 
             for_division_lov.save(validate: false)
           else
@@ -615,15 +622,27 @@ class EntityDivision < ApplicationRecord
               division_activity_lov = DivisionActivityLov.where(id: value["id"], active_status: true).first
               if division_activity_lov
                 logger.info "=== UPDATING Division LOV ..................."
-                division_activity_lov.update!(activity_code: value["activity_code"], lov_desc: value["lov_desc"], user_id: current_user.id)
+                if value.key?("assigned_amount")
+                  division_activity_lov.update!(activity_code: value["activity_code"], assigned_amount: value["assigned_amount"], lov_desc: value["lov_desc"], user_id: current_user.id)
+                else
+                  division_activity_lov.update!(activity_code: value["activity_code"], assigned_amount: nil, lov_desc: value["lov_desc"], user_id: current_user.id)
+                end
                 #division_activity_lov.activity_code = value["activity_code"]
                 #division_activity_lov.lov_desc = value["lov_desc"]
                 #division_activity_lov.save(validate: false)
               end
             else
               logger.info "=== SAVING Division LOV ..................."
-              for_division_lov = DivisionActivityLov.new(activity_code: value["activity_code"], lov_desc: value["lov_desc"],
-                                                         division_code: division_code, active_status: true, del_status: false, user_id: current_user.id)
+
+              if value.key?("assigned_amount")
+                for_division_lov = DivisionActivityLov.new(activity_code: value["activity_code"], lov_desc: value["lov_desc"], user_id: current_user.id,
+                                                           division_code: division_code, assigned_amount: value["assigned_amount"], active_status: true, del_status: false)
+
+              else
+                for_division_lov = DivisionActivityLov.new(activity_code: value["activity_code"], lov_desc: value["lov_desc"],
+                                                           division_code: division_code, assigned_amount: nil, active_status: true, del_status: false, user_id: current_user.id)
+
+              end
 
               for_division_lov.save!(validate: false)
             end

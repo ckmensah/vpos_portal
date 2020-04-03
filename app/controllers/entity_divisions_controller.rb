@@ -229,6 +229,8 @@ class EntityDivisionsController < ApplicationController
 
     if @entity_division_sub && @entity_division_sub.activity_type_code == "DON"
       @activity_codes = [["Donations (DON)", "DON"]]
+    elsif @entity_division_sub && @entity_division_sub.activity_type_code == "PDD"
+      @activity_codes = [["Predefined Donation (PDD)", "PDD"]]
     else
       @entity_div_sub_activities = EntityDivSubActivity.where(entity_div_code: params[:code], active_status: true, del_status: false).order(div_sub_activity_desc: :asc)
       @activity_codes = @entity_div_sub_activities.map { |a| ["#{a.div_sub_activity_desc} (#{a.sub_activity_code})", "#{a.sub_activity_code}"] }.insert(0,['Select an Activity Code', ""])
@@ -285,6 +287,8 @@ class EntityDivisionsController < ApplicationController
     @entity_division_sub = EntityDivision.where(assigned_code: params[:code], active_status: true).order(created_at: :desc).first
     if @entity_division_sub && @entity_division_sub.activity_type_code == "DON"
       @activity_codes = [["Donations (DON)", "DON"]]
+    elsif @entity_division_sub && @entity_division_sub.activity_type_code == "PDD"
+      @activity_codes = [["Predefined Donation (PDD)", "PDD"]]
     else
       @entity_div_sub_activities = EntityDivSubActivity.where(entity_div_code: params[:code], active_status: true, del_status: false).order(div_sub_activity_desc: :asc)
       @activity_codes = @entity_div_sub_activities.map { |a| ["#{a.div_sub_activity_desc} (#{a.sub_activity_code})", "#{a.sub_activity_code}"] }.insert(0,['Select an Activity Code', ""])
@@ -383,6 +387,8 @@ class EntityDivisionsController < ApplicationController
     @entity_division_sub = EntityDivision.where(assigned_code: params[:code], active_status: true).order(created_at: :desc).first
     if @entity_division_sub && @entity_division_sub.activity_type_code == "DON"
       @activity_codes = [["Donations (DON)", "DON"]]
+    elsif @entity_division_sub && @entity_division_sub.activity_type_code == "PDD"
+      @activity_codes = [["Predefined Donation (PDD)", "PDD"]]
     else
       @entity_div_sub_activities = EntityDivSubActivity.where(entity_div_code: params[:code], active_status: true, del_status: false).order(div_sub_activity_desc: :asc)
       @activity_codes = @entity_div_sub_activities.map { |a| ["#{a.div_sub_activity_desc} (#{a.sub_activity_code})", "#{a.sub_activity_code}"] }.insert(0,['Select an Activity Code', ""])
@@ -439,6 +445,8 @@ class EntityDivisionsController < ApplicationController
     @entity_division_sub = EntityDivision.where(assigned_code: params[:code], active_status: true).order(created_at: :desc).first
     if @entity_division_sub && @entity_division_sub.activity_type_code == "DON"
       @activity_codes = [["Donations (DON)", "DON"]]
+    elsif @entity_division_sub && @entity_division_sub.activity_type_code == "PDD"
+      @activity_codes = [["Predefined Donation (PDD)", "PDD"]]
     else
       @entity_div_sub_activities = EntityDivSubActivity.where(entity_div_code: params[:code], active_status: true, del_status: false).order(div_sub_activity_desc: :asc)
       @activity_codes = @entity_div_sub_activities.map { |a| ["#{a.div_sub_activity_desc} (#{a.sub_activity_code})", "#{a.sub_activity_code}"] }.insert(0,['Select an Activity Code', ""])

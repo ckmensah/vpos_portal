@@ -57,6 +57,9 @@
                   <!--                    <th><strong>No.</strong></th>-->
                   <%# end %>
                   <th><strong>Activity Code</strong></th>
+                  <% if @div_activity_type == "PDD" %>
+                    <th><strong>Amount</strong></th>
+                  <% end %>
                   <th><strong>Description</strong></th>
                   <th><strong>Delete</strong></th>
                   <!--<th><strong>Name &emsp;&emsp;&emsp;&emsp;</strong></th>-->
@@ -74,7 +77,16 @@
                       <%# act_type = ActivityType.where(assigned_code: the_params["activity_type_code"], active_status: true).last %>
                       <tr id="del_div_lov_<%= count %>">
                         <!--                        <td><strong><%#= count %></strong></td>-->
-                        <td style=""><strong><%= collection_select :the_div_acts_lov, "#{count}[activity_code]", @activity_codes, :last, :first, {selected: the_params["activity_code"], :prompt => 'Select an Activity Code', :include_blank => true}, {id: "act_code_#{count}", class:"form-control w3-input w3-border w3-white input-group input-append", style:"" } %></strong></td>
+
+                        <% if @div_activity_type == "PDD" || @div_activity_type == "DON" %>
+                          <td style=""><strong><%= collection_select :the_div_acts_lov, "#{count}[activity_code]", @activity_codes, :last, :first, {selected: the_params["activity_code"], :prompt => 'Select an Activity Code', :include_blank => true}, {id: "act_code_#{count}", class:"form-control w3-input w3-border w3-white input-group input-append", style:"" } %></strong></td>
+                        <% else %>
+                          <td style=""><strong><%= collection_select :the_div_acts_lov, "#{count}[activity_code]", @activity_codes, :last, :first, {selected: the_params["activity_code"], :prompt => 'Select an Activity Code', :include_blank => true}, {id: "act_code_#{count}", class:"form-control w3-input w3-border w3-white input-group input-append", style:"" } %></strong></td>
+                        <% end %>
+
+                        <% if @div_activity_type == "PDD" %>
+                          <td><strong><input type="number" name="the_div_acts_lov[<%= count %>[assigned_amount]]" value="<%= the_params["assigned_amount"] %>" autocomplete="off" min="0" placeholder="Enter amount" class="form-control w3-input w3-border w3-white input-group input-append"></strong></td>
+                        <% end %>
                         <td><strong><textarea name="the_div_acts_lov[<%= count %>[lov_desc]]" rows="1" placeholder="Description" class="form-control"><%= the_params["lov_desc"] %></textarea></strong></td>
                         <td><strong><button type="button" onclick="deleteRow('del_div_lov_<%= count %>'); return false;" class="w3-button w3-purple-vpos w3-border w3-border-purple w3-tiny w3-round-large"></button></strong></td>
                         <input type="hidden" name="the_div_acts_lov[<%= count %>[id]]" value="<%= the_params["id"] %>" >
@@ -95,7 +107,16 @@
                     <%# pcs_do = ActivityType.where(id: the_params[:id]).last %>
                     <tr id="del_div_lov_<%= count %>">
                       <!--                      <td><strong><%#= count %></strong></td>-->
-                      <td style=""><strong><%= collection_select :the_div_acts_lov, "#{count}[activity_code]", @activity_codes, :last, :first, { :selected => division_activity_lov.activity_code, :prompt => 'Select an Activity Code', :include_blank => true}, {id: "act_code_#{count}", class:"form-control w3-input w3-border w3-white input-group input-append", style:"" } %></strong></td>
+                      <% if @div_activity_type == "PDD" || @div_activity_type == "DON" %>
+                        <td style=""><strong><%= collection_select :the_div_acts_lov, "#{count}[activity_code]", @activity_codes, :last, :first, { :selected => division_activity_lov.activity_code, :prompt => 'Select an Activity Code', :include_blank => false}, {id: "act_code_#{count}", class:"form-control w3-input w3-border w3-white input-group input-append", style:"" } %></strong></td>
+                      <% else %>
+                        <td style=""><strong><%= collection_select :the_div_acts_lov, "#{count}[activity_code]", @activity_codes, :last, :first, { :selected => division_activity_lov.activity_code, :prompt => 'Select an Activity Code', :include_blank => true}, {id: "act_code_#{count}", class:"form-control w3-input w3-border w3-white input-group input-append", style:"" } %></strong></td>
+                      <% end %>
+
+
+                      <% if @div_activity_type == "PDD" %>
+                        <td><strong><input type="number" name="the_div_acts_lov[<%= count %>[assigned_amount]]" autocomplete="off" min="0" value="<%= division_activity_lov.assigned_amount %>" placeholder="Enter amount" class="form-control w3-input w3-border w3-white input-group input-append"></strong></td>
+                      <% end %>
                       <td><strong><textarea name="the_div_acts_lov[<%= count %>[lov_desc]]" rows="1" placeholder="Description" class="form-control"><%= division_activity_lov.lov_desc %></textarea></strong></td>
                       <td><strong><button onclick="deleteRow('del_div_lov_<%= count %>'); return false;" class="w3-button w3-purple-vpos w3-border w3-border-purple w3-tiny w3-round-large"></button></strong></td>
                       <input type="hidden" name="the_div_acts_lov[<%= count %>[id]]" value="<%= division_activity_lov.id %>" >
@@ -637,7 +658,26 @@
         }
         cell1.appendChild(element);
 
+        <% if @div_activity_type == "PDD" %>
+        var cell4       = row.insertCell(1);
+        var element3    = document.createElement("input");
+        element3.type = "number";
+        element3.setAttribute('name', 'the_div_acts_lov['+ tableCount + '[assigned_amount]]');
+        element3.setAttribute('autocomplete', 'off');
+        element3.setAttribute('min', '0');
+        // element2.setAttribute('oninput', `validity.valid||(value='');`);
+        element3.setAttribute('class', 'form-control w3-input w3-border w3-white input-group input-append');
+        element3.setAttribute('placeholder', 'Enter Amount');
+        element3.setAttribute('style', 'font-weight: bold');
+        cell4.appendChild(element3);
+        <% end %>
+
+        <% if @div_activity_type == "PDD" %>
+        var cell2       = row.insertCell(2);
+        <% else %>
         var cell2       = row.insertCell(1);
+        <% end %>
+
         var element1    = document.createElement("textarea");
         element1.setAttribute('name', 'the_div_acts_lov['+ tableCount + '[lov_desc]]');
         element1.setAttribute('rows', '1');
@@ -646,7 +686,13 @@
         element1.setAttribute('style', 'font-weight: bold');
         cell2.appendChild(element1);
 
+
+        <% if @div_activity_type == "PDD" %>
+        var cell3      = row.insertCell(3);
+        <% else %>
         var cell3      = row.insertCell(2);
+        <% end %>
+
         row.setAttribute('id', 'del_div_lov_'+tableCount);
         var element2    = document.createElement("button");
         element2.type   = "button";
