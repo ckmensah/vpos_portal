@@ -80,23 +80,24 @@
       <div class="w3-half">
 <!--        <br>-->
         <br>
-        <div class="w3-responsive col-md-12 col-md-offset-0 w3-mobile">
-          <table class="w3-responsive table-striped w3-table-all table-bordered w3-hoverable w3-card-4">
-            <tr class="w3-vpos-purple">
-              <td><h5><strong>Net Balance (Amount GHS)</strong></h5></td>
-            </tr>
-            <tr>
-              <% if current_user.merchant_admin? && !@division_name.present? %>
-                <td style="text-align: center"><h2><strong>GHS <%= @service_account_net %></strong></h2></td>
-              <% else %>
-                <td style="text-align: center"><h2><strong>GHS <%= @service_account.net_bal %></strong></h2></td>
-              <% end %>
+<!--        <div class="w3-responsive col-md-12 col-md-offset-0 w3-mobile">-->
+<!--          <table class="w3-responsive table-striped w3-table-all table-bordered w3-hoverable w3-card-4">-->
+<!--            <tr class="w3-vpos-purple">-->
+<!--              <td><h5><strong>Net Balance (Amount GHS)</strong></h5></td>-->
+<!--            </tr>-->
+<!--            <tr>-->
+              <%# if current_user.merchant_admin? && !@division_name.present? %>
+<!--                <td style="text-align: center"><h2><strong>GHS <%#= @service_account_net %></strong></h2></td>-->
+              <%# else %>
+<!--                <td style="text-align: center"><h2><strong>GHS <%#= @service_account.net_bal %></strong></h2></td>-->
+              <%# end %>
 
-            </tr>
-          </table>
-        </div>
-        <br>
+<!--            </tr>-->
+<!--          </table>-->
+<!--        </div>-->
+<!--        <br>-->
       </div>
+
       
     </div>
 
