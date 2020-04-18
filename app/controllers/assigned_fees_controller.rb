@@ -81,7 +81,7 @@ class AssignedFeesController < ApplicationController
         else
           #@assigned_fee.update(assigned_fee_params)
           logger.info "Error messages 2 :: #{@new_record.errors.messages.inspect}"
-          flash.now[:notice] = "Fees could not edit."
+          flash.now[:notice] = "Fees could not be edit."
           format.js { render :edit }
           format.html { render :edit }
           format.json { render json: @assigned_fee.errors, status: :unprocessable_entity }
@@ -90,7 +90,7 @@ class AssignedFeesController < ApplicationController
       else
         logger.info "Error messages 1 :: #{@new_record.errors.messages.inspect}"
         logger.info "Error messages 3 :: #{@assigned_fee.errors.messages.inspect}"
-        flash.now[:notice] = "Assigned Fee was successfully updated."
+        #flash.now[:notice] = "Assigned Fee was successfully updated."
         format.js { render :edit }
         format.html { render :edit }
         format.json { render json: @assigned_fee.errors, status: :unprocessable_entity }
@@ -145,7 +145,7 @@ class AssignedFeesController < ApplicationController
       end
     end
   end
-
+  
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_assigned_fee

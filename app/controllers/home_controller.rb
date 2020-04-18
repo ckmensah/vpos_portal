@@ -200,7 +200,8 @@ class HomeController < ApplicationController
       @pay_fail = @payment_reports.where("split_part(trans_status, '/', 1) != '000' AND trans_status IS NOT NULL")
 
       if @division_name.present?
-        @service_account = EntityServiceAccount.where(entity_div_code: @division_name).order(created_at: :desc).first
+        logger.info "I WAS HERE .............."
+        @service_account = EntityServiceAccount.where("entity_div_code = '#{@division_name}'").order(created_at: :desc).first
         @service_account_details = EntityServiceAccountTrxn.where(entity_div_code: @division_name).order(created_at: :desc).limit(5)
       else
         @service_account_gross = EntityServiceAccount.where("entity_div_code IN #{final_div_str}").order(created_at: :desc).sum(:gross_bal)

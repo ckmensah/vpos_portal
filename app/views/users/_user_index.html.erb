@@ -28,8 +28,8 @@
         <th></th>
         <th>Full Name</th>
         <th>User Name</th>
-        <th>Contact Number</th>
-        <th>Email</th>
+        <th>Merchant/Service</th>
+        <th>User Type</th>
         <th>Status</th>
         <th>Date</th>
         <th>Actions</th>
@@ -38,6 +38,15 @@
       <tbody>
       <% @users.each do |user| %>
 
+        <% if user.entity_code.present? && user.division_code.present? && user.access_type == 'S' %>
+          <% entity_user = EntityDivision.where(active_status: true, assigned_code: user.division_code).order(created_at: :desc).first %>
+          <% entity_user_name = entity_user.present? ? entity_user.division_name : "" %>
+        <% elsif user.entity_code.present? && user.access_type == 'M' && (user.division_code == nil || user.division_code == "") %>
+        <% entity_user = EntityInfo.where(active_status: true, assigned_code: user.entity_code).order(created_at: :desc).first %>
+        <% entity_user_name = entity_user.present? ? entity_user.entity_name : "" %>
+        <% else %>
+          <% entity_user_name = "appsNmobile" %>
+        <% end %>
 
           <tr>
             <td><%= link_to 'VIEW', user_show_path(user, count: params[:count], page: params[:page]),
@@ -45,8 +54,18 @@
                             class: 'w3-button w3-purple-vpos w3-border w3-border-purple w3-tiny w3-round-large', remote:true%></td>
             <td><strong><%= user.last_name %> <%= user.first_name %></strong></td>
             <td><strong><%= user.user_name %></strong></td>
-            <td><strong><%= user.contact_number %></strong></td>
-            <td><strong><%= user.email %></strong></td>
+            <% if entity_user_name.present? && entity_user_name.size >= 20 %>
+              <td><strong><%= entity_user_name[0..19] %>...</strong></td>
+            <% elsif entity_user_name.present? %>
+              <td><strong><%= entity_user_name %></strong></td>
+            <% else %>
+              <td><strong><%= entity_user_name %></strong></td>
+            <% end %>
+            <td><strong><%= user.access_type.present? ? user.access_type : 'A' %></strong></td>
+<!--            <td><strong><%#= user.contact_number %></strong></td>-->
+<!--            <td><strong><%#= user.email %></strong></td>-->
+
+
             <% if user.active_status %>
                 <td><strong>Active</strong></td>
             <% else %>

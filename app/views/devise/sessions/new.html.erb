@@ -32,11 +32,11 @@
             <%= f.input :user_name,
                         required: false,
                         autofocus: true, label: false,
-                        input_html: {placeholder: "Username", autocomplete: "user-name", class: "submissionfield", id: ""} %>
+                        input_html: {placeholder: "Username", autocomplete: "off", class: "submissionfield", id: ""} %>
             <br>
             <%= f.input :password,
                         required: false, label: false,
-                        input_html: { placeholder: "Password", autocomplete: "current-password", class: "submissionfield" } %>
+                        input_html: { placeholder: "Password", autocomplete: "off", class: "submissionfield" } %>
             <br>
             <%#= f.input :remember_me, as: :boolean if devise_mapping.rememberable? %>
             <div class="form-actions w3-center">
