@@ -192,7 +192,7 @@ class PaymentInfosController < ApplicationController
           search_arr << "split_part(trans_status, '/', 1) = '#{@status}'"
         end
       else
-        search_arr << "split_part(trans_status, '/', 1) = '000'"
+        #search_arr << "split_part(trans_status, '/', 1) = '000'"
       end
 
       if @start_date.present? && @end_date.present?
@@ -204,7 +204,7 @@ class PaymentInfosController < ApplicationController
       end
       logger.info "Values :: #{filter_params.inspect}"
     else
-      search_arr << "split_part(trans_status, '/', 1) = '000'"
+      #search_arr << "split_part(trans_status, '/', 1) = '000'"
     end
     the_search = search_arr.join(" AND ")
 

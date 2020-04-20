@@ -885,6 +885,7 @@ class EntityDivisionsController < ApplicationController
           end
         end
 
+        @entity_division.sms_sender_id = @new_record.sms_sender_id
         format.html { redirect_to @entity_division, notice: 'Entity division was successfully updated.' }
         flash.now[:notice] = "Merchant Service was successfully updated."
         format.js { render :show}

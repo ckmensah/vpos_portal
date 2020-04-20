@@ -8,7 +8,7 @@ class PaymentReport < ApplicationRecord
 
   def self.to_csv(general_report, options = {})
     CSV.generate(options) do |csv|
-      headers = %w{Merchant Service Reference Selected_Option Activity_Type Mobile_No Name/Reference Network Tranx_ID Gross_Amount Charge Actual_Amount Source Status Date}
+      headers = %w{Merchant Service Reference Selected_Option Activity_Type Mobile_No Name/Reference Network Tranx_ID Gross_Amount M-Charge C-Charge Actual_Amount Source Status Date}
       csv << headers
       actual_amt = 0.000
       for_gross_amt = 0.000
@@ -38,6 +38,8 @@ class PaymentReport < ApplicationRecord
         transaction_id = summary.processing_id
         amount = summary.amount
         charge = 0.000
+        m_charge = 0.000
+        c_charge = 0.000
         total_amt = 0.000
         @merchant_service_trxn = EntityServiceAccountTrxn.where(entity_div_code: summary.entity_div_code, processing_id: summary.processing_id).order(created_at: :desc).first
         @assigned_fee = AssignedFee.where(entity_div_code: summary.entity_div_code).order(created_at: :desc).first
@@ -46,6 +48,8 @@ class PaymentReport < ApplicationRecord
         if summary.charge == 0.000
           if @merchant_service_trxn && @merchant_service_trxn.charge != nil
           charge = @merchant_service_trxn.charge
+            m_charge = charge
+            c_charge = payment_info.charge
             total_amt = summary.amount.to_f + @merchant_service_trxn.charge.to_f
             actual_amt = summary.amount.to_f - @merchant_service_trxn.charge.to_f
           for_gross_amt = summary.amount.to_f
@@ -58,6 +62,8 @@ class PaymentReport < ApplicationRecord
         else
           if summary.charge != nil
           charge = summary.charge
+          m_charge = @merchant_service_trxn && @merchant_service_trxn.charge != nil ? @merchant_service_trxn.charge : 0.00
+          c_charge = charge
             total_amt = summary.amount.to_f + summary.charge.to_f
           actual_amt = summary.amount.to_f - summary.charge.to_f
             for_gross_amt = summary.amount.to_f #+ summary.charge.to_f
@@ -90,7 +96,8 @@ class PaymentReport < ApplicationRecord
         end
         date = summary.created_at
         #csv << [merchant, service, reference, lov_name, activity_type, mobile_num, customer_name, network, transaction_id, total_amt, charge, amount, source, status, date] #[merchant, rec_name, summary.pc_name, summary.momo_number, summary.product_name, bags, quantity, summary.amount, summary.exttrid, status, summary.date]
-        csv << [merchant, service, reference, lov_name, activity_type, mobile_num, customer_name, network, transaction_id, for_gross_amt, charge, actual_amt, source, status, date] #[merchant, rec_name, summary.pc_name, summary.momo_number, summary.product_name, bags, quantity, summary.amount, summary.exttrid, status, summary.date]
+        #csv << [merchant, service, reference, lov_name, activity_type, mobile_num, customer_name, network, transaction_id, for_gross_amt, charge, actual_amt, source, status, date] #[merchant, rec_name, summary.pc_name, summary.momo_number, summary.product_name, bags, quantity, summary.amount, summary.exttrid, status, summary.date]
+        csv << [merchant, service, reference, lov_name, activity_type, mobile_num, customer_name, network, transaction_id, for_gross_amt, m_charge, c_charge, actual_amt, source, status, date] #[merchant, rec_name, summary.pc_name, summary.momo_number, summary.product_name, bags, quantity, summary.amount, summary.exttrid, status, summary.date]
       end
     end
   end
