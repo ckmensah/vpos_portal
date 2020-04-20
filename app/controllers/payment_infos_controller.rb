@@ -10,6 +10,7 @@ class PaymentInfosController < ApplicationController
     params[:count] ? params[:count] : params[:count] = 50
     params[:page] ? params[:page] : params[:page] = 1
 
+    @success_status = "000"
     #@payment_infos = PaymentReport.paginate(:page => params[:page], :per_page => params[:count]).order('created_at desc')
     if current_user.super_admin? || current_user.super_user?
       @merchant_search = EntityInfo.where(active_status: true).order(entity_name: :asc)
@@ -78,6 +79,7 @@ class PaymentInfosController < ApplicationController
         params[:start_date] = filter_params[:start_date]
         params[:end_date] = filter_params[:end_date]
       else
+
         if  params[:entity_name].present? || params[:division_name].present? || params[:activity_type].present? || params[:lov_name].present? || params[:cust_num].present? || params[:trans_id].present? || params[:nw].present? || params[:status].present? || params[:start_date].present? || params[:end_date].present?
 
           @entity_name = params[:entity_name]
@@ -195,6 +197,7 @@ class PaymentInfosController < ApplicationController
         #search_arr << "split_part(trans_status, '/', 1) = '000'"
       end
 
+
       if @start_date.present? && @end_date.present?
         f_start_date =  @start_date.to_date.strftime('%Y-%m-%d') # Date.strptime(@start_date, '%m/%d/%Y') # @start_date.to_date.strftime('%Y-%m-%d')
         f_end_date = @end_date.to_date.strftime('%Y-%m-%d') # Date.strptime(@end_date, '%m/%d/%Y') # @end_date.to_date.strftime('%Y-%m-%d')
@@ -204,8 +207,21 @@ class PaymentInfosController < ApplicationController
       end
       logger.info "Values :: #{filter_params.inspect}"
     else
+      #logger.info "====================================================================="
+      #logger.info "ALL SHALL PASS......"
       #search_arr << "split_part(trans_status, '/', 1) = '000'"
     end
+
+    if params[:filter_main].present?
+      logger.info "::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::"
+      logger.info "WHEN THERE IS FILTER, THE RESULT SHOULD BE ALL STATUSES UNLESS STATED OTHERWISE......"
+    else
+
+      logger.info "====================================================================="
+      logger.info "WHEN THERE IS NO FILTER, THE RESULT SHOULD BE ONLY SUCCESSES......"
+      search_arr << "split_part(trans_status, '/', 1) = '000'"
+    end
+
     the_search = search_arr.join(" AND ")
 
     #@reports = Report.where(the_search).paginate(:page => page, :per_page => params[:count]).order(date: :desc)

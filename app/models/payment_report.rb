@@ -8,6 +8,7 @@ class PaymentReport < ApplicationRecord
 
   def self.to_csv(general_report, options = {})
     CSV.generate(options) do |csv|
+      #headers = %w{Merchant Service Reference Selected_Option Activity_Type Mobile_No Name/Reference Network Tranx_ID Gross_Amount Charge Actual_Amount Source Status Date}
       headers = %w{Merchant Service Reference Selected_Option Activity_Type Mobile_No Name/Reference Network Tranx_ID Gross_Amount M-Charge C-Charge Actual_Amount Source Status Date}
       csv << headers
       actual_amt = 0.000
@@ -49,7 +50,7 @@ class PaymentReport < ApplicationRecord
           if @merchant_service_trxn && @merchant_service_trxn.charge != nil
           charge = @merchant_service_trxn.charge
             m_charge = charge
-            c_charge = payment_info.charge
+            c_charge = summary.charge
             total_amt = summary.amount.to_f + @merchant_service_trxn.charge.to_f
             actual_amt = summary.amount.to_f - @merchant_service_trxn.charge.to_f
           for_gross_amt = summary.amount.to_f
