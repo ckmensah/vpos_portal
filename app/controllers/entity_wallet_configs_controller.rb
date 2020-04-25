@@ -66,6 +66,7 @@ class EntityWalletConfigsController < ApplicationController
     @entity_info = EntityInfo.where(assigned_code: @entity_wallet_config.entity_code).order('created_at desc').first
     if @entity_wallet_config.active_status
       @entity_wallet_config.active_status = false
+      #@entity_wallet_config.del_status = true
       @entity_wallet_config.save(validate: false)
       # EntityInfo.disable_by_update_onef("entity_info","assigned_code",@entity_info.assigned_code)
       # @entity_infos = EntityInfo.where(del_status: false).paginate(:page => params[:page], :per_page => params[:count]).order('created_at desc')
@@ -76,9 +77,9 @@ class EntityWalletConfigsController < ApplicationController
         format.json { head :no_content }
         # window.location.href = "<%= recipe_path(@recipe) %>"
       end
-
     else
       @entity_wallet_config.active_status = true
+      #@entity_wallet_config.del_status = false
       @entity_wallet_config.save(validate: false)
       # EntityInfo.enable_by_update_onet("entity_info","assigned_code",@entity_info.assigned_code)
       # @entity_infos = EntityInfo.where(del_status: false).paginate(:page => params[:page], :per_page => params[:count]).order('created_at desc')

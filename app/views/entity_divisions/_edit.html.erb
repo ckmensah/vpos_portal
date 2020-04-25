@@ -21,10 +21,24 @@
 
               <%= f.error_notification %>
               <%= f.error_notification message: f.object.errors[:base].to_sentence if f.object.errors[:base].present? %>
-            <div class="w3-container col-md-4 offset-md-4" style="width: 40%">
-              <div class="w3-half"><label>Allow QR</label></div>
+<!--            <div class="w3-container col-md-4 offset-md-4" style="width: 40%">-->
+<!--              <div class="w3-half"><label>Allow QR</label></div>-->
+<!--              <div class="w3-half">-->
+                <%#= f.input :allow_qr, label: false, as: :boolean, required: false, input_html: {id: "allow_qr", autocomplete: "off", class: "", style: "display: block; float: left; width: 50%"} %>
+<!--              </div>-->
+<!--            </div>-->
+
+            <div class="w3-container " style="">
+
               <div class="w3-half">
-                <%= f.input :allow_qr, label: false, as: :boolean, required: false, input_html: {id: "allow_qr", autocomplete: "off", class: "", style: "display: block; float: left; width: 50%"} %>
+<!--                <div class=""><label>Allow QR</label></div>-->
+                <%= f.input :allow_qr, label: "Allow QR", as: :boolean, required: false, input_html: {id: "allow_qr", autocomplete: "off", class: "", style: "display: block; float: left; width: 50%"} %>
+              </div>
+
+              <div class="w3-half">
+<!--                <div class=""><label>Link Master</label></div>-->
+                <%= f.input :link_master, label: "Link To Merchant", as: :boolean, required: false, input_html: {id: "link_master", autocomplete: "off", class: "", style: "display: block; float: left; width: 50%"} %>
+<!--              <h6 id="link_master">sdfsdf</h6>-->
               </div>
               <br><br>
             </div>
@@ -38,26 +52,32 @@
 
               </div>
 
+
               <div class="w3-half">
                 <%= f.input :sms_sender_id, label: "SMS Sender ID", required: true, input_html: {id: "sender_id", value: @entity_division.sms_sender_id, autocomplete: "off", class: "form-control w3-input w3-border w3-white input-group input-append", style: ""} %>
                 <%= f.input :region_name, label: "Region", selected: @region_id, collection: @region_masters, label_method: :region_name, value_method: :id, required: true, input_html:{id: "for_region", autocomplete: "off",class:"form-control w3-input w3-border w3-white input-group input-append",style:""}  %>
                 <%= f.input :city_town_name, label: "City", selected: @city_id, collection: @city_town_masters, label_method: :city_town_name, value_method: :id, required: true, input_html:{id: "for_city", autocomplete: "off",class:"form-control w3-input w3-border w3-white input-group input-append",style:""}  %>
-
                 <%= f.input :suburb_id, label: "Suburb", selected: @suburb_id, collection: @suburb_masters, label_method: :suburb_name, value_method: :id, required: true, input_html:{id: "for_suburb", autocomplete: "off",class:"form-control w3-input w3-border w3-white input-group input-append",style:""}  %>
 
-                <% if @entity_division.link_master %>
-                  <%= f.input :comment, label: "Comment", :as => :text, required: false, input_html: {rows: 3, cols: 3, autocomplete: "off", class: "form-control w3-border ", style: ""} %>
-                  <%= f.input :link_master, :as => :hidden, input_html: {value: true} %>
-                <% elsif @entity_division.link_master == false %>
-                  <%= f.input :link_master, :as => :hidden, input_html: {value: false} %>
+                <div id="for_wallet">
                   <%= f.input :serv_id, as: :integer, label: "Service ID", required: true, input_html: {id: "serv_id", value: @service_id, autocomplete: "off", min: 1, max: 9999, oninput: "validity.valid||(value='');", class: "form-control w3-input w3-border w3-white input-group input-append", style: ""} %>
                   <%= f.input :c_key, label: "Client Key", required: true, input_html: {id: "c_key", value: @client_key, autocomplete: "off", class: "form-control w3-input w3-border w3-white input-group input-append", style: ""} %>
                   <%= f.input :s_key, label: "Secret Key", required: true, input_html: {id: "s_key", value: @secret_key, autocomplete: "off", class: "form-control w3-input w3-border w3-white input-group input-append", style: ""} %>
+                </div>
 
-                <% else %>
-                  <%= f.input :link_master, :as => :hidden, input_html: {value: true} %>
-                  <%= f.input :comment, label: "Comment", :as => :text, required: false, input_html: {rows: 3, cols: 3, autocomplete: "off", class: "form-control w3-border ", style: ""} %>
-                <% end %>
+                <%# if @entity_division.link_master %>
+                  <%#= f.input :comment, label: "Comment", :as => :text, required: false, input_html: {rows: 3, cols: 3, autocomplete: "off", class: "form-control w3-border ", style: ""} %>
+                  <%#= f.input :link_master, :as => :hidden, input_html: {value: true} %>
+                <%# elsif @entity_division.link_master == false %>
+                  <%#= f.input :link_master, :as => :hidden, input_html: {value: false} %>
+                  <%#= f.input :serv_id, as: :integer, label: "Service ID", required: true, input_html: {id: "serv_id", value: @service_id, autocomplete: "off", min: 1, max: 9999, oninput: "validity.valid||(value='');", class: "form-control w3-input w3-border w3-white input-group input-append", style: ""} %>
+                  <%#= f.input :c_key, label: "Client Key", required: true, input_html: {id: "c_key", value: @client_key, autocomplete: "off", class: "form-control w3-input w3-border w3-white input-group input-append", style: ""} %>
+                  <%#= f.input :s_key, label: "Secret Key", required: true, input_html: {id: "s_key", value: @secret_key, autocomplete: "off", class: "form-control w3-input w3-border w3-white input-group input-append", style: ""} %>
+
+                <%# else %>
+                  <%#= f.input :link_master, :as => :hidden, input_html: {value: true} %>
+                  <%#= f.input :comment, label: "Comment", :as => :text, required: false, input_html: {rows: 3, cols: 3, autocomplete: "off", class: "form-control w3-border ", style: ""} %>
+                <%# end %>
 
               </div>
 
@@ -122,6 +142,27 @@
         var region_id = $('#for_region');
         var city_id = $("#for_city");
         var suburb_id = $("#for_suburb");
+        var for_wallet = "for_wallet";
+        var link_master = $("#link_master");
+
+
+        <% if @entity_division.link_master %>
+        document.getElementById(for_wallet).style.display = "none";
+        <% elsif @entity_division.link_master == false %>
+        document.getElementById(for_wallet).style.display = "block";
+        <% else %>
+        document.getElementById(for_wallet).style.display = "block";
+        <% end %>
+
+        link_master.change(function() {
+            if (document.getElementById("link_master").checked) {
+                document.getElementById(for_wallet).style.display = "none";
+            } else {
+                document.getElementById(for_wallet).style.display = "block";
+            }
+        });
+
+
 //    district_id.attr("title", "First select a district!");
         city_id.attr("title", "Secondly select a city after region selection!");
 

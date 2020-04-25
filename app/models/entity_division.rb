@@ -48,6 +48,7 @@ class EntityDivision < ApplicationRecord
   validate :secret_key_validation
   validate :client_key_validation
   validate :service_id_validation
+  validate :merchant_wallet_validity, :if => :for_update
 
   # accepts_nested_attributes_for :entity_wallet_configs#, :activity_divs
   # accepts_nested_attributes_for :assigned_service_codes
@@ -79,6 +80,19 @@ class EntityDivision < ApplicationRecord
       end
     end
   end
+
+  def merchant_wallet_validity
+    if self.link_master == true && self.activity_type_code.present?
+      merchant_wallet = EntityWalletConfig.where(entity_info: self.entity_code, activity_type_code: self.activity_type_code,
+                                                 active_status: true, del_status: false).order(created_at: :desc).first
+
+      unless merchant_wallet
+        logger.info "Wallet for this activity_type #{self.activity_type_code} does not exist in the merchant table ........................................................................."
+        errors.add :activity_type_code, " (#{self.activity_type_code}) has no associated merchant wallet."
+      end
+    end
+  end
+
 
 
   def self.gen_entity_div_code

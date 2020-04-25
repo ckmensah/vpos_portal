@@ -23,6 +23,7 @@
       <thead>
       <tr>
         <th></th>
+        <th>ID</th>
         <th>Merchant Name (Merchant Alias)</th>
         <!--<th>Category Name (Category code)</th>-->
         <th>Status</th>
@@ -37,6 +38,7 @@
             <td><%= link_to 'VIEW', entity_info_path(entity_info, count: params[:count], page: params[:page]),
                             style: "width:100px; height: 30px;",
                             class: 'w3-button w3-purple-vpos w3-border w3-border-purple w3-tiny w3-round-large', remote:true%></td>
+            <td><strong><%= entity_info.assigned_code %></strong></td>
             <td><strong><%= entity_info.entity_name %> (<%= entity_info.entity_alias %>)</strong></td>
             <!--<td><strong><%#= entity_info.entity_category.category_name %> (<%#= entity_info.entity_category.assigned_code %>)</strong></td>-->
             <% if entity_info.active_status %>
@@ -68,7 +70,6 @@
 
             </td>
           </tr>
-
       <% end %>
 
       </tbody>

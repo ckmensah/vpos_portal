@@ -40,6 +40,7 @@
       <thead>
       <tr>
 <!--        <th></th>-->
+        <th>ID</th>
         <th>Service Name (Service Alias)</th>
         <th>Activity Type</th>
         <th>Status</th>
@@ -56,6 +57,7 @@
 
         <tr>
 <!--          <td></td>-->
+          <td><strong><%= entity_division.assigned_code %></strong></td>
           <td><strong><%= entity_division.division_name %> (<%= entity_division.division_alias %>)</strong></td>
           <td><strong><%= entity_division.activity_type.activity_type_desc %> <%#= entity_info.entity_category.assigned_code %></strong></td>
           <% if entity_division.active_status %>

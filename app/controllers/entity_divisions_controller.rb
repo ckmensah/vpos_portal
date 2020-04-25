@@ -873,17 +873,35 @@ class EntityDivisionsController < ApplicationController
 
         @for_wallet_config = EntityWalletConfig.where(entity_code: params[:entity_code], division_code: @entity_division.assigned_code,
                                                       active_status: true, del_status: false).order(created_at: :desc).first
-        if @entity_division.link_master == false && @for_wallet_config
-          unless entity_division_params[:serv_id] == @for_wallet_config.service_id && entity_division_params[:c_key] == @for_wallet_config.client_key && entity_division_params[:s_key] == @for_wallet_config.secret_key
-            #@for_wallet_config.update(entity_code: params[:entity_code], service_id: entity_division_params[:serv_id], client_key: entity_division_params[:c_key],
-            #                          secret_key: entity_division_params[:s_key], user_id: current_user.id)
-            logger.info "I PASSED FOR WALLET PER SERVICE SAVING =============================="
-            @for_wallet_config.service_id = entity_division_params[:serv_id]
-            @for_wallet_config.client_key = entity_division_params[:c_key]
-            @for_wallet_config.secret_key = entity_division_params[:s_key]
-            @for_wallet_config.save(validate: false)
+
+        if @new_record.link_master
+          if @for_wallet_config
+            EntityWalletConfig.update_last_but_one("entity_wallet_configs", "division_code", @for_wallet_config.division_code)
+          end
+        else
+          @wallet_config = EntityWalletConfig.new(entity_code: @new_record.entity_code, service_id: @new_record.serv_id, secret_key: @new_record.s_key,
+                                                  client_key: @new_record.c_key, division_code: @entity_division.assigned_code,
+                                                  active_status: true, del_status: false, user_id: current_user.id)
+          @wallet_config.save(validate: false)
+          if @for_wallet_config
+            EntityWalletConfig.update_last_but_one("entity_wallet_configs", "division_code", @for_wallet_config.division_code)
           end
         end
+
+
+        #@for_wallet_config = EntityWalletConfig.where(entity_code: params[:entity_code], division_code: @entity_division.assigned_code,
+        #                                              active_status: true, del_status: false).order(created_at: :desc).first
+        #if @entity_division.link_master == false && @for_wallet_config
+        #  unless entity_division_params[:serv_id] == @for_wallet_config.service_id && entity_division_params[:c_key] == @for_wallet_config.client_key && entity_division_params[:s_key] == @for_wallet_config.secret_key
+        #    #@for_wallet_config.update(entity_code: params[:entity_code], service_id: entity_division_params[:serv_id], client_key: entity_division_params[:c_key],
+        #    #                          secret_key: entity_division_params[:s_key], user_id: current_user.id)
+        #    logger.info "I PASSED FOR WALLET PER SERVICE SAVING =============================="
+        #    @for_wallet_config.service_id = entity_division_params[:serv_id]
+        #    @for_wallet_config.client_key = entity_division_params[:c_key]
+        #    @for_wallet_config.secret_key = entity_division_params[:s_key]
+        #    @for_wallet_config.save(validate: false)
+        #  end
+        #end
 
         @entity_division.sms_sender_id = @new_record.sms_sender_id
         format.html { redirect_to @entity_division, notice: 'Entity division was successfully updated.' }

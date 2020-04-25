@@ -25,6 +25,12 @@ class EntityWalletConfig < ApplicationRecord
   end
 
 
+  def self.update_last_but_one(table, id_field, id)
+    sql = "UPDATE #{table} SET active_status = false, del_status = true WHERE id = (SELECT id FROM #{table} WHERE #{id_field} = '#{id}' AND active_status = true AND del_status = false order by id asc LIMIT 1)"
+    val = ActiveRecord::Base.connection.execute(sql)
+    #logger "VALUE: #{val.inspect}"
+  end
+
 
 
 end

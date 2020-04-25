@@ -186,6 +186,15 @@
                 </tr>
 
                 <tr>
+                  <td class="raw_theme w3-border w3-border-black w3-leftbar"><strong>Linked to Merchant Wallet:</strong></td>
+                  <% if @entity_division.link_master != nil && @entity_division.link_master %>
+                    <td><strong>Yes</strong></td>
+                  <% else %>
+                    <td><strong>No</strong></td>
+                  <% end %>
+                </tr>
+
+                <tr>
                   <td class="raw_theme w3-border w3-border-black w3-leftbar"><strong>Location:</strong></td>
                   <td><strong>
                     <% if @entity_division.suburb_id.present? %>
