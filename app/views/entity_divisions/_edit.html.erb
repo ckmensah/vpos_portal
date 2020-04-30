@@ -17,7 +17,7 @@
         <div class="w3-container">
           <br/>
           <%#= simple_form_for(@entity_division, :data => {:remote => true, count: params[:count], page: params[:page]}) do |f| %>
-          <%= simple_form_for(@entity_division, url: entity_division_path(@entity_division, code: params[:code], action_type: "for_update", entity_code: params[:entity_code], count: params[:count], page: params[:page] ),:remote => true) do |f| %>
+          <%= simple_form_for(@entity_division, url: entity_division_path(@entity_division, code: params[:code], action_type: "for_update", entity_code: params[:entity_code], count1: params[:count1], page1: params[:page1], count: params[:count], page: params[:page] ),:remote => true) do |f| %>
 
               <%= f.error_notification %>
               <%= f.error_notification message: f.object.errors[:base].to_sentence if f.object.errors[:base].present? %>
@@ -101,7 +101,7 @@
                 <% if params[:interface_type] == "info" %>
                     <%= link_to 'Back', entity_index_path(entity_code: params[:entity_code], page: params[:page], count: params[:count]), class: "w3-button w3-white w3-border w3-border-purple w3-small w3-round-large", remote: true %>
                 <% else %>
-                    <%= link_to 'Back', entity_division_index_path(entity_code: params[:entity_code], page: params[:page], count: params[:count]), class: "w3-button w3-white w3-border w3-border-purple w3-small w3-round-large", remote: true %>
+                    <%= link_to 'Back', entity_division_index_path(entity_code: params[:entity_code], count1: params[:count1], page1: params[:page1], page: params[:page], count: params[:count]), class: "w3-button w3-white w3-border w3-border-purple w3-small w3-round-large", remote: true %>
                 <% end %>
                 <%#= link_to 'Back', entity_index_path(entity_code: params[:entity_code], page: params[:page], count: params[:count]), class: "w3-button w3-white w3-border w3-border-purple w3-small w3-round-large", remote: true %>
               </div>

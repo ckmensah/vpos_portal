@@ -17,12 +17,12 @@
 
             <tr>
               <td class="raw_theme w3-border cell-cust-grad w3-leftbar"><strong>Merchant Name:</strong></td>
-              <td><strong><%= @assigned_fee.entity_division.division_name %></strong></td>
+              <td><strong><%= @assigned_fee.entity_division.entity_info.entity_name %></strong></td>
             </tr>
 
             <tr>
               <td class="raw_theme w3-border cell-cust-grad w3-leftbar"><strong>Service Name:</strong></td>
-              <td><strong><%= @assigned_fee.entity_division.entity_info.entity_name %></strong></td>
+              <td><strong><%= @assigned_fee.entity_division.division_name %></strong></td>
             </tr>
 
             <tr>
@@ -87,7 +87,7 @@
 
           <br/>
           <div class="w3-center">
-            <%= link_to 'Back', assigned_fee_index_path(entity_code: params[:entity_code], code: params[:code], page: params[:page], count: params[:count]), class: 'w3-bar-item w3-btn w3-ripple w3-round-large w3-dark-gray', remote: true %>
+            <%= link_to 'Back', assigned_fee_index_path(entity_code: params[:entity_code], code: params[:code], count1: params[:count1], page1: params[:page1], count2: params[:count2], page2: params[:page2], page: params[:page], count: params[:count]), class: 'w3-bar-item w3-btn w3-ripple w3-round-large w3-dark-gray', remote: true %>
           </div>
           <br/>
         </div>

@@ -27,7 +27,7 @@
         <div class="w3-container">
           <br/>
           <%#= simple_form_for(@entity_division, :data => {:remote => true, count: params[:count], page: params[:page]}) do |f| %>
-            <%= simple_form_for(@entity_division, url: entity_div_create_path(@entity_division, interface_type: params[:interface_type], entity_code: params[:entity_code], count: params[:count], page: params[:page] ),:remote => true) do |f| %>
+            <%= simple_form_for(@entity_division, url: entity_div_create_path(@entity_division, interface_type: params[:interface_type], entity_code: params[:entity_code], count1: params[:count1], page1: params[:page1], count: params[:count], page: params[:page] ),:remote => true) do |f| %>
 
               <%= f.error_notification %>
               <%= f.error_notification message: f.object.errors[:base].to_sentence if f.object.errors[:base].present? %>
@@ -92,7 +92,7 @@
                 <% if params[:interface_type] == "info" %>
                   <%= link_to 'Back', entity_index_path(entity_code: params[:entity_code], page: params[:page], count: params[:count]), class: "w3-button w3-white w3-border w3-border-purple w3-small w3-round-large", remote: true %>
                 <% else %>
-                  <%= link_to 'Back', entity_division_index_path(entity_code: params[:entity_code], page: params[:page], count: params[:count]), class: "w3-button w3-white w3-border w3-border-purple w3-small w3-round-large", remote: true %>
+                  <%= link_to 'Back', entity_division_index_path(entity_code: params[:entity_code], count1: params[:count1], page1: params[:page1], page: params[:page], count: params[:count]), class: "w3-button w3-white w3-border w3-border-purple w3-small w3-round-large", remote: true %>
                 <% end %>
               </div>
             <% end %>
@@ -148,7 +148,7 @@
 
             <br>
           <% end %>
-          <%= simple_form_for(@entity_division, url: entity_divisions_path(@entity_division, modal_appear: "to_multiple", interface_type: params[:interface_type], display_cnt: params[:display_cnt], entity_code: params[:entity_code], count: params[:count], page: params[:page] ),:remote => true) do |f| %>
+          <%= simple_form_for(@entity_division, url: entity_divisions_path(@entity_division, modal_appear: "to_multiple", interface_type: params[:interface_type], display_cnt: params[:display_cnt], entity_code: params[:entity_code], count1: params[:count1], page1: params[:page1], count: params[:count], page: params[:page] ),:remote => true) do |f| %>
             <%= f.input :link_master, :as => :hidden, input_html: {value: true} %>
             <%= f.input :entity_code, :as => :hidden, input_html: {value: params[:entity_code]} %>
             <%= f.input :active_status, :as => :hidden, input_html: {value: true} %>
@@ -283,15 +283,16 @@
             <div>
               <%= f.submit "Submit", class: "w3-button w3-purple-vpos w3-border w3-border-purple w3-small w3-round-large", :data => {:disable_with => 'Please Wait...'}, style: "width:auto;float:center;", remote: true %>
               <% if params[:interface_type] == "info" %>
-                <%= link_to 'Back', entity_index_path(entity_code: params[:entity_code], page: params[:page], count: params[:count]), class: "w3-button w3-white w3-border w3-border-purple w3-small w3-round-large", remote: true %>
+                <%= link_to 'Back', entity_index_path(entity_code: params[:entity_code], count1: params[:count1], page1: params[:page1], page: params[:page], count: params[:count]), class: "w3-button w3-white w3-border w3-border-purple w3-small w3-round-large", remote: true %>
               <% else %>
-                <%= link_to 'Back', entity_division_index_path(entity_code: params[:entity_code], page: params[:page], count: params[:count]), class: "w3-button w3-white w3-border w3-border-purple w3-small w3-round-large", remote: true %>
+                <%= link_to 'Back', entity_division_index_path(entity_code: params[:entity_code], count1: params[:count1], page1: params[:page1], page: params[:page], count: params[:count]), class: "w3-button w3-white w3-border w3-border-purple w3-small w3-round-large", remote: true %>
               <% end %>
             </div>
 
           <% end %>
           <br/>
         </div>
+
 
 
       </div>

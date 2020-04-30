@@ -15,9 +15,16 @@ class EntityAdminWhitelistsController < ApplicationController
 
   def entity_admin_whitelist_index
     params[:count] ? params[:count] : params[:count] = 50
+    params[:page] ? params[:page] : params[:page] = 1
     params[:page].present? ? page = params[:page].to_i : page = 1
 
-    @entity_admin_whitelists = EntityAdminWhitelist.where(entity_division_code: params[:code], del_status: false).paginate(:page => page, :per_page => params[:count]).order(created_at: :desc)
+    params[:count1] ? params[:count1] : params[:count1] = 50
+    params[:page1] ? params[:page1] : params[:page1] = 1
+
+    params[:count5] ? params[:count5] : params[:count5] = 50
+    params[:page5] ? params[:page5] : params[:page5] = 1
+
+    @entity_admin_whitelists = EntityAdminWhitelist.where(entity_division_code: params[:code], del_status: false).paginate(:page => params[:page5], :per_page => params[:count5]).order(created_at: :desc)
 
   end
 
@@ -140,7 +147,16 @@ class EntityAdminWhitelistsController < ApplicationController
   # DELETE /entity_admin_whitelists/1.json
 
   def destroy
-    puts page = params[:page]
+    #puts page = params[:page]
+    params[:count] ? params[:count] : params[:count] = 50
+    params[:page] ? params[:page] : params[:page] = 1
+    #params[:page].present? ? page = params[:page].to_i : page = 1
+
+    params[:count1] ? params[:count1] : params[:count1] = 50
+    params[:page1] ? params[:page1] : params[:page1] = 1
+
+    params[:count5] ? params[:count5] : params[:count5] = 50
+    params[:page5] ? params[:page5] : params[:page5] = 1
     puts "JUST STARTING.................."
     if current_user.merchant_admin?
       params[:entity_code] = current_user.entity_code
@@ -150,7 +166,7 @@ class EntityAdminWhitelistsController < ApplicationController
     if @entity_admin_whitelist.active_status && @entity_admin_whitelist.del_status == false
       EntityAdminWhitelist.delete_by_update_onef("entity_admin_whitelist","mobile_number",@entity_admin_whitelist.mobile_number, @entity_admin_whitelist.entity_division_code)
 
-      @entity_admin_whitelists = EntityAdminWhitelist.where(entity_division_code: params[:code], del_status: false).paginate(:page => params[:page], :per_page => params[:count]).order('created_at desc')
+      @entity_admin_whitelists = EntityAdminWhitelist.where(entity_division_code: params[:code], del_status: false).paginate(:page => params[:page5], :per_page => params[:count5]).order('created_at desc')
       respond_to do |format|
         format.html { redirect_to entity_divisions_url, notice: 'Occupation master was successfully disabled.' }
         flash.now[:notice] = "#{@entity_admin_whitelist.full_name} was successfully deactivated from the Merchant Admin Whitelist."

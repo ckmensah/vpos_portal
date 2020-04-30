@@ -1,0 +1,43 @@
+
+<div class="container col-md-12 offset-md-0">
+  <!--<div class="row">-->
+  <!--<h4 style="text-decoration: underline;"><strong>MERCHANTS   </strong></h4>-->
+
+
+
+  <div class="w3-responsive">
+    <button type="button" class="btn btn-outline-purple tablink w3-vpos-purple" style="font-size: small; width: 160px;" onclick="openCity(event, 'fund_movement')">SETTLEMENTS</button>
+  </div>
+
+
+  <div id="fund_movement" class="city active">
+    <% if current_user.super_admin? || current_user.super_user? %>
+      <%= render :partial=> "settlement_entity_info_index" %>
+    <% elsif current_user.merchant_admin? %>
+      <%= render :partial=> "settlement_entity_division_index" %>
+    <% elsif current_user.merchant_service? %>
+      <%= render :partial=> "fund_movement_index" %>
+    <% end %>
+  </div>
+
+
+
+  <script>
+      function openCity(evt, cityName) {
+          var i, x, tablinks;
+          x = document.getElementsByClassName("city");
+          for (i = 0; i < x.length; i++) {
+              x[i].style.display = "none";
+          }
+          tablinks = document.getElementsByClassName("tablink");
+          for (i = 0; i < x.length; i++) {
+              tablinks[i].className = tablinks[i].className.replace(" w3-vpos-purple", "");
+          }
+
+          document.getElementById(cityName).style.display = "block";
+          evt.currentTarget.className += " w3-vpos-purple";
+      }
+  </script>
+
+  <!--</div>-->
+</div>

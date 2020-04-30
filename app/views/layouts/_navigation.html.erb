@@ -71,10 +71,18 @@
 
         </li>
 
-        <% if current_user.super_admin? || current_user.super_user? %>
+        <% if current_user.super_admin? || current_user.super_user? || current_user.merchant_admin? || current_user.merchant_service? %>
+
           <li class="nav-item">
-            <a class="nav-link text-light" href="<%= entity_infos_path %>">Merchant</a>
+            <a class="nav-link text-light" href="<%= fund_movements_path %>">Settlement</a>
           </li>
+
+          <% if current_user.super_admin? || current_user.super_user? %>
+            <li class="nav-item">
+              <a class="nav-link text-light" href="<%= entity_infos_path %>">Merchant</a>
+            </li>
+          <% end %>
+
           <%# elsif current_user.merchant_admin? %>
 <!--          <li class="nav-item">-->
 <!--            <a class="nav-link text-light" href="<%#= entity_infos_path %>">Services</a>-->

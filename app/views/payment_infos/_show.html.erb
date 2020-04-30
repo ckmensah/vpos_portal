@@ -21,16 +21,35 @@
           <%  %>
           <div class="w3-container w3-responsive pre-scrollable w3-mobile">
             <table class="w3-table-all table table-bordered w3-hoverable w3-card-4">
-
+              <% division = EntityDivision.where(assigned_code: @pay_info.entity_div_code, active_status: true).order(created_at: :desc).first %>
+              <% if division %>
+                <% div_name = division.division_name %>
+                <% div_alias = "(#{division.division_alias})" %>
+                <% merchant = EntityInfo.where(assigned_code: division.entity_code, active_status: true).order(created_at: :desc).first  %>
+                <% if merchant %>
+                  <% merchant_name = merchant.entity_name %>
+                  <% merchant_alias = "(#{merchant.entity_alias})" %>
+                <% else %>
+                  <% merchant_name = "" %>
+                  <% merchant_alias = "" %>
+                <% end %>
+              <% else %>
+                <% div_name = "" %>
+                <% div_alias = "" %>
+                <% merchant_name = "" %>
+                <% merchant_alias = "" %>
+              <% end %>
 
               <tr>
                 <td class="raw_theme w3-border w3-border-black w3-leftbar"><strong>Merchant Name:</strong></td>
-                <td><strong><%= @pay_info.entity_division.entity_info.entity_name if @pay_info.entity_division != nil && @pay_info.entity_division.entity_info != nil %> (<%= @pay_info.entity_division.entity_info.entity_alias if @pay_info.entity_division != nil && @pay_info.entity_division.entity_info != nil %>)</strong></td>
+<!--                <td><strong><%#=  @pay_info.entity_division.entity_info.entity_name if @pay_info.entity_division != nil && @pay_info.entity_division.entity_info != nil %> (<%#= @pay_info.entity_division.entity_info.entity_alias if @pay_info.entity_division != nil && @pay_info.entity_division.entity_info != nil %>)</strong></td>-->
+                <td><strong><%= merchant_name %> <%= merchant_alias %></strong></td>
               </tr>
 
               <tr>
                 <td class="raw_theme w3-border w3-border-black w3-leftbar"><strong>Service Name:</strong></td>
-                <td><strong><%= @pay_info.entity_division.division_name if @pay_info.entity_division != nil %> (<%= @pay_info.entity_division.division_alias if @pay_info.entity_division != nil %>)</strong></td>
+<!--                <td><strong><%#= @pay_info.entity_division.division_name if @pay_info.entity_division != nil %> (<%#= @pay_info.entity_division.division_alias if @pay_info.entity_division != nil %>)</strong></td>-->
+                <td><strong><%= div_name %> <%= div_alias %></strong></td>
               </tr>
 
               <tr>
@@ -186,7 +205,7 @@
 
     </div>
 
-    
+
     <!--</div>-->
     <!--<br>-->
     <div class="">

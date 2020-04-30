@@ -24,9 +24,9 @@
                                  modal_appear: "to_multiple",
                                  into_create: params[:into_create],
                                  interface_type: params[:interface_type],
-                                 entity_code: params[:entity_code],
-                                                                          code: params[:code]},
-                                                                          :controller => "entity_admin_whitelists", :action => "new")},
+                                 entity_code: params[:entity_code], count: params[:count], page: params[:page],
+                                 count1: params[:count1], page1: params[:page1], count5: params[:count5], page5: params[:page5],
+                                 code: params[:code]}, :controller => "entity_admin_whitelists", :action => "new")},
                              id:"record", class: "w3-button w3-white w3-border w3-border-purple w3-round-large",
                              style: "width:auto; height:35px; float:right", remote:true %>
               <h5><strong>Please select the number of numbers to whitelist: </strong></h5>
@@ -39,7 +39,7 @@
 
           <br>
         <% end %>
-        <%= simple_form_for(@entity_admin_whitelist, url: entity_admin_whitelists_path(@entity_admin_whitelist, modal_appear: "to_multiple", interface_type: params[:interface_type], display_cnt: params[:display_cnt], entity_code: params[:entity_code], code: params[:code], count: params[:count], page: params[:page] ),:remote => true) do |f| %>
+        <%= simple_form_for(@entity_admin_whitelist, url: entity_admin_whitelists_path(@entity_admin_whitelist, modal_appear: "to_multiple", interface_type: params[:interface_type], display_cnt: params[:display_cnt], entity_code: params[:entity_code], code: params[:code], count1: params[:count1], page1: params[:page1], count5: params[:count5], page5: params[:page5], count: params[:count], page: params[:page] ),:remote => true) do |f| %>
           <%#= f.input :link_master, :as => :hidden, input_html: {value: true} %>
           <%= f.input :entity_division_code, :as => :hidden, input_html: {value: params[:code]} %>
           <%= f.input :active_status, :as => :hidden, input_html: {value: true} %>
@@ -125,9 +125,9 @@
           <div>
             <%= f.submit "Submit", class: "w3-button w3-purple-vpos w3-border w3-border-purple w3-small w3-round-large", :data => {:disable_with => 'Please Wait...'}, style: "width:auto;float:center;", remote: true %>
             <% if params[:interface_type] == "info" %>
-              <%= link_to 'Back', entity_admin_whitelist_index_path(entity_code: params[:entity_code], code: params[:code], page: params[:page], count: params[:count]), class: "w3-button w3-white w3-border w3-border-purple w3-small w3-round-large", remote: true %>
+              <%= link_to 'Back', entity_admin_whitelist_index_path(entity_code: params[:entity_code], code: params[:code], page: params[:page], count1: params[:count1], page1: params[:page1], count5: params[:count5], page5: params[:page5], count: params[:count]), class: "w3-button w3-white w3-border w3-border-purple w3-small w3-round-large", remote: true %>
             <% else %>
-              <%= link_to 'Back', entity_admin_whitelist_index_path(entity_code: params[:entity_code], code: params[:code], page: params[:page], count: params[:count]), class: "w3-button w3-white w3-border w3-border-purple w3-small w3-round-large", remote: true %>
+              <%= link_to 'Back', entity_admin_whitelist_index_path(entity_code: params[:entity_code], code: params[:code], page: params[:page], count1: params[:count1], page1: params[:page1], count5: params[:count5], page5: params[:page5], count: params[:count]), class: "w3-button w3-white w3-border w3-border-purple w3-small w3-round-large", remote: true %>
             <% end %>
           </div>
 

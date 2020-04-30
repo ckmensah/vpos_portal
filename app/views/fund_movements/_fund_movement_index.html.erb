@@ -1,0 +1,236 @@
+
+
+<div>
+  <br>
+  <p id="notes3"><%#= notice %></p>
+  <p id="for_division_setup"><%#= notice %></p>
+  <h4><%= @entity_name %> <%= @division_name %> Settlements</h4>
+  <br>
+  <div>
+
+
+    <% if current_user.super_admin? || current_user.super_user? || current_user.merchant_admin? %>
+      <div class="w3-third">
+
+        <% if current_user.super_admin? || current_user.super_user? || current_user.merchant_admin? %>
+          <%= link_to 'BACK', settlement_entity_division_index_path(entity_code: params[:entity_code], count1: params[:count1], page1: params[:page1],
+                                                                    count: params[:count], page: params[:page]), style: "width:120px;",
+                      class: 'w3-button w3-white w3-border w3-border-purple w3-small w3-round-large',remote:true %>
+        <% end %>
+      </div>
+
+      <div class="w3-third" style="padding-bottom: 15px">
+        <% if @fund_movements.exists? %>
+          <strong>Download::</strong>
+          <%= link_to "CSV", '#', id: "csv", class: 'w3-bar-item w3-btn w3-card-4 w3-dark-grey w3-small w3-round-xlarge w3-ripple' %>
+          |
+          <%#= link_to 'Edit', edit_person_info_path(person_search, edit_modal: "info_modal", count: params[:count], page: params[:page] ),  id: 'showning', class: 'w3-bar-item w3-btn w3-card-4 w3-teal w3-small w3-round-xlarge w3-ripple',remote:true %>
+          <div class="csv_div hidden" style="display: none">
+            <%= form_tag fund_movement_index_path(format: "csv"), method: :get, input_html: {display: "block", id: "csv_form"} do %>
+              <!--<input id="csv_perpage" class="form-control" name="per_page"/>-->
+              <!--<input id="csv_count" class="form-control" name="count"/>-->
+              <!--<input id="csv_page" class="form-control" name="page"/>-->
+              <input class="form-control" name="count" value="<%= params[:count] %>"/>
+              <input class="form-control" name="page" value="<%= params[:page] %>"/>
+
+              <input class="form-control" name="count1" value="<%= params[:count1] %>"/>
+              <input class="form-control" name="page1" value="<%= params[:page1] %>"/>
+
+              <input class="form-control" name="count2" value="<%= params[:count2] %>"/>
+              <input class="form-control" name="page2" value="<%= params[:page2] %>"/>
+
+<!--              <input class="form-control" name="entity_name" value="<%#= params[:entity_name] %>"/>-->
+<!--              <input class="form-control" name="division_name" value="<%#= params[:division_name] %>"/>-->
+              <input type="submit" value="Search" id="csv_submit">
+            <% end %>
+          </div>
+
+          <%= link_to "Excel", '#', id: "excel", class: 'w3-bar-item w3-btn w3-card-4 w3-black w3-small w3-round-xlarge w3-ripple' %>
+          <!--        |-->
+          <div class="excel_div hidden" style="display: none">
+            <%= form_tag fund_movement_index_path(format: "xls"), method: :get, input_html: {display: "block", id: "excel_form"} do %>
+              <!--<input id="excel_perpage" class="form-control" name="per_page"/>-->
+              <!--<input id="excel_count" class="form-control" name="count"/>-->
+              <!--<input id="excel_page" class="form-control" name="page"/>-->
+              <input class="form-control" name="count" value="<%= params[:count] %>"/>
+              <input class="form-control" name="page" value="<%= params[:page] %>"/>
+
+              <input class="form-control" name="count1" value="<%= params[:count1] %>"/>
+              <input class="form-control" name="page1" value="<%= params[:page1] %>"/>
+
+              <input class="form-control" name="count2" value="<%= params[:count2] %>"/>
+              <input class="form-control" name="page2" value="<%= params[:page2] %>"/>
+
+<!--              <input class="form-control" name="entity_name" value="<%#= params[:entity_name] %>"/>-->
+<!--              <input class="form-control" name="division_name" value="<%#= params[:division_name] %>"/>-->
+              <input type="submit" value="Search" id="excel_submit">
+            <% end %>
+          </div>
+
+
+        <% end %>
+      </div>
+
+      <div class="w3-third">
+        <%= select_tag :count2, options_for_select([50, 100, 150, 200, 500], params[:count2].to_i),
+                       :data => {  :remote => true, :url => url_for(:controller => "fund_movements", :action => "fund_movement_index",
+                                                                    :params => {division_code: params[:division_code], entity_code: params[:entity_code],
+                                                                                count1: params[:count1], page1: params[:page1],
+                                                                                count: params[:count], page: params[:page]})},
+                       id:"record", class: "w3-button w3-white w3-border w3-border-purple w3-round-large",
+                       style: "width:auto; height:35px; float:right", remote:true %>
+
+      </div>
+
+    <% elsif current_user.merchant_service? %>
+      <div class="w3-half" style="padding-bottom: 15px">
+        <% if @fund_movements.exists? %>
+          <strong>Download::</strong>
+          <%= link_to "CSV", '#', id: "csv", class: 'w3-bar-item w3-btn w3-card-4 w3-dark-grey w3-small w3-round-xlarge w3-ripple' %>
+          |
+          <%#= link_to 'Edit', edit_person_info_path(person_search, edit_modal: "info_modal", count: params[:count], page: params[:page] ),  id: 'showning', class: 'w3-bar-item w3-btn w3-card-4 w3-teal w3-small w3-round-xlarge w3-ripple',remote:true %>
+          <div class="csv_div hidden" style="display: none">
+            <%= form_tag fund_movement_index_path(format: "csv"), method: :get, input_html: {display: "block", id: "csv_form"} do %>
+              <!--<input id="csv_perpage" class="form-control" name="per_page"/>-->
+              <!--<input id="csv_count" class="form-control" name="count"/>-->
+              <!--<input id="csv_page" class="form-control" name="page"/>-->
+              <input class="form-control" name="count" value="<%= params[:count] %>"/>
+              <input class="form-control" name="page" value="<%= params[:page] %>"/>
+
+              <input class="form-control" name="count1" value="<%= params[:count1] %>"/>
+              <input class="form-control" name="page1" value="<%= params[:page1] %>"/>
+
+              <input class="form-control" name="count2" value="<%= params[:count2] %>"/>
+              <input class="form-control" name="page2" value="<%= params[:page2] %>"/>
+
+              <!--              <input class="form-control" name="entity_name" value="<%#= params[:entity_name] %>"/>-->
+              <!--              <input class="form-control" name="division_name" value="<%#= params[:division_name] %>"/>-->
+              <input type="submit" value="Search" id="csv_submit">
+            <% end %>
+          </div>
+
+          <%= link_to "Excel", '#', id: "excel", class: 'w3-bar-item w3-btn w3-card-4 w3-black w3-small w3-round-xlarge w3-ripple' %>
+          <!--        |-->
+          <div class="excel_div hidden" style="display: none">
+            <%= form_tag fund_movement_index_path(format: "xls"), method: :get, input_html: {display: "block", id: "excel_form"} do %>
+              <!--<input id="excel_perpage" class="form-control" name="per_page"/>-->
+              <!--<input id="excel_count" class="form-control" name="count"/>-->
+              <!--<input id="excel_page" class="form-control" name="page"/>-->
+              <input class="form-control" name="count" value="<%= params[:count] %>"/>
+              <input class="form-control" name="page" value="<%= params[:page] %>"/>
+
+              <input class="form-control" name="count1" value="<%= params[:count1] %>"/>
+              <input class="form-control" name="page1" value="<%= params[:page1] %>"/>
+
+              <input class="form-control" name="count2" value="<%= params[:count2] %>"/>
+              <input class="form-control" name="page2" value="<%= params[:page2] %>"/>
+
+              <!--              <input class="form-control" name="entity_name" value="<%#= params[:entity_name] %>"/>-->
+              <!--              <input class="form-control" name="division_name" value="<%#= params[:division_name] %>"/>-->
+              <input type="submit" value="Search" id="excel_submit">
+            <% end %>
+          </div>
+
+
+        <% end %>
+      </div>
+
+      <div class="w3-half">
+        <%= select_tag :count2, options_for_select([50, 100, 150, 200, 500], params[:count2].to_i),
+                       :data => {  :remote => true, :url => url_for(:controller => "fund_movements", :action => "fund_movement_index",
+                                                                    :params => {division_code: params[:division_code], entity_code: params[:entity_code],
+                                                                                count1: params[:count1], page1: params[:page1],
+                                                                                count: params[:count], page: params[:page]})},
+                       id:"record", class: "w3-button w3-white w3-border w3-border-purple w3-round-large",
+                       style: "width:auto; height:35px; float:right", remote:true %>
+
+      </div>
+    <% end %>
+
+  </div>
+  <br>
+  <div class="table-responsive-md">
+    <br>
+    <table class="table w3-responsive table-striped">
+      <thead>
+      <tr>
+        <!--        <th></th>-->
+        <% if current_user.super_admin? || current_user.super_user? %>
+          <th>Service ID</th>
+        <% end %>
+        <th>Ref ID</th>
+        <th>Amount</th>
+        <th>Trans Type</th>
+        <th>Status</th>
+        <th>Date</th>
+        <th></th>
+      </tr>
+      </thead>
+
+      <tbody>
+      <% @fund_movements.each do |fund_movement| %>
+
+        <tr>
+          <% if current_user.super_admin? || current_user.super_user? %>
+            <td><strong><%= fund_movement.service_id %></strong></td>
+          <% end %>
+          <td><strong><%= fund_movement.ref_id %></strong></td>
+          <td><strong><%= fund_movement.amount %></strong></td>
+          <td><strong><%= fund_movement.trans_type %></strong></td>
+          <% if fund_movement.processed %>
+            <td><strong>Processed</strong></td>
+          <% else %>
+            <td><strong>Failed</strong></td>
+          <% end %>
+          <td><strong><%= fund_movement.created_at %></strong></td>
+
+          <td>
+            <%= link_to 'VIEW', fund_movement_path(fund_movement, division_code: params[:division_code], entity_code: params[:entity_code], count1: params[:count1], page1: params[:page1], count2: params[:count2], page2: params[:page2], count: params[:count], page: params[:page]),
+                        style: "width:60px; height: 30px;",
+                        class: 'w3-button w3-purple-vpos w3-border w3-border-purple w3-tiny w3-round-large', remote:true%>
+
+          </td>
+        </tr>
+      <% end %>
+
+
+      </tbody>
+    </table>
+    <% unless params[:count2] == "All" %>
+      <div class="flickr_pagination"  style="float: right">
+        <%= will_paginate @fund_movements, class: "w3-card", renderer: BootstrapPagination::Rails,
+                          :params => { :controller => "fund_movements", :action => "fund_movement_index", entity_code: params[:entity_code], division_code: params[:division_code],
+                                       count1: params[:count1], page1: params[:page1], count2: params[:count2], page2: params[:page2],
+                                       count: params[:count], page: params[:page] } %>
+        <%#= js_will_paginate @payment_infos, :params => { :controller => "payment_infos", :action => "payment_info_index" } %>
+      </div>
+    <% end %>
+
+  </div>
+
+
+</div>
+
+
+
+<script>
+    $(function(){
+        $('.pagination a').attr('data-remote', 'true')
+    });
+
+    $('#csv').click(function () {
+        console.log('works!');
+        $('#csv_submit').click();
+        console.log('works!');
+
+
+    });
+
+    /////////////////////////////////////////////////////////////
+
+    $('#excel').click(function () {
+        $('#excel_submit').click();
+    });
+
+
+</script>

@@ -21,6 +21,7 @@ class EntityDivision < ApplicationRecord
   has_many :entity_wallet_configs, class_name: "EntityWalletConfig", foreign_key: :division_code
   has_many :entity_admin_whitelists, class_name: "EntityAdminWhitelist", foreign_key: :entity_division_code
   has_many :entity_div_sub_activities, class_name: "EntityDivSubActivity", foreign_key: :entity_div_code
+  has_many :fund_movements, class_name: "FundMovement", foreign_key: :entity_div_code
 
 
   # has_many :entity_wallet_configs, class_name: 'EntityWalletConfig', foreign_key: :division_code

@@ -1,6 +1,5 @@
 Rails.application.routes.draw do
 
-
   root 'home#index'
   #devise_for :users
    get "/users" => redirect("/")
@@ -76,6 +75,13 @@ Rails.application.routes.draw do
 
   get '/entity_admin_whitelists/entity_admin_whitelist_index' => 'entity_admin_whitelists#entity_admin_whitelist_index', :as => 'entity_admin_whitelist_index'
 
+  get '/fund_movements/settlement_entity_info_index' => 'fund_movements#settlement_entity_info_index', :as => 'settlement_entity_info_index'
+  get '/fund_movements/settlement_entity_division_index/:entity_code' => 'fund_movements#settlement_entity_division_index', :as => 'settlement_entity_division_index'
+  get '/fund_movements/settlement_entity_division_index' => 'fund_movements#settlement_entity_division_index', :as => 'settlement_entity_div_index'
+  get '/fund_movements/fund_movement_index/:division_code' => 'fund_movements#fund_movement_index', :as => 'fund_movement_index'
+  get '/fund_movements/fund_movement_index' => 'fund_movements#fund_movement_index', :as => 'fund_move_index'
+
+
 
   get '/payment_infos/payment_info_index' => 'payment_infos#payment_info_index', :as => 'payment_info_index'
   #get '/payment_infos/transaction_resend/:id' => 'payment_infos#transaction_resend', :as => 'transaction_resend'
@@ -134,6 +140,7 @@ Rails.application.routes.draw do
   resources :entity_admin_whitelists
   resources :sub_activity_masters
   resources :entity_div_sub_activities
+  resources :fund_movements
 
 
 

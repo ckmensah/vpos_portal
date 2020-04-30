@@ -1,0 +1,105 @@
+
+<div>
+  <br>
+  <p id="notes2"><%#= notice %></p>
+  <p id="for_division_setup"><%#= notice %></p>
+  <h4><%= @entity_name %></h4>
+  <br>
+  <div>
+    <% if current_user.super_admin? || current_user.super_user? #|| current_user.merchant_admin? %>
+      <div class="w3-half">
+
+        <% if current_user.super_admin? || current_user.super_user? #|| current_user.merchant_admin? %>
+          <%= link_to 'BACK', settlement_entity_info_index_path(count: params[:count], page: params[:page]), style: "width:120px;",
+                      class: 'w3-button w3-white w3-border w3-border-purple w3-small w3-round-large',remote:true %>
+        <% end %>
+      </div>
+      <div class="w3-half">
+        <%= select_tag :count1, options_for_select([50, 100, 150, 200, 500], params[:count1].to_i),
+                       :data => {  :remote => true, :url => url_for(:controller => "fund_movements", :action => "settlement_entity_division_index",
+                                                                    :params => {entity_code: params[:entity_code],
+                                                                                count: params[:count], page: params[:page]})},
+                       id:"record", class: "w3-button w3-white w3-border w3-border-purple w3-round-large",
+                       style: "width:auto; height:35px; float:right", remote:true %>
+
+      </div>
+    <% elsif current_user.merchant_admin? %>
+      <div class="">
+        <%= select_tag :count1, options_for_select([50, 100, 150, 200, 500], params[:count1].to_i),
+                       :data => {  :remote => true, :url => url_for(:controller => "fund_movements", :action => "settlement_entity_division_index",
+                                                                    :params => {entity_code: params[:entity_code],
+                                                                                count: params[:count], page: params[:page]})},
+                       id:"record", class: "w3-button w3-white w3-border w3-border-purple w3-round-large",
+                       style: "width:auto; height:35px; float:right", remote:true %>
+
+      </div>
+    <% end %>
+
+  </div>
+  <br>
+  <div class="table-responsive-md">
+    <br>
+    <table class="table w3-responsive table-striped">
+      <thead>
+      <tr>
+<!--        <th></th>-->
+        <th>ID</th>
+        <th>Service Name</th>
+        <th>Activity Type</th>
+        <th>Status</th>
+        <th>Date</th>
+        <th></th>
+      </tr>
+      </thead>
+      <tbody>
+      <% @entity_divisions.each do |entity_division| %>
+
+        <tr>
+          <td><strong><%= entity_division.assigned_code %></strong></td>
+          <!--            <td><strong><%#= entity_division.division_name %> <%##= entity_division.division_alias %></strong></td>-->
+          <td><strong><%= entity_division.division_name.length > 21 ? "#{entity_division.division_name[0..21]}.." : entity_division.division_name %></strong></td>
+
+          <td><strong><%= entity_division.activity_type.activity_type_desc %> <%#= entity_info.entity_category.assigned_code %></strong></td>
+          <% if entity_division.active_status %>
+            <td><strong>Active</strong></td>
+          <% else %>
+            <td><strong>Inactive</strong></td>
+          <% end %>
+          <td><strong><%= entity_division.created_at %></strong></td>
+
+          <td>
+
+            <%= link_to 'SETTLEMENTS', fund_movement_index_path(entity_division, entity_code: params[:entity_code], count1: params[:count1], page1: params[:page1], count: params[:count], page: params[:page]),
+                        style: "width:120px; height: 30px;",
+                        class: 'w3-button w3-purple-vpos w3-border w3-border-purple w3-tiny w3-round-large', remote:true%>
+
+          </td>
+
+        </tr>
+
+      <% end %>
+
+
+      </tbody>
+    </table>
+    <% unless params[:count1] == "All" %>
+      <div class="flickr_pagination"  style="float: right">
+        <%= will_paginate @entity_divisions, class: "w3-card", renderer: BootstrapPagination::Rails,
+                          :params => { :controller => "fund_movements", :action => "settlement_entity_division_index", entity_code: params[:entity_code],
+                                       count1: params[:count1], page1: params[:page1], count: params[:count], page: params[:page] } %>
+        <%#= js_will_paginate @payment_infos, :params => { :controller => "payment_infos", :action => "payment_info_index" } %>
+      </div>
+    <% end %>
+  </div>
+
+
+</div>
+
+
+
+<script>
+    $(function(){
+        $('.pagination a').attr('data-remote', 'true')
+    });
+
+</script>

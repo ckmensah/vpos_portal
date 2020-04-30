@@ -36,7 +36,7 @@
       <tbody>
       <% @entity_infos.each do |entity_info| %>
 
-      
+
           <tr>
             <!--<td><%#= link_to 'VIEW', entity_info_path(entity_info, count: params[:count], page: params[:page]),
                             style: "width:100px; height: 30px;",
@@ -59,7 +59,7 @@
                           style: "width:120px; height: 30px;",
                           class: 'w3-button w3-purple-vpos w3-border w3-border-purple w3-tiny w3-round-large', remote:true%>
 
-              <%= link_to 'VIEW SERVICES', entity_division_index_path(entity_info, count: params[:count], page: params[:page]),
+              <%= link_to 'VIEW SERVICES', entity_division_index_path(entity_info, count1: params[:count1], page1: params[:page1], count: params[:count], page: params[:page]),
                             style: "width:120px; height: 30px;",
                             class: 'w3-button w3-purple-vpos w3-border w3-border-purple w3-tiny w3-round-large', remote:true%></td>
           </tr>

@@ -1,0 +1,96 @@
+
+<div class="w3-container" >
+  <div id="id01" class="w3-modal w3-animate-opacity" style=" display: block">
+    <!--<div class="w3-modal-content w3-card-4" >-->
+    <br/>
+
+    <div class="">
+
+      <div class="w3-white w3-hover-shadow col-md-6 offset-md-3 w3-card-4 w3-border w3-border-purple rcorners w3-center">
+        <h4 class="show w3-center"><strong>Settlement Details</strong></h4>
+        <p id="notice3"><strong></strong></p>
+        <div class="w3-container">
+          <br/>
+
+          <table class="w3-table-all table table-bordered w3-hoverable w3-card-4">
+
+            <tr>
+              <td class="raw_theme w3-border cell-cust-grad w3-leftbar"><strong>Service Name:</strong></td>
+              <td><strong><%= @fund_movement.entity_division.division_name %></strong></td>
+            </tr>
+
+            <% if current_user.super_admin? || current_user.super_user? %>
+              <tr>
+                <td class="raw_theme w3-border cell-cust-grad w3-leftbar"><strong>Service ID:</strong></td>
+                <td><strong><%= @fund_movement.service_id %></strong></td>
+              </tr>
+            <% end %>
+
+            <tr>
+              <td class="raw_theme w3-border cell-cust-grad w3-leftbar"><strong>Ref ID:</strong></td>
+              <td><strong><%= @fund_movement.ref_id %></strong></td>
+            </tr>
+
+            <tr>
+              <td class="raw_theme w3-border cell-cust-grad w3-leftbar"><strong>Amount:</strong></td>
+              <td><strong><%= @fund_movement.amount %></strong></td>
+            </tr>
+
+            <tr>
+              <td class="raw_theme w3-border cell-cust-grad w3-leftbar"><strong>Narration:</strong></td>
+              <td><strong><%= @fund_movement.narration %></strong></td>
+            </tr>
+
+            <tr>
+              <td class="raw_theme w3-border cell-cust-grad w3-leftbar"><strong>Trans Type:</strong></td>
+              <td><strong><%= @fund_movement.trans_type %></strong></td>
+            </tr>
+
+            <tr>
+              <td class="raw_theme w3-border cell-cust-grad w3-leftbar"><strong>Trans Status:</strong></td>
+              <td><strong><%= @fund_movement.trans_status %></strong></td>
+            </tr>
+
+            <tr>
+              <td class="raw_theme w3-border cell-cust-grad w3-leftbar"><strong>Trans Description:</strong></td>
+              <td><strong><%= @fund_movement.trans_desc %></strong></td>
+
+            </tr>
+
+            <tr>
+              <td class="raw_theme w3-border cell-cust-grad w3-leftbar"><strong>Status:</strong></td>
+
+              <% if @fund_movement.processed %>
+                <td><strong>Processed</strong></td>
+              <% else %>
+                <td><strong>Failed</strong></td>
+              <% end %>
+            </tr>
+
+            <tr>
+              <td class="raw_theme w3-border cell-cust-grad w3-leftbar"><strong>Date:</strong></td>
+              <td>
+                <strong><%= @fund_movement.created_at %></strong>
+              </td>
+            </tr>
+
+          </table>
+
+          <br/>
+          <div class="w3-center">
+            <%= link_to 'Back', fund_movement_index_path(division_code: params[:division_code], entity_code: params[:entity_code], count1: params[:count1], page1: params[:page1], count2: params[:count2], page2: params[:page2], page: params[:page], count: params[:count]), class: 'w3-bar-item w3-btn w3-ripple w3-round-large w3-dark-gray', remote: true %>
+          </div>
+          <br/>
+        </div>
+
+      </div>
+      <br/>
+    </div>
+
+    <!--</div>-->
+
+  </div>
+</div>
+
+
+

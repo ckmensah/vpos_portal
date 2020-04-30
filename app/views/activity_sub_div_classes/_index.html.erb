@@ -6,8 +6,6 @@
     <!--<div class="w3-modal-content w3-card-4" >-->
     <br/>
 
-
-
     <div class="w3-white w3-hover-shadow col-md-8 offset-md-2 w3-card-4 w3-border w3-border-purple rcorners w3-center">
       <br>
       <p id="notes4"><%#= notice %></p>
@@ -17,9 +15,9 @@
       <div class="w3-container">
         <div>
           <div class="">
-            <%= link_to 'NEW', new_activity_sub_div_class_path(code: params[:code], class_div_top: params[:class_div_top], entity_code: params[:entity_code], count: params[:count], page: params[:page]), style: "width:120px;",
+            <%= link_to 'NEW', new_activity_sub_div_class_path(code: params[:code], class_div_top: params[:class_div_top], entity_code: params[:entity_code], count1: params[:count1], page1: params[:page1], count4: params[:count4], page4: params[:page4], count: params[:count], page: params[:page]), style: "width:120px;",
                         class: 'w3-button w3-purple-vpos w3-border w3-border-purple w3-small w3-round-large',remote:true %>
-            <%= link_to 'BACK', entity_division_index_path(code: params[:code], entity_code: params[:entity_code], count: params[:count], page: params[:page]), style: "width:120px;",
+            <%= link_to 'BACK', entity_division_index_path(code: params[:code], entity_code: params[:entity_code], count1: params[:count1], page1: params[:page1], count: params[:count], page: params[:page]), style: "width:120px;",
                         class: 'w3-button w3-white w3-border w3-border-purple w3-small w3-round-large',remote:true %>
           </div>
 <!--          <div class="w3-half">-->
@@ -47,7 +45,7 @@
             <% @activity_sub_div_classes.each do |activity_sub_div_class| %>
 
               <tr>
-                <td><%= link_to 'VIEW', activity_sub_div_class_path(activity_sub_div_class, class_div_top: params[:class_div_top], code: params[:code], entity_code: params[:entity_code], count: params[:count], page: params[:page]),
+                <td><%= link_to 'VIEW', activity_sub_div_class_path(activity_sub_div_class, class_div_top: params[:class_div_top], code: params[:code], entity_code: params[:entity_code], count1: params[:count1], page1: params[:page1], count4: params[:count4], page4: params[:page4], count: params[:count], page: params[:page]),
                                 style: "width:80px; height: 30px;",
                                 class: 'w3-button w3-purple-vpos w3-border w3-border-purple w3-tiny w3-round-large', remote:true%></td>
                 <td><strong><%= activity_sub_div_class.class_desc %> <%#= entity_info.entity_category.assigned_code %></strong></td>
@@ -60,7 +58,7 @@
                 <td>
                   <% if activity_sub_div_class.active_status && activity_sub_div_class.del_status == false %>
 
-                    <%= link_to 'EDIT', edit_activity_sub_div_class_path(activity_sub_div_class, class_div_top: params[:class_div_top], code: params[:code], entity_code: params[:entity_code], count: params[:count], page: params[:page]),
+                    <%= link_to 'EDIT', edit_activity_sub_div_class_path(activity_sub_div_class, class_div_top: params[:class_div_top], code: params[:code], entity_code: params[:entity_code], count1: params[:count1], page1: params[:page1], count4: params[:count4], page4: params[:page4], count: params[:count], page: params[:page]),
                                 style: "width:100px; height: 30px; color: #800754 !important",
                                 class: 'w3-button w3-white w3-border w3-border-purple w3-tiny w3-round-large', remote:true%>
                   <% else %>
@@ -69,17 +67,16 @@
                   <% end %>
 
                   <% if activity_sub_div_class.active_status %>
-                    <%= link_to 'DISABLE', activity_sub_div_class_path(activity_sub_div_class, class_div_top: params[:class_div_top], code: params[:code], entity_code: params[:entity_code], count: params[:count], page: params[:page]),
+                    <%= link_to 'DISABLE', activity_sub_div_class_path(activity_sub_div_class, class_div_top: params[:class_div_top], code: params[:code], entity_code: params[:entity_code], count1: params[:count1], page1: params[:page1], count4: params[:count4], page4: params[:page4], count: params[:count], page: params[:page]),
                                 style: "width:100px; height: 30px; color: #800754 !important",
                                 method: :delete, data: { confirm: "Do you wish to disable: #{activity_sub_div_class.class_desc}?" },
                                 class: 'w3-button w3-white w3-border w3-border-purple w3-tiny w3-round-large', remote:true%>
                   <% else %>
-                    <%= link_to 'ENABLE', activity_sub_div_class_path(activity_sub_div_class, class_div_top: params[:class_div_top], code: params[:code], entity_code: params[:entity_code], count: params[:count], page: params[:page]),
+                    <%= link_to 'ENABLE', activity_sub_div_class_path(activity_sub_div_class, class_div_top: params[:class_div_top], code: params[:code], entity_code: params[:entity_code], count1: params[:count1], page1: params[:page1], count4: params[:count4], page4: params[:page4], count: params[:count], page: params[:page]),
                                 style: "width:100px; height: 30px;",
                                 method: :delete, data: { confirm: "Do you wish to enable: #{activity_sub_div_class.class_desc}?" },
                                 class: 'w3-button w3-purple-vpos w3-border w3-border-purple w3-tiny w3-round-large', remote:true%>
                   <% end %>
-
 
                 </td>
               </tr>

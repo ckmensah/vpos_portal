@@ -20,10 +20,13 @@ class EntityDivisionsController < ApplicationController
     params[:count] ? params[:count] : params[:count] = 50
     params[:page] ? params[:page] : params[:page] = 1
 
+    params[:count1] ? params[:count1] : params[:count1] = 50
+    params[:page1] ? params[:page1] : params[:page1] = 1
+
     if current_user.super_admin? || current_user.super_user?
       @entity_info = EntityInfo.where(assigned_code: params[:entity_code], active_status: true, del_status: false).order(created_at: :desc).first
       @entity_info ? @entity_name = "#{@entity_info.entity_name} (#{@entity_info.entity_alias})" : ""
-      @entity_divisions = EntityDivision.where(entity_code: params[:entity_code], del_status: false).paginate(:page => params[:page], :per_page => params[:count]).order('created_at desc')
+      @entity_divisions = EntityDivision.where(entity_code: params[:entity_code], del_status: false).paginate(:page => params[:page1], :per_page => params[:count1]).order('created_at desc')
 
     elsif current_user.merchant_admin?
       if current_user.merchant_admin?
@@ -31,11 +34,11 @@ class EntityDivisionsController < ApplicationController
       end
       @entity_info = EntityInfo.where(assigned_code: current_user.entity_code, active_status: true, del_status: false).order(created_at: :desc).first
       @entity_info ? @entity_name = "#{@entity_info.entity_name} (#{@entity_info.entity_alias})" : ""
-      @entity_divisions = EntityDivision.where(entity_code: current_user.entity_code, del_status: false).paginate(:page => params[:page], :per_page => params[:count]).order('created_at desc')
+      @entity_divisions = EntityDivision.where(entity_code: current_user.entity_code, del_status: false).paginate(:page => params[:page1], :per_page => params[:count1]).order('created_at desc')
 
     elsif current_user.merchant_service?
       @entity_name = ""
-      @entity_divisions = EntityDivision.where(assigned_code: current_user.division_code, del_status: false).paginate(:page => params[:page], :per_page => params[:count]).order('created_at desc')
+      @entity_divisions = EntityDivision.where(assigned_code: current_user.division_code, del_status: false).paginate(:page => params[:page1], :per_page => params[:count1]).order('created_at desc')
 
     end
   end
@@ -944,12 +947,18 @@ class EntityDivisionsController < ApplicationController
     if current_user.merchant_admin?
       params[:entity_code] = current_user.entity_code
     end
+    params[:count] ? params[:count] : params[:count] = 50
+    params[:page] ? params[:page] : params[:page] = 1
+
+    params[:count1] ? params[:count1] : params[:count1] = 50
+    params[:page1] ? params[:page1] : params[:page1] = 1
+
     @entity_division = EntityDivision.where(assigned_code: params[:id], del_status: false).order('id desc').first
 
     if @entity_division.active_status && @entity_division.del_status == false
       EntityDivision.disable_by_update_onef("entity_division","assigned_code",@entity_division.assigned_code)
 
-      @entity_divisions = EntityDivision.where(entity_code: params[:entity_code], del_status: false).paginate(:page => params[:page], :per_page => params[:count]).order('created_at desc')
+      @entity_divisions = EntityDivision.where(entity_code: params[:entity_code], del_status: false).paginate(:page => params[:page1], :per_page => params[:count1]).order('created_at desc')
       respond_to do |format|
         format.html { redirect_to entity_divisions_url, notice: 'Occupation master was successfully disabled.' }
         flash.now[:note] = 'Merchant division was successfully disabled.'
@@ -960,7 +969,7 @@ class EntityDivisionsController < ApplicationController
 
     elsif @entity_division.active_status == false && @entity_division.del_status == false
       EntityInfo.enable_by_update_onet("entity_division","assigned_code",@entity_division.assigned_code)
-      @entity_divisions = EntityDivision.where(entity_code: params[:entity_code], del_status: false).paginate(:page => params[:page], :per_page => params[:count]).order('created_at desc')
+      @entity_divisions = EntityDivision.where(entity_code: params[:entity_code], del_status: false).paginate(:page => params[:page1], :per_page => params[:count1]).order('created_at desc')
 
       respond_to do |format|
         format.html { redirect_to entity_infos_url, notice: 'Allergy master was successfully enabled.' }

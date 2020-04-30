@@ -11,8 +11,14 @@ class AssignedFeesController < ApplicationController
     params[:count] ? params[:count] : params[:count] = 50
     params[:page] ? params[:page] : params[:page] = 1
 
+    params[:count1] ? params[:count1] : params[:count1] = 50
+    params[:page1] ? params[:page1] : params[:page1] = 1
+
+    params[:count2] ? params[:count2] : params[:count2] = 50
+    params[:page2] ? params[:page2] : params[:page2] = 1
+
     if current_user.super_admin? || current_user.super_user?
-      @assigned_fees = AssignedFee.where(entity_div_code: params[:code], del_status: false).paginate(:page => params[:page], :per_page => params[:count]).order('created_at desc')
+      @assigned_fees = AssignedFee.where(entity_div_code: params[:code], del_status: false).paginate(:page => params[:page2], :per_page => params[:count2]).order('created_at desc')
       @services = EntityDivision.where(active_status: true, assigned_code: params[:code]).order(created_at: :desc).first
       @service_name = @services ? @services.division_name : ""
     else
@@ -121,10 +127,16 @@ class AssignedFeesController < ApplicationController
     params[:count] ? params[:count] : params[:count] = 50
     params[:page] ? params[:page] : params[:page] = 1
 
+    params[:count1] ? params[:count1] : params[:count1] = 50
+    params[:page1] ? params[:page1] : params[:page1] = 1
+
+    params[:count2] ? params[:count2] : params[:count2] = 50
+    params[:page2] ? params[:page2] : params[:page2] = 1
+
     if @assigned_fee.active_status
       @assigned_fee.active_status = false
       @assigned_fee.save(validate: false)
-      @assigned_fees = AssignedFee.where(del_status: false).paginate(:page => params[:page], :per_page => params[:count]).order('created_at desc')
+      @assigned_fees = AssignedFee.where(del_status: false).paginate(:page => params[:page2], :per_page => params[:count2]).order('created_at desc')
       respond_to do |format|
         format.html { redirect_to activity_types_url, notice: 'Occupation master was successfully disabled.' }
         flash.now[:note] = 'Assigned Fee was successfully disabled.'
@@ -136,7 +148,7 @@ class AssignedFeesController < ApplicationController
     else
       @assigned_fee.active_status = true
       @assigned_fee.save(validate: false)
-      @assigned_fees = AssignedFee.where(del_status: false).paginate(:page => params[:page], :per_page => params[:count]).order('created_at desc')
+      @assigned_fees = AssignedFee.where(del_status: false).paginate(:page => params[:page2], :per_page => params[:count2]).order('created_at desc')
       respond_to do |format|
         format.html { redirect_to activity_types_url, notice: 'Allergy master was successfully enabled.' }
         flash.now[:notice] = 'Assigned Fee was successfully enabled.'
@@ -145,7 +157,7 @@ class AssignedFeesController < ApplicationController
       end
     end
   end
-  
+
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_assigned_fee

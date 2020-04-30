@@ -1,0 +1,23 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  entity_div_code: MyString
+  service_id: 1
+  ref_id: MyString
+  amount: 9.99
+  narration: MyString
+  trans_type: MyString
+  trans_status: MyString
+  trans_desc: MyString
+  processed: false
+
+two:
+  entity_div_code: MyString
+  service_id: 1
+  ref_id: MyString
+  amount: 9.99
+  narration: MyString
+  trans_type: MyString
+  trans_status: MyString
+  trans_desc: MyString
+  processed: false

@@ -14,7 +14,7 @@
         <div class="w3-container">
           <br/>
           <%#= simple_form_for(@activity_sub_div_class, :data => {  :remote => true, count: params[:count], page: params[:page]}) do |f| %>
-          <%= simple_form_for(@activity_sub_div_class, url: activity_sub_div_class_path(@activity_sub_div_class, class_div_top: params[:class_div_top], code: params[:code], entity_code: params[:entity_code], count: params[:count], page: params[:page] ),:remote => true) do |f| %>
+          <%= simple_form_for(@activity_sub_div_class, url: activity_sub_div_class_path(@activity_sub_div_class, class_div_top: params[:class_div_top], code: params[:code], entity_code: params[:entity_code], count1: params[:count1], page1: params[:page1], count4: params[:count4], page4: params[:page4], count: params[:count], page: params[:page] ),:remote => true) do |f| %>
             <%= f.error_notification %>
             <%= f.error_notification message: f.object.errors[:base].to_sentence if f.object.errors[:base].present? %>
             <%#= f.input :entity_div_code, :as => :hidden, input_html:{value: params[:code]} %>
@@ -36,7 +36,7 @@
               <% if params[:class_div_top] == "class_div_top" %>
                 <button type="button" class="w3-button w3-white w3-border w3-border-purple w3-small w3-round-large" onclick="document.getElementById('edit_modal').style.display='none'" >Back</button>
               <% else %>
-                <%= link_to 'Back', entity_division_index_path(entity_code: params[:entity_code], class_div_top: params[:class_div_top], code: params[:code], page: params[:page], count: params[:count]), class: "w3-button w3-white w3-border w3-border-purple w3-small w3-round-large",remote:true %>
+                <%= link_to 'Back', entity_division_index_path(entity_code: params[:entity_code], class_div_top: params[:class_div_top], code: params[:code], page: params[:page], count1: params[:count1], page1: params[:page1], count4: params[:count4], page4: params[:page4], count: params[:count]), class: "w3-button w3-white w3-border w3-border-purple w3-small w3-round-large",remote:true %>
               <% end %>
             </div>
           <% end %>

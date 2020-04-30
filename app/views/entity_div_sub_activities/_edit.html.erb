@@ -13,7 +13,7 @@
 
         <div class="w3-container">
           <br/>
-          <%= simple_form_for(@entity_div_sub_activity, url: entity_div_sub_activity_path(@entity_div_sub_activity, code: params[:code], entity_code: params[:entity_code], count: params[:count], page: params[:page] ),:remote => true) do |f| %>
+          <%= simple_form_for(@entity_div_sub_activity, url: entity_div_sub_activity_path(@entity_div_sub_activity, code: params[:code], entity_code: params[:entity_code], count1: params[:count1], page1: params[:page1], count3: params[:count3], page3: params[:page3], count: params[:count], page: params[:page] ),:remote => true) do |f| %>
 
         <%#= simple_form_for(@entity_div_sub_activity, :data => {  :remote => true, count: params[:count], page: params[:page]}) do |f| %>
             <%= f.error_notification %>
@@ -27,7 +27,7 @@
             <%= f.input :user_id, :as => :hidden, input_html:{value: current_user.id} %>
             <div>
               <%= f.submit "Submit", class: "w3-button w3-purple-vpos w3-border w3-border-purple w3-small w3-round-large", :data => {:disable_with => 'Please Wait...'}, style: "width:auto;float:center;",remote:true %>
-              <%= link_to 'Back', entity_div_sub_activity_index_path(code: params[:code], entity_code: params[:entity_code], page: params[:page], count: params[:count]), class: "w3-button w3-white w3-border w3-border-purple w3-small w3-round-large",remote:true %>
+              <%= link_to 'Back', entity_div_sub_activity_index_path(code: params[:code], entity_code: params[:entity_code], count1: params[:count1], page1: params[:page1], count3: params[:count3], page3: params[:page3], page: params[:page], count: params[:count]), class: "w3-button w3-white w3-border w3-border-purple w3-small w3-round-large",remote:true %>
             </div>
           <% end %>
           <br/>
