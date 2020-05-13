@@ -1,0 +1,155 @@
+
+<!--<div class="w3-container w3-white w3-hover-shadow col-md-6 offset-md-3 w3-card-4 w3-border w3-border-purple rcorners w3-center">-->
+<!--<div class="row">-->
+<!--  <h4 style="text-decoration: underline;"><strong>KINDLY CHOOSE SERVICE SETUP TYPES   </strong></h4>-->
+
+<!--  <div class="w3-responsive"></div>-->
+<div class="">
+
+  <div class="w3-white w3-hover-shadow col-md-6 offset-md-3 w3-card-4 w3-border w3-border-purple rcorners w3-center">
+    <h4 class="show w3-center"><strong>New Recipient(s)</strong></h4>
+    <div id="alert_new"></div>
+
+    <div class="w3-container">
+      <% unless params[:display_cnt].present?  %>
+        <br>
+        <div class="col-md-12 offset-md-0">
+
+          <div class="" id="div_num_id" >
+
+
+            <%= select_tag :display_cnt, options_for_select([0,1,2,3,4,5,6,7,8,9,10], params[:display_cnt].to_i),
+                           :onchange => "divisionNumber()",
+                           :data => {  :remote => true, :url => url_for(params:{
+                               modal_appear: "to_multiple",
+                               into_create: params[:into_create],
+                               interface_type: params[:interface_type],
+                               entity_code: params[:entity_code], count: params[:count], page: params[:page],
+                               count1: params[:count1], page1: params[:page1], count6: params[:count6], page6: params[:page6],
+                               code: params[:code]}, :controller => "entity_div_alert_recipients", :action => "new")},
+                           id:"record", class: "w3-button w3-white w3-border w3-border-purple w3-round-large",
+                           style: "width:auto; height:35px; float:right", remote:true %>
+            <h5><strong>Please select the number of Recipients to add : </strong></h5>
+          </div>
+
+          <!--            <div class="w3-third">-->
+
+          <!--            </div>-->
+        </div>
+
+        <br>
+      <% end %>
+      <%= simple_form_for(@entity_div_alert_recipient, url: entity_div_alert_recipients_path(@entity_div_alert_recipient, modal_appear: "to_multiple", interface_type: params[:interface_type], display_cnt: params[:display_cnt], entity_code: params[:entity_code], code: params[:code], count1: params[:count1], page1: params[:page1], count6: params[:count6], page6: params[:page6], count: params[:count], page: params[:page] ),:remote => true) do |f| %>
+        <%#= f.input :link_master, :as => :hidden, input_html: {value: true} %>
+        <%= f.input :entity_div_code, :as => :hidden, input_html: {value: params[:code]} %>
+        <%= f.input :active_status, :as => :hidden, input_html: {value: true} %>
+        <%= f.input :del_status, :as => :hidden, input_html: {value: false} %>
+        <%= f.input :user_id, :as => :hidden, input_html:{value: current_user.id} %>
+
+        <div class="col-md-12 offset-md-0 pre-scrollable table-responsive-md" style="max-height: 50vh">
+          <table class="w3-table-all table-bordered w3-hoverable w3-card-4">
+
+            <thead>
+            <tr class="w3-vpos-purple">
+              <th><strong>No.</strong></th>
+              <th><strong>Recipient Name</strong></th>
+              <th><strong>Mobile Number</strong></th>
+              <!--<th><strong>Name &emsp;&emsp;&emsp;&emsp;</strong></th>-->
+              <!--<th><strong>Save</strong></th>-->
+
+              <!--<th colspan="1"></th>-->
+            </tr>
+            </thead>
+            <tbody>
+            <% if params[:into_create] == "into_create" %>
+              <% logger.info "FIRST +=============================================================" %>
+              <% count = 1 %>
+              <% @display.times.each do |value| %>
+                <% the_params = value %>
+                <%# logger.info "key: #{key.inspect}; value: #{value.inspect}; inner value: #{value["activity_type_code"].inspect}" %>
+                <%# act_type = ActivityType.where(assigned_code: the_params["activity_type_code"], active_status: true).last %>
+                <tr>
+                  <td><strong><%= count %></strong></td>
+                  <td><strong><input type="text" name="entity_div_alert_recipients[<%= count %>[recipient_name]]" autocomplete="off" placeholder="Recipient Name" class="form-control w3-input w3-border w3-white input-group input-append" style="" /></strong></td>
+                  <td><strong><input type="text" name="entity_div_alert_recipients[<%= count %>[mobile_number]]" autocomplete="off" placeholder="Mobile Number" class="form-control w3-input w3-border w3-white input-group input-append" style="" /></strong></td>
+
+                  <% count = count + 1%>
+                </tr>
+              <% end %>
+            <% else %>
+              <% logger.info "SECOND +=============================================================" %>
+              <% count = 1 %>
+              <!--list.each do |row|-->
+              <!--the_params = row[1]-->
+              <% display_size = @display.nil? ? 0 : @display.to_enum.to_h.length.to_i %>
+              <% if @display != nil %>
+                <% @display.each do |key, value| %>
+                  <% the_params = value %>
+                  <%
+                    the_params[:region_name].present? ? @city_town_masters = CityTownMaster.where(active_status: true, region_id: the_params[:region_name]).order(city_town_name: :asc) : @city_town_masters = CityTownMaster.where(id: 0)
+                    the_params[:city_town_name].present? ? @suburb_masters = SuburbMaster.where(active_status: true, city_town_id: the_params[:city_town_name]).order(suburb_name: :asc) : @suburb_masters = SuburbMaster.where(id: 0)
+                  %>
+                  <%# pcs_do = ActivityType.where(id: the_params[:id]).last %>
+                  <tr>
+                    <td><strong><%= count %></strong></td>
+                    <td><strong><input type="text" name="entity_div_alert_recipients[<%= count %>[recipient_name]]" value="<%= the_params["recipient_name"] %>" autocomplete="off" placeholder="Recipient Name" class="form-control w3-input w3-border w3-white input-group input-append" style="" /></strong></td>
+                    <td><strong><input type="text" name="entity_div_alert_recipients[<%= count %>[mobile_number]]" value="<%= the_params["mobile_number"] %>" autocomplete="off" placeholder="Mobile Number" class="form-control w3-input w3-border w3-white input-group input-append" style="" /></strong></td>
+
+                    <% count = count + 1%>
+                  </tr>
+                <% end %>
+                <% if display_size < @display_length.to_i %>
+                  <% logger.info "THIRD +=============================================================" %>
+                  <%# count =  %>
+                  <% new_display = @display_length.to_i - display_size %>
+                  <% new_display.times.each do |val| %>
+                    <tr>
+                      <td><strong><%= count %></strong></td>
+                      <td><strong><input type="text" name="entity_div_alert_recipients[<%= count %>[recipient_name]]" autocomplete="off" placeholder="Recipient Name" class="form-control w3-input w3-border w3-white input-group input-append" style="" /></strong></td>
+                      <td><strong><input type="text" name="entity_div_alert_recipients[<%= count %>[mobile_number]]" autocomplete="off" placeholder="Mobile Number" class="form-control w3-input w3-border w3-white input-group input-append" style="" /></strong></td>
+
+                      <% count = count + 1%>
+                    </tr>
+                  <% end %>
+                <% end %>
+              <% end %>
+
+
+            <% end %>
+
+            </tbody>
+
+          </table>
+        </div>
+        <br>
+        <div>
+          <%= f.submit "Submit", class: "w3-button w3-purple-vpos w3-border w3-border-purple w3-small w3-round-large", :data => {:disable_with => 'Please Wait...'}, style: "width:auto;float:center;", remote: true %>
+          <% if params[:interface_type] == "info" %>
+            <%= link_to 'Back', entity_div_alert_recipient_index_path(entity_code: params[:entity_code], code: params[:code], page: params[:page], count1: params[:count1], page1: params[:page1], count6: params[:count6], page6: params[:page6], count: params[:count]), class: "w3-button w3-white w3-border w3-border-purple w3-small w3-round-large", remote: true %>
+          <% else %>
+            <%= link_to 'Back', entity_div_alert_recipient_index_path(entity_code: params[:entity_code], code: params[:code], page: params[:page], count1: params[:count1], page1: params[:page1], count6: params[:count6], page6: params[:page6], count: params[:count]), class: "w3-button w3-white w3-border w3-border-purple w3-small w3-round-large", remote: true %>
+          <% end %>
+        </div>
+
+      <% end %>
+      <br/>
+    </div>
+
+
+  </div>
+
+</div>
+
+
+<div class="col-md-7 col-md-offset-5">
+</div>
+
+<br/><br/>
+<!--</div>-->
+
+
+
+
+
+
+

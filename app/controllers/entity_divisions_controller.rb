@@ -121,7 +121,71 @@ class EntityDivisionsController < ApplicationController
     params[:count] ? params[:count] : params[:count] = 50
     params[:page] ? params[:page] : params[:page] = 1
 
-    @entity_infos = EntityInfo.where(del_status: false).paginate(:page => params[:page], :per_page => params[:count]).order('created_at desc')
+    the_search = ""
+    search_arr = []
+
+    if params[:filter_main1].present? || params[:entity_name].present? || params[:assigned_code].present? || params[:entity_cat].present? #|| params[:cust_num].present? || params[:trans_id].present? || params[:nw].present? || params[:status].present? || params[:start_date].present? || params[:end_date].present?
+
+      $merchant_filter = params[:filter_main1]
+      filter_params = params[:filter_main1]
+      if params[:filter_main1].present?
+        @entity_name = filter_params[:entity_name]
+        @assigned_code = filter_params[:assigned_code]
+        @entity_cat = filter_params[:entity_cat]
+
+        params[:entity_name] = filter_params[:entity_name]
+        params[:assigned_code] = filter_params[:assigned_code]
+        params[:entity_cat] = filter_params[:entity_cat]
+
+      else
+
+        if  params[:entity_name].present? || params[:assigned_code].present? || params[:entity_cat].present? #|| params[:lov_name].present? || params[:cust_num].present? || params[:trans_id].present? || params[:nw].present? || params[:status].present? || params[:start_date].present? || params[:end_date].present?
+
+          @entity_name = params[:entity_name]
+          @assigned_code = params[:assigned_code]
+          @entity_cat = params[:entity_cat]
+
+          params[:entity_name] = @entity_name
+          params[:assigned_code] = @assigned_code
+          params[:entity_cat] = @entity_cat
+
+        else
+          params[:entity_name] = filter_params[:entity_name]
+          params[:assigned_code] = filter_params[:assigned_code]
+          params[:entity_cat] = filter_params[:entity_cat]
+
+        end
+      end
+
+      if @entity_name.present?
+        #search_arr << "customer_number LIKE '%#{@cust_num}%'"
+        search_arr << "assigned_code = '#{@entity_name}'"
+      end
+
+      if @assigned_code.present?
+        search_arr << "assigned_code = '#{@assigned_code}'"
+      end
+
+      if @entity_cat.present?
+        search_arr << "entity_cat_id = '#{@entity_cat}'"
+      end
+
+    else
+      $merchant_filter = ""
+    end
+
+
+    the_search = search_arr.join(" AND ")
+    logger.info "The search array :: #{search_arr.inspect}"
+    logger.info "The Search :: #{the_search.inspect}"
+
+
+    @merchant_search = EntityInfo.where(active_status: true).order(entity_name: :asc)
+    @merchant_code_search = EntityInfo.where(active_status: true).order(entity_name: :asc)
+    @merchant_cat_search = EntityCategory.where(active_status: true).order(category_name: :asc)
+
+
+    @entity_infos = EntityInfo.where(the_search).where(del_status: false).paginate(:page => params[:page], :per_page => params[:count]).order('created_at desc')
 
   end
 

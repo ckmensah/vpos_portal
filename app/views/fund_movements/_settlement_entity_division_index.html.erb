@@ -10,18 +10,19 @@
       <div class="w3-half">
 
         <% if current_user.super_admin? || current_user.super_user? #|| current_user.merchant_admin? %>
-          <%= link_to 'BACK', settlement_entity_info_index_path(count: params[:count], page: params[:page]), style: "width:120px;",
+          <%= link_to 'BACK', settlement_entity_info_index_path(count: params[:count], page: params[:page], entity_name: params[:entity_name],
+                                                                assigned_code: params[:assigned_code], entity_cat: params[:entity_cat]), style: "width:120px;",
                       class: 'w3-button w3-white w3-border w3-border-purple w3-small w3-round-large',remote:true %>
         <% end %>
       </div>
       <div class="w3-half">
         <%= select_tag :count1, options_for_select([50, 100, 150, 200, 500], params[:count1].to_i),
                        :data => {  :remote => true, :url => url_for(:controller => "fund_movements", :action => "settlement_entity_division_index",
-                                                                    :params => {entity_code: params[:entity_code],
+                                                                    :params => {entity_code: params[:entity_code],entity_name: params[:entity_name],
+                                                                                assigned_code: params[:assigned_code], entity_cat: params[:entity_cat],
                                                                                 count: params[:count], page: params[:page]})},
                        id:"record", class: "w3-button w3-white w3-border w3-border-purple w3-round-large",
                        style: "width:auto; height:35px; float:right", remote:true %>
-
       </div>
     <% elsif current_user.merchant_admin? %>
       <div class="">
@@ -69,7 +70,8 @@
 
           <td>
 
-            <%= link_to 'SETTLEMENTS', fund_movement_index_path(entity_division, entity_code: params[:entity_code], count1: params[:count1], page1: params[:page1], count: params[:count], page: params[:page]),
+            <%= link_to 'SETTLEMENTS', fund_movement_index_path(entity_division, entity_name: params[:entity_name], assigned_code: params[:assigned_code],
+                                                                entity_cat: params[:entity_cat], entity_code: params[:entity_code], count1: params[:count1], page1: params[:page1], count: params[:count], page: params[:page]),
                         style: "width:120px; height: 30px;",
                         class: 'w3-button w3-purple-vpos w3-border w3-border-purple w3-tiny w3-round-large', remote:true%>
 
@@ -85,8 +87,8 @@
     <% unless params[:count1] == "All" %>
       <div class="flickr_pagination"  style="float: right">
         <%= will_paginate @entity_divisions, class: "w3-card", renderer: BootstrapPagination::Rails,
-                          :params => { :controller => "fund_movements", :action => "settlement_entity_division_index", entity_code: params[:entity_code],
-                                       count1: params[:count1], page1: params[:page1], count: params[:count], page: params[:page] } %>
+                          :params => { :controller => "fund_movements", :action => "settlement_entity_division_index", entity_code: params[:entity_code],entity_name: params[:entity_name], assigned_code: params[:assigned_code],
+                                       entity_cat: params[:entity_cat], count1: params[:count1], page1: params[:page1], count: params[:count], page: params[:page] } %>
         <%#= js_will_paginate @payment_infos, :params => { :controller => "payment_infos", :action => "payment_info_index" } %>
       </div>
     <% end %>

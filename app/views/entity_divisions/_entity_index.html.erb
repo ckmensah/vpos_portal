@@ -9,9 +9,13 @@
                   class: 'w3-button w3-purple-vpos w3-border w3-border-purple w3-small w3-round-large',remote:true %>
     <!--</div>-->
 
-    <div class="">
+    <div class="w3-half">
+      <button type="button" onclick="document.getElementById('merchant_filter1').style.display='block'" style="font-size: small; width: 165px;" class="w3-btn btn btn-outline-purple tablink w3-vpos-purple">MERCHANT FILTER</button>
+    </div>
+    <div class="w3-half">
       <%= select_tag :count, options_for_select([50, 100, 150, 200, 500], params[:count].to_i),
-                     :data => {  :remote => true, :url => url_for(:controller => "entity_divisions", :action => "entity_index")},
+                     :data => {  :remote => true, :url => url_for(:controller => "entity_divisions", :action => "entity_index",
+                                                                  :params => {filter_main1: $merchant_filter.present? ? $merchant_filter.to_enum.to_h : ""})},
                      id:"record", class: "w3-button w3-white w3-border w3-border-purple w3-round-large",
                      style: "width:auto; height:35px; float:right", remote:true %>
 
@@ -55,7 +59,7 @@
             <% end %>
             <td><strong><%= entity_info.created_at %></strong></td>
             <td>
-              <%= link_to 'ADD SERVICES', new_entity_division_path(entity_code: entity_info, interface_type: "info", count: params[:count], page: params[:page]),
+              <%= link_to 'ADD SERVICES', new_entity_division_path(entity_code: entity_info, filter_main1: $merchant_filter.present? ? $merchant_filter.to_enum.to_h : "", interface_type: "info", count: params[:count], page: params[:page]),
                           style: "width:120px; height: 30px;",
                           class: 'w3-button w3-purple-vpos w3-border w3-border-purple w3-tiny w3-round-large', remote:true%>
 
@@ -80,6 +84,77 @@
 
 
 </div>
+
+
+
+
+
+<div class="w3-container" >
+  <div id="merchant_filter1" class="w3-modal w3-animate-opacity" style=" display: none">
+    <span onclick="document.getElementById('merchant_filter1').style.display='none'"
+          class="w3-button w3-display-topright">&times;</span>
+    <!--<div class="w3-modal-content w3-card-4" >-->
+    <br/>
+    <%#= render 'form' %>
+
+    <div class="">
+      <div class="w3-white w3-hover-shadow col-md-4 offset-md-4 w3-card-4 w3-border w3-border-purple rcorners w3-center">
+        <h4 class="show w3-center"><strong>Filter Merchants</strong></h4>
+        <div id="entity_info_edit"></div>
+        <%#= simple_form_for(@entity_info, :data => {  :remote => true, count: params[:count], page: params[:page]}) do |f| %>
+        <%= simple_form_for :filter_main1, :url => (entity_index_path(count: params[:count], page: params[:page])), :method => 'get', html: {class: 'form-horizontal'}, remote: true do |f| %>
+          <div class="w3-container w3-border w3-border-purple">
+            <br/>
+            <input type="hidden" class="form-control" name="count" value="<%= params[:count] %>"/>
+            <input type="hidden" class="form-control" name="page" value="<%= params[:page] %>"/>
+            <!--                    <input type="hidden" class="form-control" name="counter" value="<%#= params[:counter] %>"/>-->
+            <!--                    <input type="hidden" class="form-control" name="pager" value="<%#= params[:pager] %>"/>-->
+            <!--          <input type="hidden" class="form-control" name="entity_code" value="<%#= @entity_code %>"/>-->
+            <!--          <input type="hidden" class="form-control" name="code" value="<%#= @code %>"/>-->
+            <div class="">
+
+              <%= f.input :entity_name, class: "form-control", collection: @merchant_search, label_method: :entity_name, value_method: :assigned_code, input_html: {id: "id_entity_info", style: "width: 100%;", autocomplete: "off"}, label: "Merchant Name", boolean_style: :inline %>
+              <%= f.input :assigned_code, class: "form-control", collection: @merchant_code_search, label_method: :assigned_code, value_method: :assigned_code, input_html: {id: "id_entity_info_ass", style: "width: 100%;", autocomplete: "off"}, label: "Assigned Code", boolean_style: :inline %>
+              <%= f.input :entity_cat, class: "form-control", collection: @merchant_cat_search, label_method: :entity_cat_name_join, value_method: :assigned_code, input_html: {id: "id_entity_cat", style: "width: 100%;", autocomplete: "off"}, label: "Entity Category", boolean_style: :inline %>
+
+            </div>
+
+            <br/>
+          </div>
+
+          <br>
+
+          <div>
+            <br><br>
+            <%= f.submit "Filter", class: "w3-button w3-purple-vpos w3-border w3-border-purple w3-small w3-round-large", :data => {:disable_with => 'Searching...'}, style: "width:auto;float:center;",remote:true %>
+            <%#= link_to 'Back', entity_info_index_path(page: params[:page], count: params[:count]), class: "w3-button w3-white w3-border w3-border-purple w3-small w3-round-large",remote:true %>
+            <button type="button" onclick="document.getElementById('merchant_filter1').style.display='none'" class="w3-button w3-white w3-border w3-border-purple w3-small w3-round-large">Back</button>
+
+
+            <br><br>
+          </div>
+        <% end %>
+
+
+      </div>
+
+    </div>
+
+
+    <div class="col-md-7 col-md-offset-5">
+    </div>
+
+    <br/>
+    <div class="col-md-7 col-md-offset-5">
+      <br/>
+      <br/>
+    </div>
+    <!--</div>-->
+
+  </div>
+</div>
+
+
 
 
 <script>

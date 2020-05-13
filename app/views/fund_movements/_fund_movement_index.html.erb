@@ -4,34 +4,44 @@
   <br>
   <p id="notes3"><%#= notice %></p>
   <p id="for_division_setup"><%#= notice %></p>
-  <h4><%= @entity_name %> <%= @division_name %> Settlements</h4>
+  <h4><%#= @entity_name %> <%#= @division_name %> <%= "#{ @entity_name} #{@division_name} Settlements" if @entity_name.present? || @division_name.present? %></h4>
   <br>
   <div>
 
-
     <% if current_user.super_admin? || current_user.super_user? || current_user.merchant_admin? %>
       <div class="w3-third">
+        <button onclick="document.getElementById('settles').style.display='block'" style="font-size: small; width: 150px;" class="w3-btn btn btn-outline-purple tablink w3-vpos-purple">FILTER</button>
 
-        <% if current_user.super_admin? || current_user.super_user? || current_user.merchant_admin? %>
-          <%= link_to 'BACK', settlement_entity_division_index_path(entity_code: params[:entity_code], count1: params[:count1], page1: params[:page1],
-                                                                    count: params[:count], page: params[:page]), style: "width:120px;",
+        <%# if current_user.super_admin? || current_user.super_user? || current_user.merchant_admin? %>
+        <%#= link_to 'BACK', settlement_entity_division_index_path(entity_code: params[:entity_code], count1: params[:count1], page1: params[:page1],
+                                                                    entity_name: params[:entity_name], assigned_code: params[:assigned_code],
+                                                                    entity_cat: params[:entity_cat], count: params[:count], page: params[:page]), style: "width:120px;",
                       class: 'w3-button w3-white w3-border w3-border-purple w3-small w3-round-large',remote:true %>
-        <% end %>
+        <%# end %>
       </div>
+      <% if @fund_movements.exists? %>
 
-      <div class="w3-third" style="padding-bottom: 15px">
-        <% if @fund_movements.exists? %>
+
+        <div class="w3-third" style="padding-bottom: 15px">
+
           <strong>Download::</strong>
           <%= link_to "CSV", '#', id: "csv", class: 'w3-bar-item w3-btn w3-card-4 w3-dark-grey w3-small w3-round-xlarge w3-ripple' %>
           |
           <%#= link_to 'Edit', edit_person_info_path(person_search, edit_modal: "info_modal", count: params[:count], page: params[:page] ),  id: 'showning', class: 'w3-bar-item w3-btn w3-card-4 w3-teal w3-small w3-round-xlarge w3-ripple',remote:true %>
           <div class="csv_div hidden" style="display: none">
-            <%= form_tag fund_movement_index_path(format: "csv"), method: :get, input_html: {display: "block", id: "csv_form"} do %>
-              <!--<input id="csv_perpage" class="form-control" name="per_page"/>-->
-              <!--<input id="csv_count" class="form-control" name="count"/>-->
-              <!--<input id="csv_page" class="form-control" name="page"/>-->
+            <%= form_tag fund_move_index_path(format: "csv"), method: :get, input_html: {display: "block", id: "csv_form"} do %>
+
+              <input class="form-control" name="entity_name" value="<%= params[:entity_name] %>"/>
+              <input class="form-control" name="assigned_code" value="<%= params[:assigned_code] %>"/>
+              <input class="form-control" name="division_name" value="<%= params[:division_name] %>"/>
+              <input class="form-control" name="activity_type" value="<%= params[:activity_type] %>"/>
+              <input class="form-control" name="status" value="<%= params[:status] %>"/>
+              <input class="form-control" name="start_date" value="<%= params[:start_date] %>"/>
+              <input class="form-control" name="end_date" value="<%= params[:end_date] %>"/>
+
               <input class="form-control" name="count" value="<%= params[:count] %>"/>
               <input class="form-control" name="page" value="<%= params[:page] %>"/>
+              <input class="form-control" name="filter_main" value="<%= params[:filter_main].present? ? params[:filter_main].to_unsafe_h : "" %>"/>
 
               <input class="form-control" name="count1" value="<%= params[:count1] %>"/>
               <input class="form-control" name="page1" value="<%= params[:page1] %>"/>
@@ -48,10 +58,18 @@
           <%= link_to "Excel", '#', id: "excel", class: 'w3-bar-item w3-btn w3-card-4 w3-black w3-small w3-round-xlarge w3-ripple' %>
           <!--        |-->
           <div class="excel_div hidden" style="display: none">
-            <%= form_tag fund_movement_index_path(format: "xls"), method: :get, input_html: {display: "block", id: "excel_form"} do %>
+            <%= form_tag fund_move_index_path(format: "xls"), method: :get, input_html: {display: "block", id: "excel_form"} do %>
               <!--<input id="excel_perpage" class="form-control" name="per_page"/>-->
               <!--<input id="excel_count" class="form-control" name="count"/>-->
               <!--<input id="excel_page" class="form-control" name="page"/>-->
+              <input class="form-control" name="entity_name" value="<%= params[:entity_name] %>"/>
+              <input class="form-control" name="assigned_code" value="<%= params[:assigned_code] %>"/>
+              <input class="form-control" name="division_name" value="<%= params[:division_name] %>"/>
+              <input class="form-control" name="activity_type" value="<%= params[:activity_type] %>"/>
+              <input class="form-control" name="status" value="<%= params[:status] %>"/>
+              <input class="form-control" name="start_date" value="<%= params[:start_date] %>"/>
+              <input class="form-control" name="end_date" value="<%= params[:end_date] %>"/>
+
               <input class="form-control" name="count" value="<%= params[:count] %>"/>
               <input class="form-control" name="page" value="<%= params[:page] %>"/>
 
@@ -60,21 +78,25 @@
 
               <input class="form-control" name="count2" value="<%= params[:count2] %>"/>
               <input class="form-control" name="page2" value="<%= params[:page2] %>"/>
+              <input class="form-control" name="filter_main" value="<%= params[:filter_main].present? ? params[:filter_main].to_unsafe_h : "" %>"/>
 
-<!--              <input class="form-control" name="entity_name" value="<%#= params[:entity_name] %>"/>-->
+
+              <!--              <input class="form-control" name="entity_name" value="<%#= params[:entity_name] %>"/>-->
 <!--              <input class="form-control" name="division_name" value="<%#= params[:division_name] %>"/>-->
               <input type="submit" value="Search" id="excel_submit">
             <% end %>
           </div>
 
-
-        <% end %>
-      </div>
+        </div>
+      <% end %>
 
       <div class="w3-third">
-        <%= select_tag :count2, options_for_select([50, 100, 150, 200, 500], params[:count2].to_i),
+        <%= select_tag :count2, options_for_select([50, 100, 150, 200, 500, "ALL"], params[:count2]),
                        :data => {  :remote => true, :url => url_for(:controller => "fund_movements", :action => "fund_movement_index",
                                                                     :params => {division_code: params[:division_code], entity_code: params[:entity_code],
+                                                                                entity_name: params[:entity_name], assigned_code: params[:assigned_code],
+                                                                                entity_cat: params[:entity_cat],
+                                                                                filter_main: params[:filter_main].present? ? params[:filter_main].to_unsafe_h : "",
                                                                                 count1: params[:count1], page1: params[:page1],
                                                                                 count: params[:count], page: params[:page]})},
                        id:"record", class: "w3-button w3-white w3-border w3-border-purple w3-round-large",
@@ -82,18 +104,26 @@
 
       </div>
 
+
     <% elsif current_user.merchant_service? %>
-      <div class="w3-half" style="padding-bottom: 15px">
-        <% if @fund_movements.exists? %>
+      <div class="w3-third" style="padding-bottom: 15px">
+        <button onclick="document.getElementById('settles').style.display='block'" style="font-size: small; width: 150px;" class="w3-btn btn btn-outline-purple tablink w3-vpos-purple">FILTER</button>
+      </div>
+      <% if @fund_movements.exists? %>
+        <div class="w3-third" style="padding-bottom: 15px">
+
           <strong>Download::</strong>
           <%= link_to "CSV", '#', id: "csv", class: 'w3-bar-item w3-btn w3-card-4 w3-dark-grey w3-small w3-round-xlarge w3-ripple' %>
           |
           <%#= link_to 'Edit', edit_person_info_path(person_search, edit_modal: "info_modal", count: params[:count], page: params[:page] ),  id: 'showning', class: 'w3-bar-item w3-btn w3-card-4 w3-teal w3-small w3-round-xlarge w3-ripple',remote:true %>
           <div class="csv_div hidden" style="display: none">
-            <%= form_tag fund_movement_index_path(format: "csv"), method: :get, input_html: {display: "block", id: "csv_form"} do %>
-              <!--<input id="csv_perpage" class="form-control" name="per_page"/>-->
-              <!--<input id="csv_count" class="form-control" name="count"/>-->
-              <!--<input id="csv_page" class="form-control" name="page"/>-->
+            <%= form_tag fund_movement_index_path(division_code: params[:division_code], format: "csv"), method: :get, input_html: {display: "block", id: "csv_form"} do %>
+
+              <input class="form-control" name="activity_type" value="<%= params[:activity_type] %>"/>
+              <input class="form-control" name="status" value="<%= params[:status] %>"/>
+              <input class="form-control" name="start_date" value="<%= params[:start_date] %>"/>
+              <input class="form-control" name="end_date" value="<%= params[:end_date] %>"/>
+
               <input class="form-control" name="count" value="<%= params[:count] %>"/>
               <input class="form-control" name="page" value="<%= params[:page] %>"/>
 
@@ -102,6 +132,8 @@
 
               <input class="form-control" name="count2" value="<%= params[:count2] %>"/>
               <input class="form-control" name="page2" value="<%= params[:page2] %>"/>
+              <input class="form-control" name="filter_main" value="<%= params[:filter_main].present? ? params[:filter_main].to_unsafe_h : "" %>"/>
+
 
               <!--              <input class="form-control" name="entity_name" value="<%#= params[:entity_name] %>"/>-->
               <!--              <input class="form-control" name="division_name" value="<%#= params[:division_name] %>"/>-->
@@ -112,10 +144,12 @@
           <%= link_to "Excel", '#', id: "excel", class: 'w3-bar-item w3-btn w3-card-4 w3-black w3-small w3-round-xlarge w3-ripple' %>
           <!--        |-->
           <div class="excel_div hidden" style="display: none">
-            <%= form_tag fund_movement_index_path(format: "xls"), method: :get, input_html: {display: "block", id: "excel_form"} do %>
-              <!--<input id="excel_perpage" class="form-control" name="per_page"/>-->
-              <!--<input id="excel_count" class="form-control" name="count"/>-->
-              <!--<input id="excel_page" class="form-control" name="page"/>-->
+            <%= form_tag fund_movement_index_path(division_code: params[:division_code], format: "xls"), method: :get, input_html: {display: "block", id: "excel_form"} do %>
+              <input class="form-control" name="activity_type" value="<%= params[:activity_type] %>"/>
+              <input class="form-control" name="status" value="<%= params[:status] %>"/>
+              <input class="form-control" name="start_date" value="<%= params[:start_date] %>"/>
+              <input class="form-control" name="end_date" value="<%= params[:end_date] %>"/>
+
               <input class="form-control" name="count" value="<%= params[:count] %>"/>
               <input class="form-control" name="page" value="<%= params[:page] %>"/>
 
@@ -124,6 +158,8 @@
 
               <input class="form-control" name="count2" value="<%= params[:count2] %>"/>
               <input class="form-control" name="page2" value="<%= params[:page2] %>"/>
+              <input class="form-control" name="filter_main" value="<%= params[:filter_main].present? ? params[:filter_main].to_unsafe_h : "" %>"/>
+
 
               <!--              <input class="form-control" name="entity_name" value="<%#= params[:entity_name] %>"/>-->
               <!--              <input class="form-control" name="division_name" value="<%#= params[:division_name] %>"/>-->
@@ -131,14 +167,13 @@
             <% end %>
           </div>
 
-
+        </div>
         <% end %>
-      </div>
-
-      <div class="w3-half">
+      <div class="w3-third">
         <%= select_tag :count2, options_for_select([50, 100, 150, 200, 500], params[:count2].to_i),
                        :data => {  :remote => true, :url => url_for(:controller => "fund_movements", :action => "fund_movement_index",
                                                                     :params => {division_code: params[:division_code], entity_code: params[:entity_code],
+                                                                                filter_main: params[:filter_main].present? ? params[:filter_main].to_unsafe_h : "",
                                                                                 count1: params[:count1], page1: params[:page1],
                                                                                 count: params[:count], page: params[:page]})},
                        id:"record", class: "w3-button w3-white w3-border w3-border-purple w3-round-large",
@@ -151,10 +186,13 @@
   <br>
   <div class="table-responsive-md">
     <br>
-    <table class="table w3-responsive table-striped">
+    <table class="w3-responsive table-striped w3-table-all table-bordered w3-hoverable w3-card-4">
       <thead>
-      <tr>
-        <!--        <th></th>-->
+      <tr class="w3-vpos-purple">
+        <th>No.</th>
+        <% if current_user.super_admin? || current_user.super_user? || current_user.merchant_admin? %>
+          <th>Service Name</th>
+        <% end %>
         <% if current_user.super_admin? || current_user.super_user? %>
           <th>Service ID</th>
         <% end %>
@@ -168,24 +206,44 @@
       </thead>
 
       <tbody>
-      <% @fund_movements.each do |fund_movement| %>
-
+      <% @fund_movements.each.with_index(@fund_movements.offset + 1) do |fund_movement, num| %>
         <tr>
-          <% if current_user.super_admin? || current_user.super_user? %>
-            <td><strong><%= fund_movement.service_id %></strong></td>
+          <td><%= num %></td>
+          <% if current_user.super_admin? || current_user.super_user? || current_user.merchant_admin? %>
+            <% entity_divi = EntityDivision.where(active_status: true, del_status: false, assigned_code: fund_movement.entity_div_code).order(created_at: :desc).first %>
+            <% if entity_divi %>
+              <% if entity_divi.division_name.length > 21 %>
+                <td><%= entity_divi.division_name[0..21] %>.. <%#= payment_info.entity_division.division_alias %></td>
+              <% else %>
+                <td><%= entity_divi.division_name %></td>
+              <% end %>
+              <!--              <td><%#= payment_info.entity_division.division_name %> <%##= payment_info.entity_division.division_alias %></td>-->
+            <% else %>
+              <td></td>
+            <% end %>
+            <% if current_user.super_admin? || current_user.super_user? %>
+              <td><%= fund_movement.service_id %></td>
+            <% end %>
           <% end %>
-          <td><strong><%= fund_movement.ref_id %></strong></td>
-          <td><strong><%= fund_movement.amount %></strong></td>
-          <td><strong><%= fund_movement.trans_type %></strong></td>
+          <td><%= fund_movement.ref_id %></td>
+          <td><%= fund_movement.amount %></td>
+          <td><%= fund_movement.trans_type %></td>
           <% if fund_movement.processed %>
-            <td><strong>Processed</strong></td>
+            <td>Processed</td>
+          <% elsif fund_movement.processed == false %>
+            <td>Failed</td>
           <% else %>
-            <td><strong>Failed</strong></td>
+            <td>Pending</td>
           <% end %>
-          <td><strong><%= fund_movement.created_at %></strong></td>
+          <td><%= fund_movement.created_at %></td>
 
           <td>
-            <%= link_to 'VIEW', fund_movement_path(fund_movement, division_code: params[:division_code], entity_code: params[:entity_code], count1: params[:count1], page1: params[:page1], count2: params[:count2], page2: params[:page2], count: params[:count], page: params[:page]),
+            <%#= link_to 'VIEW', fund_movement_path(@core_encryptor.encrypt_and_sign(fund_movement), division_code: params[:division_code], filter_main: params[:filter_main].present? ? params[:filter_main].to_unsafe_h : "",
+                                                   entity_code: params[:entity_code], count1: params[:count1], page1: params[:page1], count2: params[:count2], page2: params[:page2], count: params[:count], page: params[:page]),
+                        style: "width:60px; height: 30px;",
+                        class: 'w3-button w3-purple-vpos w3-border w3-border-purple w3-tiny w3-round-large', remote:true%>
+            <%= link_to 'VIEW', fund_movement_path(fund_movement, division_code: params[:division_code], filter_main: params[:filter_main].present? ? params[:filter_main].to_unsafe_h : "",
+                                                   entity_code: params[:entity_code], count1: params[:count1], page1: params[:page1], count2: params[:count2], page2: params[:page2], count: params[:count], page: params[:page]),
                         style: "width:60px; height: 30px;",
                         class: 'w3-button w3-purple-vpos w3-border w3-border-purple w3-tiny w3-round-large', remote:true%>
 
@@ -196,10 +254,11 @@
 
       </tbody>
     </table>
-    <% unless params[:count2] == "All" %>
+    <% unless params[:count2] == "ALL" %>
       <div class="flickr_pagination"  style="float: right">
         <%= will_paginate @fund_movements, class: "w3-card", renderer: BootstrapPagination::Rails,
                           :params => { :controller => "fund_movements", :action => "fund_movement_index", entity_code: params[:entity_code], division_code: params[:division_code],
+                                       filter_main: params[:filter_main].present? ? params[:filter_main].to_unsafe_h : "",
                                        count1: params[:count1], page1: params[:page1], count2: params[:count2], page2: params[:page2],
                                        count: params[:count], page: params[:page] } %>
         <%#= js_will_paginate @payment_infos, :params => { :controller => "payment_infos", :action => "payment_info_index" } %>
@@ -213,10 +272,198 @@
 
 
 
+
+
+
+<div class="w3-container" >
+  <div id="settles" class="w3-modal w3-animate-opacity" style=" display: none">
+    <span onclick="document.getElementById('settles').style.display='none'"
+          class="w3-button w3-display-topright">&times;</span>
+    <!--<div class="w3-modal-content w3-card-4" >-->
+    <br/>
+    <%#= render 'form' %>
+
+    <div class="">
+      <div class="w3-white w3-hover-shadow col-md-6 offset-md-3 w3-card-4 w3-border w3-border-purple rcorners w3-center">
+        <h4 class="show w3-center"><strong>Filter Merchants</strong></h4>
+        <div id="entity_info_edit"></div>
+        <%#= simple_form_for(@entity_info, :data => {  :remote => true, count: params[:count], page: params[:page]}) do |f| %>
+        <% @activity_types = ActivityType.where(active_status: true) %>
+        <% @statuses = [["Processed", "TRUE"], ["Failed", "FALSE"], ["Pending", "NIL"]] %>
+        <% @trans_types = [["CTW", "CTW"], ["CTB", "CTB"], ["DNC", "DNC"], ["CNC", "CNC"]] %>
+
+        <%= simple_form_for :filter_main, :url => (fund_move_index_path(count2: params[:count2], page2: params[:page2])), :method => 'get', html: {class: 'form-horizontal'}, remote: true do |f| %>
+          <div class="w3-container w3-border w3-border-purple">
+            <br/>
+            <input type="hidden" class="form-control" name="count2" value="<%= params[:count2] %>"/>
+            <input type="hidden" class="form-control" name="page2" value="<%= params[:page2] %>"/>
+            <!--          <input type="hidden" class="form-control" name="entity_code" value="<%#= @entity_code %>"/>-->
+            <!--          <input type="hidden" class="form-control" name="code" value="<%#= @code %>"/>-->
+            <div class="">
+              <% if current_user.super_admin? || current_user.super_user? %>
+                <div class="w3-half">
+                  <%= f.input :entity_name, class: "form-control", collection: @merchant_search, label_method: :entity_name, value_method: :assigned_code, input_html: {id: "id_entity_info", style: "width: 90%;"}, label: "Merchant Name", boolean_style: :inline %>
+                  <%= f.input :assigned_code, class: "form-control", collection: @merchant_code_search, label_method: :assigned_code, value_method: :assigned_code, input_html: {id: "id_entity_info_ass", style: "width: 90%;", autocomplete: "off"}, label: "Assigned Code", boolean_style: :inline %>
+                  <%= f.input :division_name, class: "form-control", collection: @merchant_service_search, label_method: :division_name, value_method: :assigned_code, input_html: {id: "id_entity_div", style: "width: 90%;", autocomplete: "off"}, label: "Merchant Service", boolean_style: :inline %>
+                  <div class="w3-half">
+                    <%= f.input :service_id, as: :integer, class: "form-control", input_html: {min: 1, style: "width: 90%", autocomplete: "off"}, label: "Service ID", boolean_style: :inline %>
+                  </div>
+                  <div class="w3-half">
+                    <%= f.input :ref_id, class: "form-control", input_html: {style: "width: 90%", autocomplete: "off"}, label: "Reference ID", boolean_style: :inline %>
+                  </div>
+                </div>
+
+                <div class="w3-half">
+                  <%= f.input :trans_type, collection: @trans_types, label_method: :first, value_method: :last, class: "form-control", input_html: {style: "width: 100%;"}, label: "Trans type", boolean_style: :inline %>
+                  <%#= f.input :activity_type, collection: @activity_types, label_method: :activity_type_desc, value_method: :assigned_code, class: "form-control", input_html: {style: "width: 100%;"}, label: "Activity Type", boolean_style: :inline %>
+                  <%= f.input :status, collection: @statuses, label_method: :first, value_method: :last, class: "form-control", input_html: {style: ""}, label: "Status", boolean_style: :inline %>
+
+                  <%= f.input :start_date, :id => "datepicker1", as: :date, html5: true, class: "form-control", label: "Start Date", boolean_style: :inline, input_html: {style: "width: 100%;", data: {behaviour: 'datepicker', provide: 'datepicker'}, autocomplete: "off"} %>
+                  <%= f.input :end_date, :id => "datepicker2", as: :date, html5: true, class: "form-control", label: "End Date", boolean_style: :inline, input_html: {style: "", data: {behaviour: 'datepicker', provide: 'datepicker'}, autocomplete: "off"} %>
+
+<!--                  <div class="w3-half">-->
+                    <%#= f.input :start_date, :id => "datepicker1", as: :date, html5: true, class: "form-control input-group date", label: "Start Date", boolean_style: :inline, input_html: {style: "width: 90%", data: {behaviour: 'datepicker', provide: 'datepicker'}, autocomplete: "off"} %>
+<!--                  </div>-->
+<!--                  <div class="w3-half">-->
+                    <%#= f.input :end_date, :id => "datepicker2", as: :date, html5: true, class: "form-control", label: "End Date", boolean_style: :inline, input_html: {style: "", data: {behaviour: 'datepicker', provide: 'datepicker'}, autocomplete: "off"} %>
+<!--                  </div>-->
+                </div>
+              <% elsif current_user.merchant_admin? %>
+                <div class="w3-half">
+                  <%= f.input :division_name, class: "form-control", collection: @merchant_service_search, label_method: :division_name, value_method: :assigned_code, input_html: {id: "id_entity_div", style: "width: 90%;", autocomplete: "off"}, label: "Merchant Service", boolean_style: :inline %>
+                  <%= f.input :status, collection: @statuses, label_method: :first, value_method: :last, class: "form-control", input_html: {style: "width: 90%;"}, label: "Status", boolean_style: :inline %>
+                  <%= f.input :trans_type, collection: @trans_types, label_method: :first, value_method: :last, class: "form-control", input_html: {style: "width: 90%;", autocomplete: "off"}, label: "Trans type", boolean_style: :inline %>
+
+                </div>
+
+                <div class="w3-half">
+                  <%= f.input :start_date, :id => "datepicker1", as: :date, html5: true, class: "form-control", label: "Start Date", boolean_style: :inline, input_html: {style: "width: 100%;", data: {behaviour: 'datepicker', provide: 'datepicker'}, autocomplete: "off"} %>
+                  <%= f.input :end_date, :id => "datepicker2", as: :date, html5: true, class: "form-control", label: "End Date", boolean_style: :inline, input_html: {style: "", data: {behaviour: 'datepicker', provide: 'datepicker'}, autocomplete: "off"} %>
+                  <%= f.input :ref_id, class: "form-control", input_html: {style: "width: 100%", autocomplete: "off"}, label: "Reference ID", boolean_style: :inline %>
+
+                  
+<!--                  <div class="w3-half">-->
+                    <%#= f.input :activity_type, collection: @activity_types, label_method: :activity_type_desc, value_method: :assigned_code, class: "form-control", input_html: {style: "width: 90%;"}, label: "Activity Type", boolean_style: :inline %>
+<!--                  </div>-->
+
+<!--                  <div class="w3-half">-->
+                    <%#= f.input :ref_id, class: "form-control", input_html: {style: "width: 90%", autocomplete: "off"}, label: "Reference ID", boolean_style: :inline %>
+<!--                  </div>-->
+
+                </div>
+
+              <% elsif current_user.merchant_service? %>
+                <div class="w3-half">
+                  <%#= f.input :activity_type, collection: @activity_types, label_method: :activity_type_desc, value_method: :assigned_code, class: "form-control", input_html: {style: "width: 90%;"}, label: "Activity Type", boolean_style: :inline %>
+                  <%= f.input :trans_type, collection: @trans_types, label_method: :first, value_method: :last, class: "form-control", input_html: {style: "width: 90%;"}, label: "Trans type", boolean_style: :inline %>
+                  <%= f.input :status, collection: @statuses, label_method: :first, value_method: :last, class: "form-control", input_html: {style: "width: 90%;"}, label: "Status", boolean_style: :inline %>
+                </div>
+
+                <div class="w3-half">
+                  <%= f.input :ref_id, class: "form-control", input_html: {style: "width: 100%", autocomplete: "off"}, label: "Reference ID", boolean_style: :inline %>
+                  <%#= f.input :start_date, :id => "datepicker1", as: :date, html5: true, class: "form-control input-group date", label: "Start Date", boolean_style: :inline, input_html: {style: "width: 100%", data: {behaviour: 'datepicker', provide: 'datepicker'}, autocomplete: "off"} %>
+                  <%#= f.input :end_date, :id => "datepicker2", as: :date, html5: true, class: "form-control", label: "End Date", boolean_style: :inline, input_html: {style: "", data: {behaviour: 'datepicker', provide: 'datepicker'}, autocomplete: "off"} %>
+                  <div class="w3-half">
+                    <%= f.input :start_date, :id => "datepicker1", as: :date, html5: true, class: "form-control input-group date", label: "Start Date", boolean_style: :inline, input_html: {style: "width: 90%", data: {behaviour: 'datepicker', provide: 'datepicker'}, autocomplete: "off"} %>
+                  </div>
+
+                  <div class="w3-half">
+                    <%= f.input :end_date, :id => "datepicker2", as: :date, html5: true, class: "form-control", label: "End Date", boolean_style: :inline, input_html: {style: "", data: {behaviour: 'datepicker', provide: 'datepicker'}, autocomplete: "off"} %>
+                  </div>
+                </div>
+
+              <% end %>
+
+              <%#= f.select(:trial, @merchant_search.collect {|p| [p.entity_name, p.assigned_code]}, {include_blank: "None"}, {id: "id_trial"}) %>
+
+
+            </div>
+
+
+            <br/>
+          </div>
+
+          <br>
+
+          <div>
+            <br><br>
+            <%= f.submit "Filter", class: "w3-button w3-purple-vpos w3-border w3-border-purple w3-small w3-round-large", :data => {:disable_with => 'Searching...'}, style: "width:auto;float:center;",remote:true %>
+            <%#= link_to 'Back', entity_info_index_path(page: params[:page], count: params[:count]), class: "w3-button w3-white w3-border w3-border-purple w3-small w3-round-large",remote:true %>
+            <button type="button" onclick="document.getElementById('settles').style.display='none'" class="w3-button w3-white w3-border w3-border-purple w3-small w3-round-large">Back</button>
+
+
+            <br><br>
+          </div>
+        <% end %>
+
+
+      </div>
+
+    </div>
+
+
+    <div class="col-md-7 col-md-offset-5">
+    </div>
+
+    <br/>
+    <div class="col-md-7 col-md-offset-5">
+      <br/>
+      <br/>
+    </div>
+    <!--</div>-->
+
+  </div>
+</div>
+
+
+
 <script>
     $(function(){
         $('.pagination a').attr('data-remote', 'true')
     });
+
+    $(document).ready(function () {
+        $('[data-toggle="tooltip"]').tooltip();
+        var entity_info_id = $('#id_entity_info');
+        var entity_info_ass_id = $('#id_entity_info_ass');
+        var entity_div_id = $('#id_entity_div');
+        // var div_lov_id = $('#id_div_lov');
+
+        entity_info_id.change(function () {
+            console.log("For entity_info id:: " + entity_info_id.val());
+            entity_div_id.attr("title", "Now select a service.");
+            Rails.ajax({
+                type: "POST",
+                url: "<%= general_division_ajax_call_path %>",
+                data: "id_for_entity_info=" + entity_info_id.val(),
+                dataType: "script"
+            });
+        });
+
+        entity_info_ass_id.change(function () {
+            console.log("For entity_info id:: " + entity_info_id.val());
+            entity_div_id.attr("title", "Now select a service.");
+            Rails.ajax({
+                type: "POST",
+                url: "<%= general_division_ajax_call_path %>",
+                data: "id_for_entity_info=" + entity_info_ass_id.val(),
+                dataType: "script"
+            });
+        });
+
+        entity_div_id.change(function () {
+            console.log("For entity service id:: " + entity_div_id.val());
+            // div_lov_id.attr("title", "Now select a service option.");
+            Rails.ajax({
+                type: "POST",
+                url: "<%= general_lov_ajax_call_path %>",
+                data: "id_for_entity_service=" + entity_div_id.val(),
+                dataType: "script"
+            });
+        });
+
+    });
+
 
     $('#csv').click(function () {
         console.log('works!');

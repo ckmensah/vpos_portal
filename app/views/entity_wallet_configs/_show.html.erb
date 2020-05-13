@@ -81,7 +81,7 @@
           </div>
           <br>
           <div class="w3-center">
-            <%= link_to 'Back', entity_info_path(params[:entity_code], page: params[:page], count: params[:count]), class: 'w3-button w3-white w3-border w3-border-purple w3-small w3-round-large', remote: true %>
+            <%= link_to 'Back', entity_info_path(params[:entity_code], filter_main: params[:filter_main].present? ? params[:filter_main].to_enum.to_h : "", page: params[:page], count: params[:count]), class: 'w3-button w3-white w3-border w3-border-purple w3-small w3-round-large', remote: true %>
           </div>
           <br/>
         </div>

@@ -4,8 +4,10 @@
   <div class="w3-white w3-hover-shadow col-md-8 offset-md-2 w3-card-4 w3-border w3-border-purple rcorners w3-center">
     <h4 class="show w3-center"><strong>New Merchant Information</strong></h4>
     <div id="entity_info_new"></div>
-    <%= simple_form_for(@entity_info, :data => {  :remote => true, count: params[:count], page: params[:page]}) do |f| %>
-    <div class="w3-container w3-border w3-border-purple">
+    <%#= simple_form_for(@entity_info, :data => {  :remote => true, count: params[:count], page: params[:page]}) do |f| %>
+    <%= simple_form_for(@entity_info, url: entity_infos_path(@entity_info, filter_main: params[:filter_main].present? ? params[:filter_main].to_enum.to_h : "", count: params[:count], page: params[:page] ), remote: true) do |f| %>
+
+  <div class="w3-container w3-border w3-border-purple">
       <br/>
           <%= f.error_notification %>
           <%= f.error_notification message: f.object.errors[:base].to_sentence if f.object.errors[:base].present? %>
@@ -135,7 +137,7 @@
         <div>
           <br><br>
           <%= f.submit "Submit", class: "w3-button w3-purple-vpos w3-border w3-border-purple w3-small w3-round-large", :data => {:disable_with => 'Please Wait...'}, style: "width:auto;float:center;",remote:true %>
-          <%= link_to 'Back', entity_info_index_path(page: params[:page], count: params[:count]), class: "w3-button w3-white w3-border w3-border-purple w3-small w3-round-large",remote:true %>
+          <%= link_to 'Back', entity_info_index_path(filter_main: params[:filter_main].present? ? params[:filter_main].to_enum.to_h : "", page: params[:page], count: params[:count]), class: "w3-button w3-white w3-border w3-border-purple w3-small w3-round-large",remote:true %>
           <br><br>
         </div>
     <% end %>

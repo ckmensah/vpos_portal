@@ -58,5 +58,73 @@ module VposCore
   end
 
 
+  class VposEncryptor
+
+    #def encrypt text
+    #  text = text.to_s unless text.is_a? String
+    #
+    #  len   = ActiveSupport::MessageEncryptor.key_len
+    #  salt  = SecureRandom.hex len
+    #  key   = ActiveSupport::KeyGenerator.new(Rails.application.secrets.secret_key_base).generate_key salt, len
+    #  crypt = ActiveSupport::MessageEncryptor.new key
+    #  encrypted_data = crypt.encrypt_and_sign text
+    #  "#{salt}$$#{encrypted_data}"
+    #end
+    #
+    #def decrypt text
+    #  salt, data = text.split "$$"
+    #
+    #  len   = ActiveSupport::MessageEncryptor.key_len
+    #  key   = ActiveSupport::KeyGenerator.new(Rails.application.secrets.secret_key_base).generate_key salt, len
+    #  crypt = ActiveSupport::MessageEncryptor.new key
+    #  crypt.decrypt_and_verify data
+    #end
+
+
+    def encrypt_and_sign(text)
+      text  = String(text)
+      iv    = SecureRandom.random_bytes(key_length)
+      key   = generate_key(iv)
+      crypt = encryptor(key)
+
+      encrypted_data = crypt.encrypt_and_sign text
+      "#{iv}#{encrypted_data}"
+    end
+
+    def decrypt(encrypted_text)
+      iv, encrypted_data = decompose(encrypted_text)
+      key   = generate_key(iv)
+      crypt = encryptor(key)
+      crypt.decrypt_and_verify(encrypted_data)
+    end
+
+    private
+
+    def encryptor(key)
+      ActiveSupport::MessageEncryptor.new(key)
+    end
+
+    def generate_key(iv)
+      ActiveSupport::KeyGenerator.new(password).generate_key(iv, key_length)
+    end
+
+    def key_length
+      ActiveSupport::MessageEncryptor.key_len
+    end
+
+    def password
+      Rails.application.secrets.secret_key_base
+    end
+
+    def decompose(encrypted_text)
+      [
+          encrypted_text[0...key_length],
+          encrypted_text[key_length .. -1]
+      ]
+    end
+
+  end
+
+
 end
 

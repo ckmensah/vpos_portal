@@ -1,0 +1,159 @@
+
+<div class="w3-container">
+  <div id="id01" class="w3-modal w3-animate-opacity" style=" display: block">
+    <!--<div class="w3-modal-content w3-card-4" >-->
+    <!--    <br/>-->
+
+    <!--    <div class="">-->
+
+    <% if @display != nil %>
+      <div class="w3-white w3-hover-shadow col-md-8 offset-md-2 w3-card-4 w3-border w3-border-purple rcorners w3-center">
+        <h4 class="show w3-center"><strong>Recipient Notification(s) Details</strong></h4>
+        <p id="notice14"><strong></strong></p>
+
+        <div class="w3-container">
+          <br/>
+
+          <%# @entity_division = @entity_division.assigned_service_codes != nil ? @entity_division.assigned_service_codes.where(active_status: true, del_status: false).order("assigned_service_code.created_at desc").first : false %>
+          <%# assigned_service = @entity_division.assigned_service_codes != nil ? @entity_division.assigned_service_codes.where(active_status: true, del_status: false).order("assigned_service_code.created_at desc").first : false %>
+          <%# entity_wallet_conf = EntityWalletConfig.where(active_status: true, division_code: @entity_division.assigned_code).order(created_at: :desc).first %>
+          <% logger.info "Forbidden Zone ===================" %>
+          <div class="w3-container w3-responsive pre-scrollable w3-mobile">
+
+
+            <table class=" w3-responsive table-striped w3-table-all table-bordered w3-hoverable w3-card-4">
+              <thead>
+              <tr class="w3-vpos-purple">
+                <th>No.</th>
+                <th>Service</th>
+                <th>Recipient Name</th>
+                <th>Mobile Number</th>
+                <!--                  <th>Activity Type</th>-->
+                <!--                  <th>Location</th>-->
+                <!--                      <th></th>-->
+              </tr>
+              </thead>
+              <tbody>
+
+
+              <% if @display != nil %>
+                <% logger.info "SERVICE ACCOUNT DETAILS PASSED ===============================" %>
+                <% num = 1 %>
+                <% @display.each do |key, value| %>
+                  <% if value["recipient_name"].present? && value["mobile_number"].present? %>
+                    <% service = EntityDivision.where(active_status: true, assigned_code: @entity_div_alert_recipient_params[:entity_div_code]).order(created_at: :desc).first %>
+                    <tr>
+                      <td><%= num %></td>
+                      <td><%= service.division_name if service %> </td>
+                      <td><%= value["recipient_name"] %></td>
+                      <td><%= value["mobile_number"] %></td>
+                      <!--                        <td><%#= value["activity_type_code"] %></td>-->
+
+                      <% num = num + 1 %>
+                    </tr>
+
+                  <% end %>
+                <% end %>
+
+              <% end %>
+
+              </tbody>
+            </table>
+
+
+          </div>
+
+          <br/>
+
+          <br/>
+
+          <br/>
+          <div class="w3-center">
+            <%= link_to 'Back', entity_div_alert_recipient_index_path(entity_code: params[:entity_code], code: params[:code], count1: params[:count1], page1: params[:page1], count6: params[:count6], page6: params[:page6], page: params[:page], count: params[:count]), class: 'w3-bar-item w3-btn w3-ripple w3-round-large w3-dark-gray', remote: true %>
+          </div>
+          <br/>
+        </div>
+
+      </div>
+    <% else %>
+
+      <!--        <br/>-->
+
+      <div class="">
+
+
+        <div class="w3-white w3-hover-shadow col-md-6 offset-md-3 w3-card-4 w3-border w3-border-purple rcorners w3-center">
+          <h4 class="show w3-center"><strong>Recipient Notification Details</strong></h4>
+          <p id="notice1"><strong></strong></p>
+          <div class="w3-container">
+            <!--              <br/>-->
+
+            <table class="w3-table-all table table-bordered w3-hoverable w3-card-4">
+
+              <tr>
+                <td class="raw_theme w3-border cell-cust-grad w3-leftbar"><strong>Recipient Name:</strong></td>
+                <td><strong><%= @for_alert_update ? @entity_div_alert_recipient_params[:recipient_name] : @entity_div_alert_recipient.recipient_name %></strong></td>
+              </tr>
+
+
+              <tr>
+                <td class="raw_theme w3-border cell-cust-grad w3-leftbar"><strong>Mobile Number:</strong></td>
+                <td><strong><%= @entity_div_alert_recipient.mobile_number %></strong></td>
+              </tr>
+
+              <tr>
+                <td class="raw_theme w3-border cell-cust-grad w3-leftbar"><strong>Status:</strong></td>
+
+                <% if @entity_div_alert_recipient.active_status %>
+                  <td><strong>Active</strong></td>
+                <% else %>
+                  <td><strong>Inactive</strong></td>
+                <% end %>
+              </tr>
+
+              <tr>
+                <td class="raw_theme w3-border cell-cust-grad w3-leftbar"><strong>Date:</strong></td>
+                <td>
+                  <strong><%= @entity_div_alert_recipient.created_at %></strong>
+                </td>
+              </tr>
+
+            </table>
+
+            <br/>
+            <div class="w3-center">
+              <%= link_to 'Back', entity_div_alert_recipient_index_path(entity_code: params[:entity_code], code: params[:code], count1: params[:count1], page1: params[:page1], count6: params[:count6], page6: params[:page6], page: params[:page], count: params[:count]), class: 'w3-bar-item w3-btn w3-ripple w3-round-large w3-dark-gray', remote: true %>
+            </div>
+            <br/>
+          </div>
+
+        </div>
+
+        <!--        </div>-->
+
+    <% end %>
+
+    <br/>
+    </div>
+
+    <!--</div>-->
+
+  </div>
+  <!--  <br/>-->
+  <div class="col-md-7 offset-md-5">
+    <!--    <br><br>-->
+  </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+

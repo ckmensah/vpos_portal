@@ -192,7 +192,7 @@ class EntityAdminWhitelistsController < ApplicationController
     # Use callbacks to share common setup or constraints between actions.
     def set_entity_admin_whitelist
       #@entity_admin_whitelist = EntityAdminWhitelist.find(params[:id])
-      @entity_admin_whitelist = EntityAdminWhitelist.where(mobile_number: params[:id], active_status: true, del_status: false).order('id desc').first
+      @entity_admin_whitelist = EntityAdminWhitelist.where(entity_division_code: params[:code], mobile_number: params[:id], active_status: true, del_status: false).order('id desc').first
 
     end
 

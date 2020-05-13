@@ -9,6 +9,12 @@ class EntityInfosController < ApplicationController
     params[:page] ? params[:page] : params[:page] = 1
 
     if current_user.super_admin? || current_user.super_user?
+
+      $merchant_filter = ""
+      @merchant_search = EntityInfo.where(active_status: true).order(entity_name: :asc)
+      @merchant_code_search = EntityInfo.where(active_status: true).order(entity_name: :asc)
+      @merchant_cat_search = EntityCategory.where(active_status: true).order(category_name: :asc)
+
       @entity_infos = EntityInfo.where(del_status: false).paginate(:page => params[:page], :per_page => params[:count]).order('created_at desc')
       @entity_divisions = EntityDivision.where(del_status: false).paginate(:page => params[:page], :per_page => params[:count]).order('created_at desc')
       @entity_info_sports = EntityInfo.where(active_status: true, entity_cat_id: "SPO").paginate(:page => params[:page], :per_page => params[:count]).order('created_at desc')
@@ -31,13 +37,78 @@ class EntityInfosController < ApplicationController
 
   end
 
+
+
   def entity_info_index
     params[:count] ? params[:count] : params[:count] = 50
     params[:page] ? params[:page] : params[:page] = 1
 
-    @entity_infos = EntityInfo.where(active_status: true).paginate(:page => params[:page], :per_page => params[:count]).order('created_at desc')
+    #@entity_infos = EntityInfo.where(active_status: true).paginate(:page => params[:page], :per_page => params[:count]).order('created_at desc')
     if current_user.super_admin? || current_user.super_user?
-      @entity_infos = EntityInfo.where(del_status: false).paginate(:page => params[:page], :per_page => params[:count]).order('created_at desc')
+
+      the_search = ""
+      search_arr = []
+
+      if params[:filter_main].present? || params[:ent_name].present? || params[:ass_code].present? || params[:ent_cat].present? #|| params[:cust_num].present? || params[:trans_id].present? || params[:nw].present? || params[:status].present? || params[:start_date].present? || params[:end_date].present?
+
+        filter_params = params[:filter_main]
+        if params[:filter_main].present?
+          @ent_name = filter_params[:ent_name]
+          @ass_code = filter_params[:ass_code]
+          @ent_cat = filter_params[:ent_cat]
+
+          params[:ent_name] = filter_params[:ent_name]
+          params[:ass_code] = filter_params[:ass_code]
+          params[:ent_cat] = filter_params[:ent_cat]
+
+        else
+
+          if  params[:ent_name].present? || params[:ass_code].present? || params[:ent_cat].present? #|| params[:lov_name].present? || params[:cust_num].present? || params[:trans_id].present? || params[:nw].present? || params[:status].present? || params[:start_date].present? || params[:end_date].present?
+
+            @ent_name = params[:ent_name]
+            @ass_code = params[:ass_code]
+            @ent_cat = params[:ent_cat]
+
+            params[:ent_name] = @ent_name
+            params[:ass_code] = @ass_code
+            params[:ent_cat] = @ent_cat
+
+          else
+            params[:ent_name] = filter_params[:ent_name]
+            params[:ass_code] = filter_params[:ass_code]
+            params[:ent_cat] = filter_params[:ent_cat]
+
+          end
+        end
+
+        if @ent_name.present?
+          #search_arr << "customer_number LIKE '%#{@cust_num}%'"
+          search_arr << "assigned_code = '#{@ent_name}'"
+        end
+
+        if @ass_code.present?
+          search_arr << "assigned_code = '#{@ass_code}'"
+        end
+
+        if @ent_cat.present?
+          search_arr << "entity_cat_id = '#{@ent_cat}'"
+        end
+
+      else
+      end
+
+
+      the_search = search_arr.join(" AND ")
+      logger.info "The search array :: #{search_arr.inspect}"
+      logger.info "The Search :: #{the_search.inspect}"
+
+
+      @merchant_search = EntityInfo.where(active_status: true).order(entity_name: :asc)
+      @merchant_code_search = EntityInfo.where(active_status: true).order(entity_name: :asc)
+      @merchant_cat_search = EntityCategory.where(active_status: true).order(category_name: :asc)
+
+
+      @entity_infos = EntityInfo.where(the_search).where(del_status: false).paginate(:page => params[:page], :per_page => params[:count]).order('created_at desc')
       #@entity_divisions = EntityDivision.where(del_status: false).paginate(:page => params[:page], :per_page => params[:count]).order('created_at desc')
       #@entity_info_sports = EntityInfo.where(active_status: true, entity_cat_id: "SPO").paginate(:page => params[:page], :per_page => params[:count]).order('created_at desc')
 
@@ -55,6 +126,8 @@ class EntityInfosController < ApplicationController
       #@entity_info_sports = EntityInfo.where(assigned_code: @entity_divs.entity_code, active_status: true, entity_cat_id: "SPO").paginate(:page => params[:page], :per_page => params[:count]).order('created_at desc')
     end
   end
+
+
 
   def sports_index
     params[:count] ? params[:count] : params[:count] = 50

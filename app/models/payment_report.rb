@@ -19,6 +19,7 @@ class PaymentReport < ApplicationRecord
         logger.info "General report :: #{summary.inspect}"
         entity_div = EntityDivision.where(active_status: true, assigned_code: summary.entity_div_code).order(created_at: :desc).first
         if entity_div
+          service = entity_div.division_name
           ent_info = EntityInfo.where(active_status: true, assigned_code: entity_div.entity_code).order(created_at: :desc).first
           if ent_info
             merchant = ent_info.entity_name
@@ -26,10 +27,11 @@ class PaymentReport < ApplicationRecord
             merchant = ""
           end
         else
+          service = ""
           merchant = ""
         end
         #merchant = (summary.entity_division != nil && summary.entity_division.where(active_status: true).entity_info != nil) ? summary.entity_division.entity_info.entity_name : ""
-        service = summary.entity_division ? summary.entity_division.division_name : ""
+        #service = summary.entity_division ? summary.entity_division.division_name : ""
         reference = summary.reference.present? ? summary.reference : ""
         lov_name = summary.division_activity_lov ? summary.division_activity_lov.lov_desc : ""
         activity_type = (summary.entity_division != nil && summary.entity_division.activity_type) ? summary.entity_division.activity_type.activity_type_desc : ""

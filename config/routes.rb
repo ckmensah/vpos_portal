@@ -67,6 +67,10 @@ Rails.application.routes.draw do
   post '/sport_setup_update' => 'entity_divisions#update_sport_setup', :as => 'update_sport_setup'
 
 
+  get '/entity_div_alert_recipients/entity_div_alert_recipient_index' => 'entity_div_alert_recipients#entity_div_alert_recipient_index', :as => 'entity_div_alert_recipient_index'
+
+
+
   get '/entity_divisions/fixture_new/:division_code' => 'entity_divisions#fixture_new', :as => 'fixture_new'
   post '/fixture_creation' => 'entity_divisions#create_fixture', :as => 'create_fixture'
   get '/entity_divisions/fixture_edit/:act_div_id' => 'entity_divisions#fixture_edit', :as => 'fixture_edit'
@@ -141,6 +145,7 @@ Rails.application.routes.draw do
   resources :sub_activity_masters
   resources :entity_div_sub_activities
   resources :fund_movements
+  resources :entity_div_alert_recipients
 
 
 

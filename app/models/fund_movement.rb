@@ -27,17 +27,21 @@ class FundMovement < ApplicationRecord
           else
             merchant = ""
           end
+          service = entity_div.division_name
         else
           merchant = ""
+          service = ""
         end
 
-        service = summary.entity_division ? summary.entity_division.division_name : ""
+        #service = summary.entity_division ? summary.entity_division.division_name : ""
 
 
         if summary.processed
           status = "Processed"
-        else
+        elsif summary.processed == false
           status = "Failed"
+        else
+          status = "Pending"
         end
         date = summary.created_at
         if current_user.super_admin? || current_user.super_user?

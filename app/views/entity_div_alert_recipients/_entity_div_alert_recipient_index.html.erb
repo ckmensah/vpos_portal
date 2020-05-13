@@ -1,0 +1,107 @@
+
+<div>
+  <br>
+  <p id="notes14"><%#= notice %></p>
+  <br>
+  <h4>Merchant Notifications</h4>
+  <div>
+
+    <div class="w3-half">
+      <%= link_to 'NEW', new_entity_div_alert_recipient_path(entity_code: params[:entity_code], code: params[:code], count1: params[:count1], page1: params[:page1], count6: params[:count6], page6: params[:page6], count: params[:count], page: params[:page]), style: "width:120px;",
+                  class: 'w3-button w3-purple-vpos w3-border w3-border-purple w3-small w3-round-large',remote:true %>
+      <%= link_to 'BACK', entity_division_index_path(entity_code: params[:entity_code], code: params[:code], count1: params[:count1], page1: params[:page1], count: params[:count], page: params[:page]), style: "width:120px;",
+                  class: 'w3-button w3-white w3-border w3-border-purple w3-small w3-round-large',remote:true %>
+    </div>
+
+    <div class="w3-half">
+      <%= select_tag :count6, options_for_select([50, 100, 150, 200, 500], params[:count6].to_i),
+                     :data => {  :remote => true, :url => url_for(:controller => "entity_div_alert_recipients", :action => "entity_div_alert_recipient_index",
+                                                                  :params => { entity_code: params[:entity_code], code: params[:code],
+                                                                               count1: params[:count1], page1: params[:page1], count: params[:count], page: params[:page]})},
+                     id:"record", class: "w3-button w3-white w3-border w3-border-purple w3-round-large",
+                     style: "width:auto; height:35px; float:right", remote:true %>
+    </div>
+  </div>
+  <br>
+  <div class="table-responsive-md">
+    <br>
+    <table class="table w3-responsive table-striped">
+      <thead>
+      <tr>
+        <th></th>
+        <th>Recipient Name</th>
+        <th>Mobile Number</th>
+        <th>Status</th>
+        <th>Date</th>
+        <th>Actions</th>
+      </tr>
+      </thead>
+      <tbody>
+      <% @entity_div_alert_recipients.each do |entity_div_alert_recipient| %>
+
+        <tr>
+          <td><%= link_to 'VIEW', entity_div_alert_recipient_path(entity_div_alert_recipient, entity_code: params[:entity_code], code: params[:code], count1: params[:count1], page1: params[:page1], count6: params[:count6], page6: params[:page6], count: params[:count], page: params[:page]),
+                          style: "width:100px; height: 30px;",
+                          class: 'w3-button w3-purple-vpos w3-border w3-border-purple w3-tiny w3-round-large', remote:true%></td>
+          <td><strong><%= entity_div_alert_recipient.recipient_name %></td>
+          <td><strong><%= entity_div_alert_recipient.mobile_number %></td>
+          <% if entity_div_alert_recipient.active_status %>
+            <td><strong>Active</strong></td>
+          <% else %>
+            <td><strong>Inactive</strong></td>
+          <% end %>
+          <td><strong><%= entity_div_alert_recipient.created_at %></strong></td>
+          <td>
+            <% if entity_div_alert_recipient.active_status %>
+              <%= link_to 'EDIT', edit_entity_div_alert_recipient_path(entity_div_alert_recipient, entity_code: params[:entity_code], code: params[:code], count1: params[:count1], page1: params[:page1], count6: params[:count6], page6: params[:page6], count: params[:count], page: params[:page]),
+                          style: "width:100px; height: 30px; color: #800754 !important",
+                          class: 'w3-button w3-white w3-border w3-border-purple w3-tiny w3-round-large', remote:true%>
+            <% else %>
+
+            <% end %>
+
+            <% if entity_div_alert_recipient.active_status %>
+              <%#= link_to 'DISABLE', entity_div_alert_recipient_path(entity_div_alert_recipient, entity_code: params[:entity_code], code: params[:code], count1: params[:count1], page1: params[:page1], count6: params[:count6], page6: params[:page6], count: params[:count], page: params[:page]),
+                          style: "width:150px; height: 30px; color: #800754 !important",
+                          method: :delete, data: { confirm: "Do you wish to disable: #{entity_div_alert_recipient.recipient_name}?" },
+                          class: 'w3-button w3-white w3-border w3-border-purple w3-tiny w3-round-large', remote:true%>
+              <%= link_to 'DEACTIVATE', entity_div_alert_recipient_path(entity_div_alert_recipient, entity_code: params[:entity_code], code: params[:code], count1: params[:count1], page1: params[:page1], count6: params[:count6], page6: params[:page6], count: params[:count], page: params[:page]),
+                          style: "width:150px; height: 30px; color: #800754 !important",
+                          method: :delete, data: { confirm: "Do you wish to deactivate: #{entity_div_alert_recipient.recipient_name}?" },
+                          class: 'w3-button w3-white w3-border w3-border-purple w3-tiny w3-round-large', remote:true%>
+            <% else %>
+              <%#= link_to 'ENABLE', entity_div_alert_recipient_path(entity_div_alert_recipient, entity_code: params[:entity_code], code: params[:code], count1: params[:count1], page1: params[:page1], count6: params[:count6], page6: params[:page6], count: params[:count], page: params[:page]),
+                          style: "width:100px; height: 30px;",
+                          method: :delete, data: { confirm: "Do you wish to enable: #{entity_div_alert_recipient.recipient_name}?" },
+                          class: 'w3-button w3-purple-vpos w3-border w3-border-purple w3-tiny w3-round-large', remote:true%>
+            <% end %>
+
+          </td>
+        </tr>
+
+      <% end %>
+      </tbody>
+    </table>
+    <% unless params[:count6] == "All" %>
+      <div class="flickr_pagination"  style="float: right">
+        <%= will_paginate @entity_div_alert_recipients, class: "w3-card", renderer: BootstrapPagination::Rails,
+                          :params => { :controller => "entity_div_alert_recipients", :action => "entity_div_alert_recipient_index",
+                                       entity_code: params[:entity_code], code: params[:code], count1: params[:count1],
+                                       page1: params[:page1], count6: params[:count6], page6: params[:page6],
+                                       count: params[:count], page: params[:page] } %>
+        <%#= js_will_paginate @payment_infos, :params => { :controller => "payment_infos", :action => "payment_info_index" } %>
+      </div>
+    <% end %>
+  </div>
+
+
+</div>
+
+
+<script>
+    $(function(){
+        $('.pagination a').attr('data-remote', 'true')
+    });
+
+</script>
+

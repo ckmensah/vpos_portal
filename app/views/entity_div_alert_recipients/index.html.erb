@@ -1,0 +1,37 @@
+<p id="notice"><%= notice %></p>
+
+<h1>Entity Div Alert Recipients</h1>
+
+<table>
+  <thead>
+    <tr>
+      <th>Entity div code</th>
+      <th>Recipient name</th>
+      <th>Mobile number</th>
+      <th>Active status</th>
+      <th>Del status</th>
+      <th>User</th>
+      <th colspan="3"></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @entity_div_alert_recipients.each do |entity_div_alert_recipient| %>
+      <tr>
+        <td><%= entity_div_alert_recipient.entity_div_code %></td>
+        <td><%= entity_div_alert_recipient.recipient_name %></td>
+        <td><%= entity_div_alert_recipient.mobile_number %></td>
+        <td><%= entity_div_alert_recipient.active_status %></td>
+        <td><%= entity_div_alert_recipient.del_status %></td>
+        <td><%= entity_div_alert_recipient.user_id %></td>
+        <td><%= link_to 'Show', entity_div_alert_recipient %></td>
+        <td><%= link_to 'Edit', edit_entity_div_alert_recipient_path(entity_div_alert_recipient) %></td>
+        <td><%= link_to 'Destroy', entity_div_alert_recipient, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<br>
+
+<%= link_to 'New Entity Div Alert Recipient', new_entity_div_alert_recipient_path %>

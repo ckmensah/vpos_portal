@@ -33,6 +33,7 @@ gem 'tzinfo-data', platforms: [:mingw, :mswin, :x64_mingw, :jruby]
 gem 'simple_form', '~> 4.1'
 gem 'rails_layout', '~> 1.0', '>= 1.0.42'
 gem 'bootstrap', '~> 4.3.1'
+gem 'bootstrap-typeahead-rails', '~> 0.10.5.1'
 gem 'jquery-rails'
 # gem 'w3css_rails'
 gem 'font-awesome-sass', '~> 5.9.0'
@@ -40,11 +41,15 @@ gem 'devise', '~> 4.6', '>= 4.6.2'
 gem 'cancancan'
 gem 'jquery-validation-rails'
 gem 'email_validator'
-gem "select2-rails"
+#gem "select2-rails"
+ gem 'select2-rails', '~> 4.0', '>= 4.0.3'
+#source 'https://rails-assets.org' do
+#  gem 'rails-assets-select2', '~> 4.0.0'
+#end
 gem 'devise-security'
 gem 'pagy', '~> 3.4', '>= 3.4.1'
 gem "cocoon"
-# gem 'jquery-ui-rails', '~> 6.0', '>= 6.0.1'
+gem 'jquery-ui-rails', '~> 6.0', '>= 6.0.1'
 gem 'momentjs-rails', '~> 2.20', '>= 2.20.1'
 gem 'jquery-datetimepicker-rails'
 gem 'active_storage_validations'
@@ -70,7 +75,6 @@ gem 'bootstrap3-datetimepicker-rails', '~> 4.15.35'
 gem 'shrine', '~> 2.12'
 gem "shrine-cloudinary"
 gem "cloudinary"
-
 
 
 
