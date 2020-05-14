@@ -16,6 +16,7 @@ class EntityInfosController < ApplicationController
       @merchant_cat_search = EntityCategory.where(active_status: true).order(category_name: :asc)
 
       @entity_infos = EntityInfo.where(del_status: false).paginate(:page => params[:page], :per_page => params[:count]).order('created_at desc')
+      @entity_info_divs = EntityInfo.where(active_status: true).paginate(:page => params[:page], :per_page => params[:count]).order('created_at desc')
       @entity_divisions = EntityDivision.where(del_status: false).paginate(:page => params[:page], :per_page => params[:count]).order('created_at desc')
       @entity_info_sports = EntityInfo.where(active_status: true, entity_cat_id: "SPO").paginate(:page => params[:page], :per_page => params[:count]).order('created_at desc')
       @entity_div_sports = EntityDivision.where(active_status: true, activity_type_code: "SPO").paginate(:page => params[:page], :per_page => params[:count]).order('created_at desc')
@@ -189,8 +190,8 @@ class EntityInfosController < ApplicationController
     @new_record = EntityInfo.new(entity_info_params)
     @the_wallet_params = params[:the_activity_wallets]
     if entity_info_params[:action_type] != "for_update"
-      @entity_info.assigned_code = EntityInfo.gen_entity_info_code
-      logger.info "The Entity Information code is #{@entity_info.assigned_code.inspect}"
+      #@entity_info.assigned_code = EntityInfo.gen_entity_info_code
+      #logger.info "The Entity Information code is #{@entity_info.assigned_code.inspect}"
     elsif entity_info_params[:action_type] == "for_update"
       @entity_info.assigned_code = params[:entity_code]
     end
@@ -212,6 +213,8 @@ class EntityInfosController < ApplicationController
             EntityInfo.update_last_but_one('entity_info_extra', 'entity_code', @entity_info.assigned_code)
             EntityInfo.update_wallet_config(@the_wallet_params,@entity_info.assigned_code)
           else
+            @entity_info.assigned_code = EntityInfo.gen_entity_info_code
+            logger.info "The Entity Information code is #{@entity_info.assigned_code.inspect}"
             @entity_info.save(validate: false)
             EntityInfo.save_wallet_config(@the_wallet_params,@entity_info.assigned_code, current_user) if entity_info_params[:wallet_query] == "yes"
           end

@@ -11,7 +11,7 @@ class EntityInfo < ApplicationRecord
   belongs_to :entity_category, class_name: 'EntityCategory', foreign_key: :entity_cat_id, primary_key: :assigned_code
 
 
-  validates :assigned_code, presence: true
+  #validates :assigned_code, presence: true
   validates :entity_name, presence: {message: " cannot be empty."}
   validates :entity_cat_id, presence: {message: " cannot be empty."}
   validates :entity_alias, presence: {message: " cannot be empty."}

@@ -12,7 +12,7 @@ class EntityDivisionsController < ApplicationController
       params[:entity_code] = current_user.entity_code
     end
 
-    @entity_divisions = EntityDivision.paginate(:page => params[:page], :per_page => params[:count]).order('created_at desc')
+    @entity_divisions = EntityDivision.where(active_status: true).paginate(:page => params[:page], :per_page => params[:count]).order('created_at desc')
 
   end
 
@@ -185,8 +185,8 @@ class EntityDivisionsController < ApplicationController
     @merchant_cat_search = EntityCategory.where(active_status: true).order(category_name: :asc)
 
 
-    @entity_infos = EntityInfo.where(the_search).where(del_status: false).paginate(:page => params[:page], :per_page => params[:count]).order('created_at desc')
-
+    #@entity_infos = EntityInfo.where(the_search).where(del_status: false).paginate(:page => params[:page], :per_page => params[:count]).order('created_at desc')
+    @entity_info_divs = EntityInfo.where(active_status: true).where(the_search).paginate(:page => params[:page], :per_page => params[:count]).order('created_at desc')
   end
 
   def sport_setup
