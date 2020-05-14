@@ -88,6 +88,13 @@
           </div>
 
         </div>
+      <% else %>
+        <div class="w3-third" style="padding-bottom: 15px">
+          <strong>Download::</strong>
+          <button class="w3-bar-item w3-btn w3-disabled w3-card-4 w3-black w3-small w3-round-xlarge w3-ripple" style="width:100px; height: 30px; ">CSV</button> |
+          <button class="w3-bar-item w3-btn w3-disabled w3-card-4 w3-black w3-small w3-round-xlarge w3-ripple" style="width:100px; height: 30px; ">Excel</button>
+        </div>
+
       <% end %>
 
       <div class="w3-third">
@@ -168,7 +175,15 @@
           </div>
 
         </div>
-        <% end %>
+      <% else %>
+        <div class="w3-third" style="padding-bottom: 15px">
+          <strong>Download::</strong>
+          <button class="w3-bar-item w3-disabled w3-btn w3-card-4 w3-black w3-small w3-round-xlarge w3-ripple" style="width:100px; height: 30px;">CSV</button> |
+          <button class="w3-bar-item w3-disabled w3-btn w3-card-4 w3-black w3-small w3-round-xlarge w3-ripple" style="width:100px; height: 30px;">Excel</button>
+        </div>
+
+
+  <% end %>
       <div class="w3-third">
         <%= select_tag :count2, options_for_select([50, 100, 150, 200, 500], params[:count2].to_i),
                        :data => {  :remote => true, :url => url_for(:controller => "fund_movements", :action => "fund_movement_index",
@@ -252,6 +267,7 @@
       <% end %>
 
 
+      
       </tbody>
     </table>
     <% unless params[:count2] == "ALL" %>
@@ -341,7 +357,7 @@
                   <%= f.input :end_date, :id => "datepicker2", as: :date, html5: true, class: "form-control", label: "End Date", boolean_style: :inline, input_html: {style: "", data: {behaviour: 'datepicker', provide: 'datepicker'}, autocomplete: "off"} %>
                   <%= f.input :ref_id, class: "form-control", input_html: {style: "width: 100%", autocomplete: "off"}, label: "Reference ID", boolean_style: :inline %>
 
-                  
+
 <!--                  <div class="w3-half">-->
                     <%#= f.input :activity_type, collection: @activity_types, label_method: :activity_type_desc, value_method: :assigned_code, class: "form-control", input_html: {style: "width: 90%;"}, label: "Activity Type", boolean_style: :inline %>
 <!--                  </div>-->

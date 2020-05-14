@@ -90,7 +90,7 @@
                               style: "width:120px; height: 30px;",
                               class: 'w3-button w3-purple-vpos w3-border w3-border-purple w3-tiny w3-round-large', remote:true%>
                 <% end %>
-                <% if entity_division.activity_type.assigned_code == "CHC" #|| entity_division.activity_type.assigned_code == "DON" || entity_division.activity_type.assigned_code == "GEN" %>
+                <% if entity_division.activity_type.assigned_code == "CHC" || entity_division.activity_type.assigned_code == "SCH" #|| entity_division.activity_type.assigned_code == "DON" || entity_division.activity_type.assigned_code == "GEN" %>
                   <%= link_to 'ACTIVITY CODE', entity_div_sub_activity_index_path(entity_code: params[:entity_code], code: entity_division.assigned_code, count1: params[:count1], page1: params[:page1], count: params[:count], page: params[:page]),
                               style: "width:110px; height: 30px; color: #800754 !important",
                               class: 'w3-button w3-white w3-border w3-border-purple w3-tiny w3-round-large', remote:true%>
@@ -106,11 +106,11 @@
 
                   <div class="dropdown-menu dropdown-menu-right">
                     <% if division_act_lov.exists? || activity_div.exists? %>
-                      <b><a class="dropdown-item" href= "<%= division_edit_setup_path(entity_division, code: entity_division.assigned_code, entity_code: params[:entity_code], count1: params[:count1], page1: params[:page1], count: params[:count], page: params[:page]) %>" data-remote="true" >General Setup</a></b>
+                      <a class="dropdown-item" href= "<%= division_edit_setup_path(entity_division, code: entity_division.assigned_code, entity_code: params[:entity_code], count1: params[:count1], page1: params[:page1], count: params[:count], page: params[:page]) %>" data-remote="true" ><strong>General Setup</strong></a>
                     <% else %>
-                      <b><a class="dropdown-item" href= "<%= division_setup_path(entity_division, code: entity_division.assigned_code, entity_code: params[:entity_code], count1: params[:count1], page1: params[:page1], count: params[:count], page: params[:page]) %>" data-remote="true" >General Setup</a></b>
+                      <a class="dropdown-item" href= "<%= division_setup_path(entity_division, code: entity_division.assigned_code, entity_code: params[:entity_code], count1: params[:count1], page1: params[:page1], count: params[:count], page: params[:page]) %>" data-remote="true" ><strong>General Setup</strong></a>
                     <% end %>
-                    <b><a class="dropdown-item" href="<%= sport_setup_path(entity_division, code: entity_division.assigned_code, entity_code: params[:entity_code], count1: params[:count1], page1: params[:page1], count: params[:count], page: params[:page]) %>" data-remote="true">Add Fixtures</a></b>
+                    <a class="dropdown-item" href="<%= sport_setup_path(entity_division, code: entity_division.assigned_code, entity_code: params[:entity_code], count1: params[:count1], page1: params[:page1], count: params[:count], page: params[:page]) %>" data-remote="true"><strong>Add Fixtures</strong></a>
                   </div>
 
                   <!--                  </li>-->
@@ -124,12 +124,13 @@
 
                     <div class="dropdown-menu dropdown-menu-right">
                       <% if division_act_lov.exists? || activity_div.exists? %>
-                        <strong><a class="dropdown-item" href= "<%= division_edit_setup_path(entity_division, code: entity_division.assigned_code, entity_code: params[:entity_code], count1: params[:count1], page1: params[:page1], count: params[:count], page: params[:page]) %>" data-remote="true" >General Setup</a></strong>
+                        <a class="dropdown-item" href= "<%= division_edit_setup_path(entity_division, code: entity_division.assigned_code, entity_code: params[:entity_code], count1: params[:count1], page1: params[:page1], count: params[:count], page: params[:page]) %>" data-remote="true" ><strong>General Setup</strong></a>
                       <% else %>
-                        <strong><a class="dropdown-item" href= "<%= division_setup_path(entity_division, code: entity_division.assigned_code, entity_code: params[:entity_code], count1: params[:count1], page1: params[:page1], count: params[:count], page: params[:page]) %>" data-remote="true" >General Setup</a></strong>
+                        <a class="dropdown-item" href= "<%= division_setup_path(entity_division, code: entity_division.assigned_code, entity_code: params[:entity_code], count1: params[:count1], page1: params[:page1], count: params[:count], page: params[:page]) %>" data-remote="true" ><strong>General Setup</strong></a>
                       <% end %>
-                      <strong><a class="dropdown-item" href="<%= entity_div_alert_recipient_index_path(entity_division, code: entity_division.assigned_code, entity_code: params[:entity_code], count1: params[:count1], page1: params[:page1], count: params[:count], page: params[:page]) %>" data-remote="true">Merchant Notification</a></strong>
+                        <a class="dropdown-item" href="<%= entity_div_alert_recipient_index_path(entity_division, code: entity_division.assigned_code, entity_code: params[:entity_code], count1: params[:count1], page1: params[:page1], count: params[:count], page: params[:page]) %>" data-remote="true"><strong>Merchant Notification</strong></a>
                     </div>
+
 
                     <%# if division_act_lov.exists? %>
                       <%#= link_to 'SETUP', division_edit_setup_path(entity_division, code: entity_division.assigned_code, entity_code: params[:entity_code], count1: params[:count1], page1: params[:page1], count: params[:count], page: params[:page]),
