@@ -7,12 +7,12 @@
   <div>
     <div class="w3-half">
       <% unless @assigned_fees.exists? %>
-        <%= link_to 'NEW', new_assigned_fee_path(entity_code: params[:entity_code], code: params[:code], count1: params[:count1], page1: params[:page1], count2: params[:count2], page2: params[:page2], count: params[:count], page: params[:page]), style: "width:120px;",
+        <%= link_to 'NEW', new_assigned_fee_path(entity_code: params[:entity_code], code: params[:code], count1: params[:count1], count2: params[:count2], count: params[:count], page: params[:page]), style: "width:120px;",
                     class: 'w3-button w3-purple-vpos w3-border w3-border-purple w3-small w3-round-large',remote:true %>
         <% end %>
 
       <% if current_user.super_admin? || current_user.super_user? #|| current_user.merchant_admin? %>
-        <%= link_to 'BACK', entity_division_index_path(code: params[:code], entity_code: params[:entity_code], count1: params[:count1], page1: params[:page1], count: params[:count], page: params[:page]), style: "width:120px;",
+        <%= link_to 'BACK', entity_division_index_path(code: params[:code], entity_code: params[:entity_code], count1: params[:count1], count: params[:count], page: $entity_division_page), style: "width:120px;",
                     class: 'w3-button w3-white w3-border w3-border-purple w3-small w3-round-large',remote:true %>
       <% end %>
 
@@ -22,11 +22,10 @@
       <%= select_tag :count2, options_for_select([50, 100, 150, 200, 500], params[:count2].to_i),
                      :data => {  :remote => true, :url => url_for(:controller => "assigned_fees", :action => "assigned_fee_index",
                                                                   :params => {code: params[:code], entity_code: params[:entity_code],
-                                                                              count1: params[:count1], page1: params[:page1],
+                                                                              count1: params[:count1],
                                                                               count: params[:count], page: params[:page] })},
                      id:"record", class: "w3-button w3-white w3-border w3-border-purple w3-round-large",
                      style: "width:auto; height:35px; float:right", remote:true %>
-
 
     </div>
   </div>
@@ -54,7 +53,7 @@
       <tbody>
       <% @assigned_fees.each do |assigned_fee| %>
         <tr>
-          <td><%= link_to 'VIEW', assigned_fee_path(assigned_fee, code: params[:code], entity_code: params[:entity_code], count1: params[:count1], page1: params[:page1], count2: params[:count2], page2: params[:page2], count: params[:count], page: params[:page]),
+          <td><%= link_to 'VIEW', assigned_fee_path(assigned_fee, code: params[:code], entity_code: params[:entity_code], count1: params[:count1], count2: params[:count2], count: params[:count], page: params[:page]),
                           style: "width:60px; height: 30px;",
                           class: 'w3-button w3-purple-vpos w3-border w3-border-purple w3-tiny w3-round-large', remote:true%></td>
 <!--          <td><strong><%#= assigned_fee.entity_division.entity_info.entity_name %></td>-->
@@ -79,7 +78,7 @@
           <td>
             <%# if assigned_fee.active_status %>
             <% if current_user.super_admin? || current_user.super_user? %>
-            <%= link_to 'EDIT', edit_assigned_fee_path(assigned_fee, code: params[:code], entity_code: params[:entity_code], count1: params[:count1], page1: params[:page1], count2: params[:count2], page2: params[:page2], count: params[:count], page: params[:page]),
+            <%= link_to 'EDIT', edit_assigned_fee_path(assigned_fee, code: params[:code], entity_code: params[:entity_code], count1: params[:count1], count2: params[:count2], count: params[:count], page: params[:page]),
                         style: "width:60px; height: 30px; color: #800754 !important",
                         class: 'w3-button w3-white w3-border w3-border-purple w3-tiny w3-round-large', remote:true%>
 
@@ -111,8 +110,8 @@
       <div class="flickr_pagination"  style="float: right">
         <%= will_paginate @assigned_fees, class: "w3-card", renderer: BootstrapPagination::Rails,
                           :params => { :controller => "assigned_fees", :action => "assigned_fee_index", code: params[:code],
-                                       entity_code: params[:entity_code], count1: params[:count1], page1: params[:page1],
-                                       count2: params[:count2], page2: params[:page2], count: params[:count], page: params[:page] } %>
+                                       entity_code: params[:entity_code], count1: params[:count1],
+                                       count2: params[:count2], count: params[:count], page: params[:page] } %>
         <%#= js_will_paginate @payment_infos, :params => { :controller => "payment_infos", :action => "payment_info_index" } %>
       </div>
     <% end %>

@@ -22,11 +22,12 @@ class EntityDivisionsController < ApplicationController
 
     params[:count1] ? params[:count1] : params[:count1] = 50
     params[:page1] ? params[:page1] : params[:page1] = 1
+    $entity_division_page = params[:page]
 
     if current_user.super_admin? || current_user.super_user?
       @entity_info = EntityInfo.where(assigned_code: params[:entity_code], active_status: true, del_status: false).order(created_at: :desc).first
       @entity_info ? @entity_name = "#{@entity_info.entity_name} (#{@entity_info.entity_alias})" : ""
-      @entity_divisions = EntityDivision.where(entity_code: params[:entity_code], del_status: false).paginate(:page => params[:page1], :per_page => params[:count1]).order('created_at desc')
+      @entity_divisions = EntityDivision.where(entity_code: params[:entity_code], del_status: false).paginate(:page => params[:page], :per_page => params[:count1]).order('created_at desc')
 
     elsif current_user.merchant_admin?
       if current_user.merchant_admin?
@@ -120,6 +121,7 @@ class EntityDivisionsController < ApplicationController
   def entity_index
     params[:count] ? params[:count] : params[:count] = 50
     params[:page] ? params[:page] : params[:page] = 1
+    $entity_index_page = params[:page]
 
     the_search = ""
     search_arr = []

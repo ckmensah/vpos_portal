@@ -7,10 +7,10 @@
   <br>
   <div>
     <div class="w3-half">
-      <%= link_to 'NEW', new_entity_division_path(entity_code: params[:entity_code], count1: params[:count1], page1: params[:page1], count: params[:count], page: params[:page]), style: "width:120px;",
+      <%= link_to 'NEW', new_entity_division_path(entity_code: params[:entity_code], count1: params[:count1], count: params[:count], page: params[:page]), style: "width:120px;",
                   class: 'w3-button w3-purple-vpos w3-border w3-border-purple w3-small w3-round-large',remote:true %>
       <% if current_user.super_admin? || current_user.super_user? #|| current_user.merchant_admin? %>
-        <%= link_to 'BACK', entity_index_path(filter_main1: $merchant_filter.present? ? $merchant_filter.to_enum.to_h : "", count: params[:count], page: params[:page]), style: "width:120px;",
+        <%= link_to 'BACK', entity_index_path(filter_main1: $merchant_filter.present? ? $merchant_filter.to_enum.to_h : "", count: params[:count], page: $entity_index_page), style: "width:120px;",
                     class: 'w3-button w3-white w3-border w3-border-purple w3-small w3-round-large',remote:true %>
       <% end %>
     </div>
@@ -48,17 +48,17 @@
 
           <tr>
             <td>
-              <%= link_to 'VIEW', entity_division_path(entity_division, entity_code: params[:entity_code], count1: params[:count1], page1: params[:page1], count: params[:count], page: params[:page]),
+              <%= link_to 'VIEW', entity_division_path(entity_division, entity_code: params[:entity_code], count1: params[:count1], count: params[:count], page: params[:page]),
                             style: "width:60px; height: 30px;",
                             class: 'w3-button w3-purple-vpos w3-border w3-border-purple w3-tiny w3-round-large', remote:true%>
 
             <% if entity_division.activity_type.assigned_code == "SHW" || entity_division.activity_type.assigned_code == "SPO" %>
                 <% if act_sub_div_class.exists? %>
-                  <%= link_to 'TICKET TYPES', activity_sub_div_classes_path(code: entity_division.assigned_code, class_div_top: "class_div_top", entity_code: params[:entity_code], count1: params[:count1], page1: params[:page1], count: params[:count], page: params[:page]),
+                  <%= link_to 'TICKET TYPES', activity_sub_div_classes_path(code: entity_division.assigned_code, class_div_top: "class_div_top", entity_code: params[:entity_code], count1: params[:count1], count: params[:count]),
                               style: "width:100px; height: 30px;",
                               class: 'w3-button w3-purple-vpos w3-border w3-border-purple w3-tiny w3-round-large', remote:true%>
                 <% else %>
-                  <%= link_to 'TICKET TYPES', new_activity_sub_div_class_path(code: entity_division.assigned_code, entity_code: params[:entity_code], count1: params[:count1], page1: params[:page1], count: params[:count], page: params[:page]),
+                  <%= link_to 'TICKET TYPES', new_activity_sub_div_class_path(code: entity_division.assigned_code, entity_code: params[:entity_code], count1: params[:count1], count: params[:count]),
                               style: "width:100px; height: 30px;",
                               class: 'w3-button w3-purple-vpos w3-border w3-border-purple w3-tiny w3-round-large', remote:true%>
                 <% end %>
@@ -82,7 +82,7 @@
               <% if entity_division.active_status && entity_division.del_status == false %>
 
                 <% if current_user.super_admin? || current_user.super_user? %>
-                  <%= link_to 'SERVICE FEES', assigned_fee_index_path(entity_code: params[:entity_code], code: entity_division.assigned_code, count1: params[:count1], page1: params[:page1], count: params[:count], page: params[:page]),
+                  <%= link_to 'SERVICE FEES', assigned_fee_index_path(entity_code: params[:entity_code], code: entity_division.assigned_code, count1: params[:count1], count: params[:count]),
                               style: "width:100px; height: 30px; color: #800754 !important",
                               class: 'w3-button w3-white w3-border w3-border-purple w3-tiny w3-round-large', remote:true%>
                 <% else %>
@@ -91,7 +91,7 @@
                               class: 'w3-button w3-purple-vpos w3-border w3-border-purple w3-tiny w3-round-large', remote:true%>
                 <% end %>
                 <% if entity_division.activity_type.assigned_code == "CHC" || entity_division.activity_type.assigned_code == "SCH" #|| entity_division.activity_type.assigned_code == "DON" || entity_division.activity_type.assigned_code == "GEN" %>
-                  <%= link_to 'ACTIVITY CODE', entity_div_sub_activity_index_path(entity_code: params[:entity_code], code: entity_division.assigned_code, count1: params[:count1], page1: params[:page1], count: params[:count], page: params[:page]),
+                  <%= link_to 'ACTIVITY CODE', entity_div_sub_activity_index_path(entity_code: params[:entity_code], code: entity_division.assigned_code, count1: params[:count1], count: params[:count]),
                               style: "width:110px; height: 30px; color: #800754 !important",
                               class: 'w3-button w3-white w3-border w3-border-purple w3-tiny w3-round-large', remote:true%>
                 <% else %>
@@ -106,17 +106,17 @@
 
                   <div class="dropdown-menu dropdown-menu-right">
                     <% if division_act_lov.exists? || activity_div.exists? %>
-                      <a class="dropdown-item" href= "<%= division_edit_setup_path(entity_division, code: entity_division.assigned_code, entity_code: params[:entity_code], count1: params[:count1], page1: params[:page1], count: params[:count], page: params[:page]) %>" data-remote="true" ><strong>General Setup</strong></a>
+                      <a class="dropdown-item" href= "<%= division_edit_setup_path(entity_division, code: entity_division.assigned_code, entity_code: params[:entity_code], count1: params[:count1], count: params[:count], page: params[:page]) %>" data-remote="true" ><strong>General Setup</strong></a>
                     <% else %>
-                      <a class="dropdown-item" href= "<%= division_setup_path(entity_division, code: entity_division.assigned_code, entity_code: params[:entity_code], count1: params[:count1], page1: params[:page1], count: params[:count], page: params[:page]) %>" data-remote="true" ><strong>General Setup</strong></a>
+                      <a class="dropdown-item" href= "<%= division_setup_path(entity_division, code: entity_division.assigned_code, entity_code: params[:entity_code], count1: params[:count1], count: params[:count], page: params[:page]) %>" data-remote="true" ><strong>General Setup</strong></a>
                     <% end %>
-                    <a class="dropdown-item" href="<%= sport_setup_path(entity_division, code: entity_division.assigned_code, entity_code: params[:entity_code], count1: params[:count1], page1: params[:page1], count: params[:count], page: params[:page]) %>" data-remote="true"><strong>Add Fixtures</strong></a>
+                    <a class="dropdown-item" href="<%= sport_setup_path(entity_division, code: entity_division.assigned_code, entity_code: params[:entity_code], count1: params[:count1], count: params[:count]) %>" data-remote="true"><strong>Add Fixtures</strong></a>
                   </div>
 
                   <!--                  </li>-->
                 <% else %>
                   <% if entity_division.activity_type.assigned_code == "MIP" %>
-                    <%= link_to 'SETUP', entity_admin_whitelist_index_path(code: entity_division.assigned_code, entity_code: params[:entity_code], count1: params[:count1], page1: params[:page1], count: params[:count], page: params[:page]),
+                    <%= link_to 'SETUP', entity_admin_whitelist_index_path(code: entity_division.assigned_code, entity_code: params[:entity_code], count1: params[:count1], count: params[:count]),
                                 style: "width:65px; height: 30px; color: #800754 !important",
                                 class: 'w3-button w3-white w3-border w3-border-purple w3-tiny w3-round-large', remote:true%>
                   <% else %>
@@ -124,11 +124,11 @@
 
                     <div class="dropdown-menu dropdown-menu-right">
                       <% if division_act_lov.exists? || activity_div.exists? %>
-                        <a class="dropdown-item" href= "<%= division_edit_setup_path(entity_division, code: entity_division.assigned_code, entity_code: params[:entity_code], count1: params[:count1], page1: params[:page1], count: params[:count], page: params[:page]) %>" data-remote="true" ><strong>General Setup</strong></a>
+                        <a class="dropdown-item" href= "<%= division_edit_setup_path(entity_division, code: entity_division.assigned_code, entity_code: params[:entity_code], count1: params[:count1], count: params[:count], page: params[:page]) %>" data-remote="true" ><strong>General Setup</strong></a>
                       <% else %>
-                        <a class="dropdown-item" href= "<%= division_setup_path(entity_division, code: entity_division.assigned_code, entity_code: params[:entity_code], count1: params[:count1], page1: params[:page1], count: params[:count], page: params[:page]) %>" data-remote="true" ><strong>General Setup</strong></a>
+                        <a class="dropdown-item" href= "<%= division_setup_path(entity_division, code: entity_division.assigned_code, entity_code: params[:entity_code], count1: params[:count1], count: params[:count], page: params[:page]) %>" data-remote="true" ><strong>General Setup</strong></a>
                       <% end %>
-                        <a class="dropdown-item" href="<%= entity_div_alert_recipient_index_path(entity_division, code: entity_division.assigned_code, entity_code: params[:entity_code], count1: params[:count1], page1: params[:page1], count: params[:count], page: params[:page]) %>" data-remote="true"><strong>Merchant Notification</strong></a>
+                        <a class="dropdown-item" href="<%= entity_div_alert_recipient_index_path(entity_division, code: entity_division.assigned_code, entity_code: params[:entity_code], count1: params[:count1], count: params[:count]) %>" data-remote="true"><strong>Merchant Notification</strong></a>
                     </div>
 
 
@@ -150,7 +150,7 @@
 
                 <% end %>
 
-                  <%= link_to 'EDIT', edit_entity_division_path(entity_division, code: entity_division.assigned_code, entity_code: params[:entity_code], count1: params[:count1], page1: params[:page1], count: params[:count], page: params[:page]),
+                  <%= link_to 'EDIT', edit_entity_division_path(entity_division, code: entity_division.assigned_code, entity_code: params[:entity_code], count1: params[:count1], count: params[:count], page: params[:page]),
                               style: "width:50px; height: 30px; color: #800754 !important",
                               class: 'w3-button w3-white w3-border w3-border-purple w3-tiny w3-round-large', remote:true %>
               <% else %>
@@ -162,12 +162,12 @@
 
 
               <% if entity_division.active_status %>
-                  <%= link_to 'DISABLE', entity_division_path(entity_division, entity_code: params[:entity_code], count1: params[:count1], page1: params[:page1], count: params[:count], page: params[:page]),
+                  <%= link_to 'DISABLE', entity_division_path(entity_division, entity_code: params[:entity_code], count1: params[:count1], count: params[:count], page: params[:page]),
                               style: "width:80px; height: 30px; color: #800754 !important",
                               method: :delete, data: { confirm: "Do you wish to disable: #{entity_division.division_name} (#{entity_division.division_alias})?" },
                               class: 'w3-button w3-white w3-border w3-border-purple w3-tiny w3-round-large', remote:true%>
               <% else %>
-                  <%= link_to 'ENABLE', entity_division_path(entity_division, entity_code: params[:entity_code], count1: params[:count1], page1: params[:page1], count: params[:count], page: params[:page]),
+                  <%= link_to 'ENABLE', entity_division_path(entity_division, entity_code: params[:entity_code], count1: params[:count1], count: params[:count], page: params[:page]),
                               style: "width:80px; height: 30px;",
                               method: :delete, data: { confirm: "Do you wish to enable: #{entity_division.division_name} (#{entity_division.division_alias})?" },
                               class: 'w3-button w3-purple-vpos w3-border w3-border-purple w3-tiny w3-round-large', remote:true%>
@@ -185,7 +185,7 @@
       <div class="flickr_pagination"  style="float: right">
         <%= will_paginate @entity_divisions, class: "w3-card", renderer: BootstrapPagination::Rails,
                           :params => { :controller => "entity_divisions", :action => "entity_division_index", entity_code: params[:entity_code],
-                                       count1: params[:count1], page1: params[:page1], count: params[:count], page: params[:page] } %>
+                                       count1: params[:count1], count: params[:count], page: params[:page] } %>
         <%#= js_will_paginate @payment_infos, :params => { :controller => "payment_infos", :action => "payment_info_index" } %>
       </div>
     <% end %>

@@ -24,7 +24,7 @@ class EntityDivAlertRecipientsController < ApplicationController
     params[:page6] ? params[:page6] : params[:page6] = 1
 
 
-    @entity_div_alert_recipients = EntityDivAlertRecipient.where(entity_div_code: params[:code], del_status: false).paginate(:page => params[:page6], :per_page => params[:count6]).order(created_at: :desc)
+    @entity_div_alert_recipients = EntityDivAlertRecipient.where(entity_div_code: params[:code], del_status: false).paginate(:page => params[:page], :per_page => params[:count6]).order(created_at: :desc)
 
   end
 
@@ -186,8 +186,8 @@ class EntityDivAlertRecipientsController < ApplicationController
       recipient_full_name = @entity_div_alert_recipient.recipient_name != nil ? @entity_div_alert_recipient.recipient_name : "Recipient"
       EntityDivAlertRecipient.delete_by_update_onef("entity_div_alert_recipient","mobile_number",@entity_div_alert_recipient.mobile_number, @entity_div_alert_recipient.entity_div_code)
 
-      
-      @entity_div_alert_recipients = EntityDivAlertRecipient.where(entity_div_code: params[:code], del_status: false).paginate(:page => params[:page6], :per_page => params[:count6]).order('created_at desc')
+
+      @entity_div_alert_recipients = EntityDivAlertRecipient.where(entity_div_code: params[:code], del_status: false).paginate(:page => params[:page], :per_page => params[:count6]).order('created_at desc')
       respond_to do |format|
         format.html { redirect_to entity_divisions_url, notice: 'Occupation master was successfully disabled.' }
         flash.now[:notice] = "#{recipient_full_name} was successfully deactivated from the Merchant Notifications."

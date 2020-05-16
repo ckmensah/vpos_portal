@@ -7,6 +7,10 @@ class EntityInfosController < ApplicationController
   def index
     params[:count] ? params[:count] : params[:count] = 50
     params[:page] ? params[:page] : params[:page] = 1
+    params[:pager] ? params[:pager] = params[:page] : params[:pager] = 1
+    $entity_index_page = params[:page]
+    $entity_division_page = params[:page]
+
 
     if current_user.super_admin? || current_user.super_user?
 
@@ -16,7 +20,7 @@ class EntityInfosController < ApplicationController
       @merchant_cat_search = EntityCategory.where(active_status: true).order(category_name: :asc)
 
       @entity_infos = EntityInfo.where(del_status: false).paginate(:page => params[:page], :per_page => params[:count]).order('created_at desc')
-      @entity_info_divs = EntityInfo.where(active_status: true).paginate(:page => params[:page], :per_page => params[:count]).order('created_at desc')
+      @entity_info_divs = EntityInfo.where(active_status: true).paginate(:page => params[:pager], :per_page => params[:count]).order('created_at desc')
       @entity_divisions = EntityDivision.where(del_status: false).paginate(:page => params[:page], :per_page => params[:count]).order('created_at desc')
       @entity_info_sports = EntityInfo.where(active_status: true, entity_cat_id: "SPO").paginate(:page => params[:page], :per_page => params[:count]).order('created_at desc')
       @entity_div_sports = EntityDivision.where(active_status: true, activity_type_code: "SPO").paginate(:page => params[:page], :per_page => params[:count]).order('created_at desc')
@@ -218,6 +222,7 @@ class EntityInfosController < ApplicationController
             @entity_info.save(validate: false)
             EntityInfo.save_wallet_config(@the_wallet_params,@entity_info.assigned_code, current_user) if entity_info_params[:wallet_query] == "yes"
           end
+          @entity_info_divs = EntityInfo.where(active_status: true).paginate(:page => params[:pager], :per_page => params[:count]).order('created_at desc')
           @entity_infos = EntityInfo.where(del_status: false).paginate(:page => params[:page], :per_page => params[:count]).order('created_at desc')
           format.html { redirect_to @entity_info, notice: 'Entity info was successfully created.' }
           flash.now[:notice] = "Entity info was successfully created."

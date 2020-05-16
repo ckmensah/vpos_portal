@@ -18,7 +18,7 @@ class ActivitySubDivClassesController < ApplicationController
 
     @entity_div_name = EntityDivision.where(assigned_code: params[:code], active_status: true).order(created_at: :desc).first
     @entity_div_name = @entity_div_name ? "#{@entity_div_name.division_name} (#{@entity_div_name.division_alias})" : ""
-    @activity_sub_div_classes = ActivitySubDivClass.where(entity_div_code: params[:code], del_status: false).paginate(:page => params[:page4], :per_page => params[:count4]).order('created_at desc')
+    @activity_sub_div_classes = ActivitySubDivClass.where(entity_div_code: params[:code], del_status: false).paginate(:page => params[:page], :per_page => params[:count4]).order('created_at desc')
   end
 
   # GET /activity_sub_div_classes/1
@@ -108,7 +108,7 @@ class ActivitySubDivClassesController < ApplicationController
     if @activity_sub_div_class.active_status
       @activity_sub_div_class.active_status = false
       @activity_sub_div_class.save(validate: false)
-      @activity_sub_div_classes = ActivitySubDivClass.where(entity_div_code: params[:code], del_status: false).paginate(:page => params[:page4], :per_page => params[:count4]).order('created_at desc')
+      @activity_sub_div_classes = ActivitySubDivClass.where(entity_div_code: params[:code], del_status: false).paginate(:page => params[:page], :per_page => params[:count4]).order('created_at desc')
       respond_to do |format|
         format.html { redirect_to activity_types_url, notice: 'Occupation master was successfully disabled.' }
         flash.now[:note] = 'Ticket Type(s) was successfully disabled.'
@@ -120,7 +120,7 @@ class ActivitySubDivClassesController < ApplicationController
     else
       @activity_sub_div_class.active_status = true
       @activity_sub_div_class.save(validate: false)
-      @activity_sub_div_classes = ActivitySubDivClass.where(entity_div_code: params[:code], del_status: false).paginate(:page => params[:page4], :per_page => params[:count4]).order('created_at desc')
+      @activity_sub_div_classes = ActivitySubDivClass.where(entity_div_code: params[:code], del_status: false).paginate(:page => params[:page], :per_page => params[:count4]).order('created_at desc')
       respond_to do |format|
         format.html { redirect_to activity_types_url, notice: 'Allergy master was successfully enabled.' }
         flash.now[:notice] = 'Ticket Type(s) was successfully enabled.'

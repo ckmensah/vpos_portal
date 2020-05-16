@@ -18,7 +18,7 @@ class AssignedFeesController < ApplicationController
     params[:page2] ? params[:page2] : params[:page2] = 1
 
     if current_user.super_admin? || current_user.super_user?
-      @assigned_fees = AssignedFee.where(entity_div_code: params[:code], del_status: false).paginate(:page => params[:page2], :per_page => params[:count2]).order('created_at desc')
+      @assigned_fees = AssignedFee.where(entity_div_code: params[:code], del_status: false).paginate(:page => params[:page], :per_page => params[:count2]).order('created_at desc')
       @services = EntityDivision.where(active_status: true, assigned_code: params[:code]).order(created_at: :desc).first
       @service_name = @services ? @services.division_name : ""
     else
@@ -136,7 +136,7 @@ class AssignedFeesController < ApplicationController
     if @assigned_fee.active_status
       @assigned_fee.active_status = false
       @assigned_fee.save(validate: false)
-      @assigned_fees = AssignedFee.where(del_status: false).paginate(:page => params[:page2], :per_page => params[:count2]).order('created_at desc')
+      @assigned_fees = AssignedFee.where(del_status: false).paginate(:page => params[:page], :per_page => params[:count2]).order('created_at desc')
       respond_to do |format|
         format.html { redirect_to activity_types_url, notice: 'Occupation master was successfully disabled.' }
         flash.now[:note] = 'Assigned Fee was successfully disabled.'
@@ -148,7 +148,7 @@ class AssignedFeesController < ApplicationController
     else
       @assigned_fee.active_status = true
       @assigned_fee.save(validate: false)
-      @assigned_fees = AssignedFee.where(del_status: false).paginate(:page => params[:page2], :per_page => params[:count2]).order('created_at desc')
+      @assigned_fees = AssignedFee.where(del_status: false).paginate(:page => params[:page], :per_page => params[:count2]).order('created_at desc')
       respond_to do |format|
         format.html { redirect_to activity_types_url, notice: 'Allergy master was successfully enabled.' }
         flash.now[:notice] = 'Assigned Fee was successfully enabled.'

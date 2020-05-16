@@ -23,7 +23,7 @@ class EntityDivSubActivitiesController < ApplicationController
     params[:count3] ? params[:count3] : params[:count3] = 50
     params[:page3] ? params[:page3] : params[:page3] = 1
 
-    @entity_div_sub_activities = EntityDivSubActivity.where(entity_div_code: params[:code], del_status: false).paginate(:page => params[:page3], :per_page => params[:count3]).order(created_at: :desc)
+    @entity_div_sub_activities = EntityDivSubActivity.where(entity_div_code: params[:code], del_status: false).paginate(:page => params[:page], :per_page => params[:count3]).order(created_at: :desc)
 
 
   end
@@ -144,7 +144,7 @@ class EntityDivSubActivitiesController < ApplicationController
     if @entity_div_sub_activity.active_status
       @entity_div_sub_activity.active_status = false
       @entity_div_sub_activity.save(validate: false)
-      @entity_div_sub_activities = EntityDivSubActivity.where(entity_div_code: params[:code], del_status: false).paginate(:page => params[:page3], :per_page => params[:count3]).order(created_at: :desc)
+      @entity_div_sub_activities = EntityDivSubActivity.where(entity_div_code: params[:code], del_status: false).paginate(:page => params[:page], :per_page => params[:count3]).order(created_at: :desc)
       respond_to do |format|
         format.html { redirect_to activity_types_url, notice: 'Occupation master was successfully disabled.' }
         flash.now[:note] = 'Activity code was successfully disabled.'
@@ -157,7 +157,7 @@ class EntityDivSubActivitiesController < ApplicationController
     else
       @entity_div_sub_activity.active_status = true
       @entity_div_sub_activity.save(validate: false)
-      @entity_div_sub_activities = EntityDivSubActivity.where(entity_div_code: params[:code], del_status: false).paginate(:page => params[:page3], :per_page => params[:count3]).order(created_at: :desc)
+      @entity_div_sub_activities = EntityDivSubActivity.where(entity_div_code: params[:code], del_status: false).paginate(:page => params[:page], :per_page => params[:count3]).order(created_at: :desc)
       respond_to do |format|
         format.html { redirect_to activity_types_url, notice: 'Allergy master was successfully enabled.' }
         flash.now[:notice] = 'Activity code was successfully enabled.'
