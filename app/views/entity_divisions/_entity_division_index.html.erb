@@ -90,7 +90,7 @@
                               style: "width:120px; height: 30px;",
                               class: 'w3-button w3-purple-vpos w3-border w3-border-purple w3-tiny w3-round-large', remote:true%>
                 <% end %>
-                <% if entity_division.activity_type.assigned_code == "CHC" || entity_division.activity_type.assigned_code == "SCH" #|| entity_division.activity_type.assigned_code == "DON" || entity_division.activity_type.assigned_code == "GEN" %>
+                <% if entity_division.activity_type.assigned_code == "CHC" || entity_division.activity_type.assigned_code == "SCH" #|| entity_division.activity_type.assigned_code == "OMC" #|| entity_division.activity_type.assigned_code == "DON" || entity_division.activity_type.assigned_code == "GEN" %>
                   <%= link_to 'ACTIVITY CODE', entity_div_sub_activity_index_path(entity_code: params[:entity_code], code: entity_division.assigned_code, count1: params[:count1], count: params[:count]),
                               style: "width:110px; height: 30px; color: #800754 !important",
                               class: 'w3-button w3-white w3-border w3-border-purple w3-tiny w3-round-large', remote:true%>
