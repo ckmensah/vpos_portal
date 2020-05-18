@@ -302,6 +302,8 @@ class EntityDivisionsController < ApplicationController
       @activity_codes = [["Predefined Donation (PDD)", "PDD"]]
     elsif @entity_division_sub && @entity_division_sub.activity_type_code == "OMC"
       @activity_codes = [["Oil Marketing Company (OMC)", "OMC"]]
+    elsif @entity_division_sub && @entity_division_sub.activity_type_code == "SCH"
+      @activity_codes = [["School (SCH)", "SCH"]]
     else
       @entity_div_sub_activities = EntityDivSubActivity.where(entity_div_code: params[:code], active_status: true, del_status: false).order(div_sub_activity_desc: :asc)
       @activity_codes = @entity_div_sub_activities.map { |a| ["#{a.div_sub_activity_desc} (#{a.sub_activity_code})", "#{a.sub_activity_code}"] }.insert(0,['Select an Activity Code', ""])
@@ -362,6 +364,8 @@ class EntityDivisionsController < ApplicationController
       @activity_codes = [["Predefined Donation (PDD)", "PDD"]]
     elsif @entity_division_sub && @entity_division_sub.activity_type_code == "OMC"
       @activity_codes = [["Oil Marketing Company (OMC)", "OMC"]]
+    elsif @entity_division_sub && @entity_division_sub.activity_type_code == "SCH"
+      @activity_codes = [["School (SCH)", "SCH"]]
     else
       @entity_div_sub_activities = EntityDivSubActivity.where(entity_div_code: params[:code], active_status: true, del_status: false).order(div_sub_activity_desc: :asc)
       @activity_codes = @entity_div_sub_activities.map { |a| ["#{a.div_sub_activity_desc} (#{a.sub_activity_code})", "#{a.sub_activity_code}"] }.insert(0,['Select an Activity Code', ""])
@@ -464,6 +468,8 @@ class EntityDivisionsController < ApplicationController
       @activity_codes = [["Predefined Donation (PDD)", "PDD"]]
     elsif @entity_division_sub && @entity_division_sub.activity_type_code == "OMC"
       @activity_codes = [["Oil Marketing Company (OMC)", "OMC"]]
+    elsif @entity_division_sub && @entity_division_sub.activity_type_code == "SCH"
+      @activity_codes = [["School (SCH)", "SCH"]]
     else
       @entity_div_sub_activities = EntityDivSubActivity.where(entity_div_code: params[:code], active_status: true, del_status: false).order(div_sub_activity_desc: :asc)
       @activity_codes = @entity_div_sub_activities.map { |a| ["#{a.div_sub_activity_desc} (#{a.sub_activity_code})", "#{a.sub_activity_code}"] }.insert(0,['Select an Activity Code', ""])
@@ -524,6 +530,8 @@ class EntityDivisionsController < ApplicationController
       @activity_codes = [["Predefined Donation (PDD)", "PDD"]]
     elsif @entity_division_sub && @entity_division_sub.activity_type_code == "OMC"
       @activity_codes = [["Oil Marketing Company (OMC)", "OMC"]]
+    elsif @entity_division_sub && @entity_division_sub.activity_type_code == "SCH"
+      @activity_codes = [["School (SCH)", "SCH"]]
     else
       @entity_div_sub_activities = EntityDivSubActivity.where(entity_div_code: params[:code], active_status: true, del_status: false).order(div_sub_activity_desc: :asc)
       @activity_codes = @entity_div_sub_activities.map { |a| ["#{a.div_sub_activity_desc} (#{a.sub_activity_code})", "#{a.sub_activity_code}"] }.insert(0,['Select an Activity Code', ""])
