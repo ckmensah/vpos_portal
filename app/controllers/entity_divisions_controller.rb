@@ -377,7 +377,7 @@ class EntityDivisionsController < ApplicationController
     @act_sub_div_classes = @activity_sub_div_classes.map { |a| [a.class_desc, a.id] }.insert(0,['Select a class', ""])
 
     valid_result, error_num, div_num, row_num = EntityDivision.division_setup_validation(params, @main_params, @div_activity_type, entity_division_params)
-    lov_validate_result, lov_error_num, lov_row_num = EntityDivision.division_lov_validation(@the_div_lov, params[:code], entity_division_params, @div_activity_type)
+    lov_validate_result, lov_error_num, lov_row_num = EntityDivision.division_lov_validation(@the_div_lov, params[:code], entity_division_params, @div_activity_type, "CREATE")
     respond_to do |format|
 
       logger.info "Couldn't pass. Validate result:: #{valid_result}, error number :: #{error_num}, Activity number :: #{div_num}, Time number :: #{row_num}"
@@ -386,6 +386,7 @@ class EntityDivisionsController < ApplicationController
         logger.info "=================== SAVING ==================="
         EntityDivision.division_lov_save(@the_div_lov, params[:code], entity_division_params, current_user)
         EntityDivision.division_setup_save(params, @main_params, @div_activity_type, entity_division_params, current_user)
+        flash.now[:notice] = "Setup creation was successful."
         format.js { render :entity_division_index }
       else
         if lov_validate_result != true
@@ -543,7 +544,7 @@ class EntityDivisionsController < ApplicationController
     @act_sub_div_classes = @activity_sub_div_classes.map { |a| [a.class_desc, a.id] }.insert(0,['Select a class', ""])
     @division_activity_lov = DivisionActivityLov.where(division_code: params[:code], active_status: true)
     valid_result, error_num, div_num, row_num = EntityDivision.division_setup_validation(params, @main_params, @div_activity_type, entity_division_params)
-    lov_validate_result, lov_error_num, lov_row_num = EntityDivision.division_lov_validation(@the_div_lov, params[:code], entity_division_params, @div_activity_type)
+    lov_validate_result, lov_error_num, lov_row_num = EntityDivision.division_lov_validation(@the_div_lov, params[:code], entity_division_params, @div_activity_type, "UPDATE")
 
     respond_to do |format|
       logger.info "Couldn't pass. Validate result:: #{valid_result}, error number :: #{error_num}, Activity number :: #{div_num}, Time number :: #{row_num}"
@@ -552,7 +553,11 @@ class EntityDivisionsController < ApplicationController
         logger.info "=================== UPDATING... ==================="
         EntityDivision.division_lov_update(@the_div_lov, params[:code], entity_division_params, current_user)
         EntityDivision.division_setup_update(params, @main_params, @div_activity_type, entity_division_params, current_user)
-        flash.now[:notice] = "Setup update was successful."
+        if lov_error_num == "2"
+          flash.now[:notice] = "Deletion of all list of values was successful."
+        else
+          flash.now[:notice] = "Setup update was successful."
+        end
         format.js { render :entity_division_index }
       else
         if lov_validate_result != true

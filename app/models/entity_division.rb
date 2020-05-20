@@ -198,7 +198,7 @@ class EntityDivision < ApplicationRecord
   end
 
 
-  def self.division_lov_validation(div_lov_params, division_code, entity_division_params, div_activity_type)
+  def self.division_lov_validation(div_lov_params, division_code, entity_division_params, div_activity_type, validate_action)
     lov_row_num = 0
     lov_error_num = "0"
     lov_validate_result = false
@@ -230,8 +230,11 @@ class EntityDivision < ApplicationRecord
             count = count + 1
           end
         else
-
-          lov_validate_result = false
+          if validate_action == "UPDATE"
+            lov_validate_result = true
+          else
+            lov_validate_result = false
+          end
           lov_error_num = "2"
         end
       else
@@ -621,6 +624,20 @@ class EntityDivision < ApplicationRecord
     end
   end
 
+  def self.delete_all_lovs(active_lov_obj)
+    if active_lov_obj.exists?
+      active_lov_obj.each do |active_lov|
+        logger.info "This division lov is to be DELETED.........."
+        logger.info "This :: #{active_lov.inspect}"
+        active_lov.active_status = false
+        active_lov.del_status = true
+        active_lov.save!(validate: false)
+      end
+    else
+      logger.info "NO LOV RECORD TO DELETE =================="
+    end
+
+  end
 
   def self.division_lov_update(div_lov_params, division_code, entity_division_params, current_user)
     if entity_division_params[:div_lov_query] == 'yes'
@@ -668,6 +685,8 @@ class EntityDivision < ApplicationRecord
         uncommon_ids = (lov_id_arr - arr_ids) | (arr_ids - lov_id_arr)
         delete_uncommon_obj_ids(uncommon_ids, @division_activity_lov, "LOV")
       else
+        @division_act_lov = DivisionActivityLov.where(division_code: division_code, active_status: true)
+        delete_all_lovs(@division_act_lov)
         logger.info "=== No Data :: The rows are all deleted."
       end
     else
