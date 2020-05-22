@@ -343,10 +343,12 @@ class FundMovementsController < ApplicationController
       params[:entity_code] = current_user.entity_code
       params[:division_code] = current_user.division_code
 
-      @entity_info = EntityInfo.where(assigned_code: params[:entity_code], active_status: true).order(created_at: :desc).first
-      @entity_name = @entity_info ? @entity_info.entity_name : ""
+      #@entity_info = EntityInfo.where(assigned_code: params[:entity_code], active_status: true).order(created_at: :desc).first
+      #@entity_name = @entity_info ? @entity_info.entity_name : ""
       @entity_div = EntityDivision.where(assigned_code: params[:division_code], active_status: true).order(created_at: :desc).first
       @division_name = @entity_div ? "(#{@entity_div.division_name})" : ""
+      @entity_info = @entity_div ? EntityInfo.where(assigned_code: @entity_div.entity_code, active_status: true).order(created_at: :desc).first : EntityInfo.where(assigned_code: params[:entity_code], active_status: true).order(created_at: :desc).first
+      @entity_name = @entity_info ? @entity_info.entity_name : ""
       if params[:count2] == "ALL"
         @fund_movements = FundMovement.where(entity_div_code: params[:division_code]).where(the_search).paginate(:page => params[:page], :per_page => 100000000000).order(created_at: :desc)
       else
