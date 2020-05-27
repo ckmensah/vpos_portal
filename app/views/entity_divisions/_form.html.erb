@@ -45,7 +45,7 @@
                 <%= f.input :division_name, label: "Service Name", required: true, input_html: {id: "div_name", autofocus: true, autocomplete: "off", class: "form-control w3-input w3-border w3-white input-group input-append", style: "width: 90%;"} %>
                 <%= f.input :division_alias, label: "Service Alias", required: true, input_html: {id: "div_alias", autocomplete: "off", class: "form-control w3-input w3-border w3-white input-group input-append", style: "width: 90%;"} %>
                 <%= f.input :activity_type_code, label: "Activity Code", collection: @activity_types, label_method: :activity_name, value_method: :assigned_code, required: true, input_html: {id: "activity_key", autocomplete: "off", class: "form-control w3-input w3-border w3-white input-group input-append", style: "width: 90%;"} %>
-                <%= f.input :service_code, as: :integer, label: "Shortcode Ext", required: true, input_html: {id: "serv_code", value: @service_code, autocomplete: "off", min: 1, max: 9999, oninput: "validity.valid||(value='');", class: "form-control w3-input w3-border w3-white input-group input-append", style: "width: 90%;"} %>
+                <%= f.input :service_code, as: :integer, label: "Shortcode Ext", required: true, input_html: {id: "serv_code", value: @service_code, autocomplete: "off", min: 1, max: 999999, oninput: "validity.valid||(value='');", class: "form-control w3-input w3-border w3-white input-group input-append", style: "width: 90%;"} %>
                 <%= f.input :sms_sender_id, label: "SMS Sender ID", required: true, input_html: {id: "sender_id", value: @entity_division.sms_sender_id, autocomplete: "off", class: "form-control w3-input w3-border w3-white input-group input-append", style: "width: 90%"} %>
 
               </div>
@@ -192,7 +192,7 @@
 
                       <td><strong><input type="text" name="divisions[<%= count %>[division_name]]" autocomplete="off" placeholder="Division Name" class="form-control w3-input w3-border w3-white input-group input-append" style="" /></strong></td>
                       <td><strong><input type="text" name="divisions[<%= count %>[division_alias]]" autocomplete="off" placeholder="Division Alias" class="form-control w3-input w3-border w3-white input-group input-append" style="" /></strong></td>
-                      <td><strong><input type="number" name="divisions[<%= count %>[service_code]]" autocomplete="off" min="1" max="9999" oninput="validity.valid||(value='');" placeholder="Service Code" class="form-control w3-input w3-border w3-white input-group input-append" style="" /></strong></td>
+                      <td><strong><input type="number" name="divisions[<%= count %>[service_code]]" autocomplete="off" min="1" max="999999" oninput="validity.valid||(value='');" placeholder="Service Code" class="form-control w3-input w3-border w3-white input-group input-append" style="" /></strong></td>
                       <td><strong><input type="text" name="divisions[<%= count %>[service_label]]" autocomplete="off" placeholder="Service Name" class="form-control w3-input w3-border w3-white input-group input-append" style="" /></strong></td>
                       <td><strong><input type="text" name="divisions[<%= count %>[sms_sender_id]]" autocomplete="off" placeholder="Sender ID" class="form-control w3-input w3-border w3-white input-group input-append" style="" /></strong></td>
 
@@ -232,7 +232,7 @@
                         <% end %>
                         <td><strong><input type="text" name="divisions[<%= count %>[division_name]]" value="<%= the_params["division_name"] %>" autocomplete="off" placeholder="Division Name" class="form-control w3-input w3-border w3-white input-group input-append" style="" /></strong></td>
                         <td><strong><input type="text" name="divisions[<%= count %>[division_alias]]" value="<%= the_params["division_alias"] %>" autocomplete="off" placeholder="Division Alias" class="form-control w3-input w3-border w3-white input-group input-append" style="" /></strong></td>
-                        <td><strong><input type="number" name="divisions[<%= count %>[service_code]]" value="<%= the_params["service_code"] %>" autocomplete="off" min="1" max="9999" oninput="validity.valid||(value='');" placeholder="Service Code" class="form-control w3-input w3-border w3-white input-group input-append" style="" /></strong></td>
+                        <td><strong><input type="number" name="divisions[<%= count %>[service_code]]" value="<%= the_params["service_code"] %>" autocomplete="off" min="1" max="999999" oninput="validity.valid||(value='');" placeholder="Service Code" class="form-control w3-input w3-border w3-white input-group input-append" style="" /></strong></td>
                         <td><strong><input type="text" name="divisions[<%= count %>[service_label]]" value="<%= the_params["service_label"] %>" autocomplete="off" placeholder="Service Name" class="form-control w3-input w3-border w3-white input-group input-append" style="" /></strong></td>
                         <td><strong><input type="text" name="divisions[<%= count %>[sms_sender_id]]" value="<%= the_params["sms_sender_id"] %>" autocomplete="off" placeholder="Sender ID" class="form-control w3-input w3-border w3-white input-group input-append" style="" /></strong></td>
 
@@ -258,7 +258,7 @@
 
                           <td><strong><input type="text" name="divisions[<%= count %>[division_name]]" autocomplete="off" placeholder="Division Name" class="form-control w3-input w3-border w3-white input-group input-append" style="" /></strong></td>
                           <td><strong><input type="text" name="divisions[<%= count %>[division_alias]]" autocomplete="off" placeholder="Division Alias" class="form-control w3-input w3-border w3-white input-group input-append" style="" /></strong></td>
-                          <td><strong><input type="number" name="divisions[<%= count %>[service_code]]" autocomplete="off" min="1" max="9999" oninput="validity.valid||(value='');" placeholder="Service Code" class="form-control w3-input w3-border w3-white input-group input-append" style="" /></strong></td>
+                          <td><strong><input type="number" name="divisions[<%= count %>[service_code]]" autocomplete="off" min="1" max="999999" oninput="validity.valid||(value='');" placeholder="Service Code" class="form-control w3-input w3-border w3-white input-group input-append" style="" /></strong></td>
                           <td><strong><input type="text" name="divisions[<%= count %>[service_label]]" autocomplete="off" placeholder="Service Name" class="form-control w3-input w3-border w3-white input-group input-append" style="" /></strong></td>
                           <td><strong><input type="text" name="divisions[<%= count %>[sms_sender_id]]" autocomplete="off" placeholder="Sender ID" class="form-control w3-input w3-border w3-white input-group input-append" style="" /></strong></td>
 
@@ -288,7 +288,7 @@
                 <%= link_to 'Back', entity_division_index_path(entity_code: params[:entity_code], count1: params[:count1], page1: params[:page1], page: params[:page], count: params[:count]), class: "w3-button w3-white w3-border w3-border-purple w3-small w3-round-large", remote: true %>
               <% end %>
             </div>
-            
+
           <% end %>
           <br/>
         </div>

@@ -24,6 +24,7 @@
               <% division = EntityDivision.where(assigned_code: @pay_info.entity_div_code, active_status: true).order(created_at: :desc).first %>
               <% if division %>
                 <% div_name = division.division_name %>
+                <% div_alias_stationID = division.division_alias %>
                 <% div_alias = "(#{division.division_alias})" %>
                 <% merchant = EntityInfo.where(assigned_code: division.entity_code, active_status: true).order(created_at: :desc).first  %>
                 <% if merchant %>
@@ -35,6 +36,7 @@
                 <% end %>
               <% else %>
                 <% div_name = "" %>
+                <% div_alias_stationID = "" %>
                 <% div_alias = "" %>
                 <% merchant_name = "" %>
                 <% merchant_alias = "" %>
@@ -51,6 +53,13 @@
 <!--                <td><strong><%#= @pay_info.entity_division.division_name if @pay_info.entity_division != nil %> (<%#= @pay_info.entity_division.division_alias if @pay_info.entity_division != nil %>)</strong></td>-->
                 <td><strong><%= div_name %> <%= div_alias %></strong></td>
               </tr>
+
+              <% if @pay_info.entity_division != nil && @pay_info.entity_division.activity_type_code == "OMC" %>
+                <tr>
+                  <td class="raw_theme w3-border w3-border-black w3-leftbar"><strong>Terminal/Station ID:</strong></td>
+                  <td><strong><%= div_alias_stationID %></strong></td>
+                </tr>
+              <% end %>
 
               <tr>
                 <td class="raw_theme w3-border w3-border-black w3-leftbar"><strong>Reference Name:</strong></td>

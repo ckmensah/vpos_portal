@@ -4,6 +4,6 @@ class AssignedServiceCode < ApplicationRecord
   belongs_to :entity_division, class_name: 'EntityDivision', foreign_key: :entity_div_code
 
   validates :entity_div_code, presence: {message: " cannot be empty."}
-  validates :service_code, presence: {message: " cannot be empty."}, format: { with: /\A\d+\z/, message: "must be numbers only." }
+  validates :service_code, presence: {message: " cannot be empty."}, format: { with: /\A\d+\z/, message: "must be numbers only." }, length: {minimum: 1, maximum: 6}
 
 end

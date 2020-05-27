@@ -43,13 +43,14 @@ class EntityDivision < ApplicationRecord
   validates :suburb_id, presence: {message: " cannot be empty."}
   validates :activity_type_code, presence: {message: " cannot be empty."}
   validates :service_label, presence: {message: " cannot be empty."}
-  validates :service_code, presence: {message: " cannot be empty."}, format: {with: /\A\d+\z/, message: "must be numbers only."}
+  validates :service_code, presence: {message: " cannot be empty."}, format: {with: /\A\d+\z/, message: "must be numbers only."}, length: {minimum: 1, maximum: 6}
   #validate :service_code_validation, :if => :for_update
   #validate :create_serv_code_validation, :unless => :for_update
   validate :secret_key_validation
   validate :client_key_validation
   validate :service_id_validation
   validate :merchant_wallet_validity, :if => :for_update
+
 
   # accepts_nested_attributes_for :entity_wallet_configs#, :activity_divs
   # accepts_nested_attributes_for :assigned_service_codes
