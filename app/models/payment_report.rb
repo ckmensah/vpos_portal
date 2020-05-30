@@ -9,18 +9,21 @@ class PaymentReport < ApplicationRecord
   def self.to_csv(general_report, options = {})
     CSV.generate(options) do |csv|
       #headers = %w{Merchant Service Reference Selected_Option Activity_Type Mobile_No Name/Reference Network Tranx_ID Gross_Amount Charge Actual_Amount Source Status Date}
-      headers = %w{Merchant Service Service_Alias Reference Selected_Option Activity_Type Mobile_No Name/Reference Network Tranx_ID Gross_Amount M-Charge C-Charge Actual_Amount Source Status Date}
+      #headers = %w{Merchant Service Service_Alias Extra_Ref Reference Selected_Option Activity_Type Mobile_No Name/Reference Network Tranx_ID Gross_Amount M-Charge C-Charge Actual_Amount Source Status Date}
+      headers = %w{Merchant Service Reference Selected_Option Activity_Type Mobile_No Name/Reference Extra_Ref Network Tranx_ID Gross_Amount M-Charge C-Charge Actual_Amount Source Status Date}
       csv << headers
       actual_amt = 0.000
       for_gross_amt = 0.000
       general_report.each do |summary|
         # ------code comes here
 
+
         logger.info "General report :: #{summary.inspect}"
         entity_div = EntityDivision.where(active_status: true, assigned_code: summary.entity_div_code).order(created_at: :desc).first
         if entity_div
           service = entity_div.division_name
           service_alias = entity_div.division_alias
+          extra_ref = entity_div.comment
           ent_info = EntityInfo.where(active_status: true, assigned_code: entity_div.entity_code).order(created_at: :desc).first
           if ent_info
             merchant = ent_info.entity_name
@@ -30,6 +33,7 @@ class PaymentReport < ApplicationRecord
         else
           service = ""
           service_alias = ""
+          extra_ref = ""
           merchant = ""
         end
         #merchant = (summary.entity_division != nil && summary.entity_division.where(active_status: true).entity_info != nil) ? summary.entity_division.entity_info.entity_name : ""
@@ -102,9 +106,11 @@ class PaymentReport < ApplicationRecord
         date = summary.created_at
         #csv << [merchant, service, reference, lov_name, activity_type, mobile_num, customer_name, network, transaction_id, total_amt, charge, amount, source, status, date] #[merchant, rec_name, summary.pc_name, summary.momo_number, summary.product_name, bags, quantity, summary.amount, summary.exttrid, status, summary.date]
         #csv << [merchant, service, reference, lov_name, activity_type, mobile_num, customer_name, network, transaction_id, for_gross_amt, charge, actual_amt, source, status, date] #[merchant, rec_name, summary.pc_name, summary.momo_number, summary.product_name, bags, quantity, summary.amount, summary.exttrid, status, summary.date]
-        csv << [merchant, service, service_alias, reference, lov_name, activity_type, mobile_num, customer_name, network, transaction_id, for_gross_amt, m_charge, c_charge, actual_amt, source, status, date] #[merchant, rec_name, summary.pc_name, summary.momo_number, summary.product_name, bags, quantity, summary.amount, summary.exttrid, status, summary.date]
+        #csv << [merchant, service, service_alias, extra_ref, reference, lov_name, activity_type, mobile_num, customer_name, network, transaction_id, for_gross_amt, m_charge, c_charge, actual_amt, source, status, date] #[merchant, rec_name, summary.pc_name, summary.momo_number, summary.product_name, bags, quantity, summary.amount, summary.exttrid, status, summary.date]
+        csv << [merchant, service, reference, lov_name, activity_type, mobile_num, customer_name, extra_ref, network, transaction_id, for_gross_amt, m_charge, c_charge, actual_amt, source, status, date] #[merchant, rec_name, summary.pc_name, summary.momo_number, summary.product_name, bags, quantity, summary.amount, summary.exttrid, status, summary.date]
       end
     end
+    
   end
 
 

@@ -257,9 +257,14 @@
                 </tr>
 
                 <tr>
-                  <td class="raw_theme w3-border w3-border-black w3-leftbar"><strong>Comment:</strong></td>
+                  <% if @entity_division.activity_type_code == "OMC" %>
+                    <td class="raw_theme w3-border w3-border-black w3-leftbar"><strong>Extra Ref.:</strong></td>
+                    <% else %>
+                    <td class="raw_theme w3-border w3-border-black w3-leftbar"><strong>Comment:</strong></td>
+                <% end %>
                   <td><strong><%= @entity_division.comment %></strong></td>
                 </tr>
+
 
                 <tr>
                   <td class="raw_theme w3-border w3-border-black w3-leftbar"><strong>Date:</strong></td>

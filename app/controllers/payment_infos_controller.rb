@@ -68,6 +68,7 @@ class PaymentInfosController < ApplicationController
         @status = filter_params[:status]
         @start_date = filter_params[:start_date]
         @end_date = filter_params[:end_date]
+        @a_download = filter_params[:a_download]
         params[:entity_name] = filter_params[:entity_name]
         params[:division_name] = filter_params[:division_name]
         params[:activity_type] = filter_params[:activity_type]
@@ -78,6 +79,7 @@ class PaymentInfosController < ApplicationController
         params[:status] = filter_params[:status]
         params[:start_date] = filter_params[:start_date]
         params[:end_date] = filter_params[:end_date]
+        params[:a_download] = filter_params[:a_download]
       else
 
         if  params[:entity_name].present? || params[:division_name].present? || params[:activity_type].present? || params[:lov_name].present? || params[:cust_num].present? || params[:trans_id].present? || params[:nw].present? || params[:status].present? || params[:start_date].present? || params[:end_date].present?
@@ -92,6 +94,7 @@ class PaymentInfosController < ApplicationController
           @status = params[:status]
           @start_date = params[:start_date]
           @end_date = params[:end_date]
+          @a_download = params[:a_download]
           params[:entity_name] = @entity_name
           params[:division_name] = @division_name
           params[:activity_type] = @activity_type
@@ -102,6 +105,7 @@ class PaymentInfosController < ApplicationController
           params[:status] = @status
           params[:start_date] = @start_date
           params[:end_date] = @end_date
+          params[:a_download] = @a_download
         else
           params[:entity_name] = filter_params[:entity_name]
           params[:division_name] = filter_params[:division_name]
@@ -113,6 +117,7 @@ class PaymentInfosController < ApplicationController
           params[:status] = filter_params[:status]
           params[:start_date] = filter_params[:start_date]
           params[:end_date] = filter_params[:end_date]
+          params[:a_download] = filter_params[:a_download]
         end
       end
 
@@ -211,7 +216,8 @@ class PaymentInfosController < ApplicationController
       #logger.info "ALL SHALL PASS......"
       #search_arr << "split_part(trans_status, '/', 1) = '000'"
     end
-
+    logger.info "====================================================================="
+    logger.info "A DOWNLOAD DISPLAY string :: #{params["a_download"].inspect} and symbol :: #{params[:a_download].inspect}"
     if params[:filter_main].present?
       logger.info "::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::"
       logger.info "WHEN THERE IS FILTER, THE RESULT SHOULD BE ALL STATUSES UNLESS STATED OTHERWISE......"
@@ -219,7 +225,14 @@ class PaymentInfosController < ApplicationController
 
       logger.info "====================================================================="
       logger.info "WHEN THERE IS NO FILTER, THE RESULT SHOULD BE ONLY SUCCESSES......"
-      search_arr << "split_part(trans_status, '/', 1) = '000'"
+      if params["a_download"] == "a_download"
+        logger.info "====================================================================="
+        logger.info "There is a download after filtering. ==============================="
+      else
+        logger.info "====================================================================="
+        logger.info "There is a download without any filtering. =========================="
+        search_arr << "split_part(trans_status, '/', 1) = '000'"
+      end
     end
 
     the_search = search_arr.join(" AND ")

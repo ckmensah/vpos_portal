@@ -7,10 +7,10 @@
   <div class="w3-responsive">
     <% if params[:modal_appear] == "to_multiple" %>
       <button type="button" class="btn btn-outline-purple div_tablink" style="font-size: small; width: 200px;" onclick="openTab(event, 'with_wallet')">SERVICE WITH WALLET</button>
-      <button type="button" class="btn btn-outline-purple div_tablink w3-vpos-purple" style="font-size: small; width: 220px;" onclick="openTab(event, 'without_wallet')">SERVICE WITHOUT WALLET</button>
+<!--      <button type="button" class="btn btn-outline-purple div_tablink w3-vpos-purple" style="font-size: small; width: 220px;" onclick="openTab(event, 'without_wallet')">SERVICE WITHOUT WALLET</button>-->
       <% else %>
       <button type="button" class="btn btn-outline-purple div_tablink w3-vpos-purple" style="font-size: small; width: 200px;" onclick="openTab(event, 'with_wallet')">SERVICE WITH WALLET</button>
-      <button type="button" class="btn btn-outline-purple div_tablink" style="font-size: small; width: 220px;" onclick="openTab(event, 'without_wallet')">SERVICE WITHOUT WALLET</button>
+<!--      <button type="button" class="btn btn-outline-purple div_tablink" style="font-size: small; width: 220px;" onclick="openTab(event, 'without_wallet')">SERVICE WITHOUT WALLET</button>-->
       <% end %>
 
   </div>
@@ -60,15 +60,15 @@
 
                 <%= f.input :city_town_name, label: "City", collection: @city_masters, label_method: :city_town_name, value_method: :id, required: true, input_html:{id: "for_city", autocomplete: "off",class:"form-control w3-input w3-border w3-white input-group input-append",style:"width: 90%;"}  %>
                 <%= f.input :suburb_id, label: "Suburb", collection: @sub_masters, label_method: :suburb_name, value_method: :id, required: true, input_html:{id: "for_suburb", autocomplete: "off",class:"form-control w3-input w3-border w3-white input-group input-append",style:"width: 90%;"}  %>
-
                 </div>
 
             <div class="w3-third">
-
-                <%= f.input :serv_id, label: "Service ID", value_method: :id, required: true, input_html: {id: "serv_id", type: "number", min: "1", oninput: "validity.valid||(value='');", autocomplete: "off", class: "form-control w3-input w3-border w3-white input-group input-append", style: ""} %>
+              <%= f.input :comment, label: "Extra Ref.", required: true, input_html: {id: "extra_ref", autocomplete: "off", class: "form-control w3-input w3-border w3-white input-group input-append", style: ""} %>
+              <%= f.input :serv_id, label: "Service ID", value_method: :id, required: true, input_html: {id: "serv_id", type: "number", min: "1", oninput: "validity.valid||(value='');", autocomplete: "off", class: "form-control w3-input w3-border w3-white input-group input-append", style: ""} %>
                 <%#= ff.input :api_key,  label: "Sms Key", value_method: :id, required: true, input_html:{id: "api_key", autocomplete: "off",class:"form-control w3-input w3-border w3-white input-group input-append",style:"width: 90%; height: 25px"}  %>
                 <%= f.input :s_key, as: :text, label: "Secret Key", required: true, input_html: {id: "k_secret", autocomplete: "off", class: "form-control w3-input w3-border w3-white input-group input-append", style: ""} %>
                 <%= f.input :c_key, as: :text, label: "Client Key", required: true, input_html: {id: "k_client", autocomplete: "off", class: "form-control w3-input w3-border w3-white input-group input-append", style: ""} %>
+
 
                 <%#= f.simple_fields_for :entity_wallet_configs do |fff| %>
                   <%#= fff.input :service_id, label: "Service ID", value_method: :id, required: true, input_html: {id: "serv_id", type: "number", min: "1", oninput: "validity.valid||(value='');", autocomplete: "off", class: "form-control w3-input w3-border w3-white input-group input-append", style: ""} %>

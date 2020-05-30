@@ -64,7 +64,7 @@ class AssignedFeesController < ApplicationController
         #@assigned_fee = incoming_assigned_fee
         @assigned_fee.entity_div_code = ""
         @assigned_fee.valid?
-        
+
         logger.info "Error :: #{@assigned_fee.errors.messages.inspect}"
         format.js { render :new}
         format.html { render :new }

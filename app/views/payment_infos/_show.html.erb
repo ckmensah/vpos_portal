@@ -57,9 +57,16 @@
               <% if @pay_info.entity_division != nil && @pay_info.entity_division.activity_type_code == "OMC" %>
                 <tr>
                   <td class="raw_theme w3-border w3-border-black w3-leftbar"><strong>Terminal/Station ID:</strong></td>
-                  <td><strong><%= div_alias_stationID %></strong></td>
+                  <td><strong><%= @pay_info.entity_division.comment %></strong></td>
                 </tr>
               <% end %>
+
+              <%# if @pay_info.entity_division != nil && @pay_info.entity_division.activity_type_code == "OMC" %>
+<!--                <tr>-->
+<!--                  <td class="raw_theme w3-border w3-border-black w3-leftbar"><strong>Terminal/Station ID:</strong></td>-->
+<!--                  <td><strong><%#= div_alias_stationID %></strong></td>-->
+<!--                </tr>-->
+              <%# end %>
 
               <tr>
                 <td class="raw_theme w3-border w3-border-black w3-leftbar"><strong>Reference Name:</strong></td>

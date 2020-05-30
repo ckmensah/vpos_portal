@@ -35,6 +35,7 @@
             <input class="form-control" name="status" value="<%= params[:status] %>"/>
             <input class="form-control" name="start_date" value="<%= params[:start_date] %>"/>
             <input class="form-control" name="end_date" value="<%= params[:end_date] %>"/>
+            <input class="form-control" name="a_download" value="<%= params[:a_download] %>"/>
             <input type="submit" value="Search" class="btn btn-primary" id="csv_submit">
           <% end %>
         </div>
@@ -60,6 +61,7 @@
             <input class="form-control" name="status" value="<%= params[:status] %>"/>
             <input class="form-control" name="start_date" value="<%= params[:start_date] %>"/>
             <input class="form-control" name="end_date" value="<%= params[:end_date] %>"/>
+            <input class="form-control" name="a_download" value="<%= params[:a_download] %>"/>
             <input type="submit" value="Search" id="excel_submit">
           <% end %>
         </div>
@@ -97,7 +99,7 @@
                                                                             cust_num: params[:cust_num], trans_id: params[:trans_id],
                                                                             nw: params[:nw], status: params[:status],
                                                                             start_date: params[:start_date],
-                                                                            end_date: params[:end_date]})},
+                                                                            end_date: params[:end_date], a_download: params[:a_download]})},
                      id: "record", class: "w3-button w3-white w3-border w3-border-purple w3-round-large",
                      style: "width:auto; height:35px; float:right", remote: true %>
 
@@ -354,8 +356,10 @@
           <!--                    <input type="hidden" class="form-control" name="pager" value="<%#= params[:pager] %>"/>-->
           <input type="hidden" class="form-control" name="entity_code" value="<%= @entity_code %>"/>
           <input type="hidden" class="form-control" name="code" value="<%= @code %>"/>
+<!--          <input type="hidden" class="form-control" name="a_download" value="a_download"/>-->
           <div class="w3-half">
 
+            <%= f.input :a_download, :as => :hidden, input_html:{value: "a_download"} %>
 
             <% if current_user.super_admin? || current_user.super_user? %>
               <%= f.input :entity_name, class: "form-control", collection: @merchant_search, label_method: :entity_name, value_method: :assigned_code, input_html: {id: "id_entity_info", style: "width: 90%;", autocomplete: "off"}, label: "Merchant Name", boolean_style: :inline %>
