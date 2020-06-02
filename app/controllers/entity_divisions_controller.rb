@@ -99,7 +99,10 @@ class EntityDivisionsController < ApplicationController
       @info_update_div_lov = [["", ""]].insert(0,['Please select a service option', ""])
     else
       info_id_record = EntityDivision.find(params[:id_for_entity_service])
-      info_update_div_lov = info_id_record.division_activity_lovs.where(active_status: true).order(lov_desc: :asc).map { |a| [a.lov_desc, a.id] }.insert(0,['Please select a service option', ""])
+      #info_update_div_lov = info_id_record.division_activity_lovs.where(active_status: true).order(lov_desc: :asc).map { |a| [a.lov_desc, a.id] }.insert(0,['Please select a service option', ""])
+      info_update_div_lov = info_id_record.division_activity_lovs.select(:lov_desc).where(active_status: true).group(:lov_desc).order(lov_desc: :asc).map { |a| [a.lov_desc, a.lov_desc] }.insert(0,['Please select a service option', ""])
+      #@division_lovs = DivisionActivityLov.select(:lov_desc).where(active_status: true).group(:lov_desc).order(lov_desc: :asc)
+
       if info_update_div_lov.empty?
         @info_update_div_lov = [["", ""]].insert(0,['Please select a service option', ""])
       else

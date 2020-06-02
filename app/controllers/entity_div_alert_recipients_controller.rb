@@ -218,6 +218,7 @@ class EntityDivAlertRecipientsController < ApplicationController
 
     # Only allow a list of trusted parameters through.
     def entity_div_alert_recipient_params
-      params.require(:entity_div_alert_recipient).permit(:entity_div_code, :for_alert_update, :recipient_name, :mobile_number, :active_status, :del_status, :user_id)
+      params.require(:entity_div_alert_recipient).permit(:entity_div_code, :for_alert_update, :recipient_name, :mobile_number, :alerts, :trans_rpt, :active_status, :del_status, :user_id)
     end
+  
 end

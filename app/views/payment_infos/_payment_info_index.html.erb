@@ -345,7 +345,7 @@
         <!--                  <legend>Filter Report</legend>-->
 
 
-        <% @activity_types = ActivityType.where(active_status: true) %>
+        <%# @activity_types = ActivityType.where(active_status: true) %>
         <% @networks = [["MTN", "MTN"], ["VOD", "VOD"], ["TIGO", "TIG"], ["AIRTEL", "AIR"]] %>
         <% @statuses = [["SUCCESS", "000"], ["FAIL", "001"], ["PENDING", "NIL"]] %>
         <%= simple_form_for :filter_main, :url => (payment_info_index_path(count: params[:count], page: params[:page])), :method => 'get', html: {class: 'form-horizontal'}, remote: true do |f| %>
@@ -384,7 +384,8 @@
               <%= f.input :activity_type, collection: @activity_types, label_method: :activity_type_desc, value_method: :assigned_code, class: "form-control", input_html: {style: "width: 90%;"}, label: "Activity Type", boolean_style: :inline %>
             <% end %>
 
-            <%= f.input :lov_name, collection: @division_lovs, label_method: :lov_desc, value_method: :id, class: "form-control", input_html: {id: "id_div_lov", style: "width: 90%"}, label: "Service Option", boolean_style: :inline %>
+            <%= f.input :lov_name, collection: @division_lovs, label_method: :lov_desc, value_method: :lov_desc, class: "form-control", input_html: {id: "id_div_lov", style: "width: 90%"}, label: "Service Option", boolean_style: :inline %>
+            <%#= f.input :lov_name, collection: @division_lovs, label_method: :lov_desc, value_method: :id, class: "form-control", input_html: {id: "id_div_lov", style: "width: 90%"}, label: "Service Option", boolean_style: :inline %>
 
             <%#= f.input :lov_name, class:"form-control", input_html: {style: "width: 90%"}, label: "Service Option", boolean_style: :inline %>
 
