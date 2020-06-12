@@ -13,8 +13,10 @@ class EntityInfosController < ApplicationController
 
 
     if current_user.super_admin? || current_user.super_user?
-
+      #all_merchants = EntityDivision.all
+      #EntityDivision.same_created_at(all_merchants)
       $merchant_filter = ""
+      $service_filter = ""
       @merchant_search = EntityInfo.where(active_status: true).order(entity_name: :asc)
       @merchant_code_search = EntityInfo.where(active_status: true).order(entity_name: :asc)
       @merchant_cat_search = EntityCategory.where(active_status: true).order(category_name: :asc)
@@ -54,34 +56,44 @@ class EntityInfosController < ApplicationController
       the_search = ""
       search_arr = []
 
-      if params[:filter_main].present? || params[:ent_name].present? || params[:ass_code].present? || params[:ent_cat].present? #|| params[:cust_num].present? || params[:trans_id].present? || params[:nw].present? || params[:status].present? || params[:start_date].present? || params[:end_date].present?
+      if params[:filter_main].present? || params[:ent_name].present? || params[:ass_code].present? || params[:ent_cat].present? || params[:start_date].present? || params[:end_date].present?  #|| params[:cust_num].present? || params[:trans_id].present? || params[:nw].present? || params[:status].present? || params[:start_date].present? || params[:end_date].present?
 
         filter_params = params[:filter_main]
         if params[:filter_main].present?
           @ent_name = filter_params[:ent_name]
           @ass_code = filter_params[:ass_code]
           @ent_cat = filter_params[:ent_cat]
+          @start_date = filter_params[:start_date]
+          @end_date = filter_params[:end_date]
 
           params[:ent_name] = filter_params[:ent_name]
           params[:ass_code] = filter_params[:ass_code]
           params[:ent_cat] = filter_params[:ent_cat]
+          params[:start_date] = filter_params[:start_date]
+          params[:end_date] = filter_params[:end_date]
 
         else
 
-          if  params[:ent_name].present? || params[:ass_code].present? || params[:ent_cat].present? #|| params[:lov_name].present? || params[:cust_num].present? || params[:trans_id].present? || params[:nw].present? || params[:status].present? || params[:start_date].present? || params[:end_date].present?
+          if  params[:ent_name].present? || params[:ass_code].present? || params[:ent_cat].present? || params[:start_date].present? || params[:end_date].present?  #|| params[:lov_name].present? || params[:cust_num].present? || params[:trans_id].present? || params[:nw].present? || params[:status].present? || params[:start_date].present? || params[:end_date].present?
 
             @ent_name = params[:ent_name]
             @ass_code = params[:ass_code]
             @ent_cat = params[:ent_cat]
+            @start_date = params[:start_date]
+            @end_date = params[:end_date]
 
             params[:ent_name] = @ent_name
             params[:ass_code] = @ass_code
             params[:ent_cat] = @ent_cat
+            params[:start_date] = @start_date
+            params[:end_date] = @end_date
 
           else
             params[:ent_name] = filter_params[:ent_name]
             params[:ass_code] = filter_params[:ass_code]
             params[:ent_cat] = filter_params[:ent_cat]
+            params[:start_date] = filter_params[:start_date]
+            params[:end_date] = filter_params[:end_date]
 
           end
         end
@@ -97,6 +109,14 @@ class EntityInfosController < ApplicationController
 
         if @ent_cat.present?
           search_arr << "entity_cat_id = '#{@ent_cat}'"
+        end
+
+        if @start_date.present? && @end_date.present?
+          f_start_date =  @start_date.to_date.strftime('%Y-%m-%d') # Date.strptime(@start_date, '%m/%d/%Y') # @start_date.to_date.strftime('%Y-%m-%d')
+          f_end_date = @end_date.to_date.strftime('%Y-%m-%d') # Date.strptime(@end_date, '%m/%d/%Y') # @end_date.to_date.strftime('%Y-%m-%d')
+          if f_start_date <= f_end_date
+            search_arr << "created_at BETWEEN '#{f_start_date} 00:00:00' AND '#{f_end_date} 23:59:59'"
+          end
         end
 
       else
@@ -358,7 +378,8 @@ class EntityInfosController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def entity_info_params
-      params.require(:entity_info).permit(:assigned_code, :entity_name, :entity_alias, :entity_cat_id, :action_type, :wallet_query, :comment, :active_status, :del_status, :user_id,
-                                          entity_info_extras_attributes: [:id, :entity_code, :contact_number, :web_url, :contact_email, :location_address, :postal_address, :comment, :active_status, :del_status, :user_id])
+      params.require(:entity_info).permit(:assigned_code, :entity_name, :entity_alias, :entity_cat_id, :action_type, :wallet_query, :comment, :active_status, :del_status, :user_id, :created_at,
+                                          entity_info_extras_attributes: [:id, :entity_code, :contact_number, :web_url, :contact_email, :location_address,
+                                                                          :postal_address, :comment, :active_status, :del_status, :user_id])
     end
 end

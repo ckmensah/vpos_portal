@@ -12,7 +12,7 @@
         <% end %>
 
       <% if current_user.super_admin? || current_user.super_user? #|| current_user.merchant_admin? %>
-        <%= link_to 'BACK', entity_division_index_path(code: params[:code], entity_code: params[:entity_code], count1: params[:count1], count: params[:count], page: $entity_division_page), style: "width:120px;",
+        <%= link_to 'BACK', entity_division_index_path(code: params[:code], entity_code: params[:entity_code], service_filter: $service_filter.present? ? $service_filter.to_enum.to_h : "", count1: params[:count1], count: params[:count], page: $entity_division_page), style: "width:120px;",
                     class: 'w3-button w3-white w3-border w3-border-purple w3-small w3-round-large',remote:true %>
       <% end %>
 

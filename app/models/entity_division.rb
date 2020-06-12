@@ -56,6 +56,52 @@ class EntityDivision < ApplicationRecord
   # accepts_nested_attributes_for :assigned_service_codes
 
 
+
+  def self.gather_all_assigned_code(all_services)
+    assigned_code_arr = []
+    all_services.each_with_index do |service, index|
+      logger.info "#{index + 1}. Merchant :: #{service.inspect} and Assigned Code :: #{service.assigned_code.inspect}"
+      unless assigned_code_arr.include?("#{service.assigned_code}")
+        assigned_code_arr << "#{service.assigned_code}"
+      end
+    end
+    logger.info "Assigned Code Array :: #{assigned_code_arr.inspect}"
+    assigned_code_arr
+  end
+
+
+
+  def self.same_created_at(all_services)
+    assigned_code_arr = gather_all_assigned_code(all_services)
+    if assigned_code_arr.any?
+      assigned_code_arr.each_with_index do |assigned_code, index|
+        logger.info "#{index + 1}. Assigned Code = #{assigned_code.inspect}"
+        service_objs = EntityDivision.where(assigned_code: assigned_code).order(created_at: :desc)
+        first_insertion = service_objs.last
+
+        for_date = EntityDivision.find_by_sql("select * from entity_division where assigned_code = '#{assigned_code}' order by id asc limit 1")[0]
+        logger.info "#{index + 1}FOR DATE: #{for_date.inspect}"
+        if first_insertion
+          logger.info "New Date :: #{first_insertion.created_at.strftime('%Y-%m-%d %H:%M:%S.%N')}"
+          logger.info "New SQL Date :: #{for_date.created_at.strftime('%Y-%m-%d %H:%M:%S.%N')}"
+
+          sql = "UPDATE entity_division SET created_at = '#{first_insertion.created_at.strftime('%Y-%m-%d %H:%M:%S.%N')}' WHERE id IN (SELECT id FROM entity_division WHERE assigned_code = '#{assigned_code}')"
+          val = ActiveRecord::Base.connection.execute(sql)
+
+
+          #service_objs.each_with_index do |service_obj, index1|
+          #  logger.info "#{index1 + 1}. Original Date: #{service_obj.created_at} and New Date: #{first_insertion.created_at}"
+          #  service_obj.created_at = first_insertion.created_at
+          #  service_obj.save(validate: false)
+          #end
+        end
+
+      end
+    end
+
+  end
+
+
   def secret_key_validation
     unless self.link_master == true
       unless self.s_key.present?

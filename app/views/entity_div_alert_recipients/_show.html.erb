@@ -28,6 +28,9 @@
                 <th>Service</th>
                 <th>Recipient Name</th>
                 <th>Mobile Number</th>
+                <th>Receive Notifications</th>
+                <th>View Transactions</th>
+
                 <!--                  <th>Activity Type</th>-->
                 <!--                  <th>Location</th>-->
                 <!--                      <th></th>-->
@@ -47,6 +50,18 @@
                       <td><%= service.division_name if service %> </td>
                       <td><%= value["recipient_name"] %></td>
                       <td><%= value["mobile_number"] %></td>
+                      <% if value.key?("alerts") && value["alerts"] == "on" %>
+                        <td>Active</td>
+                      <% else %>
+                        <td>Inactive</td>
+                      <% end %>
+
+                      <% if value.key?("trans_rpt") && value["trans_rpt"] == "on" %>
+                        <td>Active</td>
+                      <% else %>
+                        <td>Inactive</td>
+                      <% end %>
+
                       <!--                        <td><%#= value["activity_type_code"] %></td>-->
 
                       <% num = num + 1 %>
@@ -99,6 +114,26 @@
               <tr>
                 <td class="raw_theme w3-border cell-cust-grad w3-leftbar"><strong>Mobile Number:</strong></td>
                 <td><strong><%= @entity_div_alert_recipient.mobile_number %></strong></td>
+              </tr>
+
+              <tr>
+                <td class="raw_theme w3-border cell-cust-grad w3-leftbar"><strong>Receive Notifications:</strong></td>
+<!--                <td><strong><%#= @entity_div_alert_recipient.mobile_number %></strong></td>-->
+                <% if @entity_div_alert_recipient.alerts %>
+                  <td><strong>Active</strong></td>
+                <% else %>
+                  <td><strong>Inactive</strong></td>
+                <% end %>
+              </tr>
+
+              <tr>
+                <td class="raw_theme w3-border cell-cust-grad w3-leftbar"><strong>View Transactions:</strong></td>
+<!--                <td><strong><%#= @entity_div_alert_recipient.mobile_number %></strong>-->
+                <% if @entity_div_alert_recipient.trans_rpt %>
+                  <td><strong>Active</strong></td>
+                <% else %>
+                  <td><strong>Inactive</strong></td>
+                <% end %>
               </tr>
 
               <tr>

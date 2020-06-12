@@ -93,15 +93,17 @@
               <%= f.input :active_status, :as => :hidden, input_html: {value: true} %>
               <%= f.input :del_status, :as => :hidden, input_html: {value: false} %>
               <%= f.input :for_update, :as => :hidden, input_html: {value: true} %>
+              <%= f.input :created_at, :as => :hidden, input_html: {value: @entity_division.created_at} %>
               <%#= f.input :active_status, :as => :hidden, input_html:{value: true} %>
               <%= f.input :user_id, :as => :hidden, input_html:{value: current_user.id} %>
+
 
               <div>
                 <%= f.submit "Submit", class: "w3-button w3-purple-vpos w3-border w3-border-purple w3-small w3-round-large", :data => {:disable_with => 'Please Wait...'}, style: "width:auto;float:center;", remote: true %>
                 <% if params[:interface_type] == "info" %>
                     <%= link_to 'Back', entity_index_path(entity_code: params[:entity_code], page: params[:page], count: params[:count]), class: "w3-button w3-white w3-border w3-border-purple w3-small w3-round-large", remote: true %>
                 <% else %>
-                    <%= link_to 'Back', entity_division_index_path(entity_code: params[:entity_code], count1: params[:count1], page1: params[:page1], page: params[:page], count: params[:count]), class: "w3-button w3-white w3-border w3-border-purple w3-small w3-round-large", remote: true %>
+                    <%= link_to 'Back', entity_division_index_path(entity_code: params[:entity_code], service_filter: $service_filter.present? ? $service_filter.to_enum.to_h : "", count1: params[:count1], page1: params[:page1], page: params[:page], count: params[:count]), class: "w3-button w3-white w3-border w3-border-purple w3-small w3-round-large", remote: true %>
                 <% end %>
                 <%#= link_to 'Back', entity_index_path(entity_code: params[:entity_code], page: params[:page], count: params[:count]), class: "w3-button w3-white w3-border w3-border-purple w3-small w3-round-large", remote: true %>
               </div>

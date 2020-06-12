@@ -7,6 +7,7 @@
   <br>
   <div>
     <div class="w3-half">
+      <button type="button" onclick="document.getElementById('service_filter').style.display='block'" style="font-size: small; width: 165px;" class="w3-btn btn btn-outline-purple tablink w3-vpos-purple">SERVICE FILTER</button>
       <%= link_to 'NEW', new_entity_division_path(entity_code: params[:entity_code], count1: params[:count1], count: params[:count], page: params[:page]), style: "width:120px;",
                   class: 'w3-button w3-purple-vpos w3-border w3-border-purple w3-small w3-round-large',remote:true %>
       <% if current_user.super_admin? || current_user.super_user? #|| current_user.merchant_admin? %>
@@ -18,6 +19,7 @@
       <%= select_tag :count1, options_for_select([50, 100, 150, 200, 500], params[:count1].to_i),
                      :data => {  :remote => true, :url => url_for(:controller => "entity_divisions", :action => "entity_division_index",
                                                                   :params => {entity_code: params[:entity_code],
+                                                                              service_filter: $service_filter.present? ? $service_filter.to_enum.to_h : "",
                                                                               count: params[:count], page: params[:page]})},
                      id:"record", class: "w3-button w3-white w3-border w3-border-purple w3-round-large",
                      style: "width:auto; height:35px; float:right", remote:true %>
@@ -162,12 +164,12 @@
 
 
               <% if entity_division.active_status %>
-                  <%= link_to 'DISABLE', entity_division_path(entity_division, entity_code: params[:entity_code], count1: params[:count1], count: params[:count], page: params[:page]),
+                  <%= link_to 'DISABLE', entity_division_path(entity_division, entity_code: params[:entity_code], service_filter: $service_filter.present? ? $service_filter.to_enum.to_h : "", count1: params[:count1], count: params[:count], page: params[:page]),
                               style: "width:80px; height: 30px; color: #800754 !important",
                               method: :delete, data: { confirm: "Do you wish to disable: #{entity_division.division_name} (#{entity_division.division_alias})?" },
                               class: 'w3-button w3-white w3-border w3-border-purple w3-tiny w3-round-large', remote:true%>
               <% else %>
-                  <%= link_to 'ENABLE', entity_division_path(entity_division, entity_code: params[:entity_code], count1: params[:count1], count: params[:count], page: params[:page]),
+                  <%= link_to 'ENABLE', entity_division_path(entity_division, entity_code: params[:entity_code], service_filter: $service_filter.present? ? $service_filter.to_enum.to_h : "", count1: params[:count1], count: params[:count], page: params[:page]),
                               style: "width:80px; height: 30px;",
                               method: :delete, data: { confirm: "Do you wish to enable: #{entity_division.division_name} (#{entity_division.division_alias})?" },
                               class: 'w3-button w3-purple-vpos w3-border w3-border-purple w3-tiny w3-round-large', remote:true%>
@@ -185,6 +187,7 @@
       <div class="flickr_pagination"  style="float: right">
         <%= will_paginate @entity_divisions, class: "w3-card", renderer: BootstrapPagination::Rails,
                           :params => { :controller => "entity_divisions", :action => "entity_division_index", entity_code: params[:entity_code],
+                                       service_filter: $service_filter.present? ? $service_filter.to_enum.to_h : "",
                                        count1: params[:count1], count: params[:count], page: params[:page] } %>
         <%#= js_will_paginate @payment_infos, :params => { :controller => "payment_infos", :action => "payment_info_index" } %>
       </div>
@@ -194,6 +197,97 @@
 
 
 </div>
+
+
+
+
+
+
+<div class="w3-container" >
+  <div id="service_filter" class="w3-modal w3-animate-opacity" style=" display: none">
+    <span onclick="document.getElementById('service_filter').style.display='none'"
+          class="w3-button w3-display-topright">&times;</span>
+    <!--<div class="w3-modal-content w3-card-4" >-->
+    <br/>
+    <%#= render 'form' %>
+
+    <div class="">
+      <div class="w3-white w3-hover-shadow col-md-6 offset-md-3 w3-card-4 w3-border w3-border-purple rcorners w3-center">
+        <h4 class="show w3-center"><strong>Filter Services</strong></h4>
+        <div id="entity_info_edit"></div>
+        <%#= simple_form_for(@entity_info, :data => {  :remote => true, count: params[:count], page: params[:page]}) do |f| %>
+        <%= simple_form_for :service_filter, :url => (entity_division_index_path(params[:entity_code], count: params[:count], page: params[:page])), :method => 'get', html: {class: 'form-horizontal'}, remote: true do |f| %>
+          <div class="w3-container w3-border w3-border-purple">
+            <br/>
+            <input type="hidden" class="form-control" name="count" value="<%= params[:count] %>"/>
+            <input type="hidden" class="form-control" name="page" value="<%= params[:page] %>"/>
+            <input type="hidden" class="form-control" name="entity_code" value="<%= params[:entity_code] %>"/>
+            <!--                    <input type="hidden" class="form-control" name="counter" value="<%#= params[:counter] %>"/>-->
+            <!--                    <input type="hidden" class="form-control" name="pager" value="<%#= params[:pager] %>"/>-->
+            <!--          <input type="hidden" class="form-control" name="entity_code" value="<%#= @entity_code %>"/>-->
+            <!--          <input type="hidden" class="form-control" name="code" value="<%#= @code %>"/>-->
+            <div class="">
+              <div class="w3-half">
+                <%= f.input :div_name, class: "form-control", collection: @service_division_names, label_method: :division_name, value_method: :assigned_code, input_html: {id: "id_division_name", style: "width: 90%;", autocomplete: "off"}, label: "Service Name", boolean_style: :inline %>
+                <%#= f.input :div_alias, class: "form-control", collection: @service_division_alias, label_method: :division_alias, value_method: :assigned_code, input_html: {id: "id_division_alias", style: "width: 90%;", autocomplete: "off"}, label: "Service Alias", boolean_style: :inline %>
+                <%= f.input :assign_code, class: "form-control", collection: @service_assigned_codes, label_method: :assigned_code, value_method: :assigned_code, input_html: {id: "id_division_ass", style: "width: 90%;", autocomplete: "off"}, label: "Assigned Code", boolean_style: :inline %>
+              </div>
+
+              <div class="w3-half">
+                <%= f.input :activity_code, class: "form-control", collection: @activity_type_codes, label_method: :activity_type_desc, value_method: :assigned_code, input_html: {id: "id_activity_code", style: "width: 100%;", autocomplete: "off"}, label: "Activity Type", boolean_style: :inline %>
+                <%#= f.input :serv_label, class: "form-control", input_html: {id: "id_service_label", style: "width: 100%;", autocomplete: "off"}, label: "Service Label", boolean_style: :inline %>
+                <div class="w3-half">
+                  <%= f.input :start_date, :id => "datepicker1", as: :date, html5: true, class: "form-control input-group date", label: "Start Date", boolean_style: :inline, input_html: {style: "width: 90%", data: {behaviour: 'datepicker', provide: 'datepicker'}, autocomplete: "off"} %>
+                </div>
+
+                <div class="w3-half">
+                  <%= f.input :end_date, :id => "datepicker2", as: :date, html5: true, class: "form-control", label: "End Date", boolean_style: :inline, input_html: {style: "", data: {behaviour: 'datepicker', provide: 'datepicker'}, autocomplete: "off"} %>
+                </div>
+              </div>
+
+
+            </div>
+
+
+            <br/>
+          </div>
+
+          <br>
+
+          <div>
+            <br><br>
+            <%= f.submit "Filter", class: "w3-button w3-purple-vpos w3-border w3-border-purple w3-small w3-round-large", :data => {:disable_with => 'Searching...'}, style: "width:auto;float:center;",remote:true %>
+            <%#= link_to 'Back', entity_info_index_path(page: params[:page], count: params[:count]), class: "w3-button w3-white w3-border w3-border-purple w3-small w3-round-large",remote:true %>
+            <button type="button" onclick="document.getElementById('service_filter').style.display='none'" class="w3-button w3-white w3-border w3-border-purple w3-small w3-round-large">Back</button>
+
+
+            <br><br>
+          </div>
+        <% end %>
+
+
+      </div>
+
+    </div>
+
+
+    <div class="col-md-7 col-md-offset-5">
+    </div>
+
+    <br/>
+    <div class="col-md-7 col-md-offset-5">
+      <br/>
+      <br/>
+    </div>
+    <!--</div>-->
+
+  </div>
+</div>
+
+
+
+
+
 
 
 

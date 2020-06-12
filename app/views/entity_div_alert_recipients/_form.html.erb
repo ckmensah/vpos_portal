@@ -6,7 +6,7 @@
 <!--  <div class="w3-responsive"></div>-->
 <div class="">
 
-  <div class="w3-white w3-hover-shadow col-md-6 offset-md-3 w3-card-4 w3-border w3-border-purple rcorners w3-center">
+  <div class="w3-white w3-hover-shadow col-md-8 offset-md-2 w3-card-4 w3-border w3-border-purple rcorners w3-center">
     <h4 class="show w3-center"><strong>New Recipient(s)</strong></h4>
     <div id="alert_new"></div>
 
@@ -54,6 +54,8 @@
               <th><strong>No.</strong></th>
               <th><strong>Recipient Name</strong></th>
               <th><strong>Mobile Number</strong></th>
+              <th><strong>Receive Notifications</strong></th>
+              <th><strong>View Transactions</strong></th>
               <!--<th><strong>Name &emsp;&emsp;&emsp;&emsp;</strong></th>-->
               <!--<th><strong>Save</strong></th>-->
 
@@ -72,6 +74,8 @@
                   <td><strong><%= count %></strong></td>
                   <td><strong><input type="text" name="entity_div_alert_recipients[<%= count %>[recipient_name]]" autocomplete="off" placeholder="Recipient Name" class="form-control w3-input w3-border w3-white input-group input-append" style="" /></strong></td>
                   <td><strong><input type="text" name="entity_div_alert_recipients[<%= count %>[mobile_number]]" autocomplete="off" placeholder="Mobile Number" class="form-control w3-input w3-border w3-white input-group input-append" style="" /></strong></td>
+                  <td><strong><input type="checkbox" name="entity_div_alert_recipients[<%= count %>[alerts]]" autocomplete="off" placeholder="Receive Alerts" class="form-control w3-input w3-border w3-white input-group input-append" style="display: block;" /></strong></td>
+                  <td><strong><input type="checkbox" name="entity_div_alert_recipients[<%= count %>[trans_rpt]]" autocomplete="off" placeholder="View Transactions" class="form-control w3-input w3-border w3-white input-group input-append" style="display: block;" /></strong></td>
 
                   <% count = count + 1%>
                 </tr>
@@ -94,6 +98,17 @@
                     <td><strong><%= count %></strong></td>
                     <td><strong><input type="text" name="entity_div_alert_recipients[<%= count %>[recipient_name]]" value="<%= the_params["recipient_name"] %>" autocomplete="off" placeholder="Recipient Name" class="form-control w3-input w3-border w3-white input-group input-append" style="" /></strong></td>
                     <td><strong><input type="text" name="entity_div_alert_recipients[<%= count %>[mobile_number]]" value="<%= the_params["mobile_number"] %>" autocomplete="off" placeholder="Mobile Number" class="form-control w3-input w3-border w3-white input-group input-append" style="" /></strong></td>
+                    <% if the_params.key?("alerts") && the_params["alerts"] == "on" %>
+                      <td><strong><input type="checkbox" name="entity_div_alert_recipients[<%= count %>[alerts]]" checked autocomplete="off" placeholder="Receive Alerts" class="form-control w3-input w3-border w3-white input-group input-append" style="display: block;" /></strong></td>
+                    <% else %>
+                      <td><strong><input type="checkbox" name="entity_div_alert_recipients[<%= count %>[alerts]]" autocomplete="off" placeholder="Receive Alerts" class="form-control w3-input w3-border w3-white input-group input-append" style="display: block;" /></strong></td>
+                    <% end %>
+
+                    <% if the_params.key?("trans_rpt") && the_params["trans_rpt"] == "on" %>
+                      <td><strong><input type="checkbox" name="entity_div_alert_recipients[<%= count %>[trans_rpt]]" checked autocomplete="off" placeholder="View Transactions" class="form-control w3-input w3-border w3-white input-group input-append" style="display: block;" /></strong></td>
+                    <% else %>
+                      <td><strong><input type="checkbox" name="entity_div_alert_recipients[<%= count %>[trans_rpt]]" autocomplete="off" placeholder="View Transactions" class="form-control w3-input w3-border w3-white input-group input-append" style="display: block;" /></strong></td>
+                    <% end %>
 
                     <% count = count + 1%>
                   </tr>
@@ -107,6 +122,8 @@
                       <td><strong><%= count %></strong></td>
                       <td><strong><input type="text" name="entity_div_alert_recipients[<%= count %>[recipient_name]]" autocomplete="off" placeholder="Recipient Name" class="form-control w3-input w3-border w3-white input-group input-append" style="" /></strong></td>
                       <td><strong><input type="text" name="entity_div_alert_recipients[<%= count %>[mobile_number]]" autocomplete="off" placeholder="Mobile Number" class="form-control w3-input w3-border w3-white input-group input-append" style="" /></strong></td>
+                      <td><strong><input type="checkbox" name="entity_div_alert_recipients[<%= count %>[alerts]]" autocomplete="off" placeholder="Receive Alerts" class="form-control w3-input w3-border w3-white input-group input-append" style="display: block;" /></strong></td>
+                      <td><strong><input type="checkbox" name="entity_div_alert_recipients[<%= count %>[tans_rpt]]" autocomplete="off" placeholder="View Transactions" class="form-control w3-input w3-border w3-white input-group input-append" style="display: block;" /></strong></td>
 
                       <% count = count + 1%>
                     </tr>

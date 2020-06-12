@@ -76,7 +76,9 @@
     <% unless params[:count] == "All" %>
       <div class="flickr_pagination"  style="float: right">
         <%= will_paginate @entity_info_divs, class: "w3-card", renderer: BootstrapPagination::Rails,
-                          :params => { :controller => "entity_divisions", :action => "entity_index", count: params[:count], page: params[:page] } %>
+                          :params => { :controller => "entity_divisions", :action => "entity_index",
+                                       filter_main1: $merchant_filter.present? ? $merchant_filter.to_enum.to_h : "",
+                                       count: params[:count], page: params[:page] } %>
         <%#= js_will_paginate @payment_infos, :params => { :controller => "payment_infos", :action => "payment_info_index" } %>
       </div>
     <% end %>
@@ -117,7 +119,13 @@
               <%= f.input :entity_name, class: "form-control", collection: @merchant_search, label_method: :entity_name, value_method: :assigned_code, input_html: {id: "id_entity_info", style: "width: 100%;", autocomplete: "off"}, label: "Merchant Name", boolean_style: :inline %>
               <%= f.input :assigned_code, class: "form-control", collection: @merchant_code_search, label_method: :assigned_code, value_method: :assigned_code, input_html: {id: "id_entity_info_ass", style: "width: 100%;", autocomplete: "off"}, label: "Assigned Code", boolean_style: :inline %>
               <%= f.input :entity_cat, class: "form-control", collection: @merchant_cat_search, label_method: :entity_cat_name_join, value_method: :assigned_code, input_html: {id: "id_entity_cat", style: "width: 100%;", autocomplete: "off"}, label: "Entity Category", boolean_style: :inline %>
+              <div class="w3-half">
+                <%= f.input :start_date, :id => "datepicker", as: :date, html5: true, class: "form-control input-group date", label: "Start Date", boolean_style: :inline, input_html: {style: "width: 90%", data: {behaviour: 'datepicker', provide: 'datepicker'}, autocomplete: "off"} %>
+              </div>
 
+              <div class="w3-half">
+                <%= f.input :end_date, :id => "datepicker", as: :date, html5: true, class: "form-control", label: "End Date", boolean_style: :inline, input_html: {style: "", data: {behaviour: 'datepicker', provide: 'datepicker'}, autocomplete: "off"} %>
+              </div>
             </div>
 
             <br/>

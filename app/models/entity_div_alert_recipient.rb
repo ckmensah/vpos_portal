@@ -129,11 +129,14 @@ class EntityDivAlertRecipient < ApplicationRecord
 
   def self.save_alert_recipients(alert_params, div_alert_params, current_user)
     alert_params.each do |key, value|
+      the_alerts = value.key?("alerts") && value["alerts"] == "on" ? true : false
+      the_trans_rpt = value.key?("trans_rpt") && value["trans_rpt"] == "on" ? true : false
       if value["recipient_name"].present? && value["mobile_number"].present? && div_alert_params["entity_div_code"].present?
         mobile_num = break_number(value["mobile_number"])
         for_alert_recipients = EntityDivAlertRecipient.new(entity_div_code: div_alert_params["entity_div_code"],
                                                            recipient_name: value["recipient_name"], mobile_number: mobile_num,
-                                                        active_status: true, del_status: false, user_id: current_user.id)
+                                                        active_status: true, del_status: false, user_id: current_user.id,
+                                                           alerts: the_alerts, trans_rpt: the_trans_rpt)
 
         for_alert_recipients.save(validate: false)
       end

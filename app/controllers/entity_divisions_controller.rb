@@ -27,7 +27,118 @@ class EntityDivisionsController < ApplicationController
     if current_user.super_admin? || current_user.super_user?
       @entity_info = EntityInfo.where(assigned_code: params[:entity_code], active_status: true, del_status: false).order(created_at: :desc).first
       @entity_info ? @entity_name = "#{@entity_info.entity_name} (#{@entity_info.entity_alias})" : ""
-      @entity_divisions = EntityDivision.where(entity_code: params[:entity_code], del_status: false).paginate(:page => params[:page], :per_page => params[:count1]).order('created_at desc')
+
+      the_search = ""
+      search_arr = ["entity_code = '#{params[:entity_code]}' AND del_status = false"]
+
+      if params[:service_filter].present? || params[:div_name].present? || params[:div_alias].present? || params[:assign_code].present? || params[:activity_code].present? || params[:serv_label].present? || params[:start_date].present? || params[:end_date].present? #|| params[:nw].present? || params[:status].present? || params[:start_date].present? || params[:end_date].present?
+
+        $service_filter = params[:service_filter]
+        filter_params = params[:service_filter]
+        if params[:service_filter].present?
+          @div_name = filter_params[:div_name]
+          @div_alias = filter_params[:div_alias]
+          @assign_code = filter_params[:assign_code]
+          @activity_code = filter_params[:activity_code]
+          @serv_label = filter_params[:serv_label]
+          @start_date = filter_params[:start_date]
+          @end_date = filter_params[:end_date]
+
+          params[:div_name] = filter_params[:div_name]
+          params[:div_alias] = filter_params[:div_alias]
+          params[:assign_code] = filter_params[:assign_code]
+          params[:activity_code] = filter_params[:activity_code]
+          params[:serv_label] = filter_params[:serv_label]
+          params[:start_date] = filter_params[:start_date]
+          params[:end_date] = filter_params[:end_date]
+
+        else
+
+          if  params[:div_name].present?  || params[:div_alias].present? || params[:assign_code].present? || params[:activity_code].present? || params[:serv_code].present? || params[:start_date].present? || params[:end_date].present? # || params[:trans_id].present? || params[:nw].present? || params[:status].present? || params[:start_date].present? || params[:end_date].present?
+
+            @div_name = params[:div_name]
+            @div_alias = params[:div_alias]
+            @assign_code = params[:assign_code]
+            @activity_code = params[:activity_code]
+            @start_date = params[:start_date]
+            @end_date = params[:end_date]
+
+            params[:div_name] = @div_name
+            params[:div_alias] = @div_alias
+            params[:assign_code] = @assign_code
+            params[:activity_code] = @activity_code
+            params[:serv_label] = @serv_label
+            params[:start_date] = @start_date
+            params[:end_date] = @end_date
+
+          else
+            params[:div_name] = filter_params[:div_name]
+            params[:div_alias] = filter_params[:div_alias]
+            params[:assign_code] = filter_params[:assign_code]
+            params[:activity_code] = filter_params[:activity_code]
+            params[:serv_label] = filter_params[:service_label]
+            params[:start_date] = filter_params[:start_date]
+            params[:end_date] = filter_params[:end_date]
+
+          end
+        end
+
+        if @div_name.present?
+          #search_arr << "customer_number LIKE '%#{@cust_num}%'"
+          search_arr << "assigned_code = '#{@div_name}'"
+        end
+
+        if @div_alias.present?
+          #search_arr << "customer_number LIKE '%#{@cust_num}%'"
+          search_arr << "assigned_code = '#{@div_alias}'"
+        end
+
+        if @assign_code.present?
+          search_arr << "assigned_code = '#{@assign_code}'"
+        end
+
+        if @activity_code.present?
+          search_arr << "activity_type_code = '#{@activity_code}'"
+        end
+
+        if @serv_label.present?
+          #search_arr << "service_label = '#{@serv_label}'"
+          search_arr << "service_label LIKE '%#{@serv_label}%'"
+        end
+
+        if @start_date.present? && @end_date.present?
+          f_start_date =  @start_date.to_date.strftime('%Y-%m-%d') # Date.strptime(@start_date, '%m/%d/%Y') # @start_date.to_date.strftime('%Y-%m-%d')
+          f_end_date = @end_date.to_date.strftime('%Y-%m-%d') # Date.strptime(@end_date, '%m/%d/%Y') # @end_date.to_date.strftime('%Y-%m-%d')
+          if f_start_date <= f_end_date
+            search_arr << "created_at BETWEEN '#{f_start_date} 00:00:00' AND '#{f_end_date} 23:59:59'"
+          end
+        end
+
+      else
+        $service_filter = ""
+      end
+
+
+      the_search = search_arr.join(" AND ")
+      logger.info "The search array :: #{search_arr.inspect}"
+      logger.info "The Search :: #{the_search.inspect}"
+
+      dropdown_condition = "entity_code = '#{params[:entity_code]}' AND del_status = false"
+      the_activity_type = "'0'"
+      activity_type_arr = []
+      @service_division_names = EntityDivision.where(dropdown_condition).order(division_name: :asc)
+      @service_division_alias = EntityDivision.where(dropdown_condition).order(division_alias: :asc)
+      @service_assigned_codes = EntityDivision.where(dropdown_condition).order(assigned_code: :asc)
+      @service_division_names.each do |service|
+        unless activity_type_arr.include?(service.activity_type_code)
+          the_activity_type << ",'#{service.activity_type_code}'"
+          activity_type_arr << service.activity_type_code
+        end
+      end
+
+      @activity_type_codes = ActivityType.where("assigned_code IN (#{the_activity_type})").order(assigned_code: :asc)
+      @entity_divisions = EntityDivision.where(the_search).paginate(:page => params[:page], :per_page => params[:count1]).order('created_at desc')
+      #@entity_divisions = EntityDivision.where(entity_code: params[:entity_code], del_status: false).paginate(:page => params[:page], :per_page => params[:count1]).order('created_at desc')
 
     elsif current_user.merchant_admin?
       if current_user.merchant_admin?
@@ -43,6 +154,9 @@ class EntityDivisionsController < ApplicationController
 
     end
   end
+
+
+
 
   def main_sports_index
     params[:count] ? params[:count] : params[:count] = 50
@@ -129,7 +243,7 @@ class EntityDivisionsController < ApplicationController
     the_search = ""
     search_arr = []
 
-    if params[:filter_main1].present? || params[:entity_name].present? || params[:assigned_code].present? || params[:entity_cat].present? #|| params[:cust_num].present? || params[:trans_id].present? || params[:nw].present? || params[:status].present? || params[:start_date].present? || params[:end_date].present?
+    if params[:filter_main1].present? || params[:entity_name].present? || params[:assigned_code].present? || params[:entity_cat].present? || params[:start_date].present? || params[:end_date].present? #|| params[:cust_num].present? || params[:trans_id].present? || params[:nw].present? || params[:status].present? || params[:start_date].present? || params[:end_date].present?
 
       $merchant_filter = params[:filter_main1]
       filter_params = params[:filter_main1]
@@ -137,27 +251,37 @@ class EntityDivisionsController < ApplicationController
         @entity_name = filter_params[:entity_name]
         @assigned_code = filter_params[:assigned_code]
         @entity_cat = filter_params[:entity_cat]
+        @start_date = filter_params[:start_date]
+        @end_date = filter_params[:end_date]
 
         params[:entity_name] = filter_params[:entity_name]
         params[:assigned_code] = filter_params[:assigned_code]
         params[:entity_cat] = filter_params[:entity_cat]
+        params[:start_date] = filter_params[:start_date]
+        params[:end_date] = filter_params[:end_date]
 
       else
 
-        if  params[:entity_name].present? || params[:assigned_code].present? || params[:entity_cat].present? #|| params[:lov_name].present? || params[:cust_num].present? || params[:trans_id].present? || params[:nw].present? || params[:status].present? || params[:start_date].present? || params[:end_date].present?
+        if  params[:entity_name].present? || params[:assigned_code].present? || params[:entity_cat].present? || params[:start_date].present? || params[:end_date].present? #|| params[:lov_name].present? || params[:cust_num].present? || params[:trans_id].present? || params[:nw].present? || params[:status].present? || params[:start_date].present? || params[:end_date].present?
 
           @entity_name = params[:entity_name]
           @assigned_code = params[:assigned_code]
           @entity_cat = params[:entity_cat]
+          @start_date = params[:start_date]
+          @end_date = params[:end_date]
 
           params[:entity_name] = @entity_name
           params[:assigned_code] = @assigned_code
           params[:entity_cat] = @entity_cat
+          params[:start_date] = @start_date
+          params[:end_date] = @end_date
 
         else
           params[:entity_name] = filter_params[:entity_name]
           params[:assigned_code] = filter_params[:assigned_code]
           params[:entity_cat] = filter_params[:entity_cat]
+          params[:start_date] = filter_params[:start_date]
+          params[:end_date] = filter_params[:end_date]
 
         end
       end
@@ -173,6 +297,14 @@ class EntityDivisionsController < ApplicationController
 
       if @entity_cat.present?
         search_arr << "entity_cat_id = '#{@entity_cat}'"
+      end
+
+      if @start_date.present? && @end_date.present?
+        f_start_date =  @start_date.to_date.strftime('%Y-%m-%d') # Date.strptime(@start_date, '%m/%d/%Y') # @start_date.to_date.strftime('%Y-%m-%d')
+        f_end_date = @end_date.to_date.strftime('%Y-%m-%d') # Date.strptime(@end_date, '%m/%d/%Y') # @end_date.to_date.strftime('%Y-%m-%d')
+        if f_start_date <= f_end_date
+          search_arr << "created_at BETWEEN '#{f_start_date} 00:00:00' AND '#{f_end_date} 23:59:59'"
+        end
       end
 
     else
@@ -389,6 +521,7 @@ class EntityDivisionsController < ApplicationController
         logger.info "=================== SAVING ==================="
         EntityDivision.division_lov_save(@the_div_lov, params[:code], entity_division_params, current_user)
         EntityDivision.division_setup_save(params, @main_params, @div_activity_type, entity_division_params, current_user)
+        entity_division_index
         flash.now[:notice] = "Setup creation was successful."
         format.js { render :entity_division_index }
       else
@@ -516,7 +649,7 @@ class EntityDivisionsController < ApplicationController
     @display_div_num = @main_params.any? ? @main_params.size : 1
     @entity_info = EntityInfo.where(assigned_code: params[:entity_code], active_status: true, del_status: false).order(created_at: :desc).first
     @entity_name = @entity_info ? "#{@entity_info.entity_name} (#{@entity_info.entity_alias})" : ""
-    @entity_divisions = EntityDivision.where(entity_code: params[:entity_code], del_status: false).paginate(:page => params[:page], :per_page => params[:count]).order('created_at desc')
+    #@entity_divisions = EntityDivision.where(entity_code: params[:entity_code], del_status: false).paginate(:page => params[:page], :per_page => params[:count]).order('created_at desc')
     #@the_activity_sub = params[:the_div_acts_lov]
     logger.info "== The div_acts_lov params size :: #{@the_div_lov_num.inspect}"
     logger.info "All Keys :: #{params.keys.inspect}"
@@ -549,6 +682,7 @@ class EntityDivisionsController < ApplicationController
     valid_result, error_num, div_num, row_num = EntityDivision.division_setup_validation(params, @main_params, @div_activity_type, entity_division_params)
     lov_validate_result, lov_error_num, lov_row_num = EntityDivision.division_lov_validation(@the_div_lov, params[:code], entity_division_params, @div_activity_type, "UPDATE")
 
+
     respond_to do |format|
       logger.info "Couldn't pass. Validate result:: #{valid_result}, error number :: #{error_num}, Activity number :: #{div_num}, Time number :: #{row_num}"
       logger.info " LOV:: Validate result:: #{lov_validate_result}, Error number :: #{lov_error_num}, Row number #{lov_row_num}"
@@ -556,6 +690,7 @@ class EntityDivisionsController < ApplicationController
         logger.info "=================== UPDATING... ==================="
         EntityDivision.division_lov_update(@the_div_lov, params[:code], entity_division_params, current_user)
         EntityDivision.division_setup_update(params, @main_params, @div_activity_type, entity_division_params, current_user)
+        entity_division_index
         if lov_error_num == "2"
           flash.now[:notice] = "Deletion of all list of values was successful."
         else
@@ -916,6 +1051,8 @@ class EntityDivisionsController < ApplicationController
     end
   end
 
+
+
   # PATCH/PUT /entity_divisions/1
   # PATCH/PUT /entity_divisions/1.json
   def update
@@ -1081,7 +1218,7 @@ class EntityDivisionsController < ApplicationController
   def entity_division_params
     params.require(:entity_division).permit(:entity_code, :assigned_code, :division_name, :division_alias, :action_type, :suburb_id,
                                             :activity_type_code, :service_label, :region_name, :city_town_name, :comment, :link_master,
-                                            :div_lov_query, :activity_query, :sub_activity_query, :serv_id, :s_key, :c_key,
+                                            :div_lov_query, :activity_query, :sub_activity_query, :serv_id, :s_key, :c_key, :created_at,
                                             :sport_type, :sport_category, :category_type, :sms_sender_id, :allow_qr,
                                             :active_status, :del_status, :user_id, :service_code, :for_update, divisions: [], :the_div_acts_lov => {})
     # entity_wallet_configs_attributes: [:id, :division_code, :service_id, :secret_key, :client_key, :comment, :active_status, :del_status, :user_id]
