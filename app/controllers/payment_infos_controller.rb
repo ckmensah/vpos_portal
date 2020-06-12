@@ -55,6 +55,17 @@ class PaymentInfosController < ApplicationController
 
 
 
+  def financial_index
+
+  end
+
+  def financial_statement_index
+
+  end
+
+  def financial_form
+
+  end
 
   def payment_info_index
     params[:count] ? params[:count] : params[:count] = 50
