@@ -1,7 +1,7 @@
 class PaymentInfo < ApplicationRecord
   self.table_name="payment_info"
   self.primary_key = :id
-  attr_accessor :copy_email, :recipient_mail, :pay_id
+  attr_accessor :copy_email, :recipient_mail, :pay_id, :the_merchant, :the_service, :the_start_date, :the_end_date, :finance_valid
 
   has_many :payment_requests, class_name: 'PaymentRequest', foreign_key: :payment_info_id
   belongs_to :entity_division, class_name: 'EntityDivision', foreign_key: :entity_div_code
@@ -9,7 +9,10 @@ class PaymentInfo < ApplicationRecord
   #validates :pay_id, presence: true
   validates :recipient_mail, format: { with: URI::MailTo::EMAIL_REGEXP }
   validates :copy_email, format: { with: URI::MailTo::EMAIL_REGEXP }
-
+  validates :the_merchant, presence: {message: " cannot be empty."}, if: :finance_valid
+  validates :the_service, presence: {message: " cannot be empty."}, if: :finance_valid
+  validates :the_start_date, presence: {message: " cannot be empty."}, if: :finance_valid
+  validates :the_end_date, presence: {message: " cannot be empty."}, if: :finance_valid
 
 
   def self.payments_join

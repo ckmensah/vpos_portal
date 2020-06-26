@@ -1,0 +1,107 @@
+
+<div class="w3-container" >
+  <div id="finance_filter" class="w3-modal w3-animate-opacity" style=" display: block">
+<!--    <span onclick="document.getElementById('finance_filter').style.display='none'"-->
+<!--          class="w3-button w3-display-topright">&times;</span>-->
+    <!--<div class="w3-modal-content w3-card-4" >-->
+    <br/>
+    <%#= render 'form' %>
+
+    <div class="">
+      <div class="w3-white w3-hover-shadow col-md-4 offset-md-4 w3-card-4 w3-border w3-border-purple rcorners w3-center">
+        <h4 class="show w3-center"><strong>Filter Financial Statement</strong></h4>
+        <div id="finance_message"></div>
+        <%= simple_form_for(@finance_stat, :url => (financial_search_path(@finance_stat, inner_form: params[:inner_form].present? ? params[:inner_form] : "", count: params[:count], page: params[:page])), :data => {  :remote => true}) do |f| %>
+          <%#= simple_form_for :finance_stat, :url => (entity_info_index_path(count: params[:count], page: params[:page])), :method => 'get', html: {class: 'form-horizontal'}, remote: true do |f| %>
+          <div class="w3-container w3-border w3-border-purple">
+            <br/>
+            <!--            <input type="hidden" class="form-control" name="count" value="<%#= params[:count] %>"/>-->
+            <!--            <input type="hidden" class="form-control" name="page" value="<%#= params[:page] %>"/>-->
+            <!--                    <input type="hidden" class="form-control" name="counter" value="<%#= params[:counter] %>"/>-->
+            <!--                    <input type="hidden" class="form-control" name="pager" value="<%#= params[:pager] %>"/>-->
+            <!--          <input type="hidden" class="form-control" name="entity_code" value="<%#= @entity_code %>"/>-->
+            <!--          <input type="hidden" class="form-control" name="code" value="<%#= @code %>"/>-->
+
+            <div class="">
+
+              <% if current_user.super_admin? || current_user.super_user? %>
+                <%= f.input :the_merchant, class: "form-control", collection: @entity_infos, label_method: :entity_name, value_method: :assigned_code, input_html: {id: "id_entity_info", style: "width: 100%;", autocomplete: "off"}, label: "Merchant Name", boolean_style: :inline %>
+                <%= f.input :the_service, class: "form-control", collection: @entity_divisions, label_method: :division_name, value_method: :assigned_code, input_html: {id: "id_entity_div", style: "width: 100%;", autocomplete: "off"}, label: "Service Name", boolean_style: :inline %>
+              <% end %>
+
+              <% if current_user.merchant_admin? %>
+                <%= f.input :the_service, class: "form-control", collection: @entity_divisions, label_method: :division_name, value_method: :assigned_code, input_html: {id: "id_entity_div", style: "width: 100%;", autocomplete: "off"}, label: "Service Name", boolean_style: :inline %>
+              <% end %>
+              <%#= f.input :ent_cat, class: "form-control", collection: @merchant_cat_search, label_method: :entity_cat_name_join, value_method: :assigned_code, input_html: {id: "id_entity_cat", style: "width: 100%;", autocomplete: "off"}, label: "Entity Category", boolean_style: :inline %>
+              <!--              <div class="w3-half">-->
+              <%= f.input :the_start_date, :id => "datepicker", as: :date, html5: true, class: "form-control input-group date", label: "Start Date", boolean_style: :inline, input_html: {style: "width: 100%", data: {behaviour: 'datepicker', provide: 'datepicker'}, autocomplete: "off"} %>
+              <!--              </div>-->
+
+              <!--              <div class="w3-half">-->
+              <%= f.input :the_end_date, :id => "datepicker", as: :date, html5: true, class: "form-control", label: "End Date", boolean_style: :inline, input_html: {style: "", data: {behaviour: 'datepicker', provide: 'datepicker'}, autocomplete: "off"} %>
+              <!--              </div>-->
+              <%= f.input :finance_valid, :as => :hidden, input_html:{value: true} %>
+
+            </div>
+
+            <br/>
+          </div>
+
+          <br>
+
+          <div>
+<!--            <br><br>-->
+            <%= f.submit "Filter", class: "w3-button w3-purple-vpos w3-border w3-border-purple w3-small w3-round-large", :data => {:disable_with => 'Searching...'}, style: "width:auto;float:center;",remote:true %>
+            <%#= link_to 'Back', entity_info_index_path(page: params[:page], count: params[:count]), class: "w3-button w3-white w3-border w3-border-purple w3-small w3-round-large",remote:true %>
+            <% if params[:inner_form] == "inner_form" %>
+              <button type="button" onclick="document.getElementById('finance_filter').style.display='none'" class="w3-button w3-white w3-border w3-border-purple w3-small w3-round-large">Back</button>
+              <% else %>
+              <% end %>
+            <br><br>
+          </div>
+
+        <% end %>
+
+
+      </div>
+
+    </div>
+
+
+    <div class="col-md-7 col-md-offset-5">
+    </div>
+
+    <br/>
+    <div class="col-md-7 col-md-offset-5">
+      <br/>
+      <br/>
+    </div>
+    <!--</div>-->
+
+  </div>
+</div>
+
+
+
+<script>
+
+    $(document).ready(function () {
+        $('[data-toggle="tooltip"]').tooltip();
+        var entity_info_id = $('#id_entity_info');
+        var entity_div_id = $('#id_entity_div');
+        // var div_lov_id = $('#id_div_lov');
+
+        entity_info_id.change(function () {
+            console.log("For entity_info id:: " + entity_info_id.val());
+            entity_div_id.attr("title", "Now select a service.");
+            Rails.ajax({
+                type: "POST",
+                url: "<%= general_division_ajax_call_path %>",
+                data: "id_for_entity_info=" + entity_info_id.val(),
+                dataType: "script"
+            });
+        });
+    });
+
+</script>
+

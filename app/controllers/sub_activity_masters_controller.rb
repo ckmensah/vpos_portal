@@ -1,6 +1,7 @@
 class SubActivityMastersController < ApplicationController
   before_action :set_sub_activity_master, only: [:show, :edit, :update, :destroy]
-
+  load_and_authorize_resource
+  before_action :load_permissions
   # GET /sub_activity_masters
   # GET /sub_activity_masters.json
 

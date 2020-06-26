@@ -1,6 +1,7 @@
 class EntityDivAlertRecipientsController < ApplicationController
   before_action :set_entity_div_alert_recipient, only: [:show, :edit, :update, :destroy]
-
+  load_and_authorize_resource
+  before_action :load_permissions
   # GET /entity_div_alert_recipients
   # GET /entity_div_alert_recipients.json
   def index

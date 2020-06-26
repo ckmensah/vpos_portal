@@ -1,0 +1,161 @@
+
+<div>
+  <br>
+  <p id="inner_form"><%#= notice %></p>
+  <br>
+  <div>
+    <div class="w3-half">
+      <%= link_to 'FILTER FINANCIAL STATEMENT', financial_form_path(inner_form: "inner_form", count: params[:count], page: params[:page]), style: "width:230px;",
+                  class: 'w3-button w3-purple-vpos w3-border w3-border-purple w3-small w3-round-large',remote:true %>
+<!--      <button type="button" onclick="document.getElementById('finance_filter').style.display='block'" style="font-size: small; width: 175px;" class="w3-btn btn btn-outline-purple tablink w3-vpos-purple">FINANCIAL STATEMENT</button>-->
+    </div>
+
+    <div class="w3-half">
+
+      <div style="float: right;">
+      <% if @payment_infos.exists? %>
+        <strong>Download::</strong>
+        <%= link_to "CSV", '#', id: "csv", class: 'w3-bar-item w3-btn w3-card-4 w3-dark-grey w3-small w3-round-xlarge w3-ripple' %>
+        |
+        <%#= link_to 'Edit', edit_person_info_path(person_search, edit_modal: "info_modal", count: params[:count], page: params[:page] ),  id: 'showning', class: 'w3-bar-item w3-btn w3-card-4 w3-teal w3-small w3-round-xlarge w3-ripple',remote:true %>
+        <div class="csv_div hidden" style="display: none">
+          <%= form_tag financial_statement_index_path(format: "csv"), method: :get, input_html: {display: "block", id: "csv_form"} do %>
+
+            <input class="form-control" name="the_merchant" value="<%= params[:the_merchant] %>"/>
+            <input class="form-control" name="the_service" value="<%= params[:the_service] %>"/>
+            <input class="form-control" name="the_start_date" value="<%= params[:the_start_date] %>"/>
+            <input class="form-control" name="the_end_date" value="<%= params[:the_end_date] %>"/>
+            <input type="submit" value="Search" class="btn btn-primary" id="csv_fin_submit">
+          <% end %>
+        </div>
+
+        <%= link_to "Excel", '#', id: "excel", class: 'w3-bar-item w3-btn w3-card-4 w3-black w3-small w3-round-xlarge w3-ripple' %>
+                |
+        <div class="excel_div hidden" style="display: none">
+          <%= form_tag financial_statement_index_path(format: "xls"), method: :get, input_html: {display: "block", id: "excel_form"} do %>
+            <input class="form-control" name="the_merchant" value="<%= params[:the_merchant] %>"/>
+            <input class="form-control" name="the_service" value="<%= params[:the_service] %>"/>
+            <input class="form-control" name="the_start_date" value="<%= params[:the_start_date] %>"/>
+            <input class="form-control" name="the_end_date" value="<%= params[:the_end_date] %>"/>
+            <input type="submit" value="Search" id="excel_fin_submit">
+          <% end %>
+        </div>
+
+
+          <%= link_to "PDF", '#', id: "pdf", class: 'w3-bar-item w3-btn w3-card-4 w3-teal w3-small w3-round-xlarge w3-ripple' %>
+          |
+          <div class="pdf_div hidden" style="display: none">
+            <%= form_tag financial_statement_index_path(format: "pdf"), method: :get, input_html: {display: "block", id: "pdf_form"} do %>
+              <input class="form-control" name="the_merchant" value="<%= params[:the_merchant] %>"/>
+              <input class="form-control" name="the_service" value="<%= params[:the_service] %>"/>
+              <input class="form-control" name="the_start_date" value="<%= params[:the_start_date] %>"/>
+              <input class="form-control" name="the_end_date" value="<%= params[:the_end_date] %>"/>
+              <input type="submit" value="Search" id="pdf_fin_submit">
+            <% end %>
+          </div>
+
+      <% end %>
+      </div>
+
+    </div>
+  </div>
+  <br>
+  <div class="table-responsive-md">
+    <br>
+    <table class="table w3-responsive table-striped">
+      <thead>
+      <tr>
+        <th>Value Date</th>
+        <th>Description</th>
+        <th>Sweeps/Debit</th>
+<!--        <th>Collections/Credit(Actual Sum)</th>-->
+        <th>Collections/Credit</th>
+<!--        <th></th>-->
+      </tr>
+      </thead>
+      <tbody>
+
+      <%# prev_date = @financial_statement.size > 1 && @financial_statement ""  %>
+      <% @financial_statement.each_with_index do |fin_stat, index| %>
+
+        <% if @fund_movements.first %>
+
+          <% if index == 0 %>
+
+            <% @fund_movements.each_with_index do |fund_movement, index1| %>
+              <% if fund_movement.date.to_date < fin_stat.date.to_date %>
+                <tr>
+                  <td><strong><%= fund_movement.date %></strong></td>
+                  <td><strong><%= fund_movement.narration %></strong></td>
+                  <td><strong><%= fund_movement.amt %></strong></td>
+<!--                  <td></td>-->
+                  <td></td>
+                </tr>
+              <% end %>
+            <% end %>
+          <% else %>
+            <% @fund_movements.each_with_index do |fund_movement, index1| %>
+              <% if fund_movement.date.to_date <= fin_stat.date.to_date && fund_movement.date.to_date >= @financial_statement[index - 1].date.to_date %>
+                <tr>
+                  <td><strong><%= fund_movement.date %></strong></td>
+                  <td><strong><%= fund_movement.narration %></strong></td>
+                  <td><strong><%= fund_movement.amt %></strong></td>
+<!--                  <td></td>-->
+                  <td></td>
+                </tr>
+              <% end %>
+            <% end %>
+          <% end %>
+
+        <% end %>
+
+
+        <tr>
+          <td><strong><%= fin_stat.date %></strong></td>
+          <td><strong><%= "Collections for #{fin_stat.date.to_date.strftime("%B %d, %Y")}" %></strong></td>
+          <td></td>
+          <td><strong><%= fin_stat.actual_amt %></strong></td>
+<!--          <td><strong><%#= fin_stat.amount %></strong></td>-->
+<!--          <td><strong><%#= entity_info.entity_name.length > 25 ? "#{entity_info.entity_name[0..25]}.." : entity_info.entity_name %> (<%#= entity_info.entity_alias.length > 20 ? "#{entity_info.entity_alias[0..20]}.." : entity_info.entity_alias %>)</strong></td>-->
+
+
+        </tr>
+      <% end %>
+
+      </tbody>
+    </table>
+
+  </div>
+
+
+</div>
+
+
+
+
+
+
+<script>
+    $(function(){
+        $('.pagination a').attr('data-remote', 'true')
+    });
+
+    $('#csv').click(function () {
+        console.log('works!');
+        $('#csv_fin_submit').click();
+        console.log('works!');
+
+    });
+
+    /////////////////////////////////////////////////////////////
+
+    $('#excel').click(function () {
+        $('#excel_fin_submit').click();
+    });
+
+    $('#pdf').click(function () {
+        $('#pdf_fin_submit').click();
+    });
+
+
+</script>

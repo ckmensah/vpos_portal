@@ -1,6 +1,7 @@
 class EntityAdminWhitelistsController < ApplicationController
   before_action :set_entity_admin_whitelist, only: [:show, :edit, :update, :destroy]
-
+  load_and_authorize_resource
+  before_action :load_permissions
   # GET /entity_admin_whitelists
   # GET /entity_admin_whitelists.json
   def index

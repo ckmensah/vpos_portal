@@ -1,6 +1,7 @@
 class AssignedFeesController < ApplicationController
   before_action :set_assigned_fee, only: [:show, :edit, :update, :destroy]
-
+  load_and_authorize_resource
+  before_action :load_permissions
   # GET /assigned_fees
   # GET /assigned_fees.json
   def index

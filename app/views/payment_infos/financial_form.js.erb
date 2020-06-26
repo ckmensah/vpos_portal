@@ -1,0 +1,6 @@
+<% if params[:inner_form] == "inner_form" %>
+$("#inner_form").html("<%= escape_javascript(render(:partial =>"financial_form")) %>");
+<% else %>
+$("#financial_statement").html("<%= escape_javascript(render(:partial =>"financial_form")) %>");
+<% end %>
+

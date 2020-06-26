@@ -1,6 +1,7 @@
 class EntityDivSubActivitiesController < ApplicationController
   before_action :set_entity_div_sub_activity, only: [:show, :edit, :update, :destroy]
-
+  load_and_authorize_resource
+  before_action :load_permissions
   # GET /entity_div_sub_activities
   # GET /entity_div_sub_activities.json
   def index

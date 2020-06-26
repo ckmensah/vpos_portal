@@ -95,6 +95,13 @@ Rails.application.routes.draw do
   get '/payment_infos/resend_show/:id' => 'payment_infos#resend_show', :as => 'resend_show'
 
 
+  get '/payment_infos/financial_index' => 'payment_infos#financial_index', :as => 'financial_index'
+  get '/payment_infos/financial_statement_index' => 'payment_infos#financial_statement_index', :as => 'financial_statement_index'
+  get '/payment_infos/financial_form' => 'payment_infos#financial_form', :as => 'financial_form'
+  post '/payment_infos/financial_search' => 'payment_infos#financial_search', :as => 'financial_search'
+
+
+
   get '/activity_participants/activity_participant_index' => 'activity_participants#activity_participant_index', :as => 'activity_participant_index'
   get '/activity_fixtures/activity_fixture_index' => 'activity_fixtures#activity_fixture_index', :as => 'activity_fixture_index'
   get '/activity_div_cats/activity_div_cat_index' => 'activity_div_cats#activity_div_cat_index', :as => 'activity_div_cat_index'

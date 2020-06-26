@@ -1,6 +1,7 @@
 class FundMovementsController < ApplicationController
   before_action :set_fund_movement, only: [:show]
-
+  load_and_authorize_resource
+  before_action :load_permissions
   require 'vpos_core'
 
   # GET /fund_movements

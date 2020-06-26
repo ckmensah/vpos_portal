@@ -6,6 +6,14 @@ class PaymentReport < ApplicationRecord
   belongs_to :division_activity_lov, -> { where active_status: true}, class_name: 'DivisionActivityLov', foreign_key: :activity_lov_id
 
 
+  def self.financial_join
+    joins("LEFT JOIN entity_service_account_trxn ON entity_service_account_trxn.processing_id = payment_reports.processing_id").
+        select("payment_reports.trans_type, to_char(payment_reports.created_at, 'YYYY-MM-DD') AS date,
+ sum(CASE WHEN payment_reports.charge = 0.000 THEN payment_reports.amount - entity_service_account_trxn.charge
+ ELSE payment_reports.amount - payment_reports.charge END) AS actual_amt, sum(amount) AS amount")
+  end
+
+
   def self.to_csv(general_report, current_user, options = {})
     CSV.generate(options) do |csv|
       #headers = %w{Merchant Service Reference Selected_Option Activity_Type Mobile_No Name/Reference Network Tranx_ID Gross_Amount Charge Actual_Amount Source Status Date}
@@ -130,6 +138,55 @@ class PaymentReport < ApplicationRecord
     end
 
   end
+
+
+
+
+  def self.to_finance_csv(payment_report, fund_movements, options = {})
+    CSV.generate(options) do |csv|
+      headers = %w{Value_Date Description Sweeps/Debit Collections/Credit}
+
+      csv << headers
+      payment_report.each_with_index do |pay_report, index|
+        # ------code comes here
+
+        logger.info "Payment report :: #{index + 1}. #{pay_report.inspect}"
+        if fund_movements.first
+          if index == 0
+            fund_movements.each_with_index do |fund_movement, index1|
+              logger.info "Fund Movement report :: #{index1 + 1}. of #{index + 1}. #{fund_movement.inspect}"
+              if fund_movement.date.to_date < pay_report.date.to_date
+                date = fund_movement.date
+                narration = fund_movement.narration
+                debit_amt = fund_movement.amt
+                credit_amt = ""
+                csv << [date, narration, debit_amt, credit_amt]
+              end
+            end
+          else
+            fund_movements.each_with_index do |fund_movement, index1|
+              logger.info "Fund Movement report :: #{index1 + 1}. of #{index + 1}. #{fund_movement.inspect}"
+              if fund_movement.date.to_date <= pay_report.date.to_date && fund_movement.date.to_date >= payment_report[index - 1].date.to_date
+                date = fund_movement.date
+                narration = fund_movement.narration
+                debit_amt = fund_movement.amt
+                credit_amt = ""
+                csv << [date, narration, debit_amt, credit_amt]
+              end
+            end
+          end
+        end
+
+        date = pay_report.date
+        narration = "Collections for #{pay_report.date.to_date.strftime("%B %d, %Y")}"
+        debit_amt = ""
+        credit_amt = pay_report.actual_amt
+        csv << [date, narration, debit_amt, credit_amt]
+      end
+    end
+
+  end
+
 
 
 

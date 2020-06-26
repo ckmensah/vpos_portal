@@ -8,6 +8,11 @@ class UsersController < ApplicationController
   def index
     params[:count] ? params[:count] : params[:count] = 50
     params[:page].present? ? page = params[:page].to_i : page = 1
+    $user_filter = ""
+
+    @entity_infos = EntityInfo.where(active_status: true).order(entity_name: :asc)
+    @entity_divisions = EntityDivision.where(active_status: true).order(division_name: :asc)
+    @roles = Role.where("active_status = true AND id NOT IN (1,5)").order(role_name: :asc)
 
 
     if current_user.super_admin?
@@ -37,22 +42,118 @@ class UsersController < ApplicationController
 
     params[:count] ? params[:count] : params[:count] = 50
     params[:page].present? ? page = params[:page].to_i : page = 1
-    #if params[:validator] == "validator"
-    #  @validators = User.unscoped.where(creator_id: current_user.id, for_portal: false).paginate(:page => page, :per_page => params[:count]).order('created_at desc')
-    #else
-    #  @users = User.unscoped.where(creator_id: current_user.id, for_portal: true).paginate(:page => page, :per_page => params[:count]).order('created_at desc')
-    #end
+
+    the_search = ""
+    search_arr = []
+
+    if params[:user_filter].present? || params[:div_name].present? || params[:entity_name].present? || params[:contact_num].present? || params[:username].present? || params[:role_name].present? || params[:start_date].present? || params[:end_date].present? #|| params[:nw].present? || params[:status].present? || params[:start_date].present? || params[:end_date].present?
+
+      $user_filter = params[:user_filter]
+      filter_params = params[:user_filter]
+      if params[:user_filter].present?
+        @div_name = filter_params[:div_name]
+        @entity_name = filter_params[:entity_name]
+        @contact_num = filter_params[:contact_num]
+        @username = filter_params[:username]
+        @role_name = filter_params[:role_name]
+        @start_date = filter_params[:start_date]
+        @end_date = filter_params[:end_date]
+
+        params[:div_name] = filter_params[:div_name]
+        params[:entity_name] = filter_params[:entity_name]
+        params[:contact_num] = filter_params[:contact_num]
+        params[:username] = filter_params[:username]
+        params[:role_name] = filter_params[:role_name]
+        params[:start_date] = filter_params[:start_date]
+        params[:end_date] = filter_params[:end_date]
+
+      else
+
+        if  params[:div_name].present? || params[:entity_name].present? || params[:contact_num].present? || params[:username].present? || params[:role_name].present? || params[:start_date].present? || params[:end_date].present? # || params[:trans_id].present? || params[:nw].present? || params[:status].present? || params[:start_date].present? || params[:end_date].present?
+
+          @div_name = params[:div_name]
+          @entity_name = params[:entity_name]
+          @contact_num = params[:contact_num]
+          @username = params[:username]
+          @role_name = params[:role_name]
+          @start_date = params[:start_date]
+          @end_date = params[:end_date]
+
+          params[:div_name] = @div_name
+          params[:entity_name] = @entity_name
+          params[:contact_num] = @contact_num
+          params[:username] = @username
+          params[:role_name] = @role_name
+          params[:start_date] = @start_date
+          params[:end_date] = @end_date
+
+        else
+          params[:div_name] = filter_params[:div_name]
+          params[:entity_name] = filter_params[:entity_name]
+          params[:contact_num] = filter_params[:contact_num]
+          params[:username] = filter_params[:username]
+          params[:role_name] = filter_params[:role_name]
+          params[:start_date] = filter_params[:start_date]
+          params[:end_date] = filter_params[:end_date]
+
+        end
+      end
+
+      if @div_name.present?
+        #search_arr << "customer_number LIKE '%#{@cust_num}%'"
+        search_arr << "division_code = '#{@div_name}'"
+      end
+
+      if @entity_name.present?
+        #search_arr << "customer_number LIKE '%#{@cust_num}%'"
+        search_arr << "entity_code = '#{@entity_name}'"
+      end
+
+      if @contact_num.present?
+        search_arr << "contact_number LIKE '%#{@contact_num}%'"
+      end
+
+      if @username.present?
+        #search_arr << "user_name = '#{@username}'"
+        search_arr << "user_name LIKE '%#{@username}%'"
+      end
+
+      if @role_name.present?
+        search_arr << "role_id = #{@role_name}"
+      end
+
+      if @start_date.present? && @end_date.present?
+        f_start_date =  @start_date.to_date.strftime('%Y-%m-%d') # Date.strptime(@start_date, '%m/%d/%Y') # @start_date.to_date.strftime('%Y-%m-%d')
+        f_end_date = @end_date.to_date.strftime('%Y-%m-%d') # Date.strptime(@end_date, '%m/%d/%Y') # @end_date.to_date.strftime('%Y-%m-%d')
+        if f_start_date <= f_end_date
+          search_arr << "created_at BETWEEN '#{f_start_date} 00:00:00' AND '#{f_end_date} 23:59:59'"
+        end
+      end
+
+    else
+      $user_filter = ""
+    end
+
+
+    the_search = search_arr.join(" AND ")
+    logger.info "The search array :: #{search_arr.inspect}"
+    logger.info "The Search :: #{the_search.inspect}"
+
+    @entity_infos = EntityInfo.where(active_status: true).order(entity_name: :asc)
+    @entity_divisions = EntityDivision.where(active_status: true).order(division_name: :asc)
+    @roles = Role.where("active_status = true AND id NOT IN (1,5)").order(role_name: :asc)
+
     if current_user.super_admin?
       @validators = User.unscoped.where(for_portal: false).paginate(:page => page, :per_page => params[:count]).order('created_at desc')
-      @users = User.unscoped.where(for_portal: true).paginate(:page => page, :per_page => params[:count]).order('created_at desc')
+      @users = User.unscoped.where(for_portal: true).where(the_search).paginate(:page => page, :per_page => params[:count]).order('created_at desc')
 
     elsif current_user.super_user?
       @validators = User.unscoped.where("for_portal = false").paginate(:page => page, :per_page => params[:count]).order('created_at desc')
-      @users = User.unscoped.where("role_id != 1 AND id != #{current_user.id} AND for_portal = true").paginate(:page => page, :per_page => params[:count]).order('created_at desc')
+      @users = User.unscoped.where("role_id != 1 AND id != #{current_user.id} AND for_portal = true").where(the_search).paginate(:page => page, :per_page => params[:count]).order('created_at desc')
 
     elsif current_user.merchant_admin?
-      @validators = User.unscoped.where(entity_code: current_user.entity_code, for_portal: false).paginate(:page => page, :per_page => params[:count]).order('created_at desc')
-      @users = User.unscoped.where(entity_code: current_user.entity_code, for_portal: true).paginate(:page => page, :per_page => params[:count]).order('created_at desc')
+      #@validators = User.unscoped.where(entity_code: current_user.entity_code, for_portal: false).paginate(:page => page, :per_page => params[:count]).order('created_at desc')
+      #@users = User.unscoped.where(entity_code: current_user.entity_code, for_portal: true).paginate(:page => page, :per_page => params[:count]).order('created_at desc')
     else
 
     end
@@ -250,7 +351,7 @@ class UsersController < ApplicationController
       end
     end
 
-    
+
   end
 
 
@@ -265,5 +366,6 @@ class UsersController < ApplicationController
   def user_params
     params.require(:user).permit(:user_name, :last_name, :first_name, :email, :access_type, :entity_code, :division_code, :contact_number, :password, :password_confirmation, :for_portal, :free_id, :role_id, :creator_id, :active_status, :del_status)
   end
+
 
 end

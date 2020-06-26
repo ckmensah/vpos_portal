@@ -85,7 +85,7 @@
             <% if params[:validator] == "validator" %>
               <%= link_to 'Back', validator_index_path(page: params[:page], count: params[:count]), class: "w3-button w3-white w3-border w3-border-purple w3-small w3-round-large",remote:true %>
             <% else %>
-              <%= link_to 'Back', user_index_path(page: params[:page], count: params[:count]), class: "w3-button w3-white w3-border w3-border-purple w3-small w3-round-large",remote:true %>
+              <%= link_to 'Back', user_index_path(user_filter: $user_filter.present? ? $user_filter.to_enum.to_h : "", page: params[:page], count: params[:count]), class: "w3-button w3-white w3-border w3-border-purple w3-small w3-round-large",remote:true %>
             <% end %>          </div>
           <br/>
         </div>
