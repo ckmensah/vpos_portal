@@ -12,6 +12,13 @@
       <%= simple_form_for(@user, as: @user, url: user_create_path(@user, into_create: "into_create", validator: params[:validator], count: params[:count], page: params[:page]),:remote => true) do |f| %>
         <%= f.error_notification %>
           <%= f.error_notification message: f.object.errors[:base].to_sentence if f.object.errors[:base].present? %>
+        <%# if current_user.super_admin? || current_user.super_user? %>
+        <%# else %>
+          <div class="">
+            <!--                <div class=""><label>Allow QR</label></div>-->
+            <%= f.input :show_charge, label: "Show Charges", as: :boolean, required: false, input_html: {id: "show_charge", autocomplete: "off", class: "", style: "display: block; float: left; width: 50%"} %>
+          </div>
+        <%# end %>
         <div class="w3-half">
           <%= f.input :user_name,  label: "User Name", value_method: :id, required: true, input_html:{id: "user_name", autocomplete: "off",class:"form-control w3-input w3-border w3-white input-group input-append",style:"width: 90%;"}  %>
           <%= f.input :last_name,  label: "Last Name", value_method: :id, required: true, input_html:{id: "last_name", autocomplete: "off",class:"form-control w3-input w3-border w3-white input-group input-append",style:"width: 90%;"}  %>

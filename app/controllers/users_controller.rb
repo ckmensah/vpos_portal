@@ -204,7 +204,9 @@ class UsersController < ApplicationController
   def edit
     if current_user.super_admin? || current_user.super_user?
       @entity_infos = EntityInfo.where(active_status: true).order(entity_name: :asc)
-      @entity_divisions = EntityDivision.where(id: 0, active_status: true).order(division_name: :asc)
+      #@entity_divisions = EntityDivision.where(id: 0, active_status: true).order(division_name: :asc)
+      @entity_divisions = @user.entity_code.present? ? EntityDivision.where(entity_code: @user.entity_code, active_status: true).order(division_name: :asc) : EntityDivision.where(id: 0, active_status: true).order(division_name: :asc)
+
     end
   end
 
@@ -224,6 +226,7 @@ class UsersController < ApplicationController
         @user.access_type = "S"
       end
     end
+    @user.show_charge = false if user_params[:role_id] == "1" || user_params[:role_id] == "2"
     respond_to do |format|
 
       if @user.save
@@ -261,6 +264,7 @@ class UsersController < ApplicationController
       end
     #end
 
+    user_params[:show_charge] = false if user_params[:role_id] == "1" || user_params[:role_id] == "2"
     respond_to do |format|
       if @user.update(user_params)
         format.html { redirect_to @user, notice: 'User was successfully updated.' }
@@ -364,7 +368,7 @@ class UsersController < ApplicationController
 
   # Never trust parameters from the scary internet, only allow the white list through.
   def user_params
-    params.require(:user).permit(:user_name, :last_name, :first_name, :email, :access_type, :entity_code, :division_code, :contact_number, :password, :password_confirmation, :for_portal, :free_id, :role_id, :creator_id, :active_status, :del_status)
+    params.require(:user).permit(:user_name, :last_name, :first_name, :email, :access_type, :entity_code, :division_code, :contact_number, :password, :password_confirmation, :for_portal, :show_charge, :free_id, :role_id, :creator_id, :active_status, :del_status)
   end
 
 

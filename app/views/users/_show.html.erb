@@ -45,6 +45,15 @@
               <% end %>
             </tr>
 
+            <tr>
+              <td class="raw_theme w3-border cell-cust-grad w3-leftbar"><strong>Show Charges:</strong></td>
+              <% if @user.show_charge != nil && @user.show_charge %>
+                <td><strong>Yes</strong></td>
+              <% else %>
+                <td><strong>No</strong></td>
+              <% end %>
+            </tr>
+
 <!--            <tr>-->
 <!--              <td class="raw_theme w3-border cell-cust-grad w3-leftbar"><strong>Role Name:</strong></td>-->
 <!--              <td><strong><%#= @user.role.role_name %></strong></td>-->
