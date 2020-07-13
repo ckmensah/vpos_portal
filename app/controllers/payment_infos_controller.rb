@@ -339,6 +339,9 @@ class PaymentInfosController < ApplicationController
     the_search = ""
     search_arr = ["split_part(trans_status, '/', 1) = '000'"]
     search_fund_arr = ["processed = true"]
+    search_arr_bbf = ["split_part(trans_status, '/', 1) = '000'"]
+    search_fund_arr_bbf = ["processed = true"]
+
 
     if @entity_name.present?
       division_str = "'0'"
@@ -356,11 +359,15 @@ class PaymentInfosController < ApplicationController
       #logger.info "Final Div Str :: #{final_div_str.inspect} and Final INfo Str :: #{final_info_str}"
       search_arr << "payment_reports.entity_div_code IN #{final_div_str}"
       search_fund_arr << "entity_div_code IN #{final_div_str}"
+      search_arr_bbf << "payment_reports.entity_div_code IN #{final_div_str}"
+      search_fund_arr_bbf << "entity_div_code IN #{final_div_str}"
     end
 
     if @division_name.present?
       search_arr << "payment_reports.entity_div_code = '#{@division_name}'"
       search_fund_arr << "entity_div_code = '#{@division_name}'"
+      search_arr_bbf << "payment_reports.entity_div_code = '#{@division_name}'"
+      search_fund_arr_bbf << "entity_div_code = '#{@division_name}'"
     end
 
     if @start_date.present? && @end_date.present?
@@ -369,11 +376,16 @@ class PaymentInfosController < ApplicationController
       if f_start_date <= f_end_date
         search_arr << "payment_reports.created_at BETWEEN '#{f_start_date} 00:00:00' AND '#{f_end_date} 23:59:59'"
         search_fund_arr << "created_at BETWEEN '#{f_start_date} 00:00:00' AND '#{f_end_date} 23:59:59'"
+        search_arr_bbf << "payment_reports.created_at < '#{f_start_date} 00:00:00'"
+        search_fund_arr_bbf << "created_at < '#{f_start_date} 00:00:00'"
       end
     end
 
     the_search = search_arr.join(" AND ")
     the_search_fund = search_fund_arr.join(" AND ")
+    the_search_bbf = search_arr_bbf.join(" AND ")
+    the_search_fund_bbf = search_fund_arr_bbf.join(" AND ")
+
     logger.info "The search array :: #{search_arr.inspect}"
     logger.info "The Search :: #{the_search.inspect}"
     logger.info "The search fund array :: #{search_fund_arr.inspect}"
@@ -386,7 +398,13 @@ class PaymentInfosController < ApplicationController
       @financial_statement = PaymentReport.financial_join.where(the_search).group("payment_reports.trans_type, date").order(date: :asc)
       @fund_movements = FundMovement.select("trans_type, narration, to_char(created_at, 'YYYY-MM-DD') AS date, sum(amount) AS amt")
                             .where(the_search_fund).group("trans_type, narration, date").order(date: :asc)
-
+      @payment_reports_bbf = PaymentReport.financial_join.where(the_search_bbf).group("payment_reports.trans_type, date").order(date: :asc)
+      @fund_movements_bbf = FundMovement.select("trans_type, narration, to_char(created_at, 'YYYY-MM-DD') AS date, sum(amount) AS amt")
+                            .where(the_search_fund_bbf).group("trans_type, narration, date").order(date: :asc)
+      @balance_bf = PaymentReport.balance_bf(@payment_reports_bbf, @fund_movements_bbf)[0]
+      logger.info "=========================Balance BF :: #{@balance_bf.inspect}"
+      @closing_bal, @debit_total, @credit_total = PaymentReport.balance_bf(@financial_statement, @fund_movements, @balance_bf)
+      logger.info "================== BALANCE B/F :: #{number_to_currency(@balance_bf, unit: "GHS ", precision: 3)}"
     elsif current_user.merchant_admin?
       entity_div_id_str = "'0'"
       entity_div_id_arr = []
@@ -404,11 +422,23 @@ class PaymentInfosController < ApplicationController
       @financial_statement = PaymentReport.financial_join.where("payment_reports.entity_div_code IN #{final_div_ids}").where(the_search).group("payment_reports.trans_type, date").order(date: :asc)
       @fund_movements = FundMovement.select("trans_type, narration, to_char(created_at, 'YYYY-MM-DD') AS date, sum(amount) AS amt")
                             .where("entity_div_code IN #{final_div_ids}").where(the_search_fund).group("trans_type, narration, date").order(date: :asc)
+      @payment_reports_bbf = PaymentReport.financial_join.where("payment_reports.entity_div_code IN #{final_div_ids}").where(the_search_bbf).group("payment_reports.trans_type, date").order(date: :asc)
+      @fund_movements_bbf = FundMovement.select("trans_type, narration, to_char(created_at, 'YYYY-MM-DD') AS date, sum(amount) AS amt")
+                            .where("entity_div_code IN #{final_div_ids}").where(the_search_fund_bbf).group("trans_type, narration, date").order(date: :asc)
+      @balance_bf = PaymentReport.balance_bf(@payment_reports_bbf, @fund_movements_bbf)[0]
+      @closing_bal, @debit_total, @credit_total = PaymentReport.balance_bf(@financial_statement, @fund_movements, @balance_bf)
+      logger.info "================== MERCHANT BALANCE B/F :: #{number_to_currency(@balance_bf, unit: "GHS ", precision: 3)}"
     elsif current_user.merchant_service?
       @division_name = current_user.division_code
       @financial_statement = PaymentReport.financial_join.where("payment_reports.entity_div_code = '#{current_user.division_code}'").where(the_search).group("payment_reports.trans_type, date").order(date: :asc)
       @fund_movements = FundMovement.select("trans_type, narration, to_char(created_at, 'YYYY-MM-DD') AS date, sum(amount) AS amt")
                             .where("entity_div_code = '#{current_user.division_code}'").where(the_search_fund).group("trans_type, narration, date").order(date: :asc)
+      @payment_reports_bbf = PaymentReport.financial_join.where("payment_reports.entity_div_code = '#{current_user.division_code}'").where(the_search_bbf).group("payment_reports.trans_type, date").order(date: :asc)
+      @fund_movements_bbf = FundMovement.select("trans_type, narration, to_char(created_at, 'YYYY-MM-DD') AS date, sum(amount) AS amt")
+                            .where("entity_div_code = '#{current_user.division_code}'").where(the_search_fund_bbf).group("trans_type, narration, date").order(date: :asc)
+      @balance_bf = PaymentReport.balance_bf(@payment_reports_bbf, @fund_movements_bbf)[0]
+      @closing_bal, @debit_total, @credit_total = PaymentReport.balance_bf(@financial_statement, @fund_movements, @balance_bf)
+      logger.info "================== SERVICE BALANCE B/F :: #{number_to_currency(@balance_bf, unit: "GHS ", precision: 3)}"
     end
 
     respond_to do |format|
@@ -417,10 +447,10 @@ class PaymentInfosController < ApplicationController
           @div_obj = EntityDivision.where(assigned_code: current_user.division_code, active_status: true).order(created_at: :desc).first
           @div_name = @div_obj ? @div_obj.division_name : ""
           format.js { render :financial_statement_index }
-          format.csv { send_data @financial_statement.to_finance_csv(@financial_statement, @fund_movements), :filename => "financial_statement.csv" }
-          format.xls { send_data @financial_statement.to_finance_csv(@financial_statement, @fund_movements, col_sep: "\t"), :filename => "financial_statement.xls" }
+          format.csv { send_data @financial_statement.to_finance_csv(@financial_statement, @fund_movements, @balance_bf), :filename => "financial_statement.csv" }
+          format.xls { send_data @financial_statement.to_finance_csv(@financial_statement, @fund_movements, @balance_bf, col_sep: "\t"), :filename => "financial_statement.xls" }
           format.pdf do
-            pdf = FinancialStatementPdf.new(@financial_statement, @fund_movements, @div_name, @start_date, @end_date, logger, :page_size => "A4", :page_layout => :landscape, top_margin: 50)
+            pdf = FinancialStatementPdf.new(@financial_statement, @fund_movements, @balance_bf, @closing_bal, @debit_total, @credit_total, @div_name, @start_date, @end_date, logger, :page_size => "A4", :page_layout => :landscape, top_margin: 30, bottom_margin: 70)
             send_data pdf.render, filename: 'financial_statement.pdf', type: 'application/pdf'
           end
         end
@@ -429,10 +459,10 @@ class PaymentInfosController < ApplicationController
           @div_obj = EntityDivision.where(assigned_code: @division_name, active_status: true).order(created_at: :desc).first
           @div_name = @div_obj ? @div_obj.division_name : ""
           format.js { render :financial_statement_index }
-          format.csv { send_data @financial_statement.to_finance_csv(@financial_statement, @fund_movements), :filename => "financial_statement.csv" }
-          format.xls { send_data @financial_statement.to_finance_csv(@financial_statement, @fund_movements, col_sep: "\t"), :filename => "financial_statement.xls" }
+          format.csv { send_data @financial_statement.to_finance_csv(@financial_statement, @fund_movements, @balance_bf), :filename => "financial_statement.csv" }
+          format.xls { send_data @financial_statement.to_finance_csv(@financial_statement, @fund_movements, @balance_bf, col_sep: "\t"), :filename => "financial_statement.xls" }
           format.pdf do
-            pdf = FinancialStatementPdf.new(@financial_statement, @fund_movements, @div_name, @start_date, @end_date, logger, :page_size => "A4", :page_layout => :landscape, top_margin: 50)
+            pdf = FinancialStatementPdf.new(@financial_statement, @fund_movements, @balance_bf, @closing_bal, @debit_total, @credit_total, @div_name, @start_date, @end_date, logger, :page_size => "A4", :page_layout => :landscape, top_margin: 30, bottom_margin: 70)
             send_data pdf.render, filename: 'financial_statement.pdf', type: 'application/pdf'
           end
 
@@ -466,6 +496,8 @@ class PaymentInfosController < ApplicationController
     the_search = ""
     search_arr = ["split_part(trans_status, '/', 1) = '000'"]
     search_fund_arr = ["processed = true"]
+    search_arr_bbf = ["split_part(trans_status, '/', 1) = '000'"]
+    search_fund_arr_bbf = ["processed = true"]
 
     if @entity_name.present?
       division_str = "'0'"
@@ -483,11 +515,15 @@ class PaymentInfosController < ApplicationController
       #logger.info "Final Div Str :: #{final_div_str.inspect} and Final INfo Str :: #{final_info_str}"
       search_arr << "payment_reports.entity_div_code IN #{final_div_str}"
       search_fund_arr << "entity_div_code IN #{final_div_str}"
+      search_arr_bbf << "payment_reports.entity_div_code IN #{final_div_str}"
+      search_fund_arr_bbf << "entity_div_code IN #{final_div_str}"
     end
 
     if @division_name.present?
       search_arr << "payment_reports.entity_div_code = '#{@division_name}'"
       search_fund_arr << "entity_div_code = '#{@division_name}'"
+      search_arr_bbf << "payment_reports.entity_div_code = '#{@division_name}'"
+      search_fund_arr_bbf << "entity_div_code = '#{@division_name}'"
     end
 
     if @start_date.present? && @end_date.present?
@@ -496,11 +532,15 @@ class PaymentInfosController < ApplicationController
       if f_start_date <= f_end_date
         search_arr << "payment_reports.created_at BETWEEN '#{f_start_date} 00:00:00' AND '#{f_end_date} 23:59:59'"
         search_fund_arr << "created_at BETWEEN '#{f_start_date} 00:00:00' AND '#{f_end_date} 23:59:59'"
+        search_arr_bbf << "payment_reports.created_at < '#{f_start_date} 00:00:00'"
+        search_fund_arr_bbf << "created_at < '#{f_start_date} 00:00:00'"
       end
     end
 
     the_search = search_arr.join(" AND ")
     the_search_fund = search_fund_arr.join(" AND ")
+    the_search_bbf = search_arr_bbf.join(" AND ")
+    the_search_fund_bbf = search_fund_arr_bbf.join(" AND ")
     logger.info "The search array :: #{search_arr.inspect}"
     logger.info "The Search :: #{the_search.inspect}"
     logger.info "The search fund array :: #{search_fund_arr.inspect}"
@@ -510,14 +550,15 @@ class PaymentInfosController < ApplicationController
 
       @entity_infos = EntityInfo.where(active_status: true).order(entity_name: :asc)
       @entity_divisions = EntityDivision.where(active_status: true).order(division_name: :asc)
-      #@financial_statement = PaymentReport.select("trans_type, to_char(created_at, 'YYYY-MM-DD') AS date, sum(amount) AS amount").where(the_search).group("trans_type, date").order(date: :asc)
-      #@financial_statement = PaymentReport.select("trans_type, to_char(created_at, 'YYYY-MM-DD') AS date, sum(amount) AS amount").where(the_search).group("trans_type, date").order(date: :asc)
 
       @financial_statement = PaymentReport.financial_join.where(the_search).group("payment_reports.trans_type, date").order(date: :asc)
       @fund_movements = FundMovement.select("trans_type, narration, to_char(created_at, 'YYYY-MM-DD') AS date, sum(amount) AS amt")
                             .where(the_search_fund).group("trans_type, narration, date").order(date: :asc)
-
-
+      @payment_reports_bbf = PaymentReport.financial_join.where(the_search_bbf).group("payment_reports.trans_type, date").order(date: :asc)
+      @fund_movements_bbf = FundMovement.select("trans_type, narration, to_char(created_at, 'YYYY-MM-DD') AS date, sum(amount) AS amt")
+                                .where(the_search_fund_bbf).group("trans_type, narration, date").order(date: :asc)
+      @balance_bf = PaymentReport.balance_bf(@payment_reports_bbf, @fund_movements_bbf)[0]
+      logger.info "================== 1st BALANCE B/F :: #{number_to_currency(@balance_bf, unit: "GHS ", precision: 3)}"
     elsif current_user.merchant_admin?
       entity_div_id_str = "'0'"
       entity_div_id_arr = []
@@ -535,11 +576,21 @@ class PaymentInfosController < ApplicationController
       @financial_statement = PaymentReport.financial_join.where("payment_reports.entity_div_code IN #{final_div_ids}").where(the_search).group("payment_reports.trans_type, date").order(date: :asc)
       @fund_movements = FundMovement.select("trans_type, narration, to_char(created_at, 'YYYY-MM-DD') AS date, sum(amount) AS amt")
                             .where("entity_div_code IN #{final_div_ids}").where(the_search_fund).group("trans_type, narration, date").order(date: :asc)
+      @payment_reports_bbf = PaymentReport.financial_join.where("payment_reports.entity_div_code IN #{final_div_ids}").where(the_search_bbf).group("payment_reports.trans_type, date").order(date: :asc)
+      @fund_movements_bbf = FundMovement.select("trans_type, narration, to_char(created_at, 'YYYY-MM-DD') AS date, sum(amount) AS amt")
+                                .where("entity_div_code IN #{final_div_ids}").where(the_search_fund_bbf).group("trans_type, narration, date").order(date: :asc)
+      @balance_bf = PaymentReport.balance_bf(@payment_reports_bbf, @fund_movements_bbf)[0]
+      logger.info "================== 1st MERCHANT BALANCE B/F :: #{number_to_currency(@balance_bf, unit: "GHS ", precision: 3)}"
     elsif current_user.merchant_service?
       @division_name = current_user.division_code
       @financial_statement = PaymentReport.financial_join.where("payment_reports.entity_div_code = '#{current_user.division_code}'").where(the_search).group("payment_reports.trans_type, date").order(date: :asc)
       @fund_movements = FundMovement.select("trans_type, narration, to_char(created_at, 'YYYY-MM-DD') AS date, sum(amount) AS amt")
                             .where("entity_div_code = '#{current_user.division_code}'").where(the_search_fund).group("trans_type, narration, date").order(date: :asc)
+      @payment_reports_bbf = PaymentReport.financial_join.where("payment_reports.entity_div_code = '#{current_user.division_code}'").where(the_search_bbf).group("payment_reports.trans_type, date").order(date: :asc)
+      @fund_movements_bbf = FundMovement.select("trans_type, narration, to_char(created_at, 'YYYY-MM-DD') AS date, sum(amount) AS amt")
+                                .where("entity_div_code = '#{current_user.division_code}'").where(the_search_fund_bbf).group("trans_type, narration, date").order(date: :asc)
+      @balance_bf = PaymentReport.balance_bf(@payment_reports_bbf, @fund_movements_bbf)[0]
+      logger.info "================== 1st SERVICE BALANCE B/F :: #{number_to_currency(@balance_bf, unit: "GHS ", precision: 3)}"
     end
 
     respond_to do |format|

@@ -172,49 +172,152 @@ class PaymentReport < ApplicationRecord
 
 
 
-  def self.to_finance_csv(payment_report, fund_movements, options = {})
+  def self.to_finance_csv(payment_report, fund_movements, balance_bf, options = {})
     CSV.generate(options) do |csv|
-      headers = %w{Value_Date Description Sweeps/Debit Collections/Credit}
-
+      headers = %w{Value_Date Description Debit Credit Balance}
+      balance = balance_bf
       csv << headers
-      payment_report.each_with_index do |pay_report, index|
-        # ------code comes here
+      if payment_report.first
+        payment_report.each_with_index do |pay_report, index|
+          # ------code comes here
 
-        logger.info "Payment report :: #{index + 1}. #{pay_report.inspect}"
-        if fund_movements.first
-          if index == 0
+          logger.info "Payment report :: #{index + 1}. #{pay_report.inspect}"
+          if fund_movements.first
+            if index == 0
+              fund_movements.each_with_index do |fund_movement, index1|
+                logger.info "Fund Movement report :: #{index1 + 1}. of #{index + 1}. #{fund_movement.inspect}"
+                if fund_movement.date.to_date < pay_report.date.to_date
+                  date = fund_movement.date
+                  narration = fund_movement.narration
+                  debit_amt = fund_movement.amt
+                  credit_amt = ""
+                  balance = balance - debit_amt
+                  csv << [date, narration, debit_amt, credit_amt, balance]
+                end
+              end
+            else
+              fund_movements.each_with_index do |fund_movement, index1|
+                logger.info "Fund Movement report :: #{index1 + 1}. of #{index + 1}. #{fund_movement.inspect}"
+                if fund_movement.date.to_date < pay_report.date.to_date && fund_movement.date.to_date >= payment_report[index - 1].date.to_date
+                  date = fund_movement.date
+                  narration = fund_movement.narration
+                  debit_amt = fund_movement.amt
+                  credit_amt = ""
+                  balance = balance - debit_amt
+                  csv << [date, narration, debit_amt, credit_amt, balance]
+                end
+              end
+            end
+          end
+
+          date = pay_report.date
+          narration = "Collections for #{pay_report.date.to_date.strftime("%B %d, %Y")}"
+          debit_amt = ""
+          credit_amt = pay_report.actual_amt
+          balance = balance + credit_amt
+          csv << [date, narration, debit_amt, credit_amt, balance]
+
+          if fund_movements.first
             fund_movements.each_with_index do |fund_movement, index1|
               logger.info "Fund Movement report :: #{index1 + 1}. of #{index + 1}. #{fund_movement.inspect}"
-              if fund_movement.date.to_date < pay_report.date.to_date
+              if payment_report.size.to_i == index + 1 && fund_movement.date.to_date >= pay_report.date.to_date
                 date = fund_movement.date
                 narration = fund_movement.narration
                 debit_amt = fund_movement.amt
                 credit_amt = ""
-                csv << [date, narration, debit_amt, credit_amt]
+                balance = balance - debit_amt
+                csv << [date, narration, debit_amt, credit_amt, balance]
+              end
+            end
+          end
+        end
+      else
+        if fund_movements.first
+          fund_movements.each_with_index do |fund_movement, index1|
+            logger.info "Fund Movement report :: #{index1 + 1}. #{fund_movement.inspect}"
+            date = fund_movement.date
+            narration = fund_movement.narration
+            debit_amt = fund_movement.amt
+            credit_amt = ""
+            balance = balance - debit_amt
+            csv << [date, narration, debit_amt, credit_amt, balance]
+          end
+        end
+      end
+
+    end
+
+  end
+
+
+
+  def self.balance_bf(payment_report_bbf, fund_movements_bbf, bbf = 0.000)
+    balance = bbf
+    debit_total = 0.000
+    credit_total = 0.000
+    if payment_report_bbf.first
+      payment_report_bbf.each_with_index do |pay_report_bbf, index|
+        # ------code comes here
+
+        logger.info "Payment report bbf :: #{index + 1}. #{pay_report_bbf.inspect}"
+        if fund_movements_bbf.first
+          if index == 0
+            fund_movements_bbf.each_with_index do |fund_movement_bbf, index1|
+              logger.info "Fund Movement report bbf :: #{index1 + 1}. of #{index + 1}. #{fund_movement_bbf.inspect}"
+              if fund_movement_bbf.date.to_date < pay_report_bbf.date.to_date
+                debit_amt = fund_movement_bbf.amt.to_f
+                debit_total = debit_total + debit_amt.to_f
+                balance = balance - debit_amt
+                logger.info "#{index1 + 1}. Current Balance on debit is :: #{balance.inspect}"
               end
             end
           else
-            fund_movements.each_with_index do |fund_movement, index1|
-              logger.info "Fund Movement report :: #{index1 + 1}. of #{index + 1}. #{fund_movement.inspect}"
-              if fund_movement.date.to_date <= pay_report.date.to_date && fund_movement.date.to_date >= payment_report[index - 1].date.to_date
-                date = fund_movement.date
-                narration = fund_movement.narration
-                debit_amt = fund_movement.amt
-                credit_amt = ""
-                csv << [date, narration, debit_amt, credit_amt]
+            fund_movements_bbf.each_with_index do |fund_movement_bbf, index1|
+              logger.info "Fund Movement report bbf1 :: #{index1 + 1}. of #{index + 1}. #{fund_movement_bbf.inspect}"
+              if fund_movement_bbf.date.to_date < pay_report_bbf.date.to_date && fund_movement_bbf.date.to_date >= payment_report_bbf[index - 1].date.to_date
+                debit_amt = fund_movement_bbf.amt.to_f
+                debit_total = debit_total + debit_amt.to_f
+                balance = balance - debit_amt
+                logger.info "#{index1 + 1}. Current Balance on debit 1 is :: #{balance.inspect}"
               end
             end
           end
         end
 
-        date = pay_report.date
-        narration = "Collections for #{pay_report.date.to_date.strftime("%B %d, %Y")}"
-        debit_amt = ""
-        credit_amt = pay_report.actual_amt
-        csv << [date, narration, debit_amt, credit_amt]
+        credit_amt = pay_report_bbf.actual_amt
+        credit_total = credit_total + credit_amt.to_f
+        balance = balance + credit_amt
+        logger.info "#{index + 1}. Current Balance on credit is :: #{balance.inspect}"
+
+        if fund_movements_bbf.first
+          fund_movements_bbf.each_with_index do |fund_movement_bbf, index1|
+            logger.info "Fund Movement report bbf :: #{index1 + 1}. of #{index + 1}. #{fund_movement_bbf.inspect}"
+            if payment_report_bbf.size.to_i == index + 1 && fund_movement_bbf.date.to_date >= pay_report_bbf.date.to_date
+              debit_amt = fund_movement_bbf.amt.to_f
+              debit_total = debit_total + debit_amt.to_f
+              balance = balance - debit_amt
+              logger.info "#{index1 + 1}. Current Balance on debit 2 is :: #{balance.inspect}"
+            end
+          end
+        end
+
+
       end
+    else
+      if fund_movements_bbf.first
+        fund_movements_bbf.each_with_index do |fund_movement_bbf, index1|
+          logger.info "Fund Movement report bbf 3 :: #{index1 + 1}. #{fund_movement_bbf.inspect}"
+          debit_amt = fund_movement_bbf.amt.to_f
+          debit_total = debit_total + debit_amt.to_f
+          balance = balance - debit_amt
+          logger.info "#{index1 + 1}. Current Balance on debit 3 is :: #{balance.inspect}"
+        end
+      end
+
     end
 
+    logger.info "Balance :: #{balance.inspect}, Debit Total :: #{debit_total.inspect}, Credit Total :: #{credit_total.inspect}"
+    return balance, debit_total, credit_total
   end
 
 
