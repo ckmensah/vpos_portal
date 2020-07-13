@@ -8,7 +8,7 @@
       <%= link_to 'FILTER FINANCIAL STATEMENT', financial_form_path(inner_form: "inner_form", count: params[:count], page: params[:page]), style: "width:230px;",
                   class: 'w3-button w3-purple-vpos w3-border w3-border-purple w3-small w3-round-large',remote:true %>
 <!--      <button type="button" onclick="document.getElementById('finance_filter').style.display='block'" style="font-size: small; width: 175px;" class="w3-btn btn btn-outline-purple tablink w3-vpos-purple">FINANCIAL STATEMENT</button>-->
-      <button type="button" style="font-size: small; width: 200px;" class="w3-btn btn btn-outline-purple tablink w3-vpos-purple">BALANCE B/F :: <%= number_to_currency(@balance_bf, unit: "GHS ", precision: 3) %></button>
+      <button type="button" style="font-size: small; width: 270px;" class="w3-btn btn btn-outline-purple tablink w3-vpos-purple">BALANCE B/F :: <%= number_to_currency(@balance_bf, unit: "GHS ", precision: 3) %></button>
     </div>
 
     <div class="w3-half">
