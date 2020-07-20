@@ -160,13 +160,31 @@ class PaymentInfosController < ApplicationController
 
 
       if @activity_type.present?
-        activity_str = "'0'"
+        #activity_str = "'0'"
         div_str = "'0'"
-        @act_type = ActivityType.where("LOWER(assigned_code) LIKE '%#{@activity_type.downcase}%'")
-        @act_type.each { |act_type| activity_str << ",'#{act_type.assigned_code}'" } if @act_type.exists?
-        final_act_str = "(#{activity_str})"
-        @entity_divisi = EntityDivision.where("activity_type_code IN #{final_act_str}")
-        @entity_divisi.each { |entity_div| div_str << ",'#{entity_div.assigned_code}'" } if @entity_divisi.exists?
+        div_arr = []
+        #@act_type = ActivityType.where("LOWER(assigned_code) LIKE '%#{@activity_type.downcase}%'")
+        #@act_type.each { |act_type| activity_str << ",'#{act_type.assigned_code}'" } if @act_type.exists?
+        #final_act_str = "(#{activity_str})"
+        #@entity_divisi = EntityDivision.where("activity_type_code IN #{final_act_str}")
+        #@entity_divisi.each { |entity_div| div_str << ",'#{entity_div.assigned_code}'" } if @entity_divisi.exists?
+
+        if current_user.super_admin? || current_user.super_user?
+          @entity_divisi = EntityDivision.where(active_status: true, activity_type_code: @activity_type)
+        elsif current_user.merchant_admin?
+          @entity_divisi = EntityDivision.where(active_status: true, activity_type_code: @activity_type, entity_code: current_user.entity_code)
+        end
+        logger.info "=======================&&&&&&&&&&&&&&&&&&&&&&&=============================="
+        logger.info "Entity service object :: #{@entity_divisi.inspect}"
+        if @entity_divisi.exists?
+          @entity_divisi.each do |entity_div|
+            unless div_arr.include?("'#{entity_div.assigned_code}'")
+              div_arr << "'#{entity_div.assigned_code}'"
+              div_str << ",'#{entity_div.assigned_code}'"
+            end
+          end
+        end
+
         f_div_str = "(#{div_str})"
         logger.info "Final Act Str :: #{f_div_str.inspect}"
         search_arr << "entity_div_code IN #{f_div_str}"
@@ -186,7 +204,6 @@ class PaymentInfosController < ApplicationController
         search_arr << "activity_lov_id IN #{final_lov_str}"
         #search_arr << "activity_lov_id = #{@lov_name}"
       end
-
 
 
       if @cust_num.present?
@@ -262,6 +279,7 @@ class PaymentInfosController < ApplicationController
       else
         @payment_infos = PaymentReport.where(the_search).paginate(:page => params[:page], :per_page => params[:count]).order('created_at desc')
       end
+
     elsif current_user.merchant_admin?
       @merchant_service_search = EntityDivision.where(active_status: true, entity_code: current_user.entity_code).order(division_name: :asc)
       entity_div_id_str = "'0'"
@@ -297,12 +315,17 @@ class PaymentInfosController < ApplicationController
 
     respond_to do |format|
       format.js
-      format.csv { send_data @payment_infos.to_csv(@payment_infos, current_user), :filename => "transaction_report.csv" }
-      format.xls { send_data @payment_infos.to_csv(@payment_infos, current_user, col_sep: "\t"), :filename => "transaction_report.xls" }
-      #format.pdf do
-      #  pdf = GeneralReportPdf.new(@payment_infos, @report_variable, logger, :page_size => "A4", :page_layout => :landscape, top_margin: 50)
-      #  send_data pdf.render, filename: 'general_report.pdf', type: 'application/pdf'
-      #end
+      logger.info "===================================================="
+      logger.info "Activity type is :: #{@activity_type.inspect}"
+      if @activity_type.present?
+        format.csv { send_data @payment_infos.to_csv(@payment_infos, current_user, @activity_type), :filename => "transaction_report.csv" }
+        format.xls { send_data @payment_infos.to_csv(@payment_infos, current_user, @activity_type, col_sep: "\t"), :filename => "transaction_report.xls" }
+      else
+        @activity_type = ""
+        format.csv { send_data @payment_infos.to_csv(@payment_infos, current_user, @activity_type), :filename => "transaction_report.csv" }
+        format.xls { send_data @payment_infos.to_csv(@payment_infos, current_user, @activity_type, col_sep: "\t"), :filename => "transaction_report.xls" }
+      end
+
     end
 
     #logger.info "Report #{@payment_infos.inspect}"

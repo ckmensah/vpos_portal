@@ -30,7 +30,7 @@ class FinancialStatementPdf < Prawn::Document
 
   def header_info
     image "public/images/anm_logo.png", :scale => 0.2, :width => 150, :position => 600
-    text "<b>FINANCIAL STATEMENT ACTIVITY</b>", :align => :center, :size => 14, :inline_format => true
+    text "<b>FINANCIAL STATEMENT</b>", :align => :center, :size => 14, :inline_format => true
     move_down 10
     y_position = cursor
     bounding_box([0, y_position], :width => 450) do
