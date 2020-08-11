@@ -11,7 +11,6 @@ class EntityInfosController < ApplicationController
     $entity_index_page = params[:page]
     $entity_division_page = params[:page]
 
-
     if current_user.super_admin? || current_user.super_user?
       #all_merchants = EntityDivision.all
       #EntityDivision.same_created_at(all_merchants)

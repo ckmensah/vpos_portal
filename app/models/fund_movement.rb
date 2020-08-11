@@ -9,9 +9,9 @@ class FundMovement < ApplicationRecord
     CSV.generate(options) do |csv|
       #headers = %w{Merchant Service Reference Selected_Option Activity_Type Mobile_No Name/Reference Network Tranx_ID Gross_Amount Charge Actual_Amount Source Status Date}
       if current_user.super_admin? || current_user.super_user?
-        headers = %w{Merchant Service Service_ID Ref_ID Amount Narration Trans_Type Trans_Status Trans_Description Status Date}
+        headers = %w{Merchant Service Service_ID Ref_ID Amount Narration Trans_Type Trans_Status Trans_Description Status Date Time}
       else
-        headers = %w{Merchant Service Ref_ID Amount Narration Trans_Type Trans_Status Trans_Description Status Date}
+        headers = %w{Merchant Service Ref_ID Amount Narration Trans_Type Trans_Status Trans_Description Status Date Time}
       end
       csv << headers
 
@@ -44,10 +44,12 @@ class FundMovement < ApplicationRecord
           status = "Pending"
         end
         date = summary.created_at
+        for_date = summary.created_at.strftime('%Y-%m-%d')
+        for_time = summary.created_at.strftime('%H:%M:%S')
         if current_user.super_admin? || current_user.super_user?
-          csv << [merchant, service, summary.service_id, summary.ref_id, summary.amount, summary.narration, summary.trans_type, summary.trans_status, summary.trans_desc, status, date] #[merchant, rec_name, summary.pc_name, summary.momo_number, summary.product_name, bags, quantity, summary.amount, summary.exttrid, status, summary.date]
+          csv << [merchant, service, summary.service_id, summary.ref_id, summary.amount, summary.narration, summary.trans_type, summary.trans_status, summary.trans_desc, status, for_date, for_time] #[merchant, rec_name, summary.pc_name, summary.momo_number, summary.product_name, bags, quantity, summary.amount, summary.exttrid, status, summary.date]
         else
-          csv << [merchant, service, summary.ref_id, summary.amount, summary.narration, summary.trans_type, summary.trans_status, summary.trans_desc, status, date] #[merchant, rec_name, summary.pc_name, summary.momo_number, summary.product_name, bags, quantity, summary.amount, summary.exttrid, status, summary.date]
+          csv << [merchant, service, summary.ref_id, summary.amount, summary.narration, summary.trans_type, summary.trans_status, summary.trans_desc, status, for_date, for_time] #[merchant, rec_name, summary.pc_name, summary.momo_number, summary.product_name, bags, quantity, summary.amount, summary.exttrid, status, summary.date]
         end
       end
 

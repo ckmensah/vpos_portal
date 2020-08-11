@@ -13,6 +13,15 @@ class PaymentReport < ApplicationRecord
  ELSE payment_reports.amount - payment_reports.charge END) AS actual_amt, sum(amount) AS amount")
   end
 
+  def activity_main_code_narration
+    narration.present? ? "#{activity_main_code} (#{narration})" : "#{activity_main_code}"
+  end
+
+  def act_main_code_narration_val
+    narration.present? ? "#{activity_main_code} #{narration}" : "#{activity_main_code}"
+  end
+
+
 
   def self.to_csv(general_report, current_user, for_activity_type, options = {})
     CSV.generate(options) do |csv|
@@ -23,30 +32,38 @@ class PaymentReport < ApplicationRecord
         if current_user.merchant_service?
           service_for_header = EntityDivision.where(active_status: true, assigned_code: current_user.division_code).order(created_at: :desc).first
           if service_for_header && service_for_header.activity_type_code == "OMC"
-            headers = %w{Merchant Service Station_Terminal_ID Attendant_ID/Reference Selected_Option Activity_Type Mobile_No Name/Reference Network Tranx_ID Gross_Amount M-Charge C-Charge Actual_Amount Source Status Date}
+            headers = %w{Merchant Service Station_Terminal_ID Attendant_ID/Reference Selected_Option Activity_Type Customer_No Network Tranx_ID Gross_Amount M-Charge C-Charge Actual_Amount Source Status Date Time}
+          elsif service_for_header && service_for_header.activity_type_code == "CHC"
+            headers = %w{Merchant Service Reference Selected_Option Menu_Item Activity_Type Customer_No Name/Reference Network Tranx_ID Gross_Amount M-Charge C-Charge Actual_Amount Source Status Date}
           else
-            headers = %w{Merchant Service Reference Selected_Option Activity_Type Mobile_No Name/Reference Network Tranx_ID Gross_Amount M-Charge C-Charge Actual_Amount Source Status Date}
+            headers = %w{Merchant Service Reference Selected_Option Activity_Type Customer_No Name/Reference Network Tranx_ID Gross_Amount M-Charge C-Charge Actual_Amount Source Status Date}
           end
         else
           if for_activity_type == "OMC"
-            headers = %w{Merchant Service Station_Terminal_ID Attendant_ID/Reference Selected_Option Activity_Type Mobile_No Name/Reference Network Tranx_ID Gross_Amount M-Charge C-Charge Actual_Amount Source Status Date}
+            headers = %w{Merchant Service Station_Terminal_ID Attendant_ID/Reference Selected_Option Activity_Type Customer_No Network Tranx_ID Gross_Amount M-Charge C-Charge Actual_Amount Source Status Date Time}
+          elsif for_activity_type == "CHC"
+            headers = %w{Merchant Service Reference Selected_Option Menu_Item Activity_Type Customer_No Name/Reference Extra_Ref Network Tranx_ID Gross_Amount M-Charge C-Charge Actual_Amount Source Status Date}
           else
-            headers = %w{Merchant Service Reference Selected_Option Activity_Type Mobile_No Name/Reference Extra_Ref Network Tranx_ID Gross_Amount M-Charge C-Charge Actual_Amount Source Status Date}
+            headers = %w{Merchant Service Reference Selected_Option Activity_Type Customer_No Name/Reference Extra_Ref Network Tranx_ID Gross_Amount M-Charge C-Charge Actual_Amount Source Status Date}
           end
         end
       else
         if current_user.merchant_service?
           service_for_header = EntityDivision.where(active_status: true, assigned_code: current_user.division_code).order(created_at: :desc).first
           if service_for_header && service_for_header.activity_type_code == "OMC"
-            headers = %w{Merchant Service Station_Terminal_ID Attendant_ID/Reference Selected_Option Activity_Type Mobile_No Name/Reference Network Tranx_ID Actual_Amount Source Status Date}
+            headers = %w{Merchant Service Station_Terminal_ID Attendant_ID/Reference Selected_Option Activity_Type Customer_No Network Tranx_ID Actual_Amount Source Status Date Time}
+          elsif service_for_header && service_for_header.activity_type_code == "CHC"
+            headers = %w{Merchant Service Reference Selected_Option Menu_Item Activity_Type Customer_No Name/Reference Network Tranx_ID Actual_Amount Source Status Date}
           else
-            headers = %w{Merchant Service Reference Selected_Option Activity_Type Mobile_No Name/Reference Network Tranx_ID Actual_Amount Source Status Date}
+            headers = %w{Merchant Service Reference Selected_Option Activity_Type Customer_No Name/Reference Network Tranx_ID Actual_Amount Source Status Date}
           end
         else
           if for_activity_type == "OMC"
-            headers = %w{Merchant Service Station_Terminal_ID Attendant_ID/Reference Selected_Option Activity_Type Mobile_No Name/Reference Network Tranx_ID Actual_Amount Source Status Date}
+            headers = %w{Merchant Service Station_Terminal_ID Attendant_ID/Reference Selected_Option Activity_Type Customer_No Network Tranx_ID Actual_Amount Source Status Date Time}
+          elsif for_activity_type == "CHC"
+            headers = %w{Merchant Service Reference Selected_Option Menu_Item Activity_Type Customer_No Name/Reference Extra_Ref Network Tranx_ID Actual_Amount Source Status Date}
           else
-            headers = %w{Merchant Service Reference Selected_Option Activity_Type Mobile_No Name/Reference Extra_Ref Network Tranx_ID Actual_Amount Source Status Date}
+            headers = %w{Merchant Service Reference Selected_Option Activity_Type Customer_No Name/Reference Extra_Ref Network Tranx_ID Actual_Amount Source Status Date}
           end
         end
       end
@@ -80,7 +97,12 @@ class PaymentReport < ApplicationRecord
         #service = summary.entity_division ? summary.entity_division.division_name : ""
         reference = summary.reference.present? ? summary.reference : ""
         lov_name = summary.division_activity_lov ? summary.division_activity_lov.lov_desc : ""
-        activity_type = (summary.entity_division != nil && summary.entity_division.activity_type) ? summary.entity_division.activity_type.activity_type_desc : ""
+        menu_item = summary.activity_main_code.present? && summary.narration.present? ? "#{summary.activity_main_code} (#{summary.narration})" : summary.activity_main_code
+        if summary.entity_division != nil && summary.entity_division.activity_type
+          activity_type = summary.entity_division.activity_type.assigned_code == "OMC" ? "Filling Station" : summary.entity_division.activity_type.activity_type_desc
+        else
+          activity_type = ""
+        end
         mobile_num = summary.customer_number
         customer_name = summary.customer_name
         network = summary.nw
@@ -144,6 +166,9 @@ class PaymentReport < ApplicationRecord
           status = "Failed"
         end
         date = summary.created_at
+        for_date = summary.created_at.strftime('%Y-%m-%d')
+        for_time = summary.created_at.strftime('%H:%M:%S')
+
         #csv << [merchant, service, reference, lov_name, activity_type, mobile_num, customer_name, network, transaction_id, total_amt, charge, amount, source, status, date] #[merchant, rec_name, summary.pc_name, summary.momo_number, summary.product_name, bags, quantity, summary.amount, summary.exttrid, status, summary.date]
         #csv << [merchant, service, reference, lov_name, activity_type, mobile_num, customer_name, network, transaction_id, for_gross_amt, charge, actual_amt, source, status, date] #[merchant, rec_name, summary.pc_name, summary.momo_number, summary.product_name, bags, quantity, summary.amount, summary.exttrid, status, summary.date]
         #csv << [merchant, service, service_alias, extra_ref, reference, lov_name, activity_type, mobile_num, customer_name, network, transaction_id, for_gross_amt, m_charge, c_charge, actual_amt, source, status, date] #[merchant, rec_name, summary.pc_name, summary.momo_number, summary.product_name, bags, quantity, summary.amount, summary.exttrid, status, summary.date]
@@ -152,13 +177,17 @@ class PaymentReport < ApplicationRecord
           if current_user.merchant_service?
             service_for_header = EntityDivision.where(active_status: true, assigned_code: current_user.division_code).order(created_at: :desc).first
             if service_for_header && service_for_header.activity_type_code == "OMC"
-              csv << [merchant, service, extra_ref, reference, lov_name, activity_type, mobile_num, customer_name, network, transaction_id, for_gross_amt, m_charge, c_charge, actual_amt, source, status, date] #[merchant, rec_name, summary.pc_name, summary.momo_number, summary.product_name, bags, quantity, summary.amount, summary.exttrid, status, summary.date]
+              csv << [merchant, service, extra_ref, reference, lov_name, activity_type, mobile_num, network, transaction_id, for_gross_amt, m_charge, c_charge, actual_amt, source, status, for_date, for_time] #[merchant, rec_name, summary.pc_name, summary.momo_number, summary.product_name, bags, quantity, summary.amount, summary.exttrid, status, summary.date]
+            elsif service_for_header && service_for_header.activity_type_code == "CHC"
+              csv << [merchant, service, reference, lov_name, menu_item, activity_type, mobile_num, customer_name, network, transaction_id, for_gross_amt, m_charge, c_charge, actual_amt, source, status, date] #[merchant, rec_name, summary.pc_name, summary.momo_number, summary.product_name, bags, quantity, summary.amount, summary.exttrid, status, summary.date]
             else
               csv << [merchant, service, reference, lov_name, activity_type, mobile_num, customer_name, network, transaction_id, for_gross_amt, m_charge, c_charge, actual_amt, source, status, date] #[merchant, rec_name, summary.pc_name, summary.momo_number, summary.product_name, bags, quantity, summary.amount, summary.exttrid, status, summary.date]
             end
           else
             if for_activity_type == "OMC"
-              csv << [merchant, service, extra_ref, reference, lov_name, activity_type, mobile_num, customer_name, network, transaction_id, for_gross_amt, m_charge, c_charge, actual_amt, source, status, date] #[merchant, rec_name, summary.pc_name, summary.momo_number, summary.product_name, bags, quantity, summary.amount, summary.exttrid, status, summary.date]
+              csv << [merchant, service, extra_ref, reference, lov_name, activity_type, mobile_num, network, transaction_id, for_gross_amt, m_charge, c_charge, actual_amt, source, status, for_date, for_time] #[merchant, rec_name, summary.pc_name, summary.momo_number, summary.product_name, bags, quantity, summary.amount, summary.exttrid, status, summary.date]
+            elsif for_activity_type == "CHC"
+              csv << [merchant, service, reference, lov_name, menu_item, activity_type, mobile_num, customer_name, extra_ref, network, transaction_id, for_gross_amt, m_charge, c_charge, actual_amt, source, status, date] #[merchant, rec_name, summary.pc_name, summary.momo_number, summary.product_name, bags, quantity, summary.amount, summary.exttrid, status, summary.date]
             else
               csv << [merchant, service, reference, lov_name, activity_type, mobile_num, customer_name, extra_ref, network, transaction_id, for_gross_amt, m_charge, c_charge, actual_amt, source, status, date] #[merchant, rec_name, summary.pc_name, summary.momo_number, summary.product_name, bags, quantity, summary.amount, summary.exttrid, status, summary.date]
             end
@@ -167,13 +196,17 @@ class PaymentReport < ApplicationRecord
           if current_user.merchant_service?
             service_for_header = EntityDivision.where(active_status: true, assigned_code: current_user.division_code).order(created_at: :desc).first
             if service_for_header && service_for_header.activity_type_code == "OMC"
-              csv << [merchant, service, extra_ref, reference, lov_name, activity_type, mobile_num, customer_name, network, transaction_id, actual_amt, source, status, date] #[merchant, rec_name, summary.pc_name, summary.momo_number, summary.product_name, bags, quantity, summary.amount, summary.exttrid, status, summary.date]
+              csv << [merchant, service, extra_ref, reference, lov_name, activity_type, mobile_num, network, transaction_id, actual_amt, source, status, for_date, for_time] #[merchant, rec_name, summary.pc_name, summary.momo_number, summary.product_name, bags, quantity, summary.amount, summary.exttrid, status, summary.date]
+            elsif service_for_header && service_for_header.activity_type_code == "CHC"
+              csv << [merchant, service, reference, lov_name, menu_item, activity_type, mobile_num, customer_name, network, transaction_id, actual_amt, source, status, date] #[merchant, rec_name, summary.pc_name, summary.momo_number, summary.product_name, bags, quantity, summary.amount, summary.exttrid, status, summary.date]
             else
               csv << [merchant, service, reference, lov_name, activity_type, mobile_num, customer_name, network, transaction_id, actual_amt, source, status, date] #[merchant, rec_name, summary.pc_name, summary.momo_number, summary.product_name, bags, quantity, summary.amount, summary.exttrid, status, summary.date]
             end
           else
             if for_activity_type == "OMC"
-              csv << [merchant, service, extra_ref, reference, lov_name, activity_type, mobile_num, customer_name, network, transaction_id, actual_amt, source, status, date] #[merchant, rec_name, summary.pc_name, summary.momo_number, summary.product_name, bags, quantity, summary.amount, summary.exttrid, status, summary.date]
+              csv << [merchant, service, extra_ref, reference, lov_name, activity_type, mobile_num, network, transaction_id, actual_amt, source, status, for_date, for_time] #[merchant, rec_name, summary.pc_name, summary.momo_number, summary.product_name, bags, quantity, summary.amount, summary.exttrid, status, summary.date]
+            elsif for_activity_type == "CHC"
+              csv << [merchant, service, reference, lov_name, menu_item, activity_type, mobile_num, customer_name, extra_ref, network, transaction_id, actual_amt, source, status, date] #[merchant, rec_name, summary.pc_name, summary.momo_number, summary.product_name, bags, quantity, summary.amount, summary.exttrid, status, summary.date]
             else
               csv << [merchant, service, reference, lov_name, activity_type, mobile_num, customer_name, extra_ref, network, transaction_id, actual_amt, source, status, date] #[merchant, rec_name, summary.pc_name, summary.momo_number, summary.product_name, bags, quantity, summary.amount, summary.exttrid, status, summary.date]
             end

@@ -96,6 +96,13 @@ class EntityInfo < ApplicationRecord
   end
 
 
+  #def self.format_amount(amount)
+  #  amt = (amount.round(2) * 100).to_i.to_s
+  #  (amount.present? && amount > 0 && amt.length <= 12) ? "%012d" % amt : "000000000000"
+  #end
+
+
+
   def self.validate_wallet_config(wallet_params, assigned_code, wallet_state, action_type)
     wallet_validity = false
     key_number = 0

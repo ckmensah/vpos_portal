@@ -192,16 +192,19 @@ class EntityDivisionsController < ApplicationController
     if params[:id_for_entity_info].empty?
       # @region_update_city = [["", ""]]
       @info_update_division = [["", ""]].insert(0,['Please select a service', ""])
+      @merchant_update_ref = [["", ""]].insert(0,['Please select a menu item', ""])
     else
       info_id_record = EntityInfo.find(params[:id_for_entity_info])
       info_update_division = info_id_record.entity_divisions.where(active_status: true).order(division_name: :asc).map { |a| [a.division_name, a.assigned_code] }.insert(0,['Please select a service', ""])
-      if info_update_division.empty?
-        @info_update_division = [["", ""]].insert(0,['Please select a service', ""])
-      else
-        @info_update_division = info_update_division
-      end
+      menu_items = PaymentReport.joins("INNER JOIN entity_division ON payment_reports.entity_div_code = entity_division.assigned_code")
+                       .select(:activity_main_code, :narration).where("entity_code = '#{params[:id_for_entity_info]}' AND active_status = true AND activity_type_code = 'CHC'")
+                       .group(:activity_main_code, :narration).order(activity_main_code: :asc).map { |a| a.narration.present? ? ["#{a.activity_main_code} (#{a.narration})", "#{a.activity_main_code} #{a.narration}"] : [a.activity_main_code, a.activity_main_code] }.insert(0,['Please select a menu item', ""])
+
+      @info_update_division = info_update_division.empty? ? [["", ""]].insert(0,['Please select a service', ""]) : info_update_division
+      @merchant_update_ref = menu_items.empty? ? [["", ""]].insert(0,['Please select a menu item', ""]) : menu_items
     end
     logger.info "For Suburbs :: #{@info_update_division.inspect}"
+    logger.info "For Activity main code (Menu Items) :: #{@merchant_update_ref.inspect}"
   end
 
 
@@ -211,19 +214,21 @@ class EntityDivisionsController < ApplicationController
     if params[:id_for_entity_service].empty?
       # @region_update_city = [["", ""]]
       @info_update_div_lov = [["", ""]].insert(0,['Please select a service option', ""])
+      @service_update_ref = [["", ""]].insert(0,['Please select a menu item', ""])
     else
       info_id_record = EntityDivision.find(params[:id_for_entity_service])
       #info_update_div_lov = info_id_record.division_activity_lovs.where(active_status: true).order(lov_desc: :asc).map { |a| [a.lov_desc, a.id] }.insert(0,['Please select a service option', ""])
       info_update_div_lov = info_id_record.division_activity_lovs.select(:lov_desc).where(active_status: true).group(:lov_desc).order(lov_desc: :asc).map { |a| [a.lov_desc, a.lov_desc] }.insert(0,['Please select a service option', ""])
       #@division_lovs = DivisionActivityLov.select(:lov_desc).where(active_status: true).group(:lov_desc).order(lov_desc: :asc)
+      menu_items = PaymentReport.joins("INNER JOIN entity_division ON payment_reports.entity_div_code = entity_division.assigned_code")
+                        .select(:activity_main_code, :narration).where("entity_div_code = '#{params[:id_for_entity_service]}' AND active_status = true AND activity_type_code = 'CHC'")
+                        .group(:activity_main_code, :narration).order(activity_main_code: :asc).map { |a| a.narration.present? ? ["#{a.activity_main_code} (#{a.narration})", "#{a.activity_main_code} #{a.narration}"] : [a.activity_main_code, a.activity_main_code] }.insert(0,['Please select a menu item', ""])
 
-      if info_update_div_lov.empty?
-        @info_update_div_lov = [["", ""]].insert(0,['Please select a service option', ""])
-      else
-        @info_update_div_lov = info_update_div_lov
-      end
+      info_update_div_lov.empty? ? @info_update_div_lov = [["", ""]].insert(0,['Please select a service option', ""]) : @info_update_div_lov = info_update_div_lov
+      @service_update_ref = menu_items.empty? ? [["", ""]].insert(0,['Please select a menu item', ""]) : menu_items
     end
-    logger.info "For Suburbs :: #{@info_update_div_lov.inspect}"
+    logger.info "For LOV :: #{@info_update_div_lov.inspect}"
+    logger.info "For Activity main code (Menu Items) :: #{@service_update_ref.inspect}"
   end
 
 

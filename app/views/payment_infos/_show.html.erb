@@ -84,31 +84,40 @@
                 <td><strong><%= @pay_info.division_activity_lov.lov_desc if @pay_info.division_activity_lov != nil %></strong></td>
               </tr>
 
-              <tr>
-                <td class="raw_theme w3-border w3-border-black w3-leftbar"><strong>Service ID:</strong></td>
-                <td><strong><%= @pay_info.service_id %></strong></td>
-              </tr>
+<!--              <tr>-->
+<!--                <td class="raw_theme w3-border w3-border-black w3-leftbar"><strong>Service ID:</strong></td>-->
+<!--                <td><strong><%#= @pay_info.service_id %></strong></td>-->
+<!--              </tr>-->
 
               <tr>
                 <td class="raw_theme w3-border w3-border-black w3-leftbar"><strong>Activity Type:</strong></td>
-                <td><strong><%= @pay_info.entity_division.activity_type.activity_type_desc if @pay_info.entity_division != nil %></strong></td>
+                <td>
+                <% if @pay_info.entity_division != nil %>
+                  <strong><%= @pay_info.entity_division.activity_type.assigned_code == "OMC" ? "Filling Station" : @pay_info.entity_division.activity_type.activity_type_desc %></strong>
+                <% end %>
+                </td>
               </tr>
 
               <%# if entity_extra %>
                 <tr>
-                  <td class="raw_theme w3-border w3-border-black w3-leftbar"><strong>Contact No.(s):</strong></td>
+                  <td class="raw_theme w3-border w3-border-black w3-leftbar"><strong>Customer No.(s):</strong></td>
                   <td><strong><%= @pay_info.customer_number if @pay_info.customer_number.present? %></strong></td>
                 </tr>
 
-              <tr>
-                <td class="raw_theme w3-border w3-border-black w3-leftbar"><strong>Name/Reference:</strong></td>
-                <td><strong><%= @pay_info.customer_name if @pay_info.customer_name.present? %></strong></td>
-              </tr>
 
-              <tr>
-                <td class="raw_theme w3-border w3-border-black w3-leftbar"><strong>Recipient No.(s):</strong></td>
-                <td><strong><%= @pay_info.recipient_number if @pay_info.recipient_number.present? %></strong></td>
-              </tr>
+              <% if @pay_info.entity_division != nil && @pay_info.entity_division.activity_type_code != "OMC" %>
+                <tr>
+                  <td class="raw_theme w3-border w3-border-black w3-leftbar"><strong>Name/Reference:</strong></td>
+                  <td><strong><%= @pay_info.customer_name if @pay_info.customer_name.present? %></strong></td>
+                </tr>
+              <% end %>
+
+              <% if @pay_info.entity_division != nil && @pay_info.entity_division.activity_type_code != "OMC" %>
+                <tr>
+                  <td class="raw_theme w3-border w3-border-black w3-leftbar"><strong>Recipient No.(s):</strong></td>
+                  <td><strong><%= @pay_info.recipient_number if @pay_info.recipient_number.present? %></strong></td>
+                </tr>
+              <% end %>
 
               <tr>
                 <td class="raw_theme w3-border w3-border-black w3-leftbar"><strong>Transaction ID.:</strong></td>
@@ -135,10 +144,13 @@
                   <td><strong><%= @pay_info.amount %></strong></td>
                 </tr>
 
+              <% if @pay_info.entity_division != nil && @pay_info.entity_division.activity_type_code != "OMC" %>
                 <tr>
                   <td class="raw_theme w3-border w3-border-black w3-leftbar"><strong>Transaction Type:</strong></td>
                   <td><strong><%= @pay_info.trans_type %></strong></td>
                 </tr>
+              <% end %>
+
 
               <% @merchant_service_trxn = EntityServiceAccountTrxn.where(entity_div_code: @pay_info.entity_div_code, processing_id: @pay_info.processing_id).order(created_at: :desc).first %>
               <% @assigned_fee = AssignedFee.where(entity_div_code: @pay_info.entity_div_code).order(created_at: :desc).first %>
@@ -184,10 +196,10 @@
               <% end %>
 
 
-              <tr>
-                <td class="raw_theme w3-border w3-border-black w3-leftbar"><strong>Reference:</strong></td>
-                <td><strong><%= @pay_info.reference %></strong></td>
-              </tr>
+<!--              <tr>-->
+<!--                <td class="raw_theme w3-border w3-border-black w3-leftbar"><strong>Reference:</strong></td>-->
+<!--                <td><strong><%#= @pay_info.reference %></strong></td>-->
+<!--              </tr>-->
 
 
 
