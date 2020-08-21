@@ -440,10 +440,14 @@ class EntityDivisionsController < ApplicationController
       @activity_codes = [["Donations (DON)", "DON"]]
     elsif @entity_division_sub && @entity_division_sub.activity_type_code == "PDD"
       @activity_codes = [["Predefined Donation (PDD)", "PDD"]]
+    elsif @entity_division_sub && @entity_division_sub.activity_type_code == "GEN"
+      @activity_codes = [["General Merchant (GEN)", "GEN"]]
     elsif @entity_division_sub && @entity_division_sub.activity_type_code == "OMC"
       @activity_codes = [["Oil Marketing Company (OMC)", "OMC"]]
     elsif @entity_division_sub && @entity_division_sub.activity_type_code == "SCH"
       @activity_codes = [["School (SCH)", "SCH"]]
+    elsif @entity_division_sub && @entity_division_sub.activity_type_code == "MOP"
+      @activity_codes = [["Merchant Originated Prompt (MOP)", "MOP"]]
     else
       @entity_div_sub_activities = EntityDivSubActivity.where(entity_div_code: params[:code], active_status: true, del_status: false).order(div_sub_activity_desc: :asc)
       @activity_codes = @entity_div_sub_activities.map { |a| ["#{a.div_sub_activity_desc} (#{a.sub_activity_code})", "#{a.sub_activity_code}"] }.insert(0,['Select an Activity Code', ""])
@@ -502,10 +506,14 @@ class EntityDivisionsController < ApplicationController
       @activity_codes = [["Donations (DON)", "DON"]]
     elsif @entity_division_sub && @entity_division_sub.activity_type_code == "PDD"
       @activity_codes = [["Predefined Donation (PDD)", "PDD"]]
+    elsif @entity_division_sub && @entity_division_sub.activity_type_code == "GEN"
+      @activity_codes = [["General Merchant (GEN)", "GEN"]]
     elsif @entity_division_sub && @entity_division_sub.activity_type_code == "OMC"
       @activity_codes = [["Oil Marketing Company (OMC)", "OMC"]]
     elsif @entity_division_sub && @entity_division_sub.activity_type_code == "SCH"
       @activity_codes = [["School (SCH)", "SCH"]]
+    elsif @entity_division_sub && @entity_division_sub.activity_type_code == "MOP"
+      @activity_codes = [["Merchant Originated Prompt (MOP)", "MOP"]]
     else
       @entity_div_sub_activities = EntityDivSubActivity.where(entity_div_code: params[:code], active_status: true, del_status: false).order(div_sub_activity_desc: :asc)
       @activity_codes = @entity_div_sub_activities.map { |a| ["#{a.div_sub_activity_desc} (#{a.sub_activity_code})", "#{a.sub_activity_code}"] }.insert(0,['Select an Activity Code', ""])
@@ -608,10 +616,14 @@ class EntityDivisionsController < ApplicationController
       @activity_codes = [["Donations (DON)", "DON"]]
     elsif @entity_division_sub && @entity_division_sub.activity_type_code == "PDD"
       @activity_codes = [["Predefined Donation (PDD)", "PDD"]]
+    elsif @entity_division_sub && @entity_division_sub.activity_type_code == "GEN"
+      @activity_codes = [["General Merchant (GEN)", "GEN"]]
     elsif @entity_division_sub && @entity_division_sub.activity_type_code == "OMC"
       @activity_codes = [["Oil Marketing Company (OMC)", "OMC"]]
     elsif @entity_division_sub && @entity_division_sub.activity_type_code == "SCH"
       @activity_codes = [["School (SCH)", "SCH"]]
+    elsif @entity_division_sub && @entity_division_sub.activity_type_code == "MOP"
+      @activity_codes = [["Merchant Originated Prompt (MOP)", "MOP"]]
     else
       @entity_div_sub_activities = EntityDivSubActivity.where(entity_div_code: params[:code], active_status: true, del_status: false).order(div_sub_activity_desc: :asc)
       @activity_codes = @entity_div_sub_activities.map { |a| ["#{a.div_sub_activity_desc} (#{a.sub_activity_code})", "#{a.sub_activity_code}"] }.insert(0,['Select an Activity Code', ""])
@@ -664,16 +676,19 @@ class EntityDivisionsController < ApplicationController
     end
 
 
-
     @entity_division_sub = EntityDivision.where(assigned_code: params[:code], active_status: true).order(created_at: :desc).first
     if @entity_division_sub && @entity_division_sub.activity_type_code == "DON"
       @activity_codes = [["Donations (DON)", "DON"]]
     elsif @entity_division_sub && @entity_division_sub.activity_type_code == "PDD"
       @activity_codes = [["Predefined Donation (PDD)", "PDD"]]
+    elsif @entity_division_sub && @entity_division_sub.activity_type_code == "GEN"
+      @activity_codes = [["General Merchant (GEN)", "GEN"]]
     elsif @entity_division_sub && @entity_division_sub.activity_type_code == "OMC"
       @activity_codes = [["Oil Marketing Company (OMC)", "OMC"]]
     elsif @entity_division_sub && @entity_division_sub.activity_type_code == "SCH"
       @activity_codes = [["School (SCH)", "SCH"]]
+    elsif @entity_division_sub && @entity_division_sub.activity_type_code == "MOP"
+      @activity_codes = [["Merchant Originated Prompt (MOP)", "MOP"]]
     else
       @entity_div_sub_activities = EntityDivSubActivity.where(entity_div_code: params[:code], active_status: true, del_status: false).order(div_sub_activity_desc: :asc)
       @activity_codes = @entity_div_sub_activities.map { |a| ["#{a.div_sub_activity_desc} (#{a.sub_activity_code})", "#{a.sub_activity_code}"] }.insert(0,['Select an Activity Code', ""])
@@ -974,7 +989,7 @@ class EntityDivisionsController < ApplicationController
         @for_service_codes = AssignedServiceCode.new(entity_div_code: assigned_code, service_code: serv_code,
                                                      active_status: true, del_status: false, user_id: current_user.id)
         @for_service_codes.save(validate: false)
-
+        @entity_division.min_amount = entity_division_params[:activity_type_code] == "DON" && entity_division_params[:min_amount].present? ? entity_division_params[:min_amount] : nil
         @entity_division.assigned_code = assigned_code
         @entity_division.save(validate: false)
 
@@ -1224,7 +1239,7 @@ class EntityDivisionsController < ApplicationController
     params.require(:entity_division).permit(:entity_code, :assigned_code, :division_name, :division_alias, :action_type, :suburb_id,
                                             :activity_type_code, :service_label, :region_name, :city_town_name, :comment, :link_master,
                                             :div_lov_query, :activity_query, :sub_activity_query, :serv_id, :s_key, :c_key, :created_at,
-                                            :sport_type, :sport_category, :category_type, :sms_sender_id, :allow_qr,
+                                            :sport_type, :sport_category, :category_type, :sms_sender_id, :allow_qr, :min_amount,
                                             :active_status, :del_status, :user_id, :service_code, :for_update, divisions: [], :the_div_acts_lov => {})
     # entity_wallet_configs_attributes: [:id, :division_code, :service_id, :secret_key, :client_key, :comment, :active_status, :del_status, :user_id]
     #activity_divs_attributes: [:id, :division_code, :activity_div_desc, :activity_date, :comment, :active_status, :del_status, :user_id],

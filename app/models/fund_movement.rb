@@ -11,7 +11,7 @@ class FundMovement < ApplicationRecord
       if current_user.super_admin? || current_user.super_user?
         headers = %w{Merchant Service Service_ID Ref_ID Amount Narration Trans_Type Trans_Status Trans_Description Status Date Time}
       else
-        headers = %w{Merchant Service Ref_ID Amount Narration Trans_Type Trans_Status Trans_Description Status Date Time}
+        headers = %w{Merchant Service Ref_ID Amount Narration Trans_Type Trans_Description Status Date Time}
       end
       csv << headers
 
@@ -49,7 +49,7 @@ class FundMovement < ApplicationRecord
         if current_user.super_admin? || current_user.super_user?
           csv << [merchant, service, summary.service_id, summary.ref_id, summary.amount, summary.narration, summary.trans_type, summary.trans_status, summary.trans_desc, status, for_date, for_time] #[merchant, rec_name, summary.pc_name, summary.momo_number, summary.product_name, bags, quantity, summary.amount, summary.exttrid, status, summary.date]
         else
-          csv << [merchant, service, summary.ref_id, summary.amount, summary.narration, summary.trans_type, summary.trans_status, summary.trans_desc, status, for_date, for_time] #[merchant, rec_name, summary.pc_name, summary.momo_number, summary.product_name, bags, quantity, summary.amount, summary.exttrid, status, summary.date]
+          csv << [merchant, service, summary.ref_id, summary.amount, summary.narration, summary.trans_type, summary.trans_desc, status, for_date, for_time] #[merchant, rec_name, summary.pc_name, summary.momo_number, summary.product_name, bags, quantity, summary.amount, summary.exttrid, status, summary.date]
         end
       end
 

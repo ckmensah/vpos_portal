@@ -177,7 +177,7 @@ class PaymentReport < ApplicationRecord
           if current_user.merchant_service?
             service_for_header = EntityDivision.where(active_status: true, assigned_code: current_user.division_code).order(created_at: :desc).first
             if service_for_header && service_for_header.activity_type_code == "OMC"
-              csv << [merchant, service, extra_ref, reference, lov_name, activity_type, mobile_num, network, transaction_id, for_gross_amt, m_charge, c_charge, actual_amt, source, status, for_date, for_time] #[merchant, rec_name, summary.pc_name, summary.momo_number, summary.product_name, bags, quantity, summary.amount, summary.exttrid, status, summary.date]
+              csv << [merchant, service, extra_ref, customer_name, lov_name, activity_type, mobile_num, network, transaction_id, for_gross_amt, m_charge, c_charge, actual_amt, source, status, for_date, for_time] #[merchant, rec_name, summary.pc_name, summary.momo_number, summary.product_name, bags, quantity, summary.amount, summary.exttrid, status, summary.date]
             elsif service_for_header && service_for_header.activity_type_code == "CHC"
               csv << [merchant, service, reference, lov_name, menu_item, activity_type, mobile_num, customer_name, network, transaction_id, for_gross_amt, m_charge, c_charge, actual_amt, source, status, date] #[merchant, rec_name, summary.pc_name, summary.momo_number, summary.product_name, bags, quantity, summary.amount, summary.exttrid, status, summary.date]
             else
@@ -185,7 +185,7 @@ class PaymentReport < ApplicationRecord
             end
           else
             if for_activity_type == "OMC"
-              csv << [merchant, service, extra_ref, reference, lov_name, activity_type, mobile_num, network, transaction_id, for_gross_amt, m_charge, c_charge, actual_amt, source, status, for_date, for_time] #[merchant, rec_name, summary.pc_name, summary.momo_number, summary.product_name, bags, quantity, summary.amount, summary.exttrid, status, summary.date]
+              csv << [merchant, service, extra_ref, customer_name, lov_name, activity_type, mobile_num, network, transaction_id, for_gross_amt, m_charge, c_charge, actual_amt, source, status, for_date, for_time] #[merchant, rec_name, summary.pc_name, summary.momo_number, summary.product_name, bags, quantity, summary.amount, summary.exttrid, status, summary.date]
             elsif for_activity_type == "CHC"
               csv << [merchant, service, reference, lov_name, menu_item, activity_type, mobile_num, customer_name, extra_ref, network, transaction_id, for_gross_amt, m_charge, c_charge, actual_amt, source, status, date] #[merchant, rec_name, summary.pc_name, summary.momo_number, summary.product_name, bags, quantity, summary.amount, summary.exttrid, status, summary.date]
             else
@@ -196,7 +196,7 @@ class PaymentReport < ApplicationRecord
           if current_user.merchant_service?
             service_for_header = EntityDivision.where(active_status: true, assigned_code: current_user.division_code).order(created_at: :desc).first
             if service_for_header && service_for_header.activity_type_code == "OMC"
-              csv << [merchant, service, extra_ref, reference, lov_name, activity_type, mobile_num, network, transaction_id, actual_amt, source, status, for_date, for_time] #[merchant, rec_name, summary.pc_name, summary.momo_number, summary.product_name, bags, quantity, summary.amount, summary.exttrid, status, summary.date]
+              csv << [merchant, service, extra_ref, customer_name, lov_name, activity_type, mobile_num, network, transaction_id, actual_amt, source, status, for_date, for_time] #[merchant, rec_name, summary.pc_name, summary.momo_number, summary.product_name, bags, quantity, summary.amount, summary.exttrid, status, summary.date]
             elsif service_for_header && service_for_header.activity_type_code == "CHC"
               csv << [merchant, service, reference, lov_name, menu_item, activity_type, mobile_num, customer_name, network, transaction_id, actual_amt, source, status, date] #[merchant, rec_name, summary.pc_name, summary.momo_number, summary.product_name, bags, quantity, summary.amount, summary.exttrid, status, summary.date]
             else
@@ -204,7 +204,7 @@ class PaymentReport < ApplicationRecord
             end
           else
             if for_activity_type == "OMC"
-              csv << [merchant, service, extra_ref, reference, lov_name, activity_type, mobile_num, network, transaction_id, actual_amt, source, status, for_date, for_time] #[merchant, rec_name, summary.pc_name, summary.momo_number, summary.product_name, bags, quantity, summary.amount, summary.exttrid, status, summary.date]
+              csv << [merchant, service, extra_ref, customer_name, lov_name, activity_type, mobile_num, network, transaction_id, actual_amt, source, status, for_date, for_time] #[merchant, rec_name, summary.pc_name, summary.momo_number, summary.product_name, bags, quantity, summary.amount, summary.exttrid, status, summary.date]
             elsif for_activity_type == "CHC"
               csv << [merchant, service, reference, lov_name, menu_item, activity_type, mobile_num, customer_name, extra_ref, network, transaction_id, actual_amt, source, status, date] #[merchant, rec_name, summary.pc_name, summary.momo_number, summary.product_name, bags, quantity, summary.amount, summary.exttrid, status, summary.date]
             else

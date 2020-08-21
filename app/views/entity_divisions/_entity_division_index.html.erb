@@ -130,6 +130,10 @@
                       <% else %>
                         <a class="dropdown-item" href= "<%= division_setup_path(entity_division, code: entity_division.assigned_code, entity_code: params[:entity_code], count1: params[:count1], count: params[:count], page: params[:page]) %>" data-remote="true" ><strong>General Setup</strong></a>
                       <% end %>
+                      <% if entity_division.activity_type.assigned_code == "MOP" %>
+                        <a class="dropdown-item" href="<%= entity_admin_whitelist_index_path(code: entity_division.assigned_code, entity_code: params[:entity_code], count1: params[:count1], count: params[:count]) %>" data-remote="true"><strong>WhiteList Merchant</strong></a>
+                      <% end %>
+
                         <a class="dropdown-item" href="<%= entity_div_alert_recipient_index_path(entity_division, code: entity_division.assigned_code, entity_code: params[:entity_code], count1: params[:count1], count: params[:count]) %>" data-remote="true"><strong>Merchant Notification</strong></a>
                     </div>
 

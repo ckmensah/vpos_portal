@@ -47,11 +47,15 @@
                 <%= f.input :division_name, label: "Service Name", required: true, input_html: {id: "div_name", value: @entity_division.division_name, autofocus: true, autocomplete: "off", class: "form-control w3-input w3-border w3-white input-group input-append", style: "width: 90%;"} %>
                 <%= f.input :division_alias, label: "Service Alias", required: true, input_html: {id: "div_alias", value: @entity_division.division_alias, autocomplete: "off", class: "form-control w3-input w3-border w3-white input-group input-append", style: "width: 90%;"} %>
                 <%= f.input :activity_type_code, label: "Activity Code", selected: @entity_division.activity_type_code, collection: @activity_types, label_method: :activity_name, value_method: :assigned_code, required: true, input_html: {id: "activity_key", autocomplete: "off", class: "form-control w3-input w3-border w3-white input-group input-append", style: "width: 90%;"} %>
+              <div id="min_amt_div">
+                <%= f.input :min_amount, as: :integer, label: "Minimum Amount", required: true, input_html: {id: "min_amt", autocomplete: "off", min: 0, max: 999999, class: "form-control w3-input w3-border w3-white input-group input-append", style: "width: 90%;"} %>
+              </div>
                 <%= f.input :service_code, as: :integer, label: "Shortcode Ext", required: true, input_html: {id: "serv_code", value: @service_code, autocomplete: "off", min: 1, max: 999999, oninput: "validity.valid||(value='');", class: "form-control w3-input w3-border w3-white input-group input-append", style: "width: 90%;"} %>
                 <%= f.input :service_label, label: "Service Label", required: true, input_html: {id: "serv_label", value: @entity_division.service_label, autocomplete: "off", class: "form-control w3-input w3-border w3-white input-group input-append", style: "width: 90%;"} %>
-                <%= f.input :comment, label: "Extra Ref.", required: true, input_html: {id: "extra_ref", value: @entity_division.comment, autocomplete: "off", class: "form-control w3-input w3-border w3-white input-group input-append", style: ""} %>
+                <%= f.input :comment, label: "Extra Ref.", required: true, input_html: {id: "extra_ref", value: @entity_division.comment, autocomplete: "off", class: "form-control w3-input w3-border w3-white input-group input-append", style: "width: 90%"} %>
 
               </div>
+
 
               <div class="w3-half">
                 <%= f.input :sms_sender_id, label: "SMS Sender ID", required: true, input_html: {id: "sender_id", value: @entity_division.sms_sender_id, autocomplete: "off", class: "form-control w3-input w3-border w3-white input-group input-append", style: ""} %>
@@ -145,7 +149,14 @@
         var suburb_id = $("#for_suburb");
         var for_wallet = "for_wallet";
         var link_master = $("#link_master");
+        var activity_type_id = $("#activity_key");
 
+        if (activity_type_id.val() === "DON") {
+            document.getElementById("min_amt_div").style.display = "block";
+        } else {
+            document.getElementById("min_amt_div").style.display = "none";
+            document.getElementById("min_amt").value = "";
+        }
 
         <% if @entity_division.link_master %>
         document.getElementById(for_wallet).style.display = "none";
@@ -196,6 +207,16 @@
             });
 
         });
+
+        activity_type_id.change(function() {
+            if (activity_type_id.val() === "DON") {
+                document.getElementById("min_amt_div").style.display = "block";
+            } else {
+                document.getElementById("min_amt_div").style.display = "none";
+                document.getElementById("min_amt").value = "";
+            }
+        });
+
     });
 
 </script>
