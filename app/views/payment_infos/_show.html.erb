@@ -73,10 +73,14 @@
                   <td><strong><%= @pay_info.reference %></strong></td>
                 </tr>
               <% else %>
-                <tr>
-                  <td class="raw_theme w3-border w3-border-black w3-leftbar"><strong>Reference Name:</strong></td>
-                  <td><strong><%= @pay_info.reference %></strong></td>
-                </tr>
+                <% if @pay_info.entity_division != nil && @pay_info.entity_division.activity_type_code != "MOP" %>
+                  <tr>
+                    <td class="raw_theme w3-border w3-border-black w3-leftbar"><strong>Reference Name:</strong></td>
+                    <td><strong><%= @pay_info.reference %></strong></td>
+                  </tr>
+                <% else %>
+                <% end %>
+
               <% end %>
 
               <tr>
@@ -99,22 +103,33 @@
               </tr>
 
               <%# if entity_extra %>
+
+              <% if @pay_info.entity_division != nil && @pay_info.entity_division.activity_type_code == "MOP" %>
+                <tr>
+                  <!--                  <td class="raw_theme w3-border w3-border-black w3-leftbar"><strong>Customer No.(s):</strong></td>-->
+                  <td class="raw_theme w3-border w3-border-black w3-leftbar"><strong>Payee:</strong></td>
+                  <td><strong><%= @pay_info.customer_number if @pay_info.customer_number.present? %></strong></td>
+                </tr>
+              <% else %>
                 <tr>
                   <td class="raw_theme w3-border w3-border-black w3-leftbar"><strong>Customer No.(s):</strong></td>
                   <td><strong><%= @pay_info.customer_number if @pay_info.customer_number.present? %></strong></td>
                 </tr>
+              <% end %>
 
 
-              <% if @pay_info.entity_division != nil && @pay_info.entity_division.activity_type_code != "OMC" %>
+              <% if @pay_info.entity_division != nil && @pay_info.entity_division.activity_type_code != "OMC" && @pay_info.entity_division.activity_type_code != "MOP" %>
                 <tr>
                   <td class="raw_theme w3-border w3-border-black w3-leftbar"><strong>Name/Reference:</strong></td>
                   <td><strong><%= @pay_info.customer_name if @pay_info.customer_name.present? %></strong></td>
                 </tr>
               <% end %>
 
+
               <% if @pay_info.entity_division != nil && @pay_info.entity_division.activity_type_code != "OMC" %>
                 <tr>
-                  <td class="raw_theme w3-border w3-border-black w3-leftbar"><strong>Recipient No.(s):</strong></td>
+<!--                  <td class="raw_theme w3-border w3-border-black w3-leftbar"><strong>Recipient No.(s):</strong></td>-->
+                  <td class="raw_theme w3-border w3-border-black w3-leftbar"><strong>Initiator:</strong></td>
                   <td><strong><%= @pay_info.recipient_number if @pay_info.recipient_number.present? %></strong></td>
                 </tr>
               <% end %>
@@ -129,22 +144,22 @@
                 <td><strong><%= @pay_info.nw_trans_id %></strong></td>
               </tr>
 
-                <tr>
-                  <td class="raw_theme w3-border w3-border-black w3-leftbar"><strong>Source:</strong></td>
-                  <td><strong><%= @pay_info.src %></strong></td>
-                </tr>
+<!--                <tr>-->
+<!--                  <td class="raw_theme w3-border w3-border-black w3-leftbar"><strong>Source:</strong></td>-->
+<!--                  <td><strong><%#= @pay_info.src %></strong></td>-->
+<!--                </tr>-->
 
-                <tr>
-                  <td class="raw_theme w3-border w3-border-black w3-leftbar"><strong>Payment Mode:</strong></td>
-                  <td><strong><%= @pay_info.payment_mode %></strong></td>
-                </tr>
+<!--                <tr>-->
+<!--                  <td class="raw_theme w3-border w3-border-black w3-leftbar"><strong>Payment Mode:</strong></td>-->
+<!--                  <td><strong><%#= @pay_info.payment_mode %></strong></td>-->
+<!--                </tr>-->
 
                 <tr>
                   <td class="raw_theme w3-border w3-border-black w3-leftbar"><strong>Amount:</strong></td>
                   <td><strong><%= @pay_info.amount %></strong></td>
                 </tr>
 
-              <% if @pay_info.entity_division != nil && @pay_info.entity_division.activity_type_code != "OMC" %>
+              <% if @pay_info.entity_division != nil && (@pay_info.entity_division.activity_type_code != "OMC" && @pay_info.entity_division.activity_type_code != "MOP") %>
                 <tr>
                   <td class="raw_theme w3-border w3-border-black w3-leftbar"><strong>Transaction Type:</strong></td>
                   <td><strong><%= @pay_info.trans_type %></strong></td>
