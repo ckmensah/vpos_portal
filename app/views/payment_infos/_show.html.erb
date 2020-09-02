@@ -117,8 +117,9 @@
                 </tr>
               <% end %>
 
+              
 
-              <% if @pay_info.entity_division != nil && @pay_info.entity_division.activity_type_code != "OMC" && @pay_info.entity_division.activity_type_code != "MOP" %>
+              <% if @pay_info.entity_division != nil && @pay_info.entity_division.activity_type_code != "OMC" && @pay_info.entity_division.activity_type_code != "MOP" && @pay_info.entity_division.activity_type_code != "SHW" %>
                 <tr>
                   <td class="raw_theme w3-border w3-border-black w3-leftbar"><strong>Name/Reference:</strong></td>
                   <td><strong><%= @pay_info.customer_name if @pay_info.customer_name.present? %></strong></td>
@@ -126,7 +127,7 @@
               <% end %>
 
 
-              <% if @pay_info.entity_division != nil && @pay_info.entity_division.activity_type_code != "OMC" %>
+              <% if @pay_info.entity_division != nil && @pay_info.entity_division.activity_type_code != "OMC" && @pay_info.entity_division.activity_type_code != "SHW" %>
                 <tr>
 <!--                  <td class="raw_theme w3-border w3-border-black w3-leftbar"><strong>Recipient No.(s):</strong></td>-->
                   <td class="raw_theme w3-border w3-border-black w3-leftbar"><strong>Initiator:</strong></td>

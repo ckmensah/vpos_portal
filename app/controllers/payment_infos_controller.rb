@@ -263,6 +263,8 @@ class PaymentInfosController < ApplicationController
         f_end_date = @end_date.to_date.strftime('%Y-%m-%d') # Date.strptime(@end_date, '%m/%d/%Y') # @end_date.to_date.strftime('%Y-%m-%d')
         if f_start_date <= f_end_date
           search_arr << "created_at BETWEEN '#{f_start_date} 00:00:00' AND '#{f_end_date} 23:59:59'"
+        else
+          search_arr << "created_at IS NULL"
         end
       end
       logger.info "Values :: #{filter_params.inspect}"

@@ -266,6 +266,11 @@ class UsersController < ApplicationController
 
     user_params[:show_charge] = false if user_params[:role_id] == "1" || user_params[:role_id] == "2"
     respond_to do |format|
+      if params[:user][:password].blank? && params[:user][:password_confirmation].blank?
+        params[:user].delete(:password)
+        params[:user].delete(:password_confirmation)
+      end
+
       if @user.update(user_params)
         format.html { redirect_to @user, notice: 'User was successfully updated.' }
         flash.now[:notice] = "#{user_params[:user_name].capitalize} was successfully updated."

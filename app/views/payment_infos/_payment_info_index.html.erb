@@ -121,8 +121,8 @@
       <thead>
       <% if current_user.merchant_service? %>
         <% entity_div = EntityDivision.where(assigned_code: current_user.division_code, activity_type_code: "MOP", active_status: true).order(created_at: :desc).first %>
-      <% elsif current_user.merchant_admin? %>
-        <% entity_div = EntityDivision.where(entity_code: current_user.entity_code, activity_type_code: "MOP", active_status: true).order(created_at: :desc).first %>
+      <%# elsif current_user.merchant_admin? %>
+        <%# entity_div = EntityDivision.where(entity_code: current_user.entity_code, activity_type_code: "MOP", active_status: true).order(created_at: :desc).first %>
       <% else %>
         <% entity_div = false %>
       <% end %>
@@ -130,17 +130,21 @@
         <!--        <th></th>-->
         <!--        <th>Merchant Name (Merchant Alias)</th>-->
         <th>No.</th>
-        <% if current_user.super_admin? || current_user.super_user? %>
-          <th>Merchant Name</th>
-        <% elsif current_user.merchant_admin? || current_user.merchant_service? %>
+        <% if current_user.super_admin? || current_user.super_user? || current_user.merchant_admin? %>
+          <th>Service Name</th>
+        <% elsif current_user.merchant_service? %>
         <% end %>
 
         <th>Customer No.</th>
         <th>Trans. ID</th>
         <% if current_user.super_admin? || current_user.super_user? || current_user.show_charge == true %>
           <th>Gross Amt</th>
-          <th>M-Charge</th>
-          <th>C-Charge</th>
+          <% if entity_div %>
+            <th>Selected Option</th>
+          <% else %>
+            <th>M-Charge</th>
+            <th>C-Charge</th>
+          <% end %>
           <th>Net Amt</th>
         <% else %>
           <%# if current_user.merchant_service? %>
@@ -153,7 +157,6 @@
           <th>Actual Amt</th>
         <% end %>
         <th>NW</th>
-        <!--        <th>Source</th>-->
         <th>Status</th>
         <th>Date</th>
         <th></th>
@@ -236,7 +239,7 @@
         <tr>
           <td><%= num %></td>
           <!--          <td><%#= payment_info.entity_division.entity_info.entity_name %> (<%#= payment_info.entity_division.entity_info.entity_alias %>)</td>-->
-          <% if current_user.super_admin? || current_user.super_user? %>
+          <% if current_user.super_admin? || current_user.super_user? || current_user.merchant_admin? %>
             <% logger.info "======================================================================" %>
             <%# logger.info "======================================================================" %>
             <%# logger.info "======================================================================" %>
@@ -255,14 +258,24 @@
               <td></td>
 
             <% end %>
-          <% elsif current_user.merchant_admin? || current_user.merchant_service? %>
+          <% elsif current_user.merchant_service? %>
           <% end %>
           <td><%= payment_info.customer_number %></td>
           <td><%= payment_info.processing_id if payment_info.processing_id.present? %></td>
           <% if current_user.super_admin? || current_user.super_user? || current_user.show_charge == true %>
             <td><%= for_gross_amt.round(3) %></td>
-            <td><%= m_charge.round(3) %></td>
-            <td><%= c_charge.round(3) %></td>
+            <% if entity_div %>
+              <% if payment_info.activity_lov_id.present? %>
+                <% div_act_lov = DivisionActivityLov.where(id: payment_info.activity_lov_id).first %>
+                <td><%= div_act_lov.lov_desc if div_act_lov.lov_desc.present? %></td>
+              <% else %>
+                <td></td>
+              <% end %>
+            <% else %>
+              <td><%= m_charge.round(3) %></td>
+              <td><%= c_charge.round(3) %></td>
+            <% end %>
+
             <td><%= actual_amt.round(3) %></td>
           <% else %>
             <% if entity_div %>
@@ -346,9 +359,9 @@
       <% end %>
 
       <tr>
-        <% if current_user.super_admin? || current_user.super_user? %>
+        <% if current_user.super_admin? || current_user.super_user? || current_user.merchant_admin? %>
           <td class="w3-vpos-purple" colspan="2"></td>
-        <% elsif current_user.merchant_admin? || current_user.merchant_service? %>
+        <% elsif current_user.merchant_service? %>
           <td class="w3-vpos-purple" colspan="1"></td>
         <% end %>
 
@@ -359,7 +372,11 @@
 
         <% if current_user.super_admin? || current_user.super_user? || current_user.show_charge == true %>
           <td colspan="1"><strong><%= total_gross_amt.round(3) %></strong> <%# count %></td>
-          <td colspan="2"><strong><%= total_charge.round(3) %></strong> <%# count %></td>
+          <% if entity_div %>
+            <td colspan="1"><strong></strong> <%# count %></td>
+          <% else %>
+            <td colspan="2"><strong><%= total_charge.round(3) %></strong> <%# count %></td>
+          <% end %>
           <td colspan="1"><strong><%= total_actual_amt.round(3) %></strong> <%# count %></td>
         <% else %>
           <% if entity_div %>
@@ -401,7 +418,7 @@
       <div class="w3-white w3-hover-shadow col-md-6 offset-md-3 w3-card-4 w3-border w3-border-purple rcorners w3-center">
         <h4 class="show w3-center"><strong>Filter Transactions</strong></h4>
         <% @networks = [["MTN", "MTN"], ["VOD", "VOD"], ["TIGO", "TIG"], ["AIRTEL", "AIR"]] %>
-        <% @statuses = [["SUCCESS", "000"], ["FAIL", "001"], ["PENDING", "NIL"]] %>
+        <% @statuses = [["SUCCESS", "000"], ["FAILED", "001"], ["PENDING", "NIL"]] %>
         <%= simple_form_for :filter_main, :url => (payment_info_index_path(count: params[:count], page: params[:page])), :method => 'get', html: {class: 'form-horizontal'}, remote: true do |f| %>
           <div class="w3-container w3-border w3-border-purple">
             <!--            <br/>-->
