@@ -1112,6 +1112,7 @@ class EntityDivisionsController < ApplicationController
       if @new_record.valid?#.update(entity_division_params)
         logger.info "LOGGER 1 ====================================================="
         @new_record.assigned_code = @entity_division.assigned_code
+        @new_record.min_amount = entity_division_params[:activity_type_code] == "DON" && entity_division_params[:min_amount].present? ? entity_division_params[:min_amount] : nil
         @new_record.save(validate: false)
         @assigned_service_code = AssignedServiceCode.where(del_status: false, entity_div_code: @entity_division.assigned_code).order(created_at: :desc)
         @active_service_code = @assigned_service_code.where(active_status: true).first

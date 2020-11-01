@@ -22,7 +22,7 @@ class ImageUploader < Shrine
     #{ original: io, large: size_800, medium: size_500, small: size_300, dp: size_600   }
     { original: io   }
     # validate_mime_type_inclusion ["image/jpg", "image/png", "image/gif"]
-    
+
 
   end
 

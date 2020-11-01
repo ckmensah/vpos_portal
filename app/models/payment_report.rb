@@ -38,7 +38,7 @@ class PaymentReport < ApplicationRecord
           elsif service_for_header && service_for_header.activity_type_code == "CHC"
             headers = %w{Merchant Service Reference Selected_Option Menu_Item Activity_Type Customer_No Name/Reference Network Tranx_ID Gross_Amount M-Charge C-Charge Net_Amount Status Date}
           else
-            headers = %w{Merchant Service Reference Selected_Option Activity_Type Customer_No Name/Reference Network Tranx_ID Gross_Amount M-Charge C-Charge Net_Amount Status Date}
+            headers = %w{Merchant Service Reference Selected_Option Customer_No Name/Reference Network Tranx_ID Gross_Amount M-Charge C-Charge Net_Amount Status Date}
           end
         else
           if for_activity_type == "OMC"
@@ -61,7 +61,7 @@ class PaymentReport < ApplicationRecord
           elsif service_for_header && service_for_header.activity_type_code == "CHC"
             headers = %w{Merchant Service Reference Selected_Option Menu_Item Activity_Type Customer_No Name/Reference Network Tranx_ID Net_Amount Status Date}
           else
-            headers = %w{Merchant Service Reference Selected_Option Activity_Type Customer_No Name/Reference Network Tranx_ID Net_Amount Status Date}
+            headers = %w{Merchant Service Reference Selected_Option Customer_No Name/Reference Network Tranx_ID Net_Amount Status Date}
           end
         else
           if for_activity_type == "OMC"
@@ -172,15 +172,26 @@ class PaymentReport < ApplicationRecord
         if source == "USSD"
           source = "USS"
         end
-        status = summary.trans_status.present? ? summary.trans_status.split("/") : "nil"
 
-        if status[0] == "000"
+        #status = summary.trans_status.present? ? summary.trans_status.split("/") : "nil"
+        #
+        #if status[0] == "000"
+        #  status = "Success"
+        #elsif status == "nil"
+        #  status = "Pending"
+        #else
+        #  status = "Failed"
+        #end
+
+        if summary.processed == true
           status = "Success"
-        elsif status == "nil"
-          status = "Pending"
-        else
+        elsif summary.processed == false
           status = "Failed"
+        else
+          status = "Pending"
         end
+
+
         date = summary.created_at
         for_date = summary.created_at.strftime('%Y-%m-%d')
         for_time = summary.created_at.strftime('%H:%M:%S')
@@ -199,7 +210,7 @@ class PaymentReport < ApplicationRecord
             elsif service_for_header && service_for_header.activity_type_code == "CHC"
               csv << [merchant, service, reference, lov_name, menu_item, activity_type, mobile_num, customer_name, network, transaction_id, for_gross_amt, m_charge, c_charge, actual_amt, status, date] #[merchant, rec_name, summary.pc_name, summary.momo_number, summary.product_name, bags, quantity, summary.amount, summary.exttrid, status, summary.date]
             else
-              csv << [merchant, service, reference, lov_name, activity_type, mobile_num, customer_name, network, transaction_id, for_gross_amt, m_charge, c_charge, actual_amt, status, date] #[merchant, rec_name, summary.pc_name, summary.momo_number, summary.product_name, bags, quantity, summary.amount, summary.exttrid, status, summary.date]
+              csv << [merchant, service, reference, lov_name, mobile_num, customer_name, network, transaction_id, for_gross_amt, m_charge, c_charge, actual_amt, status, date] #[merchant, rec_name, summary.pc_name, summary.momo_number, summary.product_name, bags, quantity, summary.amount, summary.exttrid, status, summary.date]
             end
           else
             if for_activity_type == "OMC"
@@ -222,7 +233,7 @@ class PaymentReport < ApplicationRecord
             elsif service_for_header && service_for_header.activity_type_code == "CHC"
               csv << [merchant, service, reference, lov_name, menu_item, activity_type, mobile_num, customer_name, network, transaction_id, actual_amt, status, date] #[merchant, rec_name, summary.pc_name, summary.momo_number, summary.product_name, bags, quantity, summary.amount, summary.exttrid, status, summary.date]
             else
-              csv << [merchant, service, reference, lov_name, activity_type, mobile_num, customer_name, network, transaction_id, actual_amt, status, date] #[merchant, rec_name, summary.pc_name, summary.momo_number, summary.product_name, bags, quantity, summary.amount, summary.exttrid, status, summary.date]
+              csv << [merchant, service, reference, lov_name, mobile_num, customer_name, network, transaction_id, actual_amt, status, date] #[merchant, rec_name, summary.pc_name, summary.momo_number, summary.product_name, bags, quantity, summary.amount, summary.exttrid, status, summary.date]
             end
           else
             if for_activity_type == "OMC"

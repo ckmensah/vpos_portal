@@ -21,7 +21,8 @@ class PaymentInfosController < ApplicationController
       @menu_items = PaymentReport.joins("INNER JOIN entity_division ON payment_reports.entity_div_code = entity_division.assigned_code")
                         .select(:activity_main_code, :narration).where("active_status = true AND activity_type_code = 'CHC'")
                         .group(:activity_main_code, :narration).order(activity_main_code: :asc)
-      @payment_infos = PaymentReport.where("split_part(trans_status, '/', 1) = '000'").paginate(:page => params[:page], :per_page => params[:count]).order('created_at desc')
+      #@payment_infos = PaymentReport.where("split_part(trans_status, '/', 1) = '000'").paginate(:page => params[:page], :per_page => params[:count]).order('created_at desc')
+      @payment_infos = PaymentReport.where("processed = true").paginate(:page => params[:page], :per_page => params[:count]).order('created_at desc')
     elsif current_user.merchant_admin?
       @merchant_service_search = EntityDivision.where(active_status: true, entity_code: current_user.entity_code).order(division_name: :asc)
       entity_div_id_str = "'0'"
@@ -49,7 +50,8 @@ class PaymentInfosController < ApplicationController
                         .select(:activity_main_code, :narration).where("entity_code = '#{current_user.entity_code}' AND active_status = true AND activity_type_code = 'CHC'")
                         .group(:activity_main_code, :narration).order(activity_main_code: :asc)
       @division_lovs = DivisionActivityLov.select(:lov_desc).where("active_status = true AND division_code IN #{final_div_ids}").group(:lov_desc).order(lov_desc: :asc)
-      @payment_infos = PaymentReport.where("split_part(trans_status, '/', 1) = '000' AND entity_div_code IN #{final_div_ids} ").paginate(:page => params[:page], :per_page => params[:count]).order('created_at desc')
+      #@payment_infos = PaymentReport.where("split_part(trans_status, '/', 1) = '000' AND entity_div_code IN #{final_div_ids} ").paginate(:page => params[:page], :per_page => params[:count]).order('created_at desc')
+      @payment_infos = PaymentReport.where("processed = true AND entity_div_code IN #{final_div_ids} ").paginate(:page => params[:page], :per_page => params[:count]).order('created_at desc')
     elsif current_user.merchant_service?
       entity_div_id_str = "'0'"
       @entity_divs = EntityDivision.where("entity_code = '#{current_user.entity_code}' and active_status = true")
@@ -64,7 +66,8 @@ class PaymentInfosController < ApplicationController
       @menu_items = PaymentReport.joins("INNER JOIN entity_division ON payment_reports.entity_div_code = entity_division.assigned_code")
                         .select(:activity_main_code, :narration).where("entity_div_code = '#{current_user.division_code}' AND active_status = true AND activity_type_code = 'CHC'")
                         .group(:activity_main_code, :narration).order(activity_main_code: :asc)
-      @payment_infos = PaymentReport.where("split_part(trans_status, '/', 1) = '000' AND entity_div_code = '#{current_user.division_code}'").paginate(:page => params[:page], :per_page => params[:count]).order('created_at desc')
+      #@payment_infos = PaymentReport.where("split_part(trans_status, '/', 1) = '000' AND entity_div_code = '#{current_user.division_code}'").paginate(:page => params[:page], :per_page => params[:count]).order('created_at desc')
+      @payment_infos = PaymentReport.where("processed = true AND entity_div_code = '#{current_user.division_code}'").paginate(:page => params[:page], :per_page => params[:count]).order('created_at desc')
     end
     #logger.info "Report #{@payment_infos.inspect}"
   end
@@ -247,11 +250,14 @@ class PaymentInfosController < ApplicationController
       end
 
       if @status.present?
-        if @status == "NIL"
-          search_arr << "trans_status IS NULL"
-          #search_arr << "split_part(trans_status, '/', 1) = '000'"
+        if @status == "000"
+          search_arr << "processed = true"
+          #search_arr << "processed IS NULL"
+        elsif @status == "001"
+          search_arr << "processed = false"
         else
-          search_arr << "split_part(trans_status, '/', 1) = '#{@status}'"
+          #search_arr << "split_part(trans_status, '/', 1) = '#{@status}'"
+          search_arr << "processed IS NULL"
         end
       else
         #search_arr << "split_part(trans_status, '/', 1) = '000'"
@@ -288,7 +294,8 @@ class PaymentInfosController < ApplicationController
       else
         logger.info "====================================================================="
         logger.info "There is a download without any filtering. =========================="
-        search_arr << "split_part(trans_status, '/', 1) = '000'"
+        #search_arr << "split_part(trans_status, '/', 1) = '000'"
+        search_arr << "processed = true"
       end
     end
 
@@ -400,9 +407,9 @@ class PaymentInfosController < ApplicationController
     @end_date = params[:the_end_date] # @finance_stat.the_end_date
 
     the_search = ""
-    search_arr = ["split_part(trans_status, '/', 1) = '000'"]
+    search_arr = ["processed = true"] #["split_part(trans_status, '/', 1) = '000'"]
     search_fund_arr = ["processed = true"]
-    search_arr_bbf = ["split_part(trans_status, '/', 1) = '000'"]
+    search_arr_bbf = ["processed = true"] #["split_part(trans_status, '/', 1) = '000'"]
     search_fund_arr_bbf = ["processed = true"]
 
 
@@ -557,9 +564,9 @@ class PaymentInfosController < ApplicationController
     @start_date = @finance_stat.the_start_date
     @end_date = @finance_stat.the_end_date
     the_search = ""
-    search_arr = ["split_part(trans_status, '/', 1) = '000'"]
+    search_arr = ["processed = true"] # ["split_part(trans_status, '/', 1) = '000'"]
     search_fund_arr = ["processed = true"]
-    search_arr_bbf = ["split_part(trans_status, '/', 1) = '000'"]
+    search_arr_bbf = ["processed = true"] # ["split_part(trans_status, '/', 1) = '000'"]
     search_fund_arr_bbf = ["processed = true"]
 
     if @entity_name.present?

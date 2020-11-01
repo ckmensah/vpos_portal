@@ -300,15 +300,25 @@
           <!--            <td><%#= payment_info.src %></td>-->
           <%# end %>
 
-          <% status = payment_info.trans_status.present? ? payment_info.trans_status.split("/") : "nil" %>
-          <% logger.info "Status :: #{status.inspect}" %>
-          <% if status[0] == "000" %>
+          <%# status = payment_info.trans_status.present? ? payment_info.trans_status.split("/") : "nil" %>
+          <%# logger.info "Status :: #{status.inspect}" %>
+          <%# if status[0] == "000" %>
+<!--            <td>Success</td>-->
+          <%# elsif status == "nil" %>
+<!--            <td>Pending</td>-->
+          <%# else %>
+<!--            <td>Failed</td>-->
+          <%# end %>
+
+          <% if payment_info.processed == true %>
             <td>Success</td>
-          <% elsif status == "nil" %>
-            <td>Pending</td>
-          <% else %>
+          <% elsif payment_info.processed == false %>
             <td>Failed</td>
+          <% else %>
+            <td>Pending</td>
           <% end %>
+
+
 
 
           <td><%= payment_info.created_at %></td>
@@ -319,7 +329,7 @@
                             style: "width:70px; height: 30px;",
                             class: 'w3-button w3-purple-vpos w3-border w3-border-purple w3-tiny w3-round-large', remote: true %>
 
-                <% if status[0] == "000" %>
+                <% if payment_info.processed == true %>
                   <%#= link_to 'RESEND', transaction_resend_path(payment_info, params: params.to_unsafe_h, count: params[:count], page: params[:page]),
                               style: "width:80px; height: 30px;",
                               data: {confirm: "Do you wish to resend transaction for: #{payment_info.customer_number}?"},

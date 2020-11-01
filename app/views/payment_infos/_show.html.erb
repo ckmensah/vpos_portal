@@ -83,6 +83,11 @@
 
               <% end %>
 
+
+              <% if @pay_info.entity_division != nil && @pay_info.entity_division.activity_type_code != "OMC" && @pay_info.entity_division.activity_type_code != "MOP" && @pay_info.entity_division.activity_type_code != "SHW" %>
+
+              <% end %>
+
               <tr>
                 <td class="raw_theme w3-border w3-border-black w3-leftbar"><strong>Selected Option:</strong></td>
                 <td><strong><%= @pay_info.division_activity_lov.lov_desc if @pay_info.division_activity_lov != nil %></strong></td>
@@ -92,7 +97,7 @@
 <!--                <td class="raw_theme w3-border w3-border-black w3-leftbar"><strong>Service ID:</strong></td>-->
 <!--                <td><strong><%#= @pay_info.service_id %></strong></td>-->
 <!--              </tr>-->
-
+              <% unless current_user.merchant_service? %>
               <tr>
                 <td class="raw_theme w3-border w3-border-black w3-leftbar"><strong>Activity Type:</strong></td>
                 <td>
@@ -101,7 +106,7 @@
                 <% end %>
                 </td>
               </tr>
-
+              <% end %>
               <%# if entity_extra %>
 
               <% if @pay_info.entity_division != nil && @pay_info.entity_division.activity_type_code == "MOP" %>
@@ -117,7 +122,7 @@
                 </tr>
               <% end %>
 
-              
+
 
               <% if @pay_info.entity_division != nil && @pay_info.entity_division.activity_type_code != "OMC" && @pay_info.entity_division.activity_type_code != "MOP" && @pay_info.entity_division.activity_type_code != "SHW" %>
                 <tr>
@@ -127,7 +132,8 @@
               <% end %>
 
 
-              <% if @pay_info.entity_division != nil && @pay_info.entity_division.activity_type_code != "OMC" && @pay_info.entity_division.activity_type_code != "SHW" %>
+              <%# if @pay_info.entity_division != nil && @pay_info.entity_division.activity_type_code != "OMC" && @pay_info.entity_division.activity_type_code != "SHW" %>
+              <% if @pay_info.entity_division != nil && @pay_info.entity_division.activity_type_code == "MOP" %>
                 <tr>
 <!--                  <td class="raw_theme w3-border w3-border-black w3-leftbar"><strong>Recipient No.(s):</strong></td>-->
                   <td class="raw_theme w3-border w3-border-black w3-leftbar"><strong>Initiator:</strong></td>
@@ -246,14 +252,23 @@
 
               <tr>
                 <td class="raw_theme w3-border w3-border-black w3-leftbar"><strong>Status:</strong></td>
-                <% status = @pay_info.trans_status.present? ? @pay_info.trans_status.split("/")[0] : "nil" %>
-                <% if status == "000" %>
+                <%# status = @pay_info.trans_status.present? ? @pay_info.trans_status.split("/")[0] : "nil" %>
+                <%# if status == "000" %>
+<!--                  <td><strong>Success</strong></td>-->
+                <%# elsif status == "nil" %>
+<!--                  <td><strong>Pending</strong></td>-->
+                <%# else %>
+<!--                  <td><strong>Failed</strong></td>-->
+                <%# end %>
+
+                <% if @pay_info.processed == true %>
                   <td><strong>Success</strong></td>
-                <% elsif status == "nil" %>
-                  <td><strong>Pending</strong></td>
-                <% else %>
+                <% elsif @pay_info.processed == false %>
                   <td><strong>Failed</strong></td>
+                <% else %>
+                  <td><strong>Pending</strong></td>
                 <% end %>
+
               </tr>
 
               <tr>

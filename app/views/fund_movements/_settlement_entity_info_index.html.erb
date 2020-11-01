@@ -127,7 +127,7 @@
               %>
 
 
-              
+
               <%#= f.select(:trial, @merchant_search.collect {|p| [p.entity_name, p.assigned_code]}, {include_blank: "None"}, {id: "id_trial"}) %>
               <%= f.input :entity_name, collection: @merchant_search, label_method: :entity_name, value_method: :assigned_code, input_html: {id: "merchanter", style: "width: 100%;"}, label: "Merchant Name", boolean_style: :inline %>
               <%= f.input :assigned_code, class: "form-control", collection: @merchant_code_search, label_method: :assigned_code, value_method: :assigned_code, input_html: {id: "id_entity_info_ass", style: "width: 100%;", autocomplete: "off"}, label: "Assigned Code", boolean_style: :inline %>
