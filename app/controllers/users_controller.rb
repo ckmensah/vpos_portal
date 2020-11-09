@@ -1,7 +1,8 @@
 class UsersController < ApplicationController
-  before_action :set_user, only: [:show, :edit, :update, :destroy]
+  before_action :set_user, only: [:show, :edit, :scanner_edit, :update, :destroy]
    load_and_authorize_resource
   before_action :load_permissions
+  require 'vpos_core'
 
   # GET /users
   # GET /users.json
@@ -189,6 +190,27 @@ class UsersController < ApplicationController
 
   end
 
+  def new_validator
+    @user = User.new
+    if current_user.super_admin? || current_user.super_user?
+      @entity_infos = EntityInfo.where(active_status: true).order(entity_name: :asc)
+      @entity_divisions = EntityDivision.where(id: 0, active_status: true).order(division_name: :asc)
+      @entity_info_id = ""
+      @entity_div_id = ""
+    elsif current_user.merchant_admin?
+      #@entity_divisions = EntityDivision.where(active_status: true).order(division_name: :asc)
+    end
+  end
+
+  def scanner_edit
+    if current_user.super_admin? || current_user.super_user?
+      @entity_infos = EntityInfo.where(active_status: true).order(entity_name: :asc)
+      #@entity_divisions = EntityDivision.where(id: 0, active_status: true).order(division_name: :asc)
+      @entity_divisions = @user.entity_code.present? ? EntityDivision.where(entity_code: @user.entity_code, active_status: true).order(division_name: :asc) : EntityDivision.where(id: 0, active_status: true).order(division_name: :asc)
+
+    end
+  end
+
   # GET /users/new
   def new
     @user = User.new
@@ -228,17 +250,97 @@ class UsersController < ApplicationController
     end
     @user.show_charge = false if user_params[:role_id] == "1" || user_params[:role_id] == "2"
     respond_to do |format|
+      @entity_divisions = EntityDivision.where(entity_code: user_params[:entity_code], active_status: true).order(division_name: :asc)
+      logger.info "Validator Validation ======================================="
+      @entity_info_id = user_params[:entity_code]
+      @entity_div_id = user_params[:division_code]
+      logger.info "=========================================================="
+      logger.info "ID's are :: #{@entity_info_id.inspect}, #{@entity_div_id.inspect}"
+      if @user.valid?
+        if params[:validator] == "validator"
+          endpoint = '/create_app_user_account_req'
+          payload = {:email => user_params[:email], :password => user_params[:password], :username => user_params[:user_name],
+                     :last_name => user_params[:last_name], :first_name => user_params[:first_name],
+                     :contact_number => user_params[:contact_number], :entity_code => user_params[:entity_code],
+                     :division_code => user_params[:division_code], :role_id => user_params[:role_id].to_i,
+                     :creator_id => user_params[:creator_id].to_i}
+          json_payload=JSON.generate(payload)
+          core_connection = VposCore::CoreConnect.new
+          connection = core_connection.connection
+          #signature = core_connection.compute_signature(_secret_key, json_payload)
+          logger.info "Core connection: #{core_connection.inspect}"
+          begin
+            result=connection.post do |req|
+              req.url endpoint
+              req.options.timeout = 90           # open/read timeout in seconds
+              req.options.open_timeout = 90      # connection open timeout in seconds
+              #req["Authorization"]="#{_client_key}:#{signature}"
+              req.body = json_payload
+            end
 
-      if @user.save
-        format.html { redirect_to @user, notice: 'User was successfully created.' }
-        flash.now[:notice] = "#{@user.user_name.capitalize} was successfully created."
-        format.js { render :show }
-        format.json { render :show, status: :created, location: @user }
+            logger.info "Response:: #{result.inspect}"
+            json_valid_res = core_connection.json_validate(result.body)
+            if json_valid_res
+              logger.info "Valid JSON ================"
+              the_resp = JSON.parse(result.body)
+
+              resp_code = the_resp["resp_code"]
+              resp_desc = the_resp["resp_desc"]
+              logger.info "Response Description :: #{resp_desc.inspect}"
+              if resp_code == "00"
+                flash.now[:notice] = "#{user_params[:user_name].capitalize} was successfully created."
+                #respond_to do |format|
+                  format.js { render :show }
+                #end
+              else
+                flash.now[:danger] = "Sorry, #{user_params[:user_name].capitalize} could not be created. Kindly try again."
+                #respond_to do |format|
+                  format.js { render :new_validator }
+                #end
+              end
+            else
+              logger.info "Not a Valid JSON ==============="
+              flash.now[:danger] = "Sorry, There was an issue. Kindly check and try again."
+              #respond_to do |format|
+                format.js { render :new_validator }
+              #end
+            end
+          rescue Faraday::SSLError
+            logger.info "SSL Error ==============="
+            flash.now[:danger] = "Sorry, There was an issue. Kindly check and try again."
+            #respond_to do |format|
+              format.js { render :new_validator }
+            #end
+          rescue Faraday::TimeoutError
+            logger.info "Timeout Error ================="
+            flash.now[:danger] = "Sorry, There was a timeout issue. Kindly check and try again."
+            #respond_to do |format|
+              format.js { render :new_validator }
+            #end
+          rescue Faraday::Error::ConnectionFailed => e
+            logger.info "Connection Failed ================"
+            logger.info "Error message :: #{e} ==================="
+            flash.now[:danger] = "Sorry, There was a connection issue. Kindly check and try again."
+            #respond_to do |format|
+              format.js { render :new_validator }
+            #end
+          end
+          #format.json { render :show, status: :created, location: @user }
+        else
+          @user.save
+          format.html { redirect_to @user, notice: 'User was successfully created.' }
+          flash.now[:notice] = "#{@user.user_name.capitalize} was successfully created."
+          format.js { render :show }
+          format.json { render :show, status: :created, location: @user }
+        end
       else
-        @entity_divisions = EntityDivision.where(entity_code: user_params[:entity_code], active_status: true).order(division_name: :asc)
         logger.info "Error Messages for create:: #{@user.errors.messages.inspect}"
         # format.html { render :new }
-        format.js { render :new }
+        if params[:validator] == "validator"
+          format.js { render :new_validator }
+        else
+          format.js { render :new }
+        end
         format.json { render json: @user.errors, status: :unprocessable_entity }
       end
     end

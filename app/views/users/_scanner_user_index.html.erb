@@ -1,0 +1,238 @@
+
+
+<div>
+  <br>
+  <p id="notes1"><%#= notice %></p>
+  <br>
+  <div>
+    <div class="w3-half">
+      <% if current_user.super_admin? || current_user.super_user?  %>
+<!--        <button type="button" onclick="document.getElementById('scanner_filter').style.display='block'" style="font-size: small; width: 165px;" class="w3-btn btn btn-outline-purple tablink w3-vpos-purple">USER FILTER</button>-->
+
+        <%= link_to 'NEW', user_new_path(scanner_filter: $scanner_filter.present? ? $scanner_filter.to_enum.to_h : "", count: params[:count], page: params[:page]), style: "width:120px;",
+                    class: 'w3-button w3-purple-vpos w3-border w3-border-purple w3-small w3-round-large',remote:true %>
+      <% end %>
+    </div>
+    <div class="w3-half">
+      <%= select_tag :count, options_for_select([50, 100, 150, 200, 500], params[:count].to_i),
+                     :data => {  :remote => true, :url => url_for(:controller => "users", :action => "scanner_user_index",
+                                                                  :params => {scanner_filter: $scanner_filter.present? ? $scanner_filter.to_enum.to_h : ""})},
+                     id:"record", class: "w3-button w3-white w3-border w3-border-purple w3-round-large",
+                     style: "width:auto; height:35px; float:right", remote:true %>
+
+    </div>
+  </div>
+  <br>
+  <div class="table-responsive-md">
+    <br>
+    <table class="table w3-responsive table-striped">
+      <thead>
+      <tr>
+        <th></th>
+        <th>Mobile Number</th>
+        <th>Status</th>
+        <th>Date</th>
+        <th>Actions</th>
+      </tr>
+      </thead>
+      <tbody>
+      <% @scanner_users.each do |user| %>
+
+        <% if user.entity_code.present? && user.division_code.present? && user.access_type == 'S' %>
+          <% entity_user = EntityDivision.where(active_status: true, assigned_code: user.division_code).order(created_at: :desc).first %>
+          <% entity_user_name = entity_user.present? ? entity_user.division_name : "" %>
+        <% elsif user.entity_code.present? && user.access_type == 'M' && (user.division_code == nil || user.division_code == "") %>
+          <% entity_user = EntityInfo.where(active_status: true, assigned_code: user.entity_code).order(created_at: :desc).first %>
+          <% entity_user_name = entity_user.present? ? entity_user.entity_name : "" %>
+        <% else %>
+          <% entity_user_name = "appsNmobile" %>
+        <% end %>
+
+        <tr>
+          <td><%= link_to 'VIEW', scanner_user_show_path(user, scanner_filter: $scanner_filter.present? ? $scanner_filter.to_enum.to_h : "", count: params[:count], page: params[:page]),
+                          style: "width:70px; height: 30px;",
+                          class: 'w3-button w3-purple-vpos w3-border w3-border-purple w3-tiny w3-round-large', remote:true%></td>
+          <td><strong><%= user.last_name %> <%= user.first_name %></strong></td>
+          <td><strong><%= user.user_name %></strong></td>
+          <% if entity_user_name.present? && entity_user_name.size >= 20 %>
+            <td><strong><%= entity_user_name[0..19] %>...</strong></td>
+          <% elsif entity_user_name.present? %>
+            <td><strong><%= entity_user_name %></strong></td>
+          <% else %>
+            <td><strong><%= entity_user_name %></strong></td>
+          <% end %>
+          <td><strong><%= user.access_type.present? ? user.access_type : 'A' %></strong></td>
+          <!--            <td><strong><%#= user.contact_number %></strong></td>-->
+          <!--            <td><strong><%#= user.email %></strong></td>-->
+
+
+          <% if user.status == "V" %>
+            <td><strong>Verified</strong></td>
+          <% elsif user.status == "P" %>
+            <td><strong>Pending</strong></td>
+          <% else %>
+            <td><strong>Inactive</strong></td>
+          <% end %>
+          <td><strong><%= user.created_at %></strong></td>
+          <td>
+            <% if current_user.super_admin? || current_user.super_user?  %>
+              <%= link_to 'EDIT', user_edit_path(user, user_filter: $user_filter.present? ? $user_filter.to_enum.to_h : "", count: params[:count], page: params[:page]),
+                          style: "width:70px; height: 30px; color: #800754 !important",
+                          class: 'w3-button w3-white w3-border w3-border-purple w3-tiny w3-round-large', remote:true%>
+              <% if user.active_status %>
+                <%= link_to 'DISABLE', user_delete_path(user, user_filter: $user_filter.present? ? $user_filter.to_enum.to_h : "", count: params[:count], page: params[:page]),
+                            style: "width:80px; height: 30px; color: #800754 !important",
+                            method: :delete, data: { confirm: "Do you wish to disable: #{user.user_name}?" },
+                            class: 'w3-button w3-white w3-border w3-border-purple w3-tiny w3-round-large', remote:true%>
+              <% else %>
+                <%= link_to 'ENABLE', user_delete_path(user, count: params[:count], user_filter: $user_filter.present? ? $user_filter.to_enum.to_h : "", page: params[:page]),
+                            style: "width:80px; height: 30px;",
+                            method: :delete, data: { confirm: "Do you wish to enable: #{user.user_name}?" },
+                            class: 'w3-button w3-vpos-purple w3-border w3-border-purple w3-tiny w3-round-large', remote:true%>
+              <% end %>
+            <% end %>
+
+          </td>
+        </tr>
+
+      <% end %>
+
+      </tbody>
+    </table>
+    <% unless params[:count] == "All" %>
+      <div class="flickr_pagination"  style="float: right">
+        <%= will_paginate @users, class: "w3-card", renderer: BootstrapPagination::Rails,
+                          :params => { :controller => "users", :action => "user_index",
+                                       scanner_filter: $scanner_filter.present? ? $scanner_filter.to_enum.to_h : "",
+                                       count: params[:count], page: params[:page] } %>
+        <%#= js_will_paginate @payment_infos, :params => { :controller => "payment_infos", :action => "payment_info_index" } %>
+      </div>
+    <% end %>
+  </div>
+
+
+</div>
+
+
+
+
+
+
+
+
+
+<div class="w3-container" >
+  <div id="scanner_filter" class="w3-modal w3-animate-opacity" style=" display: none">
+    <span onclick="document.getElementById('user_filter').style.display='none'"
+          class="w3-button w3-display-topright">&times;</span>
+    <!--<div class="w3-modal-content w3-card-4" >-->
+    <br/>
+    <%#= render 'form' %>
+
+    <div class="">
+      <div class="w3-white w3-hover-shadow col-md-4 offset-md-4 w3-card-4 w3-border w3-border-purple rcorners w3-center">
+        <h4 class="show w3-center"><strong>Filter Users</strong></h4>
+        <div id=""></div>
+        <%#= simple_form_for(@entity_info, :data => {  :remote => true, count: params[:count], page: params[:page]}) do |f| %>
+        <%= simple_form_for :scanner_filter, :url => (scanner_user_index_path(count: params[:count], page: params[:page])), :method => 'get', html: {class: 'form-horizontal'}, remote: true do |f| %>
+          <div class="w3-container w3-border w3-border-purple">
+            <br/>
+            <input type="hidden" class="form-control" name="count" value="<%= params[:count] %>"/>
+            <input type="hidden" class="form-control" name="page" value="<%= params[:page] %>"/>
+
+            <div class="">
+              <div class="w3-half">
+                <%= f.input :mobile_number, class: "form-control", input_html: {id: "id_mobile_number", style: "width: 100%;", autocomplete: "off"}, label: "User Name", boolean_style: :inline %>
+                <%= f.input :entity_name, class: "form-control", collection: @entity_infos, label_method: :entity_name, value_method: :assigned_code, input_html: {id: "id_entity_info", style: "width: 100%;", autocomplete: "off"}, label: "Merchant Name", boolean_style: :inline %>
+                <%= f.input :div_name, class: "form-control", collection: @entity_divisions, label_method: :division_name, value_method: :assigned_code, input_html: {id: "id_entity_div", style: "width: 100%;", autocomplete: "off"}, label: "Service Name", boolean_style: :inline %>
+              </div>
+
+              <div class="w3-half">
+                <%= f.input :start_date, :id => "datepicker1", as: :date, html5: true, class: "form-control input-group date", label: "Start Date", boolean_style: :inline, input_html: {style: "width: 90%", data: {behaviour: 'datepicker', provide: 'datepicker'}, autocomplete: "off"} %>
+              </div>
+
+              <div class="w3-half">
+                <%= f.input :end_date, :id => "datepicker2", as: :date, html5: true, class: "form-control", label: "End Date", boolean_style: :inline, input_html: {style: "", data: {behaviour: 'datepicker', provide: 'datepicker'}, autocomplete: "off"} %>
+              </div>
+
+            </div>
+
+            <br/>
+          </div>
+
+          <br>
+
+          <div>
+            <br><br>
+            <%= f.submit "Filter", class: "w3-button w3-purple-vpos w3-border w3-border-purple w3-small w3-round-large", :data => {:disable_with => 'Searching...'}, style: "width:auto;float:center;",remote:true %>
+            <%#= link_to 'Back', entity_info_index_path(page: params[:page], count: params[:count]), class: "w3-button w3-white w3-border w3-border-purple w3-small w3-round-large",remote:true %>
+            <button type="button" onclick="document.getElementById('scanner_filter').style.display='none'" class="w3-button w3-white w3-border w3-border-purple w3-small w3-round-large">Back</button>
+
+
+            <br><br>
+          </div>
+        <% end %>
+
+
+      </div>
+
+    </div>
+
+
+    <div class="col-md-7 col-md-offset-5">
+    </div>
+
+    <br/>
+    <div class="col-md-7 col-md-offset-5">
+      <br/>
+      <br/>
+    </div>
+    <!--</div>-->
+
+  </div>
+</div>
+
+
+
+
+
+
+
+
+<script>
+    $(function(){
+        $('.pagination a').attr('data-remote', 'true')
+    });
+
+
+    $(document).ready(function () {
+        $('[data-toggle="tooltip"]').tooltip();
+        var entity_info_id = $('#id_entity_info');
+        var entity_div_id = $('#id_entity_div');
+        var div_lov_id = $('#id_div_lov');
+
+        entity_info_id.change(function () {
+            console.log("For entity_info id:: " + entity_info_id.val());
+            entity_div_id.attr("title", "Now select a service.");
+            Rails.ajax({
+                type: "POST",
+                url: "<%= general_division_ajax_call_path %>",
+                data: "id_for_entity_info=" + entity_info_id.val(),
+                dataType: "script"
+            });
+        });
+
+        entity_div_id.change(function () {
+            console.log("For entity service id:: " + entity_div_id.val());
+            div_lov_id.attr("title", "Now select a service option.");
+            Rails.ajax({
+                type: "POST",
+                url: "<%= general_lov_ajax_call_path %>",
+                data: "id_for_entity_service=" + entity_div_id.val(),
+                dataType: "script"
+            });
+        });
+
+    });
+
+</script>

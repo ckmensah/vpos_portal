@@ -7,7 +7,7 @@
   <div>
     <div class="w3-half">
       <% if current_user.super_admin? || current_user.super_user?  %>
-        <%= link_to 'NEW', user_new_path(validator: "validator", count: params[:count], page: params[:page]), style: "width:120px;",
+        <%= link_to 'NEW', user_new_validator_path(validator: "validator", count: params[:count], page: params[:page]), style: "width:120px;",
                     class: 'w3-button w3-purple-vpos w3-border w3-border-purple w3-small w3-round-large',remote:true %>
       <% end %>
     </div>
@@ -57,7 +57,7 @@
           <td><strong><%= user.created_at %></strong></td>
           <td>
             <% if current_user.super_admin? || current_user.super_user?  %>
-              <%= link_to 'EDIT', user_edit_path(user, validator: "validator", count: params[:count], page: params[:page]),
+              <%= link_to 'EDIT', scanner_edit_path(user, validator: "validator", count: params[:count], page: params[:page]),
                           style: "width:70px; height: 30px; color: #800754 !important",
                           class: 'w3-button w3-white w3-border w3-border-purple w3-tiny w3-round-large', remote:true%>
               <% if user.active_status %>

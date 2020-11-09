@@ -61,12 +61,12 @@
 
             <tr>
               <td class="raw_theme w3-border cell-cust-grad w3-leftbar"><strong>Merchant:</strong></td>
-              <td><strong><%= @user.entity_info.entity_name if @user.entity_code.present? %></strong></td>
+              <td><strong><%= @user.entity_info.entity_name if @user.entity_info != nil && @user.entity_code.present? %></strong></td>
             </tr>
 
             <tr>
               <td class="raw_theme w3-border cell-cust-grad w3-leftbar"><strong>Merchant Service:</strong></td>
-              <td><strong><%= @user.entity_division.division_name if @user.division_code.present? %></strong></td>
+              <td><strong><%= @user.entity_division.division_name if @user.entity_division != nil && @user.division_code.present? %></strong></td>
             </tr>
 
             <tr>

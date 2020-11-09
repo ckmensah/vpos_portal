@@ -25,6 +25,7 @@ default: &default
   host: <%= ENV["DB_HOST"] %>
   port: <%= ENV["DB_PORT"] %>
   reconnect: true
+  prepared_statements: false
 
 development:
   <<: *default

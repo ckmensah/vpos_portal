@@ -53,12 +53,21 @@
               <% if current_user.super_admin? || current_user.super_user? %>
                 <%#= f.input :entity_code,  label: "Merchant", collection: @entity_infos, label_method: :entity_name, value_method: :assigned_code, required: true, input_html:{id: "id_entity_info", autocomplete: "off",class:"form-control w3-input w3-border w3-white input-group input-append",style:""}  %>
                 <%#= f.input :division_code,  label: "Service", collection: @entity_divisions, label_method: :division_name, value_method: :assigned_code, required: true, input_html:{id: "id_entity_div", autocomplete: "off",class:"form-control w3-input w3-border w3-white input-group input-append",style:""}  %>
-                <div id="edit_id_entity" style="display: none">
-                  <%= f.input :entity_code,  label: "Merchant", collection: @entity_infos, label_method: :entity_name, value_method: :assigned_code, required: true, input_html:{id: "edit_id_entity_info", autocomplete: "off",class:"form-control w3-input w3-border w3-white input-group input-append",style:""}  %>
-                </div>
-                <div id="edit_id_service" style="display: none">
-                  <%= f.input :division_code,  label: "Service", collection: @entity_divisions, label_method: :division_name, value_method: :assigned_code, required: true, input_html:{id: "id_entity_div", autocomplete: "off",class:"form-control w3-input w3-border w3-white input-group input-append",style:""}  %>
-                </div>
+                <% if params[:validator] == "validator" %>
+                  <div id="edit_id_entity_valid" style="display: none">
+                    <%= f.input :entity_code,  label: "Merchant", collection: @entity_infos, label_method: :entity_name, value_method: :assigned_code, required: true, input_html:{id: "edit_id_entity_info", autocomplete: "off",class:"form-control w3-input w3-border w3-white input-group input-append",style:""}  %>
+                  </div>
+                  <div id="edit_id_service_valid" style="display: none">
+                    <%= f.input :division_code,  label: "Service", collection: @entity_divisions, label_method: :division_name, value_method: :assigned_code, required: true, input_html:{id: "id_entity_div", autocomplete: "off",class:"form-control w3-input w3-border w3-white input-group input-append",style:""}  %>
+                  </div>
+                <% else %>
+                    <div id="edit_id_entity" style="display: none">
+                      <%= f.input :entity_code,  label: "Merchant", collection: @entity_infos, label_method: :entity_name, value_method: :assigned_code, required: true, input_html:{id: "edit_id_entity_info", autocomplete: "off",class:"form-control w3-input w3-border w3-white input-group input-append",style:""}  %>
+                    </div>
+                    <div id="edit_id_service" style="display: none">
+                      <%= f.input :division_code,  label: "Service", collection: @entity_divisions, label_method: :division_name, value_method: :assigned_code, required: true, input_html:{id: "id_entity_div", autocomplete: "off",class:"form-control w3-input w3-border w3-white input-group input-append",style:""}  %>
+                    </div>
+                <% end %>
               <%# elsif current_user.merchant_admin? %>
                 <%#= f.input :entity_code, :as => :hidden, input_html:{value: current_user.entity_code} %>
                 <%#= f.input :division_code,  label: "Service", collection: @entity_divisions.where(entity_code: current_user.entity_code), label_method: :division_name, value_method: :assigned_code, required: true, input_html:{id: "id_entity_div", autocomplete: "off",class:"form-control w3-input w3-border w3-white input-group input-append",style:""}  %>
@@ -120,6 +129,8 @@
         var role_id = $('#edit_id_role');
         var service_id = "edit_id_service";
         var entity_id = "edit_id_entity";
+        var service_valid_id = "edit_id_service_valid";
+        var entity_valid_id = "edit_id_entity_valid";
         var entity_div_id  = $('#id_entity_div');
 
         entity_info_id.change(function() {
@@ -140,10 +151,14 @@
             document.getElementById(service_id).style.display = "none";
             // entity_info_id.val("");
             // entity_div_id.val("");
-        } else if (role_id.val() == "4" || role_id.val() == "5") {
-            console.log("For 4 and 5..");
+        } else if (role_id.val() == "4") {
+            console.log("For 4..");
             document.getElementById(entity_id).style.display = "block";
             document.getElementById(service_id).style.display = "block";
+        }else if (role_id.val() == "5") {
+            console.log("For 5..");
+            document.getElementById(entity_valid_id).style.display = "block";
+            document.getElementById(service_valid_id).style.display = "block";
         }
 
 
@@ -163,10 +178,14 @@
                 entity_info_id.val("");
                 entity_div_id.val("");
 
-            } else if (role_id.val() == "4" || role_id.val() == "5") {
-                console.log("For 4 and 5..");
+            } else if (role_id.val() == "4") {
+                console.log("For 4..");
                 document.getElementById(entity_id).style.display = "block";
                 document.getElementById(service_id).style.display = "block";
+            } else if (role_id.val() == "5") {
+                console.log("For 5..");
+                document.getElementById(entity_valid_id).style.display = "block";
+                document.getElementById(service_valid_id).style.display = "block";
             }
             // $('#img_prev').removeClass('hidden');
         });

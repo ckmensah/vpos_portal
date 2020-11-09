@@ -15,12 +15,17 @@ Rails.application.routes.draw do
 
   get '/users/user_index' => 'users#user_index', :as => 'user_index'
   get '/users/validator_index' => 'users#validator_index', :as => 'validator_index'
+  #get '/users/scanner_user_index' => 'users#scanner_user_index', :as => 'scanner_user_index'
   get '/users/index' => 'users#index', :as => 'main_users'
   get '/users/new' => 'users#new', :as => 'user_new'
+  get '/users/new_validator' => 'users#new_validator', :as => 'user_new_validator'
   post '/users/create' => 'users#create', :as => 'user_create'
+  #post '/scanner/create' => 'users#scanner_user_create', :as => 'scanner_user_create'
   get '/users/:id/edit' => 'users#edit', :as => 'user_edit'
+  get '/users/:id/scanner_edit' => 'users#scanner_edit', :as => 'scanner_edit'
   get '/users/:id' => 'users#show', :as => 'user_show'
   put '/users/:id' => 'user#update', :as => 'user_update'
+  #put '/users/scanner_user/:id' => 'user#scanner_user_update', :as => 'scanner_user_update'
   patch '/users/:id' => 'users#update'
   delete '/users/:id' => 'users#destroy', :as => 'user_delete'
 

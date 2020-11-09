@@ -1,0 +1,137 @@
+
+
+<div class="w3-container" >
+  <div id="id01" class="w3-modal w3-animate-opacity" style=" display: block">
+    <!--<div class="w3-modal-content w3-card-4" >-->
+    <br/>
+
+    <div class="">
+
+      <div class="w3-white w3-hover-shadow col-md-6 offset-md-3 w3-card-4 w3-border w3-border-purple rcorners w3-center">
+        <h4 class="show w3-center"><strong>Edit Scanner User</strong></h4>
+
+        <div class="w3-container">
+          <br/>
+          <%#= simple_form_for(@user, :data => {  :remote => true, count: params[:count], page: params[:page]}) do |f| %>
+          <%= simple_form_for(@user, url: user_update_path(@user, validator: params[:validator], count: params[:count], page: params[:page] ),:remote => true) do |f| %>
+            <%= f.error_notification %>
+            <%= f.error_notification message: f.object.errors[:base].to_sentence if f.object.errors[:base].present? %>
+            <%#= f.input :region_id,  label: "Region", collection: @region_masters, label_method: :region_name, value_method: :id, required: true, input_html:{id: "id_region", autocomplete: "off",class:"form-control w3-input w3-border w3-white input-group input-append",style:""}  %>
+
+            <%# if current_user.super_admin? || current_user.super_user? %>
+            <%# else %>
+            <div class="">
+              <!--                <div class=""><label>Allow QR</label></div>-->
+              <%= f.input :show_charge, label: "Show Charges", as: :boolean, required: false, input_html: {id: "show_charge", autocomplete: "off", class: "", style: "display: block; float: left; width: 50%"} %>
+            </div>
+            <%# end %>
+
+            <div class="w3-half">
+              <%= f.input :user_name,  label: "User Name", value_method: :id, required: true, input_html:{id: "user_name", autocomplete: "off",class:"form-control w3-input w3-border w3-white input-group input-append",style:"width: 90%;"}  %>
+              <%= f.input :last_name,  label: "Last Name", value_method: :id, required: true, input_html:{id: "last_name", autocomplete: "off",class:"form-control w3-input w3-border w3-white input-group input-append",style:"width: 90%;"}  %>
+              <%= f.input :first_name,  label: "First Name", value_method: :id, required: true, input_html:{id: "first_name", autocomplete: "off",class:"form-control w3-input w3-border w3-white input-group input-append",style:"width: 90%;"}  %>
+              <%= f.input :email,  label: "Email", value_method: :id, required: true, input_html:{id: "email", autocomplete: "off",class:"form-control w3-input w3-border w3-white input-group input-append",style:"width: 90%;"}  %>
+              <%= f.input :contact_number,  label: "Contact Number", value_method: :id, required: true, input_html:{id: "contact_number", autocomplete: "off",class:"form-control w3-input w3-border w3-white input-group input-append",style:"width: 90%;"}  %>
+
+            </div>
+            <div class="w3-half">
+              <%= f.input :role_id, collection: Role.where(id: 5, active_status: true).order(role_name: :asc), label_method: :role_name, value_method: :id, :required => false , label: "Role:", :input_html => {id: "edit_id_role", include_blank: false, autocomplete: "off", style:"",  :class => 'form-control w3-input w3-border w3-white input-group input-append'} %>
+              <% if current_user.super_admin? || current_user.super_user? %>
+              <div id="edit_id_entity_valid" style="display: none">
+                <%= f.input :entity_code,  label: "Merchant", collection: @entity_infos, label_method: :entity_name, value_method: :assigned_code, required: true, input_html:{id: "edit_id_entity_info", autocomplete: "off",class:"form-control w3-input w3-border w3-white input-group input-append",style:""}  %>
+              </div>
+              <div id="edit_id_service_valid" style="display: none">
+                <%= f.input :division_code,  label: "Service", collection: @entity_divisions, label_method: :division_name, value_method: :assigned_code, required: true, input_html:{id: "edit_id_entity_div", autocomplete: "off",class:"form-control w3-input w3-border w3-white input-group input-append",style:""}  %>
+              </div>
+              <% end %>
+
+              <%= f.input :password, autocomplete: "off", required: false, label: "Password", input_html:{id: "password", class:"form-control w3-input w3-border w3-white input-group input-append",style:""}  %>
+              <%= f.input :password_confirmation, autocomplete: "off", required: false,  label: "Confirm password", input_html:{id: "password_conf", class:"form-control w3-input w3-border w3-white input-group input-append",style:""}  %>
+
+            </div>
+
+
+            <%= f.input :active_status, :as => :hidden, input_html:{value: true} %>
+            <%= f.input :creator_id, :as => :hidden, input_html:{value: current_user.id} %>
+            <%#= f.input :user_id, :as => :hidden, input_html:{value: current_user.id} %>
+            <div>
+              <%= f.submit "Submit", class: "w3-button w3-purple-vpos w3-border w3-border-purple w3-small w3-round-large", :data => {:disable_with => 'Please Wait...'}, style: "width:auto;float:center;",remote:true %>
+              <%= link_to 'Back', validator_index_path(page: params[:page], count: params[:count]), class: "w3-button w3-white w3-border w3-border-purple w3-small w3-round-large",remote:true %>
+
+            </div>
+          <% end %>
+          <br/>
+        </div>
+
+
+      </div>
+
+    </div>
+
+
+    <div class="col-md-7 col-md-offset-5">
+    </div>
+
+    <br/>
+    <div class="col-md-7 col-md-offset-5">
+      <br/>
+      <br/>
+    </div>
+    <!--</div>-->
+
+  </div>
+</div>
+
+
+
+
+<script>
+
+
+    $(document).ready(function(){
+        $('[data-toggle="tooltip"]').tooltip();
+        var entity_info_id = $('#edit_id_entity_info');
+        var role_id = $('#edit_id_role');
+        var service_valid_id = "edit_id_service_valid";
+        var entity_valid_id = "edit_id_entity_valid";
+        var entity_div_id  = $('#edit_id_entity_div');
+
+        entity_info_id.change(function() {
+            console.log("For entity_info id:: " + entity_info_id.val());
+            entity_div_id.attr("title", "Now select a service.");
+            Rails.ajax({
+                type: "POST",
+                url: "<%= general_division_ajax_call_path %>",
+                data: "id_for_entity_info=" + entity_info_id.val(),
+                dataType: "script"
+            });
+        });
+
+        if (role_id.val() == "5") {
+            console.log("For 5..");
+            document.getElementById(entity_valid_id).style.display = "block";
+            document.getElementById(service_valid_id).style.display = "block";
+        }
+
+
+        role_id.change(function() {
+            console.log("For role id:: " + role_id.val());
+            // entity_div_id.attr("title", "Now select a service.");
+            if (role_id.val() == "5") {
+                console.log("For 5..");
+                document.getElementById(entity_valid_id).style.display = "block";
+                document.getElementById(service_valid_id).style.display = "block";
+            }
+            // $('#img_prev').removeClass('hidden');
+        });
+
+    });
+
+
+
+</script>
+
+
+
+
+
