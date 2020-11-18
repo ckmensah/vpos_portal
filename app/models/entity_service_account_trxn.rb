@@ -20,7 +20,7 @@ class EntityServiceAccountTrxn < ApplicationRecord
     closing_bal = 0.000
     balance_bf = 0.000
     @entity_service_trxn_cb = EntityServiceAccountTrxn.where("entity_div_code = '#{division_code}' and created_at between '#{start_date} 00:00:00' and '#{end_date} 23:59:59'").order(created_at: :desc).first
-    @entity_service_trxn_bbf = EntityServiceAccountTrxn.where("entity_div_code =' #{division_code}' and created_at < '#{start_date} 00:00:00'").order(created_at: :desc).first
+    @entity_service_trxn_bbf = EntityServiceAccountTrxn.where("entity_div_code = '#{division_code}' and created_at < '#{start_date} 00:00:00'").order(created_at: :desc).first
     closing_bal = @entity_service_trxn_cb.net_bal_aft.round(3) if @entity_service_trxn_cb
     balance_bf = @entity_service_trxn_bbf.net_bal_aft.round(3) if @entity_service_trxn_bbf
     return balance_bf, closing_bal
