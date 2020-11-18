@@ -13,6 +13,11 @@ class PaymentReport < ApplicationRecord
  ELSE payment_reports.amount - payment_reports.charge END) AS actual_amt, sum(amount) AS amount")
   end
 
+  def self.wallet_join
+    select"(trans_type, to_char(created_at, 'YYYY-MM-DD') AS date, sum((net_bal_aft - net_bal_bef)) AS amount) from entity_service_account_trxn"
+  end
+
+
   def self.wallet_statement
     "select entity_div_code, coalesce(sum(case when trans_type in ('CTM','CNC') then net_bal_aft-net_bal_bef end), 0.00) credit_total,
 coalesce(sum(case when trans_type in ('CTW', 'DNC', 'CTB') then net_bal_aft - net_bal_bef end), 0.00) debit_total,
