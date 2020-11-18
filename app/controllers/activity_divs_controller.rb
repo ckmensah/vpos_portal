@@ -2,10 +2,22 @@ class ActivityDivsController < ApplicationController
   before_action :set_activity_div, only: [:show, :edit, :update, :destroy]
   load_and_authorize_resource
   before_action :load_permissions
+  require 'vpos_core'
   # GET /activity_divs
   # GET /activity_divs.json
-  def index
-    @activity_divs = ActivityDiv.all
+  def activity_div_index
+    params[:count] ? params[:count] : params[:count] = 50
+    params[:page] ? params[:page] : params[:page] = 1
+    params[:page].present? ? page = params[:page].to_i : page = 1
+
+    params[:count1] ? params[:count1] : params[:count1] = 50
+    params[:page1] ? params[:page1] : params[:page1] = 1
+
+    params[:count5] ? params[:count5] : params[:count5] = 50
+    params[:page5] ? params[:page5] : params[:page5] = 1
+
+    @activity_divs = ActivityDiv.where(division_code: params[:code], del_status: false).paginate(:page => params[:page], :per_page => params[:count5]).order(created_at: :desc)
+
   end
 
   # GET /activity_divs/1
@@ -20,6 +32,8 @@ class ActivityDivsController < ApplicationController
 
   # GET /activity_divs/1/edit
   def edit
+    @networks = [["MTN", "MTN"], ["VOD", "VOD"], ["TIGO", "TIG"], ["AIRTEL", "AIR"]]
+    @activity_sub_divs = ActivitySubDiv.where(activity_div_id: @activity_div.id, active_status: true).order(classification: :asc)
   end
 
   # POST /activity_divs
@@ -28,7 +42,7 @@ class ActivityDivsController < ApplicationController
     @activity_div = ActivityDiv.new(activity_div_params)
 
     respond_to do |format|
-      if @activity_div.save
+      if @activity_div.valid?
         format.html { redirect_to @activity_div, notice: 'Activity div was successfully created.' }
         format.json { render :show, status: :created, location: @activity_div }
       else
@@ -41,11 +55,90 @@ class ActivityDivsController < ApplicationController
   # PATCH/PUT /activity_divs/1
   # PATCH/PUT /activity_divs/1.json
   def update
+    @activity_div.ticket_valid = activity_div_params[:ticket_valid] == "true" ? true : false
+    @activity_div.activity_sub_plan_id = activity_div_params[:activity_sub_plan_id]
+    @activity_div.recipient_number = activity_div_params[:recipient_number]
+    @activity_div.recipient_email = activity_div_params[:recipient_email]
+    @activity_div.amt = activity_div_params[:amt]
+    @activity_div.entity_div_code = activity_div_params[:entity_div_code]
+    @activity_div.src = activity_div_params[:src]
+    @activity_div.payment_mode = activity_div_params[:payment_mode]
+    @activity_div.nw = activity_div_params[:nw]
+    @activity_div.customer_name = activity_div_params[:customer_name]
+    @activity_div.qty = activity_div_params[:qty]
+    @networks = [["MTN", "MTN"], ["VOD", "VOD"], ["TIGO", "TIG"], ["AIRTEL", "AIR"]]
+    @activity_sub_divs = ActivitySubDiv.where(activity_div_id: @activity_div.id, active_status: true).order(classification: :asc)
+
     respond_to do |format|
-      if @activity_div.update(activity_div_params)
-        format.html { redirect_to @activity_div, notice: 'Activity div was successfully updated.' }
-        format.json { render :show, status: :ok, location: @activity_div }
+      if @activity_div.valid?
+        @activity_divs = ActivityDiv.where(division_code: params[:code], del_status: false).order(created_at: :desc)
+        reference = @activity_div.entity_division != nil ? @activity_div.entity_division.division_name : ""
+        endpoint = '/bulk_ticket_generate_req'
+
+        payload = {
+            "activity_div_id": @activity_div.id, "activity_lov_id": "", "activity_main_code": "",
+            "activity_sub_plan_id": activity_div_params[:activity_sub_plan_id], "amount": activity_div_params[:amt],
+            "charge": activity_div_params[:amt], "customer_name": activity_div_params[:customer_name],
+            "entity_div_code": @activity_div.division_code, "nw": activity_div_params[:nw],
+            "pan": activity_div_params[:recipient_number], "payment_mode": "MOM", "qty": activity_div_params[:qty].to_s,
+            "recipient_email": activity_div_params[:recipient_email], "recipient_number": activity_div_params[:recipient_number],
+            "recipient_type": "", "reference": reference, "session_id": "", "src": "PTL"
+        }
+        json_payload=JSON.generate(payload)
+        logger.info "JSON PAYLOAD :: #{json_payload.inspect}"
+        core_connection = VposCore::CoreConnect.new
+        connection = core_connection.connection
+        #signature = core_connection.compute_signature(_secret_key, json_payload)
+        logger.info "Core connection: #{core_connection.inspect}"
+        begin
+          result=connection.post do |req|
+            req.url endpoint
+            req.options.timeout = 90           # open/read timeout in seconds
+            req.options.open_timeout = 90      # connection open timeout in seconds
+            #req["Authorization"]="#{_client_key}:#{signature}"
+            req.body = json_payload
+          end
+
+          logger.info "Response:: #{result.inspect}"
+          json_valid_res = core_connection.json_validate(result.body)
+          if json_valid_res
+            logger.info "Valid JSON ================"
+            the_resp = JSON.parse(result.body)
+
+            resp_code = the_resp["resp_code"]
+            resp_desc = the_resp["resp_desc"]
+            logger.info "Response Description :: #{resp_desc.inspect}"
+            if resp_code == "00"
+              @activity_div = ActivityDiv.new(activity_div_params)
+              flash.now[:notice] = resp_desc
+              format.js { render :show }
+            else
+              flash.now[:danger] = resp_desc
+              format.js { render :edit }
+            end
+          else
+            logger.info "Not a Valid JSON ==============="
+            flash.now[:danger] = "Sorry, There was an issue. Kindly check and try again."
+            format.js { render :edit }
+          end
+        rescue Faraday::SSLError
+          logger.info "SSL Error ==============="
+          flash.now[:danger] = "Sorry, There was an issue. Kindly check and try again."
+          format.js { render :edit }
+        rescue Faraday::TimeoutError
+          logger.info "Timeout Error ================="
+          flash.now[:danger] = "Sorry, There was a timeout issue. Kindly check and try again."
+          format.js { render :edit }
+        rescue Faraday::Error::ConnectionFailed => e
+          logger.info "Connection Failed ================"
+          logger.info "Error message :: #{e} ==================="
+          flash.now[:danger] = "Sorry, There was a connection issue. Kindly check and try again."
+          format.js { render :edit }
+        end
       else
+        logger.info "Activity Div :: #{@activity_div.inspect}"
+        logger.info "Error Messages :: #{@activity_div.errors.messages.inspect}"
+        format.js { render :edit }
         format.html { render :edit }
         format.json { render json: @activity_div.errors, status: :unprocessable_entity }
       end
@@ -66,6 +159,8 @@ class ActivityDivsController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def activity_div_params
-      params.require(:activity_div).permit(:division_code, :activity_div_desc, :activity_date, :comment, :active_status, :del_status, :user_id)
+      params.require(:activity_div).permit(:division_code, :activity_div_desc, :activity_date, :activity_sub_plan_id, :recipient_number,
+                                           :recipient_email, :entity_div_code, :src, :payment_mode, :nw, :amt, :qty, :customer_name, :ticket_valid,
+                                           :comment, :active_status, :del_status, :user_id)
     end
 end

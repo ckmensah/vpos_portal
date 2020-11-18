@@ -55,15 +55,25 @@
                             class: 'w3-button w3-purple-vpos w3-border w3-border-purple w3-tiny w3-round-large', remote:true%>
 
             <% if entity_division.activity_type.assigned_code == "SHW" || entity_division.activity_type.assigned_code == "SPO" %>
-                <% if act_sub_div_class.exists? %>
-                  <%= link_to 'TICKET TYPES', activity_sub_div_classes_path(code: entity_division.assigned_code, class_div_top: "class_div_top", entity_code: params[:entity_code], count1: params[:count1], count: params[:count]),
+                <button id="navbardrop" data-toggle="dropdown" class="w3-button w3-white w3-border dropdown-toggle w3-border-purple w3-tiny w3-round-large" style="width:80px; height: 30px; color: #800754 !important">TICKETS</button>
+
+                <div class="dropdown-menu dropdown-menu-right">
+                  <% if act_sub_div_class.exists? %>
+                    <a class="dropdown-item" href= "<%= activity_sub_div_classes_path(code: entity_division.assigned_code, class_div_top: "class_div_top", entity_code: params[:entity_code], count1: params[:count1], count: params[:count]) %>" data-remote="true" ><strong>Ticket Types</strong></a>
+                  <% else %>
+                    <a class="dropdown-item" href= "<%= new_activity_sub_div_class_path(code: entity_division.assigned_code, entity_code: params[:entity_code], count1: params[:count1], count: params[:count]) %>" data-remote="true" ><strong>Ticket Types</strong></a>
+                  <% end %>
+                  <a class="dropdown-item" href="<%= activity_div_index_path(code: entity_division.assigned_code, entity_code: params[:entity_code], count1: params[:count1], count: params[:count]) %>" data-remote="true"><strong>Activities</strong></a>
+                </div>
+                <%# if act_sub_div_class.exists? %>
+                  <%#= link_to 'TICKET TYPES', activity_sub_div_classes_path(code: entity_division.assigned_code, class_div_top: "class_div_top", entity_code: params[:entity_code], count1: params[:count1], count: params[:count]),
                               style: "width:100px; height: 30px;",
                               class: 'w3-button w3-purple-vpos w3-border w3-border-purple w3-tiny w3-round-large', remote:true%>
-                <% else %>
-                  <%= link_to 'TICKET TYPES', new_activity_sub_div_class_path(code: entity_division.assigned_code, entity_code: params[:entity_code], count1: params[:count1], count: params[:count]),
+                <%# else %>
+                  <%#= link_to 'TICKET TYPES', new_activity_sub_div_class_path(code: entity_division.assigned_code, entity_code: params[:entity_code], count1: params[:count1], count: params[:count]),
                               style: "width:100px; height: 30px;",
                               class: 'w3-button w3-purple-vpos w3-border w3-border-purple w3-tiny w3-round-large', remote:true%>
-                <% end %>
+                <%# end %>
             <% else %>
 <!--                <button class="w3-button w3-purple-vpos w3-border w3-disabled w3-border-purple w3-tiny w3-round-large" style="width:100px; height: 30px; color: #800754 !important">TICKET TYPES</button>-->
             <% end %>

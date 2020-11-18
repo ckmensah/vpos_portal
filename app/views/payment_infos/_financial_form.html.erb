@@ -11,7 +11,8 @@
       <div class="w3-white w3-hover-shadow col-md-4 offset-md-4 w3-card-4 w3-border w3-border-purple rcorners w3-center">
         <h4 class="show w3-center"><strong>Filter Financial Statement</strong></h4>
         <div id="finance_message"></div>
-        <%= simple_form_for(@finance_stat, :url => (financial_search_path(@finance_stat, inner_form: params[:inner_form].present? ? params[:inner_form] : "", count: params[:count], page: params[:page])), :data => {  :remote => true}) do |f| %>
+        <%= simple_form_for(@finance_stat, :url => (wallet_search_path(@finance_stat, inner_form: params[:inner_form].present? ? params[:inner_form] : "", count: params[:count], page: params[:page])), :data => {  :remote => true}) do |f| %>
+        <%#= simple_form_for(@finance_stat, :url => (financial_search_path(@finance_stat, inner_form: params[:inner_form].present? ? params[:inner_form] : "", count: params[:count], page: params[:page])), :data => {  :remote => true}) do |f| %>
           <%#= simple_form_for :finance_stat, :url => (entity_info_index_path(count: params[:count], page: params[:page])), :method => 'get', html: {class: 'form-horizontal'}, remote: true do |f| %>
           <div class="w3-container w3-border w3-border-purple">
             <br/>

@@ -1,0 +1,67 @@
+
+<div class="w3-container">
+  <div id="reports" class="w3-modal w3-animate-opacity" style=" display: block">
+    <!--    <span onclick="document.getElementById('reports').style.display='none'" class="w3-button w3-display-topright">&times;</span>-->
+    <div class="">
+      <div class="w3-white w3-hover-shadow col-md-6 offset-md-3 w3-card-4 w3-border w3-border-purple rcorners w3-center">
+        <h4 class="show w3-center"><strong>Bulk Ticketing</strong></h4>
+        <%# @networks = [["MTN", "MTN"], ["VOD", "VOD"], ["TIGO", "TIG"], ["AIRTEL", "AIR"]] %>
+        <%= simple_form_for @activity_div, :url => (activity_div_path(@activity_div, count: params[:count], page: params[:page])), html: {class: 'form-horizontal'}, remote: true do |f| %>
+          <p id="bulk_ticket_note"></p>
+          <%= f.error_notification %>
+          <%= f.error_notification message: f.object.errors[:base].to_sentence if f.object.errors[:base].present? %>
+          <div class="w3-container w3-border w3-border-purple">
+
+            <!--            <br/>-->
+            <input type="hidden" class="form-control" name="entity_code" value="<%= params[:entity_code] %>"/>
+            <input type="hidden" class="form-control" name="code" value="<%= params[:code] %>"/>
+            <div class="w3-half">
+              <%= f.input :activity_sub_plan_id, class: "form-control", collection: @activity_sub_divs, label_method: :sub_activity_div, value_method: :id, input_html: {id: "id_sub_plan", style: "width: 90%;", autocomplete: "off"}, label: "Ticket Types", boolean_style: :inline %>
+              <%= f.input :customer_name, class: "form-control", input_html: {style: "width: 90%", autocomplete: "off"}, label: "Customer Name", boolean_style: :inline %>
+              <%= f.input :recipient_number, class: "form-control", input_html: {style: "width: 90%", autocomplete: "off"}, label: "Recipient Number", boolean_style: :inline %>
+              <%= f.input :nw, collection: @networks, label_method: :first, value_method: :last, class: "form-control", input_html: {style: "width: 90%", autocomplete: "off"}, label: "Network", boolean_style: :inline %>
+            </div>
+            <div class="w3-half">
+              <%= f.input :recipient_email, class: "form-control", input_html: {style: "width: 100%", autocomplete: "off"}, label: "Recipient Email", boolean_style: :inline %>
+              <%= f.input :amt, as: :integer, label: "Amount", input_html: {id: "amt", autocomplete: "off", min: 0, max: 999999, class: "form-control", style: "width: 100%;"} %>
+              <%= f.input :qty, as: :integer, label: "Quantity", input_html: {id: "qty", autocomplete: "off", min: 0, max: 9999, class: "form-control", style: "width: 100%;"} %>
+            </div>
+            <%= f.input :entity_div_code, :as => :hidden, input_html: {value: @activity_div.division_code} %>
+            <%= f.input :src, :as => :hidden, input_html: {value: "PTL"} %>
+            <%= f.input :payment_mode, :as => :hidden, input_html: {value: "MOM"} %>
+            <%= f.input :ticket_valid, :as => :hidden, input_html: {value: true} %>
+
+            <!--            <br/>-->
+          </div>
+
+          <!--          <br>-->
+
+          <div>
+            <br>
+            <%= f.submit "Submit", class: "w3-button w3-purple-vpos w3-border w3-border-purple w3-small w3-round-large", :data => {:disable_with => 'Searching...', :confirm => 'Do you wish to continue?'}, style: "width:auto;float:center;", remote: true %>
+            <%#= link_to 'Back', entity_info_index_path(page: params[:page], count: params[:count]), class: "w3-button w3-white w3-border w3-border-purple w3-small w3-round-large",remote:true %>
+<!--            <button type="button" onclick="document.getElementById('reports').style.display='none'" class="w3-button w3-white w3-border w3-border-purple w3-small w3-round-large">Back</button>-->
+            <%= link_to 'Back', activity_div_index_path(entity_code: params[:entity_code], code: params[:code], page: params[:page], count1: params[:count1], page1: params[:page1], count5: params[:count5], page5: params[:page5], count: params[:count]), class: "w3-button w3-white w3-border w3-border-purple w3-small w3-round-large", remote: true %>
+
+            <br><br>
+          </div>
+        <% end %>
+
+
+      </div>
+
+    </div>
+
+
+    <div class="col-md-7 col-md-offset-5">
+    </div>
+
+    <br/>
+    <div class="col-md-7 col-md-offset-5">
+      <br/>
+      <br/>
+    </div>
+    <!--</div>-->
+
+  </div>
+</div>

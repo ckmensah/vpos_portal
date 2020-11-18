@@ -84,6 +84,8 @@ Rails.application.routes.draw do
 
   get '/entity_admin_whitelists/entity_admin_whitelist_index' => 'entity_admin_whitelists#entity_admin_whitelist_index', :as => 'entity_admin_whitelist_index'
 
+  get '/activity_divs/activity_div_index' => 'activity_divs#activity_div_index', :as => 'activity_div_index'
+
   get '/fund_movements/settlement_entity_info_index' => 'fund_movements#settlement_entity_info_index', :as => 'settlement_entity_info_index'
   get '/fund_movements/settlement_entity_division_index/:entity_code' => 'fund_movements#settlement_entity_division_index', :as => 'settlement_entity_division_index'
   get '/fund_movements/settlement_entity_division_index' => 'fund_movements#settlement_entity_division_index', :as => 'settlement_entity_div_index'
@@ -102,8 +104,10 @@ Rails.application.routes.draw do
 
   get '/payment_infos/financial_index' => 'payment_infos#financial_index', :as => 'financial_index'
   get '/payment_infos/financial_statement_index' => 'payment_infos#financial_statement_index', :as => 'financial_statement_index'
+  get '/payment_infos/wallet_statement_index' => 'payment_infos#wallet_statement_index', :as => 'wallet_statement_index'
   get '/payment_infos/financial_form' => 'payment_infos#financial_form', :as => 'financial_form'
   post '/payment_infos/financial_search' => 'payment_infos#financial_search', :as => 'financial_search'
+  post '/payment_infos/wallet_search' => 'payment_infos#wallet_search', :as => 'wallet_search'
 
 
 

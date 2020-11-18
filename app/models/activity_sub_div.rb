@@ -7,5 +7,10 @@ class ActivitySubDiv < ApplicationRecord
   validates :amount, presence: {message: " cannot be empty."}
   validates :classification, presence: {message: " cannot be empty."}
 
+  def sub_activity_div
+    classify_sub_div = ActivitySubDivClass.where(id: classification).first.class_desc
+    "#{classify_sub_div} (#{activity_time.strftime('%H:%M:%S')} - GHC #{amount})"
+  end
+
 
 end

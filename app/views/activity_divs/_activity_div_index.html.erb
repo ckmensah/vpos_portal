@@ -1,0 +1,61 @@
+
+<div>
+  <br>
+  <p id="notes17" class="col-md-6 offset-md-3 w3-center"></p>
+  <br>
+  <h4>Activities</h4>
+  <%= link_to 'BACK', entity_division_index_path(entity_code: params[:entity_code], code: params[:code], count1: params[:count1], count: params[:count], page: $entity_division_page), style: "width:120px;",
+              class: 'w3-button w3-white w3-border w3-border-purple w3-small w3-round-large',remote:true %>
+
+  <br>
+  <div class="table-responsive-md">
+    <br>
+    <table class="table w3-responsive table-striped">
+      <thead>
+      <tr>
+        <th>Activity Name</th>
+        <th>Activity Date</th>
+        <th>Status</th>
+        <th>Date</th>
+        <th>Actions</th>
+      </tr>
+      </thead>
+      <tbody>
+      <% @activity_divs.each do |activity_div| %>
+
+        <tr>
+
+          <td><strong><%= activity_div.activity_div_desc %></td>
+          <td><strong><%= activity_div.activity_date %></td>
+          <% if activity_div.active_status %>
+            <td><strong>Active</strong></td>
+          <% else %>
+            <td><strong>Inactive</strong></td>
+          <% end %>
+          <td><strong><%= activity_div.created_at %></strong></td>
+          <td>
+            <%#= link_to 'VIEW', activity_div_path(activity_div, entity_code: params[:entity_code], code: params[:code], count1: params[:count1], count5: params[:count5], count: params[:count], page: params[:page]),
+                          style: "width:100px; height: 30px;",
+                          class: 'w3-button w3-purple-vpos w3-border w3-border-purple w3-tiny w3-round-large', remote:true%>
+            <%= link_to 'BULK TICKET', edit_activity_div_path(activity_div, entity_code: params[:entity_code], code: params[:code], count1: params[:count1], count5: params[:count5], count: params[:count], page: params[:page]),
+                        style: "width:100px; height: 30px;",
+                        class: 'w3-button w3-purple-vpos w3-border w3-border-purple w3-tiny w3-round-large', remote:true%>
+          </td>
+<!--          <td></td>-->
+        </tr>
+
+      <% end %>
+      </tbody>
+    </table>
+
+  </div>
+
+</div>
+
+
+<script>
+    $(function(){
+        $('.pagination a').attr('data-remote', 'true')
+    });
+
+</script>

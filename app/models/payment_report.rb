@@ -13,6 +13,14 @@ class PaymentReport < ApplicationRecord
  ELSE payment_reports.amount - payment_reports.charge END) AS actual_amt, sum(amount) AS amount")
   end
 
+  def self.wallet_statement
+    "select entity_div_code, coalesce(sum(case when trans_type in ('CTM','CNC') then net_bal_aft-net_bal_bef end), 0.00) credit_total,
+coalesce(sum(case when trans_type in ('CTW', 'DNC', 'CTB') then net_bal_aft - net_bal_bef end), 0.00) debit_total,
+to_char(created_at, 'YYYY-MM-DD') trans_date
+from entity_service_account_trxn group by entity_div_code, trans_type, to_char(created_at, 'YYYY-MM-DD')
+order by to_char(created_at, 'YYYY-MM-DD') asc"
+  end
+
   def activity_main_code_narration
     narration.present? ? "#{activity_main_code} (#{narration})" : "#{activity_main_code}"
   end

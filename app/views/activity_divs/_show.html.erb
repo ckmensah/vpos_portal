@@ -6,72 +6,66 @@
 
     <div class="">
 
+      <%
+        act_sub_div = ActivitySubDiv.where(id: @activity_div.activity_sub_plan_id).first
+        classify_sub_div = act_sub_div ? ActivitySubDivClass.where(id: act_sub_div.classification).first : false
+      %>
       <div class="w3-white w3-hover-shadow col-md-6 offset-md-3 w3-card-4 w3-border w3-border-purple rcorners w3-center">
-        <h4 class="show w3-center"><strong>Fixture Details</strong></h4>
-        <p id="notice13"><strong></strong></p>
+        <h4 class="show w3-center"><strong>Bulk Ticketing Details</strong></h4>
+        <p id="notice17"><strong></strong></p>
         <div class="w3-container">
           <br/>
 
           <table class="w3-table-all table table-bordered w3-hoverable w3-card-4">
 
             <tr>
-              <td class="raw_theme w3-border cell-cust-grad w3-leftbar"><strong>Fixture Description:</strong></td>
-              <td><strong><%= @activity_div.activity_div_desc %></strong></td>
+              <td class="raw_theme w3-border cell-cust-grad w3-leftbar"><strong>Ticket Types:</strong></td>
+              <td><strong><%= classify_sub_div.class_desc if classify_sub_div %></strong></td>
             </tr>
 
             <tr>
-              <td class="raw_theme w3-border cell-cust-grad w3-leftbar"><strong>Activity Date:</strong></td>
-              <td><strong><%= @activity_div.activity_date %></strong></td>
+              <td class="raw_theme w3-border cell-cust-grad w3-leftbar"><strong>Customer Name:</strong></td>
+              <td><strong><%= @activity_div.customer_name %></strong></td>
             </tr>
 
             <tr>
-              <td class="raw_theme w3-border cell-cust-grad w3-leftbar"><strong>Sport Type:</strong></td>
-              <td><strong><%= @activity_div.activity_fixture.activity_category_div.activity_category.activity_cat_desc %></strong></td>
+              <td class="raw_theme w3-border cell-cust-grad w3-leftbar"><strong>Recipient Number:</strong></td>
+              <td><strong><%= @activity_div.recipient_number %></strong></td>
             </tr>
 
             <tr>
-              <td class="raw_theme w3-border cell-cust-grad w3-leftbar"><strong>Sport Category:</strong></td>
-              <td><strong><%= @activity_div.activity_fixture.activity_category_div.activity_div_cat.div_cat_desc %></strong></td>
+              <td class="raw_theme w3-border cell-cust-grad w3-leftbar"><strong>Network:</strong></td>
+              <td><strong><%= @activity_div.nw %></strong></td>
             </tr>
 
             <tr>
-              <td class="raw_theme w3-border cell-cust-grad w3-leftbar"><strong>Category Type:</strong></td>
-              <td><strong><%= @activity_div.activity_fixture.activity_category_div.category_div_desc %></strong></td>
+              <td class="raw_theme w3-border cell-cust-grad w3-leftbar"><strong>Recipient Email:</strong></td>
+              <td><strong><%= @activity_div.recipient_email %></strong></td>
             </tr>
 
             <tr>
-              <td class="raw_theme w3-border cell-cust-grad w3-leftbar"><strong>Fixture:</strong></td>
-              <td><strong><%= @activity_div.activity_fixture.activity_participanta.participant_name %> VS <%= @activity_div.activity_fixture.activity_participantb.participant_name %></strong></td>
+              <td class="raw_theme w3-border cell-cust-grad w3-leftbar"><strong>Amount:</strong></td>
+              <td><strong><%= @activity_div.amt %></strong></td>
             </tr>
 
             <tr>
-              <td class="raw_theme w3-border cell-cust-grad w3-leftbar"><strong>Status:</strong></td>
-
-              <% if @activity_div.active_status %>
-                <td><strong>Active</strong></td>
-              <% else %>
-                <td><strong>Inactive</strong></td>
-              <% end %>
-            </tr>
-
-            <tr>
-              <td class="raw_theme w3-border cell-cust-grad w3-leftbar"><strong>Comment:</strong></td>
-              <td><strong><%= @activity_div.comment %></strong></td>
+              <td class="raw_theme w3-border cell-cust-grad w3-leftbar"><strong>Quantity:</strong></td>
+              <td><strong><%= @activity_div.qty %></strong></td>
             </tr>
 
 
-            <tr>
-              <td class="raw_theme w3-border cell-cust-grad w3-leftbar"><strong>Date:</strong></td>
-              <td>
-                <strong><%= @activity_div.created_at %></strong>
-              </td>
-            </tr>
+<!--            <tr>-->
+<!--              <td class="raw_theme w3-border cell-cust-grad w3-leftbar"><strong>Date:</strong></td>-->
+<!--              <td>-->
+<!--                <strong><%#= @activity_div.created_at %></strong>-->
+<!--              </td>-->
+<!--            </tr>-->
 
           </table>
 
           <br/>
           <div class="w3-center">
-            <%= link_to 'Back', sport_setup_path(params[:code], entity_code: params[:entity_code], code: params[:code], page: params[:page], count: params[:count]), class: 'w3-bar-item w3-btn w3-ripple w3-round-large w3-dark-gray', remote: true %>
+            <%= link_to 'Back', activity_div_index_path(entity_code: params[:entity_code], code: params[:code], page: params[:page], count: params[:count]), class: 'w3-bar-item w3-btn w3-ripple w3-round-large w3-dark-gray', remote: true %>
           </div>
           <br/>
         </div>
