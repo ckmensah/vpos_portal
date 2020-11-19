@@ -703,7 +703,7 @@ class PaymentInfosController < ApplicationController
     @end_date = @finance_stat.the_end_date
     the_search = ""
     search_arr = ["trans_type in ('CTM','CNC')"] #["processed = true"] # ["split_part(trans_status, '/', 1) = '000'"]
-    search_fund_arr = ["processed = true"]
+    search_fund_arr = ["trans_type in ('CTB','DNC','CTW') AND processed = true"]
     search_arr_bbf = ["processed = true"] # ["split_part(trans_status, '/', 1) = '000'"]
     search_fund_arr_bbf = ["processed = true"]
 
