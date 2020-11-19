@@ -19,10 +19,92 @@ class EntityServiceAccountTrxn < ApplicationRecord
   def self.closing_bal_n_bbf(start_date, end_date, division_code)
     closing_bal = 0.000
     balance_bf = 0.000
-    @entity_service_trxn_cb = EntityServiceAccountTrxn.where("entity_div_code = '#{division_code}' and created_at between '#{start_date} 00:00:00' and '#{end_date} 23:59:59'").order(created_at: :desc).first
-    @entity_service_trxn_bbf = EntityServiceAccountTrxn.where("entity_div_code = '#{division_code}' and created_at < '#{start_date} 00:00:00'").order(created_at: :desc).first
-    closing_bal = @entity_service_trxn_cb.net_bal_aft.round(3) if @entity_service_trxn_cb
-    balance_bf = @entity_service_trxn_bbf.net_bal_aft.round(3) if @entity_service_trxn_bbf
+    if start_date.present? && end_date.present? && division_code.present?
+      @entity_service_trxn_cb = EntityServiceAccountTrxn.where("entity_div_code = '#{division_code}' and created_at between '#{start_date} 00:00:00' and '#{end_date} 23:59:59'").order(created_at: :desc).first
+      @entity_service_trxn_bbf = EntityServiceAccountTrxn.where("entity_div_code = '#{division_code}' and created_at < '#{start_date} 00:00:00'").order(created_at: :desc).first
+      closing_bal = @entity_service_trxn_cb.net_bal_aft.round(3) if @entity_service_trxn_cb
+      balance_bf = @entity_service_trxn_bbf.net_bal_aft.round(3) if @entity_service_trxn_bbf
+    end
     return balance_bf, closing_bal
   end
+
+
+  def self.to_finance_csv(payment_report, fund_movements, balance_bf, options = {})
+    CSV.generate(options) do |csv|
+      headers = %w{Value_Date Description Debit Credit Balance}
+      balance = balance_bf
+      csv << headers
+      if payment_report.first
+        payment_report.each_with_index do |pay_report, index|
+          # ------code comes here
+
+          logger.info "Payment report :: #{index + 1}. #{pay_report.inspect}"
+          if fund_movements.first
+            if index == 0
+              fund_movements.each_with_index do |fund_movement, index1|
+                logger.info "Fund Movement report :: #{index1 + 1}. of #{index + 1}. #{fund_movement.inspect}"
+                if fund_movement.date.to_date < pay_report.date.to_date
+                  date = fund_movement.date
+                  narration = fund_movement.narration
+                  debit_amt = fund_movement.amt
+                  credit_amt = ""
+                  balance = balance - debit_amt
+                  csv << [date, narration, debit_amt, credit_amt, balance]
+                end
+              end
+            else
+              fund_movements.each_with_index do |fund_movement, index1|
+                logger.info "Fund Movement report :: #{index1 + 1}. of #{index + 1}. #{fund_movement.inspect}"
+                if fund_movement.date.to_date < pay_report.date.to_date && fund_movement.date.to_date >= payment_report[index - 1].date.to_date
+                  date = fund_movement.date
+                  narration = fund_movement.narration
+                  debit_amt = fund_movement.amt
+                  credit_amt = ""
+                  balance = balance - debit_amt
+                  csv << [date, narration, debit_amt, credit_amt, balance]
+                end
+              end
+            end
+          end
+
+          date = pay_report.date
+          narration = "Collections for #{pay_report.date.to_date.strftime("%B %d, %Y")}"
+          debit_amt = ""
+          credit_amt = pay_report.actual_amt
+          balance = balance + credit_amt
+          csv << [date, narration, debit_amt, credit_amt, balance]
+
+          if fund_movements.first
+            fund_movements.each_with_index do |fund_movement, index1|
+              logger.info "Fund Movement report :: #{index1 + 1}. of #{index + 1}. #{fund_movement.inspect}"
+              if payment_report.size.to_i == index + 1 && fund_movement.date.to_date >= pay_report.date.to_date
+                date = fund_movement.date
+                narration = fund_movement.narration
+                debit_amt = fund_movement.amt
+                credit_amt = ""
+                balance = balance - debit_amt
+                csv << [date, narration, debit_amt, credit_amt, balance]
+              end
+            end
+          end
+        end
+      else
+        if fund_movements.first
+          fund_movements.each_with_index do |fund_movement, index1|
+            logger.info "Fund Movement report :: #{index1 + 1}. #{fund_movement.inspect}"
+            date = fund_movement.date
+            narration = fund_movement.narration
+            debit_amt = fund_movement.amt
+            credit_amt = ""
+            balance = balance - debit_amt
+            csv << [date, narration, debit_amt, credit_amt, balance]
+          end
+        end
+      end
+
+    end
+
+  end
+
+
 end

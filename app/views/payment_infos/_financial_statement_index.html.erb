@@ -121,7 +121,18 @@
 
           <tr>
             <td><strong><%= fin_stat.date %></strong></td>
-            <td><strong><%= "Collections for #{fin_stat.date.to_date.strftime("%B %d, %Y")}" %></strong></td>
+            <% if fin_stat.trans_type == 'CTM' %>
+              <td><strong><%= "Collections for #{fin_stat.date.to_date.strftime("%B %d, %Y")}" %></strong></td>
+            <% else %>
+              <% @fund_moves1 = @fund_moves.where("entity_div_code IN #{@service_name} AND trans_type = '#{fin_stat.trans_type}' AND created_at BETWEEN '#{fin_stat.date} 00:00:00' AND '#{fin_stat.date} 23:59:59'").group("trans_type, narration, date").order(date: :asc).first %>
+              <% if @fund_moves1 %>
+                <% logger.info "Narration of Collection Credit is from Fund_movement table ===================" %>
+                <td><strong><%= @fund_moves1.narration %></strong></td>
+              <% else %>
+                <td><strong><%= "Collections for #{fin_stat.date.to_date.strftime("%B %d, %Y")}" %></strong></td>
+              <% end %>
+            <% end %>
+
             <td></td>
             <td><strong><%= number_to_currency(fin_stat.actual_amt.to_f, unit: "", precision: 2) %></strong></td>
             <% balance = balance + fin_stat.actual_amt.to_f %>
@@ -130,6 +141,8 @@
             <!--          <td><strong><%#= entity_info.entity_name.length > 25 ? "#{entity_info.entity_name[0..25]}.." : entity_info.entity_name %> (<%#= entity_info.entity_alias.length > 20 ? "#{entity_info.entity_alias[0..20]}.." : entity_info.entity_alias %>)</strong></td>-->
 
           </tr>
+
+
 
           <% if @fund_movements.first %>
             <% logger.info "==================== Last debit loop 1" %>
