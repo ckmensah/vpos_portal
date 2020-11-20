@@ -65,7 +65,8 @@
 
         </li>
 
-        <% if current_user.super_admin? %>
+        <% user_whitelist = [2,10] %>
+        <% if current_user.super_admin? || user_whitelist.include?(current_user.id) %>
           <li class="nav-item active">
             <a class="nav-link text-light" href="<%= financial_index_path %>">Fin. Statement</a>
           </li>

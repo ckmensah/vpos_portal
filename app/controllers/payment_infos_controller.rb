@@ -515,10 +515,10 @@ class PaymentInfosController < ApplicationController
           @div_obj = EntityDivision.where(assigned_code: current_user.division_code, active_status: true).order(created_at: :desc).first
           @div_name = @div_obj ? @div_obj.division_name : ""
           format.js { render :financial_statement_index }
-          format.csv { send_data @financial_statement.to_finance_csv(@financial_statement, @fund_movements, @balance_bf), :filename => "financial_statement.csv" }
-          format.xls { send_data @financial_statement.to_finance_csv(@financial_statement, @fund_movements, @balance_bf, col_sep: "\t"), :filename => "financial_statement.xls" }
+          format.csv { send_data @financial_statement.to_finance_csv(@financial_statement, @fund_movements, @fund_moves, @service_name, @balance_bf), :filename => "financial_statement.csv" }
+          format.xls { send_data @financial_statement.to_finance_csv(@financial_statement, @fund_movements, @fund_moves, @service_name, @balance_bf, col_sep: "\t"), :filename => "financial_statement.xls" }
           format.pdf do
-            pdf = FinancialStatementPdf.new(@financial_statement, @fund_movements, @balance_bf, @closing_bal, @debit_total, @credit_total, @div_name, @start_date, @end_date, logger, :page_size => "A4", :page_layout => :landscape, top_margin: 30, bottom_margin: 70)
+            pdf = FinancialStatementPdf.new(@financial_statement, @fund_movements, @fund_moves, @service_name, @balance_bf, @closing_bal, @debit_total, @credit_total, @div_name, @start_date, @end_date, logger, :page_size => "A4", :page_layout => :landscape, top_margin: 30, bottom_margin: 70)
             send_data pdf.render, filename: 'financial_statement.pdf', type: 'application/pdf'
           end
         end
@@ -527,10 +527,10 @@ class PaymentInfosController < ApplicationController
           @div_obj = EntityDivision.where(assigned_code: @division_name, active_status: true).order(created_at: :desc).first
           @div_name = @div_obj ? @div_obj.division_name : ""
           format.js { render :financial_statement_index }
-          format.csv { send_data @financial_statement.to_finance_csv(@financial_statement, @fund_movements, @balance_bf), :filename => "financial_statement.csv" }
-          format.xls { send_data @financial_statement.to_finance_csv(@financial_statement, @fund_movements, @balance_bf, col_sep: "\t"), :filename => "financial_statement.xls" }
+          format.csv { send_data @financial_statement.to_finance_csv(@financial_statement, @fund_movements, @fund_moves, @service_name, @balance_bf), :filename => "financial_statement.csv" }
+          format.xls { send_data @financial_statement.to_finance_csv(@financial_statement, @fund_movements, @fund_moves, @service_name, @balance_bf, col_sep: "\t"), :filename => "financial_statement.xls" }
           format.pdf do
-            pdf = FinancialStatementPdf.new(@financial_statement, @fund_movements, @balance_bf, @closing_bal, @debit_total, @credit_total, @div_name, @start_date, @end_date, logger, :page_size => "A4", :page_layout => :landscape, top_margin: 30, bottom_margin: 70)
+            pdf = FinancialStatementPdf.new(@financial_statement, @fund_movements, @fund_moves, @service_name, @balance_bf, @closing_bal, @debit_total, @credit_total, @div_name, @start_date, @end_date, logger, :page_size => "A4", :page_layout => :landscape, top_margin: 30, bottom_margin: 70)
             send_data pdf.render, filename: 'financial_statement.pdf', type: 'application/pdf'
           end
 

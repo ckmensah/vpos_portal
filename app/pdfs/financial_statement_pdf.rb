@@ -4,13 +4,15 @@ class FinancialStatementPdf < Prawn::Document
   include ActionView::Helpers::NumberHelper
   # require 'active_record'
   # require 'active_support/core_ext'
-  def initialize(financial_statement, fund_movements, balance_bf, closing_bal, debit_total, credit_total, div_name, start_date, end_date, logger, options = {}, &block)
+  def initialize(financial_statement, fund_movements, fund_moves, service_name, balance_bf, closing_bal, debit_total, credit_total, div_name, start_date, end_date, logger, options = {}, &block)
     # super :page_size => "A4", :page_layout => :landscape
     super options
     # super(top_margin: 70)
     @financial_statement = financial_statement
     @logger = logger
     @fund_movements = fund_movements
+    @fund_moves = fund_moves
+    @service_name = service_name
     @balance_bf = balance_bf
     @div_name = div_name
     @start_date = start_date
@@ -25,7 +27,6 @@ class FinancialStatementPdf < Prawn::Document
     # footer
     footer_paging
   end
-
 
 
   def header_info
@@ -59,23 +60,20 @@ class FinancialStatementPdf < Prawn::Document
   end
 
 
-
-
   def to_pdf
     @logger.info "Table data is #{pdf_records.inspect}"
 
     table pdf_records do
-      self.cell_style = { size: 12 }
+      self.cell_style = {size: 12}
       row(0).font_style = :bold
       self.header = true
       self.row_colors = ['DDDDDD', 'FFFFFF']
       self.width = 760
-      self.cells.border_width = [1,0,1,0]
+      self.cells.border_width = [1, 0, 1, 0]
       # self.column_widths = [40, 300, 200]
     end
 
   end
-
 
 
   def footer_paging
@@ -97,7 +95,7 @@ class FinancialStatementPdf < Prawn::Document
       end
       # footer
       canvas do
-        bounding_box [bounds.left, bounds.bottom + 60], :width  => bounds.width do
+        bounding_box [bounds.left, bounds.bottom + 60], :width => bounds.width do
           cell :content => 'This is a computer generated printout & does not need signature. In case of discrepancies, please contact appsNmobile at the earliest.',
                :background_color => 'FFFFFF',
                :width => bounds.width,
@@ -110,9 +108,8 @@ class FinancialStatementPdf < Prawn::Document
         end
       end
     end
-    number_pages "Page <page> of <total>", { :start_count_at => 1, :page_filter => :all, :at => [0, bounds.bottom - 50], :align => :right, :size => 10, :height => 10 }
+    number_pages "Page <page> of <total>", {:start_count_at => 1, :page_filter => :all, :at => [0, bounds.bottom - 50], :align => :right, :size => 10, :height => 10}
   end
-
 
 
   def pdf_records
@@ -152,12 +149,29 @@ class FinancialStatementPdf < Prawn::Document
           end
         end
 
+
+
         date = pay_report.date
-        narration = "Collections for #{pay_report.date.to_date.strftime("%B %d, %Y")}"
+        #narration = "Collections for #{pay_report.date.to_date.strftime("%B %d, %Y")}"
+
+        if pay_report.trans_type == 'CTM'
+          narration = "Collections for #{pay_report.date.to_date.strftime("%B %d, %Y")}"
+        else
+          fund_moves1 = @fund_moves.where("entity_div_code IN #{@service_name} AND trans_type = '#{pay_report.trans_type}' AND created_at BETWEEN '#{pay_report.date} 00:00:00' AND '#{pay_report.date} 23:59:59'").group("trans_type, narration, date").order(date: :asc).first
+          if fund_moves1
+            @logger.info "Narration of Collection Credit is from Fund_movement table ==================="
+            narration = fund_moves1.narration
+          else
+            narration = "Collections for #{pay_report.date.to_date.strftime("%B %d, %Y")}"
+          end
+        end
+
         debit_amt = ""
         credit_amt = pay_report.actual_amt
         balance = balance + credit_amt
         data << [date, narration, debit_amt, number_to_currency(credit_amt, unit: "", precision: 2), number_to_currency(balance, unit: "", precision: 2)]
+
+
 
         if @fund_movements.first
           @fund_movements.each_with_index do |fund_movement, index1|
@@ -189,8 +203,6 @@ class FinancialStatementPdf < Prawn::Document
 
     data
   end
-
-
 
 
 end

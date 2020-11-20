@@ -29,7 +29,7 @@ class EntityServiceAccountTrxn < ApplicationRecord
   end
 
 
-  def self.to_finance_csv(payment_report, fund_movements, balance_bf, options = {})
+  def self.to_finance_csv(payment_report, fund_movements, fund_moves, service_name, balance_bf, options = {})
     CSV.generate(options) do |csv|
       headers = %w{Value_Date Description Debit Credit Balance}
       balance = balance_bf
@@ -67,12 +67,28 @@ class EntityServiceAccountTrxn < ApplicationRecord
             end
           end
 
+
           date = pay_report.date
-          narration = "Collections for #{pay_report.date.to_date.strftime("%B %d, %Y")}"
+          #narration = "Collections for #{pay_report.date.to_date.strftime("%B %d, %Y")}"
+
+          if pay_report.trans_type == 'CTM'
+            narration = "Collections for #{pay_report.date.to_date.strftime("%B %d, %Y")}"
+          else
+            fund_moves1 = fund_moves.where("entity_div_code IN #{service_name} AND trans_type = '#{pay_report.trans_type}' AND created_at BETWEEN '#{pay_report.date} 00:00:00' AND '#{pay_report.date} 23:59:59'").group("trans_type, narration, date").order(date: :asc).first
+            if fund_moves1
+              logger.info "Narration of Collection Credit is from Fund_movement table ==================="
+              narration = fund_moves1.narration
+            else
+              narration = "Collections for #{pay_report.date.to_date.strftime("%B %d, %Y")}"
+            end
+          end
+
           debit_amt = ""
           credit_amt = pay_report.actual_amt
           balance = balance + credit_amt
           csv << [date, narration, debit_amt, credit_amt, balance]
+
+
 
           if fund_movements.first
             fund_movements.each_with_index do |fund_movement, index1|
