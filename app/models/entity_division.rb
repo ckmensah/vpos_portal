@@ -23,6 +23,9 @@ class EntityDivision < ApplicationRecord
   has_many :entity_div_sub_activities, class_name: "EntityDivSubActivity", foreign_key: :entity_div_code
   has_many :fund_movements, class_name: "FundMovement", foreign_key: :entity_div_code
   has_many :entity_div_alert_recipients, class_name: "EntityDivAlertRecipient", foreign_key: :entity_div_code
+  has_many :entity_div_media, class_name: "EntityDivMedium", foreign_key: :entity_div_code
+  has_many :entity_div_social_handles, class_name: "EntityDivSocialHandle", foreign_key: :entity_div_code
+
 
   # has_many :entity_wallet_configs, class_name: 'EntityWalletConfig', foreign_key: :division_code
   # has_many :assigned_service_code, class_name: 'AssignedServiceCode', foreign_key: :entity_div_code
@@ -423,19 +426,45 @@ class EntityDivision < ApplicationRecord
     division_params.each do |key, value|
       if value["division_name"].present? && value["division_alias"].present? && value["sms_sender_id"].present? && value["sms_sender_id"].size <= 9 && value["service_label"].present? && value["service_code"].present? && value["activity_type_code"].present? && value["region_name"].present? && value["city_town_name"].present? && value["suburb_id"].present?
         assigned_code = gen_entity_div_code
-        if value.key?("allow_qr") && value["allow_qr"] == "on"
-          for_divisions = EntityDivision.new(entity_code: entity_div_params[:entity_code], assigned_code: assigned_code, link_master: true,
-                                             activity_type_code: value["activity_type_code"], division_name: value["division_name"],
-                                             service_label: value["service_label"], suburb_id: value["suburb_id"], division_alias: value["division_alias"],
-                                             sms_sender_id: value["sms_sender_id"], active_status: true, del_status: false,
-                                             user_id: current_user.id, allow_qr: true)
-        else
-          for_divisions = EntityDivision.new(entity_code: entity_div_params[:entity_code], assigned_code: assigned_code, link_master: true,
-                                             activity_type_code: value["activity_type_code"], division_name: value["division_name"],
-                                             service_label: value["service_label"], suburb_id: value["suburb_id"], division_alias: value["division_alias"],
-                                             sms_sender_id: value["sms_sender_id"], active_status: true, del_status: false,
-                                             user_id: current_user.id, allow_qr: false)
 
+        if value["activity_type_code"] == "HSP"
+          if value.key?("payment_type") && value["payment_type"] == "on" && value.key?("card_option_status") && value["card_option_status"] == "on"
+            for_divisions = EntityDivision.new(entity_code: entity_div_params[:entity_code], assigned_code: assigned_code, link_master: true,
+                                               activity_type_code: value["activity_type_code"], division_name: value["division_name"],
+                                               service_label: value["service_label"], suburb_id: value["suburb_id"], division_alias: value["division_alias"],
+                                               sms_sender_id: value["sms_sender_id"], active_status: true, del_status: false,
+                                               user_id: current_user.id, allow_qr: false, payment_type: true, card_option_status: true)
+          elsif value.key?("payment_type") && value["payment_type"] == "on" || value.key?("card_option_status") && value["card_option_status"] == "on"
+            payment_type = value["payment_type"] == "on" ? true : false
+            card_option_status = value["card_option_status"] == "on" ? true : false
+            for_divisions = EntityDivision.new(entity_code: entity_div_params[:entity_code], assigned_code: assigned_code, link_master: true,
+                                               activity_type_code: value["activity_type_code"], division_name: value["division_name"],
+                                               service_label: value["service_label"], suburb_id: value["suburb_id"], division_alias: value["division_alias"],
+                                               sms_sender_id: value["sms_sender_id"], active_status: true, del_status: false,
+                                               user_id: current_user.id, allow_qr: false, payment_type: payment_type, card_option_status: card_option_status)
+          else
+            for_divisions = EntityDivision.new(entity_code: entity_div_params[:entity_code], assigned_code: assigned_code, link_master: true,
+                                               activity_type_code: value["activity_type_code"], division_name: value["division_name"],
+                                               service_label: value["service_label"], suburb_id: value["suburb_id"], division_alias: value["division_alias"],
+                                               sms_sender_id: value["sms_sender_id"], active_status: true, del_status: false,
+                                               user_id: current_user.id, allow_qr: false, payment_type: false)
+
+          end
+        else
+          if value.key?("allow_qr") && value["allow_qr"] == "on"
+            for_divisions = EntityDivision.new(entity_code: entity_div_params[:entity_code], assigned_code: assigned_code, link_master: true,
+                                               activity_type_code: value["activity_type_code"], division_name: value["division_name"],
+                                               service_label: value["service_label"], suburb_id: value["suburb_id"], division_alias: value["division_alias"],
+                                               sms_sender_id: value["sms_sender_id"], active_status: true, del_status: false,
+                                               user_id: current_user.id, allow_qr: true, payment_type: false)
+          else
+            for_divisions = EntityDivision.new(entity_code: entity_div_params[:entity_code], assigned_code: assigned_code, link_master: true,
+                                               activity_type_code: value["activity_type_code"], division_name: value["division_name"],
+                                               service_label: value["service_label"], suburb_id: value["suburb_id"], division_alias: value["division_alias"],
+                                               sms_sender_id: value["sms_sender_id"], active_status: true, del_status: false,
+                                               user_id: current_user.id, allow_qr: false, payment_type: false)
+
+          end
         end
 
         for_service_codes = AssignedServiceCode.new(entity_div_code: assigned_code, service_code: value["service_code"],

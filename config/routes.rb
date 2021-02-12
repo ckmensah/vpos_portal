@@ -43,6 +43,7 @@ Rails.application.routes.draw do
   get '/activity_types/activity_type_index' => 'activity_types#activity_type_index', :as => 'activity_type_index'
 
   get '/activity_categories/activity_category_index' => 'activity_categories#activity_category_index', :as => 'activity_category_index'
+  get '/activity_groups/activity_group_index' => 'activity_groups#activity_group_index', :as => 'activity_group_index'
 
   get '/assigned_fees/assigned_fee_index' => 'assigned_fees#assigned_fee_index', :as => 'assigned_fee_index'
 
@@ -86,6 +87,14 @@ Rails.application.routes.draw do
 
   get '/activity_divs/activity_div_index' => 'activity_divs#activity_div_index', :as => 'activity_div_index'
 
+  get '/entity_div_media/entity_div_media_index' => 'entity_div_media#entity_div_media_index', :as => 'entity_div_media_index'
+  get '/entity_div_media/image_media' => 'entity_div_media#image_media', :as => 'image_media'
+  get '/entity_div_media/video_media' => 'entity_div_media#video_media', :as => 'video_media'
+  get '/entity_div_social_handles/entity_div_social_handle_index' => 'entity_div_social_handles#entity_div_social_handle_index', :as => 'entity_div_social_handle_index'
+  get 'inner_new' => 'entity_div_media#inner_new', :as => 'inner_new'
+  post 'inner_create' => 'entity_div_media#inner_create', :as => 'media_inner_create'
+  get '/inner_del/:id' => 'entity_div_media#inner_destroy', :as => 'inner_destroy'
+
   get '/fund_movements/settlement_entity_info_index' => 'fund_movements#settlement_entity_info_index', :as => 'settlement_entity_info_index'
   get '/fund_movements/settlement_entity_division_index/:entity_code' => 'fund_movements#settlement_entity_division_index', :as => 'settlement_entity_division_index'
   get '/fund_movements/settlement_entity_division_index' => 'fund_movements#settlement_entity_division_index', :as => 'settlement_entity_div_index'
@@ -126,7 +135,10 @@ Rails.application.routes.draw do
   post '/entity_divisions/fixture_update', :as => 'cat_div_to_fixture_ajax_call'
   post '/entity_divisions/division_update', :as => 'general_division_ajax_call'
   post '/entity_divisions/lov_update', :as => 'general_lov_ajax_call'
+  post '/activity_sub_div_classes/classification_update', :as => 'general_class_ajax_call'
+  post '/activity_sub_div_classes/ticket_update', :as => 'general_ticket_ajax_call'
   #post '/users/divisions', :as => 'general_role_ajax_call'
+
 
 
   resources :suburb_masters
@@ -162,6 +174,10 @@ Rails.application.routes.draw do
   resources :entity_div_sub_activities
   resources :fund_movements
   resources :entity_div_alert_recipients
+  resources :entity_div_social_handles
+  resources :entity_div_media
+  resources :activity_groups
+
 
 
 

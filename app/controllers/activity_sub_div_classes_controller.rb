@@ -29,16 +29,50 @@ class ActivitySubDivClassesController < ApplicationController
   # GET /activity_sub_div_classes/new
   def new
     @activity_sub_div_class = ActivitySubDivClass.new
+    @activity_groups = ActivityGroup.where(active_status: true, del_status: false).order(activity_group_desc: :asc)
   end
 
   # GET /activity_sub_div_classes/1/edit
   def edit
+    @activity_groups = ActivityGroup.where(active_status: true, del_status: false).order(activity_group_desc: :asc)
+  end
+
+  def classification_update
+    logger.info "Params:: #{params[:id_act_group].inspect}"
+    @classification_update_ticket = [["", ""]].insert(0,['Please select tickets', ""])
+    if params[:id_act_group].empty?
+      # @region_update_city = [["", ""]]
+      @act_group_update_ticket = [["", ""]].insert(0,['Please select ticket type', ""])
+    else
+      info_id_record = ActivityGroup.find(params[:id_act_group])
+      if info_id_record.activity_sub_div_classes != nil
+        act_group_update_ticket = info_id_record.activity_sub_div_classes.where(active_status: true, entity_div_code: params[:div_code]).order(class_desc: :asc).map { |a| [a.class_desc, a.id] }.insert(0,['Please select ticket type', ""])
+        act_group_update_ticket.empty? ? @act_group_update_ticket = [["", ""]].insert(0,['Please select ticket type', ""]) : @act_group_update_ticket = act_group_update_ticket
+      else
+        @act_group_update_ticket = [["", ""]].insert(0,['Please select ticket type', ""])
+      end
+    end
+    logger.info "For Classes :: #{@act_group_update_ticket.inspect}"
+  end
+
+  def ticket_update
+    logger.info "Params:: classification id: #{params[:id_classification].inspect} AND activity div id: #{params[:act_div_id].inspect}"
+    if params[:id_classification].empty?
+      # @region_update_city = [["", ""]]
+      @classification_update_ticket = [["", ""]].insert(0,['Please select tickets', ""])
+    else
+      class_id_record = ActivitySubDivClass.find(params[:id_classification])
+      classification_update_ticket = class_id_record.activity_sub_divs.where(active_status: true, activity_div_id: params[:act_div_id]).order(classification: :asc).map { |a| ["#{a.activity_sub_div_class.class_desc} (#{a.activity_time.strftime('%H:%M:%S')} - GHC #{a.amount})", a.id] }.insert(0,['Please select tickets', ""])
+      classification_update_ticket.empty? ? @classification_update_ticket = [["", ""]].insert(0,['Please select tickets', ""]) : @classification_update_ticket = classification_update_ticket
+    end
+    logger.info "For TICKETS :: #{@classification_update_ticket.inspect}"
   end
 
   # POST /activity_sub_div_classes
   # POST /activity_sub_div_classes.json
   def create
     @activity_sub_div_class = ActivitySubDivClass.new(activity_sub_div_class_params)
+    @activity_groups = ActivityGroup.where(active_status: true, del_status: false).order(activity_group_desc: :asc)
     params[:count] ? params[:count] : params[:count] = 50
     params[:page] ? params[:page] : params[:page] = 1
 
@@ -68,6 +102,7 @@ class ActivitySubDivClassesController < ApplicationController
   # PATCH/PUT /activity_sub_div_classes/1
   # PATCH/PUT /activity_sub_div_classes/1.json
   def update
+    @activity_groups = ActivityGroup.where(active_status: true, del_status: false).order(activity_group_desc: :asc)
     params[:count] ? params[:count] : params[:count] = 50
     params[:page] ? params[:page] : params[:page] = 1
 
@@ -138,7 +173,10 @@ class ActivitySubDivClassesController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def activity_sub_div_class_params
-      params.require(:activity_sub_div_class).permit(:entity_div_code, :class_desc, :comment, :active_status, :del_status,
-                                                     :user_id, :class_one, :class_two, :class_three, :class_four, :class_five)
+      params.require(:activity_sub_div_class).permit(:entity_div_code, :class_desc, :max_num, :activity_group_code, :comment, :active_status, :del_status,
+                                                     :user_id, :class_one, :class_two, :class_three, :class_four, :class_five,
+                                                     :max_num_one, :max_num_two, :max_num_three, :max_num_four, :max_num_five,
+                                                     :act_group_one, :act_group_two, :act_group_three, :act_group_four,
+                                                     :act_group_five)
     end
 end

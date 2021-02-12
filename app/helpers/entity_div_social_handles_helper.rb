@@ -1,0 +1,2 @@
+module EntityDivSocialHandlesHelper
+end

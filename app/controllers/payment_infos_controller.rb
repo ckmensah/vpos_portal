@@ -83,7 +83,7 @@ class PaymentInfosController < ApplicationController
     @entity_code = params[:entity_code]
     @code = params[:code]
 
-    if params[:filter_main].present? || params[:entity_name].present? || params[:division_name].present? || params[:act_main_code].present? || params[:activity_type].present? || params[:lov_name].present? || params[:cust_num].present? || params[:trans_id].present? || params[:nw].present? || params[:status].present? || params[:start_date].present? || params[:end_date].present?
+    if params[:filter_main].present? || params[:entity_name].present? || params[:division_name].present? || params[:act_main_code].present? || params[:activity_type].present? || params[:lov_name].present? || params[:cust_num].present? || params[:trans_id].present? || params[:trans_type].present? || params[:nw].present? || params[:status].present? || params[:start_date].present? || params[:end_date].present?
 
       filter_params = params[:filter_main]
       if params[:filter_main].present?
@@ -94,6 +94,7 @@ class PaymentInfosController < ApplicationController
         @lov_name = filter_params[:lov_name]
         @cust_num = filter_params[:cust_num]
         @trans_id = filter_params[:trans_id]
+        @trans_type = filter_params[:trans_type]
         @nw = filter_params[:nw]
         @status = filter_params[:status]
         @start_date = filter_params[:start_date]
@@ -106,6 +107,7 @@ class PaymentInfosController < ApplicationController
         params[:lov_name] = filter_params[:lov_name]
         params[:cust_num] = filter_params[:cust_num]
         params[:trans_id] = filter_params[:trans_id]
+        params[:trans_type] = filter_params[:trans_type]
         params[:nw] = filter_params[:nw]
         params[:status] = filter_params[:status]
         params[:start_date] = filter_params[:start_date]
@@ -113,7 +115,7 @@ class PaymentInfosController < ApplicationController
         params[:a_download] = filter_params[:a_download]
       else
 
-        if  params[:entity_name].present? || params[:division_name].present? || params[:act_main_code].present? || params[:activity_type].present? || params[:lov_name].present? || params[:cust_num].present? || params[:trans_id].present? || params[:nw].present? || params[:status].present? || params[:start_date].present? || params[:end_date].present?
+        if  params[:entity_name].present? || params[:division_name].present? || params[:act_main_code].present? || params[:activity_type].present? || params[:lov_name].present? || params[:cust_num].present? || params[:trans_id].present? || params[:trans_type].present? || params[:nw].present? || params[:status].present? || params[:start_date].present? || params[:end_date].present?
 
           @entity_name = params[:entity_name]
           @division_name = params[:division_name]
@@ -122,6 +124,7 @@ class PaymentInfosController < ApplicationController
           @lov_name = params[:lov_name]
           @cust_num = params[:cust_num]
           @trans_id = params[:trans_id]
+          @trans_type = params[:trans_type]
           @nw = params[:nw]
           @status = params[:status]
           @start_date = params[:start_date]
@@ -134,6 +137,7 @@ class PaymentInfosController < ApplicationController
           params[:lov_name] = @lov_name
           params[:cust_num] = @cust_num
           params[:trans_id] = @trans_id
+          params[:trans_type] = @trans_type
           params[:nw] = @nw
           params[:status] = @status
           params[:start_date] = @start_date
@@ -147,6 +151,7 @@ class PaymentInfosController < ApplicationController
           params[:lov_name] = filter_params[:lov_name]
           params[:cust_num] = filter_params[:cust_num]
           params[:trans_id] = filter_params[:trans_id]
+          params[:trans_type] = filter_params[:trans_type]
           params[:nw] = filter_params[:nw]
           params[:status] = filter_params[:status]
           params[:start_date] = filter_params[:start_date]
@@ -247,6 +252,10 @@ class PaymentInfosController < ApplicationController
 
       if @nw.present?
         search_arr << "LOWER(nw) LIKE '%#{@nw.downcase}%'"
+      end
+
+      if @trans_type.present?
+        search_arr << "trans_type = '#{@trans_type}'"
       end
 
       if @status.present?
@@ -399,6 +408,7 @@ class PaymentInfosController < ApplicationController
 
 
 
+
   def financial_statement_index
     #@finance_stat = PaymentInfo.new(payment_info_params)
     @entity_name = params[:the_merchant] # @finance_stat.the_merchant
@@ -408,7 +418,7 @@ class PaymentInfosController < ApplicationController
 
     the_search = ""
     search_arr = ["trans_type in ('CTM','CNC','CNP','CNE','CNL','CAN','CNS','BTP','BTE','BTS','BTA','BTL')"] #["processed = true"] # ["split_part(trans_status, '/', 1) = '000'"]
-    search_fund_arr = ["trans_type in ('CTB','DNC','CTW','DNP','DNE','DNL','DNA','DNS','PTB','PTW','ETW','ETB') AND processed = true"]
+    search_fund_arr = ["trans_type in ('CTB','DNC','CTW','DNP','DNE','DNL','DNA','DNS','PTB','PTW','ETW','ETB','MTC') AND processed = true"]
 
     if @entity_name.present?
       division_str = "'0'"
@@ -700,7 +710,7 @@ class PaymentInfosController < ApplicationController
     @end_date = @finance_stat.the_end_date
     the_search = ""
     search_arr = ["trans_type in ('CTM','CNC','CNP','CNE','CNL','CAN','CNS','BTP','BTE','BTS','BTA','BTL')"] #["processed = true"] # ["split_part(trans_status, '/', 1) = '000'"]
-    search_fund_arr = ["trans_type in ('CTB','DNC','CTW','DNP','DNE','DNL','DNA','DNS','PTB','PTW','ETW','ETB') AND processed = true"]
+    search_fund_arr = ["trans_type in ('CTB','DNC','CTW','DNP','DNE','DNL','DNA','DNS','PTB','PTW','ETW','ETB','MTC') AND processed = true"]
 
     if @entity_name.present?
       division_str = "'0'"
@@ -856,8 +866,8 @@ class PaymentInfosController < ApplicationController
     @pay_info = PaymentReport.where(id: @payment_report.id).order(created_at: :desc).first
     @recipient_mail = payment_info_params[:recipient_mail]
     @copy_email = payment_info_params[:copy_email]
-    logger.info "Pay parameters:: recipient mail:: #{@recipient_mail.inspect} and Copy email :: #{@copy_email.inspect}"
-    logger.info "Payment ID :: #{params[:payment_id].inspect}"
+    #logger.info "Pay parameters:: recipient mail:: #{@recipient_mail.inspect} and Copy email :: #{@copy_email.inspect}"
+    logger.info "Payment ID :: #{@payment_report.id.inspect}"
     endpoint = '/resend_cust_code'
 
     #@merchant_service = EntityDivision.where(active_status: true, assigned_code: @payment_report.entity_div_code).order(created_at: :desc).first
@@ -882,15 +892,15 @@ class PaymentInfosController < ApplicationController
     #  _client_key = ""
     #end
 
-    @payment_info = PaymentInfo.new(id: @payment_report.id, recipient_mail: payment_info_params[:recipient_mail], copy_email: payment_info_params[:copy_email])
+    @payment_info = PaymentInfo.new(id: @payment_report.id)
     if @payment_info.valid?
-      payload = {:payment_info_id => @payment_report.id, :recipient_email => payment_info_params[:recipient_mail],
-                 :copy_email => payment_info_params[:copy_email]}
+      payload = {:payment_info_id => @payment_report.id}
       json_payload=JSON.generate(payload)
       core_connection = VposCore::CoreConnect.new
       connection = core_connection.connection
       #signature = core_connection.compute_signature(_secret_key, json_payload)
 
+      logger.info "PayLoad === :: #{json_payload.inspect}"
       logger.info "Core connection: #{core_connection.inspect}"
       begin
         result=connection.post do |req|
@@ -927,7 +937,7 @@ class PaymentInfosController < ApplicationController
           end
         else
           #payment_info_index
-          lgger.info "Not a Valid JSON ==============="
+          logger.info "Not a Valid JSON ==============="
           flash.now[:danger] = "Sorry, There was an issue. Kindly check and try again."
           respond_to do |format|
             format.js { render :resend_form }
@@ -979,15 +989,13 @@ class PaymentInfosController < ApplicationController
       end
       logger.info "Error messages :: #{@payment_info.errors.messages.inspect}"
       @pay_info = PaymentReport.where(id: @payment_report.id).order(created_at: :desc).first
-      @payment_info = PaymentInfo.new(id: @payment_report.id, recipient_mail: payment_info_params[:recipient_mail], copy_email: payment_info_params[:copy_email])
+      #@payment_info = PaymentInfo.new(id: @payment_report.id, recipient_mail: payment_info_params[:recipient_mail], copy_email: payment_info_params[:copy_email])
+      @payment_info = PaymentInfo.new(id: @payment_report.id)
       #@payment_info.valid?
       respond_to do |format|
         format.js { render :resend_form }
       end
     end
-
-
-
   end
 
 

@@ -1,0 +1,83 @@
+
+
+
+<div class="w3-container" >
+  <div >
+    <div class="w3-white">
+      <p id="notes21"><%#= notice %></p>
+
+      <div class="w3-container">
+
+        <%= link_to 'NEW IMAGES', inner_new_path(medium_type: "images", code: params[:code], entity_code: params[:entity_code], count1: params[:count1],  count4: params[:count4], count: params[:count], page: params[:page]),
+                    style: "width:120px; height: 30px;",
+                    class: 'w3-button w3-purple-vpos w3-border w3-border-purple w3-tiny w3-round-large', remote:true %>
+        <br><br>
+        <div class="w3-responsive w3-border w3-border-purple row pre-scrollable">
+          <% @image_media.each do |image_media| %>
+          <div class="w3-responsive w3-container w3-half">
+            <br>
+            <div class="w3-center">
+<!--              <br>-->
+              <div style="display: block">
+                <% if image_media.active_status && image_media.del_status == false %>
+
+                  <%= link_to 'EDIT', edit_entity_div_medium_path(image_media, medium_type: "images", code: params[:code], entity_code: params[:entity_code], count1: params[:count1],  count4: params[:count4], count: params[:count], page: params[:page]),
+                              style: "width:80px; height: 30px;",
+                              class: 'w3-button w3-purple-vpos w3-border w3-border-purple w3-tiny w3-round-large', remote:true %>
+                <% else %>
+
+                  <button class="w3-button w3-white w3-border w3-disabled w3-border-purple w3-tiny w3-round-large" style="width:100px; height: 30px; color: #800754 !important">EDIT</button>
+                <% end %>
+                <% if image_media.active_status %>
+                  <%= link_to 'DISABLE', inner_destroy_path(image_media, medium_type: "images", code: params[:code], entity_code: params[:entity_code], count1: params[:count1], count4: params[:count4], count: params[:count], page: params[:page]),
+                              style: "width:100px; height: 30px; color: #800754 !important",
+                              class: 'w3-button w3-white w3-border w3-border-purple w3-tiny w3-round-large', remote:true %>
+                <% else %>
+                  <%= link_to 'ENABLE', inner_destroy_path(image_media, medium_type: "images", code: params[:code], entity_code: params[:entity_code], count1: params[:count1], count4: params[:count4], count: params[:count], page: params[:page]),
+                              style: "width:100px; height: 30px;",
+                              class: 'w3-button w3-purple-vpos w3-border w3-border-purple w3-tiny w3-round-large', remote:true %>
+                <% end %>
+              </div>
+              <br>
+              <div style="display: block">
+                <% if image_media.active_status %>
+                  <img class="w3-hover-shadow w3-card-2 w3-border w3-round-xlarge" width=400 height=250 src="<%= "https://res.cloudinary.com/appsnmob/#{image_media.media_data}" %>"  alt="your image" />
+                <% else %>
+                  <img class="w3-hover-shadow w3-card-2 w3-border w3-opacity w3-opacity-max w3-round-xlarge" width=400 height=250 src="<%= "https://res.cloudinary.com/appsnmob/#{image_media.media_data}" %>"  alt="your image" />
+                <% end %>
+              </div>
+              <hr>
+
+<!--              <br>-->
+            </div>
+            <br>
+          </div>
+          <% end %>
+        </div>
+<!--        <br><br>-->
+      </div>
+
+
+
+    </div>
+
+
+
+<!--    <br/>-->
+    <div class="col-md-7 col-md-offset-5">
+<!--      <br/>-->
+<!--      <br/>-->
+    </div>
+    <!--</div>-->
+
+  </div>
+</div>
+
+
+
+
+<script>
+    // $(function(){
+    //     $('.pagination a').attr('data-remote', 'true')
+    // });
+</script>

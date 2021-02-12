@@ -1,0 +1,100 @@
+
+
+
+<div class="" >
+
+    <div class="w3-white">
+      <p id="notes20"><%#= notice %></p>
+      <div class="w3-container">
+        <%= link_to 'NEW HANDLES', inner_new_path(medium_type: "handles", code: params[:code], entity_code: params[:entity_code], count1: params[:count1],  count4: params[:count4], count: params[:count], page: params[:page]),
+                    style: "width:120px; height: 30px;",
+                    class: 'w3-button w3-purple-vpos w3-border w3-border-purple w3-tiny w3-round-large', remote:true %>
+        <br><br>
+        <div class="table-responsive-md pre-scrollable" style="max-height: 50vh">
+          <!--          <br>-->
+          <table class="table w3-responsive table-striped">
+            <thead>
+            <tr>
+              <th></th>
+              <th>Social Media</th>
+              <th>Media Code</th>
+              <th>Handle</th>
+              <th>Status</th>
+              <th>Date</th>
+              <th></th>
+            </tr>
+            </thead>
+            <tbody>
+            <% @entity_div_social_handles.each do |entity_div_social_handle| %>
+            <% handle_desc = EntityDivSocialHandle.media_handle_desc(entity_div_social_handle.assigned_code) %>
+              <tr>
+                <td><%= link_to 'VIEW', entity_div_social_handle_path(entity_div_social_handle, code: params[:code], entity_code: params[:entity_code], count1: params[:count1],  count4: params[:count4], count: params[:count], page: params[:page]),
+                                style: "width:80px; height: 30px;",
+                                class: 'w3-button w3-purple-vpos w3-border w3-border-purple w3-tiny w3-round-large', remote:true %></td>
+                <td><strong><%= handle_desc %> <%#= entity_info.entity_category.assigned_code %></strong></td>
+                <td><strong><%= entity_div_social_handle.assigned_code %></strong></td>
+                <td><strong><%= entity_div_social_handle.handle %></strong></td>
+                <% if entity_div_social_handle.active_status %>
+                  <td><strong>Active</strong></td>
+                <% else %>
+                  <td><strong>Inactive</strong></td>
+                <% end %>
+                <td><strong><%= entity_div_social_handle.created_at %></strong></td>
+                <td>
+                  <% if entity_div_social_handle.active_status && entity_div_social_handle.del_status == false %>
+
+                    <%= link_to 'EDIT', edit_entity_div_social_handle_path(entity_div_social_handle, code: params[:code], entity_code: params[:entity_code], count1: params[:count1], count4: params[:count4], count: params[:count], page: params[:page]),
+                                style: "width:100px; height: 30px; color: #800754 !important",
+                                class: 'w3-button w3-white w3-border w3-border-purple w3-tiny w3-round-large', remote:true%>
+                  <% else %>
+
+                    <button class="w3-button w3-white w3-border w3-disabled w3-border-purple w3-tiny w3-round-large" style="width:100px; height: 30px; color: #800754 !important">EDIT</button>
+                  <% end %>
+
+                  <% if entity_div_social_handle.active_status %>
+                    <%= link_to 'DISABLE', entity_div_social_handle_path(entity_div_social_handle, code: params[:code], entity_code: params[:entity_code], count1: params[:count1], count4: params[:count4], count: params[:count], page: params[:page]),
+                                style: "width:100px; height: 30px; color: #800754 !important",
+                                method: :delete, data: { confirm: "Do you wish to disable: #{handle_desc}?" },
+                                class: 'w3-button w3-white w3-border w3-border-purple w3-tiny w3-round-large', remote:true %>
+                  <% else %>
+                    <%= link_to 'ENABLE', entity_div_social_handle_path(entity_div_social_handle, code: params[:code], entity_code: params[:entity_code], count1: params[:count1], count4: params[:count4], count: params[:count], page: params[:page]),
+                                style: "width:100px; height: 30px;",
+                                method: :delete, data: { confirm: "Do you wish to enable: #{handle_desc}?" },
+                                class: 'w3-button w3-purple-vpos w3-border w3-border-purple w3-tiny w3-round-large', remote:true %>
+                  <% end %>
+
+                </td>
+              </tr>
+
+            <% end %>
+
+            </tbody>
+          </table>
+        </div>
+        <br><br>
+      </div>
+
+
+
+    </div>
+
+
+
+    <br/>
+<!--    <div class="col-md-7 col-md-offset-5">-->
+<!--      <br/>-->
+<!--      <br/>-->
+<!--    </div>-->
+    <!--</div>-->
+
+<!--  </div>-->
+</div>
+
+
+
+
+<script>
+    $(function(){
+        $('.pagination a').attr('data-remote', 'true')
+    });
+</script>

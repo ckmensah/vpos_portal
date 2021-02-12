@@ -7,8 +7,8 @@ class PaymentInfo < ApplicationRecord
   belongs_to :entity_division, class_name: 'EntityDivision', foreign_key: :entity_div_code
 
   #validates :pay_id, presence: true
-  validates :recipient_mail, format: { with: URI::MailTo::EMAIL_REGEXP }
-  validates :copy_email, format: { with: URI::MailTo::EMAIL_REGEXP }
+  #validates :recipient_mail, format: { with: URI::MailTo::EMAIL_REGEXP }
+  #validates :copy_email, format: { with: URI::MailTo::EMAIL_REGEXP }
   validates :the_merchant, presence: {message: " cannot be empty."}, if: :finance_valid
   validates :the_service, presence: {message: " cannot be empty."}, if: :finance_valid
   validates :the_start_date, presence: {message: " cannot be empty."}, if: :finance_valid

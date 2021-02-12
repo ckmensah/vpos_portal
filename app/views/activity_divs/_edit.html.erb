@@ -16,12 +16,14 @@
             <input type="hidden" class="form-control" name="entity_code" value="<%= params[:entity_code] %>"/>
             <input type="hidden" class="form-control" name="code" value="<%= params[:code] %>"/>
             <div class="w3-half">
-              <%= f.input :activity_sub_plan_id, class: "form-control", collection: @activity_sub_divs, label_method: :sub_activity_div, value_method: :id, input_html: {id: "id_sub_plan", style: "width: 90%;", autocomplete: "off"}, label: "Ticket Types", boolean_style: :inline %>
+              <%= f.input :act_group, class: "form-control", collection: @activity_groups, label_method: :full_group_name, value_method: :assigned_code, input_html: {id: "id_act_group", style: "width: 90%;", autocomplete: "off"}, label: "Ticket Group", boolean_style: :inline %>
+              <%= f.input :act_class, class: "form-control", collection: @activity_classes, label_method: :class_desc, value_method: :id, input_html: {id: "id_act_class", style: "width: 90%;", autocomplete: "off"}, label: "Ticket Types", boolean_style: :inline %>
+              <%= f.input :activity_sub_plan_id, class: "form-control", collection: @activity_sub_divs, label_method: :sub_activity_div, value_method: :id, input_html: {id: "id_sub_plan", style: "width: 90%;", autocomplete: "off"}, label: "Event Ticket Details", boolean_style: :inline %>
               <%= f.input :customer_name, class: "form-control", input_html: {style: "width: 90%", autocomplete: "off"}, label: "Customer Name", boolean_style: :inline %>
               <%= f.input :recipient_number, class: "form-control", input_html: {style: "width: 90%", autocomplete: "off"}, label: "Recipient Number", boolean_style: :inline %>
-              <%= f.input :nw, collection: @networks, label_method: :first, value_method: :last, class: "form-control", input_html: {style: "width: 90%", autocomplete: "off"}, label: "Network", boolean_style: :inline %>
             </div>
             <div class="w3-half">
+              <%= f.input :nw, collection: @networks, label_method: :first, value_method: :last, class: "form-control", input_html: {style: "width: 100%", autocomplete: "off"}, label: "Network", boolean_style: :inline %>
               <%= f.input :recipient_email, class: "form-control", input_html: {style: "width: 100%", autocomplete: "off"}, label: "Recipient Email", boolean_style: :inline %>
               <%= f.input :amt, as: :integer, label: "Amount", input_html: {id: "amt", autocomplete: "off", min: 0, max: 999999, class: "form-control", style: "width: 100%;"} %>
               <%= f.input :qty, as: :integer, label: "Quantity", input_html: {id: "qty", autocomplete: "off", min: 0, max: 9999, class: "form-control", style: "width: 100%;"} %>
@@ -65,3 +67,37 @@
 
   </div>
 </div>
+
+
+<script>
+  var group_id = $('#id_act_group');
+  var ticket_class_id = $('#id_act_class');
+  var sub_plan_id = $('#id_sub_plan');
+  var act_div_id = <%= params[:id] %>;
+  group_id.change(function() {
+    console.log("For Ticket group id:: " + group_id.val());
+    ticket_class_id.attr("title", "Now select a tickets!");
+
+    Rails.ajax({
+        type: "POST",
+        url: "<%= general_class_ajax_call_path %>",
+        data: "id_act_group=" + group_id.val() + "&div_code=" + <%= @activity_div.division_code %>,
+        dataType: "script"
+    });
+
+  });
+
+  ticket_class_id.change(function() {
+      console.log("For Ticket Class id:: " + ticket_class_id.val());
+      sub_plan_id.attr("title", "Now select a ticket type!");
+
+      Rails.ajax({
+          type: "POST",
+          url: "<%= general_ticket_ajax_call_path %>",
+          data: "act_div_id=" + act_div_id + "&id_classification=" + ticket_class_id.val(),
+          dataType: "script"
+      });
+
+  });
+
+</script>

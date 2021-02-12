@@ -163,16 +163,57 @@
 <!--                  <td class="raw_theme w3-border w3-border-black w3-leftbar"><strong>Source:</strong></td>-->
 <!--                  <td><strong><%#= @pay_info.src %></strong></td>-->
 <!--                </tr>-->
-
-<!--                <tr>-->
-<!--                  <td class="raw_theme w3-border w3-border-black w3-leftbar"><strong>Payment Mode:</strong></td>-->
-<!--                  <td><strong><%#= @pay_info.payment_mode %></strong></td>-->
-<!--                </tr>-->
+              <% if @pay_info.entity_division != nil && @pay_info.entity_division.activity_type_code == "HSP" %>
+                <tr>
+                  <td class="raw_theme w3-border w3-border-black w3-leftbar"><strong>Payment Mode:</strong></td>
+                  <% if @pay_info.payment_mode == "CSH" %>
+                    <td><strong>Cash</strong></td>
+                <% elsif @pay_info.payment_mode == "MOM" %>
+                    <td><strong>Mobile Money</strong></td>
+                <% else %>
+                <% end %>
+                </tr>
+              <% end %>
 
                 <tr>
                   <td class="raw_theme w3-border w3-border-black w3-leftbar"><strong>Amount:</strong></td>
                   <td><strong><%= @pay_info.amount %></strong></td>
                 </tr>
+
+              <% if @pay_info.entity_division != nil && (@pay_info.entity_division.activity_type_code == "SHW" || @pay_info.entity_division.activity_type_code == "SPO") %>
+                <tr>
+                  <td class="raw_theme w3-border w3-border-black w3-leftbar"><strong>Quantity:</strong></td>
+                  <td><strong><%= @pay_info.qty %></strong></td>
+                </tr>
+              <% end %>
+
+              <% if @pay_info.entity_division != nil && @pay_info.entity_division.activity_type_code == "HSP" %>
+                <% if @pay_info.payment_option == true %>
+                  <tr>
+                    <td class="raw_theme w3-border w3-border-black w3-leftbar"><strong>Payment Type:</strong></td>
+                    <td><strong>Active</strong></td>
+                  </tr>
+                <% elsif @pay_info.payment_option == false %>
+                  <tr>
+                    <td class="raw_theme w3-border w3-border-black w3-leftbar"><strong>Payment Type:</strong></td>
+                    <td><strong>Inactive</strong></td>
+                  </tr>
+                <% else %>
+                <% end %>
+
+                <% if @pay_info.card_option == "C" %>
+                  <tr>
+                    <td class="raw_theme w3-border w3-border-black w3-leftbar"><strong>Card Option Status:</strong></td>
+                    <td><strong>Card Holder</strong></td>
+                  </tr>
+                <% elsif @pay_info.card_option == "N" %>
+                  <tr>
+                    <td class="raw_theme w3-border w3-border-black w3-leftbar"><strong>Card Option Status:</strong></td>
+                    <td><strong>Non Card Holder</strong></td>
+                  </tr>
+                <% else %>
+                <% end %>
+              <% end %>
 
               <% if @pay_info.entity_division != nil && (@pay_info.entity_division.activity_type_code != "OMC" && @pay_info.entity_division.activity_type_code != "MOP") %>
                 <tr>

@@ -1,0 +1,39 @@
+<p id="notice"><%= notice %></p>
+
+<h1>Entity Div Media</h1>
+
+<table>
+  <thead>
+    <tr>
+      <th>Entity div code</th>
+      <th>Media path</th>
+      <th>Media data</th>
+      <th>Media type</th>
+      <th>Active status</th>
+      <th>Del status</th>
+      <th>User</th>
+      <th colspan="3"></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @entity_div_media.each do |entity_div_medium| %>
+      <tr>
+        <td><%= entity_div_medium.entity_div_code %></td>
+        <td><%= entity_div_medium.media_path %></td>
+        <td><%= entity_div_medium.media_data %></td>
+        <td><%= entity_div_medium.media_type %></td>
+        <td><%= entity_div_medium.active_status %></td>
+        <td><%= entity_div_medium.del_status %></td>
+        <td><%= entity_div_medium.user_id %></td>
+        <td><%= link_to 'Show', entity_div_medium %></td>
+        <td><%= link_to 'Edit', edit_entity_div_medium_path(entity_div_medium) %></td>
+        <td><%= link_to 'Destroy', entity_div_medium, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<br>
+
+<%= link_to 'New Entity Div Medium', new_entity_div_medium_path %>

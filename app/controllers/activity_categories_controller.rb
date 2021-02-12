@@ -42,7 +42,7 @@ class ActivityCategoriesController < ApplicationController
 
     respond_to do |format|
       if @activity_category.save
-        flash.now[:danger] = "Activity Category was successfully created."
+        flash.now[:notice] = "Activity Category was successfully created."
         format.js { render :show}
         format.html { redirect_to @activity_category, notice: 'Activity category was successfully created.' }
         format.json { render :show, status: :created, location: @activity_category }

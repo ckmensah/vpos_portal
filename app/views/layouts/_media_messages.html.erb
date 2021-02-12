@@ -1,0 +1,7 @@
+
+<div id="alert_message" class=" w3-card-4 alert alert-<%= @name.to_s == 'media_note' ? "info" : "danger" %>">
+<!--  <button type="button" style="position: static;" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>-->
+  <% logger.info "The media flash name is :: #{@name.inspect}." %>
+  <%= content_tag :div, @msg, :id => "flash_#{@name}" %>
+</div>
+

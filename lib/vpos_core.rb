@@ -126,5 +126,73 @@ module VposCore
   end
 
 
+  class MediaDataUploader < CarrierWave::Uploader::Base
+    include Cloudinary::CarrierWave
+
+    version :standard do
+      process :resize_to_fill => [100, 150, :north]
+    end
+
+    #version :thumbnail do
+    #  resize_to_fit(50, 50)
+    #end
+
+    # Create different versions of your uploaded files:
+    version :thumb do
+      process resize_to_fill: [100, 100]
+    end
+    version :medium do
+      process resize_to_fit: [200, 200]
+    end
+
+    # def public_id
+    #   return "trickles/portal_images"
+    # end
+
+    def store_dir
+      #"uploads/#{model.class.to_s.underscore}/#{mounted_as}"
+      "virtual_pos/media"
+    end
+
+    def media_store_dir(media_type)
+      if media_type == "VID"
+        "virtual_pos/media/videos"
+      elsif media_type == "IMG"
+        "virtual_pos/media/images"
+      end
+    end
+
+    def public_id
+      "#{store_dir}/" + Cloudinary::Utils.random_public_id
+    end
+
+    def media_public_id(media_type)
+      if media_type == "VID"
+        "#{media_store_dir(media_type)}/" + Cloudinary::Utils.random_public_id
+      elsif media_type == "IMG"
+        "#{media_store_dir(media_type)}/" + Cloudinary::Utils.random_public_id
+      end
+    end
+    # Add a white list of extensions which are allowed to be uploaded.
+    # For images you might use something like this:
+    def extension_whitelist
+      %w(jpg jpeg gif png)
+    end
+
+    # Override the filename of the uploaded files:
+    # Avoid using model.id or version_name here, see uploader/store.rb for details.
+
+    def filename(file, public_id)
+      if file.original_filename.present?
+        file_extension = file.content_type.split("/")[1]
+        "#{public_id}.#{file_extension}" if file_extension.present?
+      end
+      #"#{public_id}.#{file.extension}" #if original_filename.present?
+    end
+
+
+  end
+
+
 end
 

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_01_28_110840) do
+ActiveRecord::Schema.define(version: 2021_01_06_164146) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -80,6 +80,16 @@ ActiveRecord::Schema.define(version: 2020_01_28_110840) do
     t.datetime "updated_at"
   end
 
+  create_table "activity_groups", force: :cascade do |t|
+    t.string "assigned_code"
+    t.string "activity_group_desc"
+    t.boolean "active_status"
+    t.boolean "del_status"
+    t.integer "user_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
   create_table "activity_participant", id: false, force: :cascade do |t|
     t.serial "id", null: false
     t.string "assigned_code", limit: 10
@@ -105,6 +115,8 @@ ActiveRecord::Schema.define(version: 2020_01_28_110840) do
     t.boolean "del_status", default: false
     t.datetime "created_at", default: -> { "CURRENT_TIMESTAMP" }, null: false
     t.datetime "updated_at"
+    t.integer "max_num", default: 0
+    t.string "activity_group_code"
   end
 
   create_table "activity_sub_divs", force: :cascade do |t|
@@ -129,6 +141,20 @@ ActiveRecord::Schema.define(version: 2020_01_28_110840) do
     t.boolean "active_status", default: true
     t.boolean "del_status", default: false
     t.datetime "created_at", default: -> { "CURRENT_TIMESTAMP" }, null: false
+    t.datetime "updated_at"
+  end
+
+  create_table "alert_logs", id: false, force: :cascade do |t|
+    t.serial "id", null: false
+    t.string "sms_sender_id", limit: 20
+    t.string "subj", limit: 100
+    t.string "recipient", limit: 100
+    t.text "msg_body"
+    t.string "reference_code", limit: 20
+    t.integer "payment_info_id"
+    t.string "alert_type", limit: 5
+    t.text "remote_resp"
+    t.datetime "created_at", default: -> { "CURRENT_TIMESTAMP" }
     t.datetime "updated_at"
   end
 
@@ -173,6 +199,8 @@ ActiveRecord::Schema.define(version: 2020_01_28_110840) do
     t.datetime "created_at", default: -> { "CURRENT_TIMESTAMP" }, null: false
     t.string "ref_code", limit: 50
     t.datetime "updated_at"
+    t.string "entity_code"
+    t.string "division_code"
   end
 
   create_table "city_town_masters", force: :cascade do |t|
@@ -212,6 +240,7 @@ ActiveRecord::Schema.define(version: 2020_01_28_110840) do
     t.boolean "del_status", default: false
     t.datetime "created_at", default: -> { "CURRENT_TIMESTAMP" }, null: false
     t.datetime "updated_at"
+    t.decimal "assigned_amount", precision: 11, scale: 3, default: "0.0"
   end
 
   create_table "duplicate_callback", id: false, force: :cascade do |t|
@@ -223,6 +252,19 @@ ActiveRecord::Schema.define(version: 2020_01_28_110840) do
     t.datetime "created_at", default: -> { "CURRENT_TIMESTAMP" }, null: false
   end
 
+  create_table "entity_admin_whitelist", id: false, force: :cascade do |t|
+    t.serial "id", null: false
+    t.string "entity_division_code", limit: 10
+    t.string "mobile_number", limit: 20
+    t.string "comment", limit: 255
+    t.integer "user_id"
+    t.boolean "active_status", default: true
+    t.boolean "del_status", default: false
+    t.datetime "created_at", default: -> { "CURRENT_TIMESTAMP" }
+    t.datetime "updated_at"
+    t.string "full_name", limit: 150
+  end
+
   create_table "entity_categories", force: :cascade do |t|
     t.string "assigned_code"
     t.string "category_name"
@@ -230,6 +272,57 @@ ActiveRecord::Schema.define(version: 2020_01_28_110840) do
     t.boolean "active_status", default: true
     t.boolean "del_status", default: false
     t.integer "user_id"
+    t.datetime "created_at", default: -> { "CURRENT_TIMESTAMP" }, null: false
+    t.datetime "updated_at"
+  end
+
+  create_table "entity_div_alert_recipient", id: false, force: :cascade do |t|
+    t.serial "id", null: false
+    t.string "entity_div_code", limit: 10
+    t.string "recipient_name", limit: 155
+    t.string "mobile_number", limit: 20
+    t.boolean "active_status", default: true
+    t.boolean "del_status", default: false
+    t.integer "user_id"
+    t.datetime "created_at", default: -> { "CURRENT_TIMESTAMP" }, null: false
+    t.datetime "updated_at"
+    t.boolean "alerts"
+    t.boolean "trans_rpt"
+  end
+
+  create_table "entity_div_media", id: false, force: :cascade do |t|
+    t.serial "id", null: false
+    t.string "entity_div_code", limit: 10
+    t.string "media_path", limit: 400
+    t.string "media_data", limit: 400
+    t.string "media_type", limit: 5
+    t.boolean "active_status", default: true
+    t.boolean "del_status", default: false
+    t.integer "user_id"
+    t.datetime "created_at", default: -> { "CURRENT_TIMESTAMP" }, null: false
+    t.datetime "updated_at"
+  end
+
+  create_table "entity_div_social_handle", id: false, force: :cascade do |t|
+    t.serial "id", null: false
+    t.string "entity_div_code", limit: 10
+    t.string "assigned_code", limit: 10
+    t.string "handle", limit: 255
+    t.boolean "active_status", default: true
+    t.boolean "del_status", default: false
+    t.integer "user_id"
+    t.datetime "created_at", default: -> { "CURRENT_TIMESTAMP" }, null: false
+    t.datetime "updated_at"
+  end
+
+  create_table "entity_div_sub_activity", id: false, force: :cascade do |t|
+    t.serial "id", null: false
+    t.string "sub_activity_code", limit: 5
+    t.string "div_sub_activity_desc", limit: 155
+    t.string "entity_div_code", limit: 10
+    t.integer "user_id"
+    t.boolean "active_status", default: true
+    t.boolean "del_status", default: false
     t.datetime "created_at", default: -> { "CURRENT_TIMESTAMP" }, null: false
     t.datetime "updated_at"
   end
@@ -252,6 +345,12 @@ ActiveRecord::Schema.define(version: 2020_01_28_110840) do
     t.boolean "allow_qr"
     t.string "msg_sender_id", limit: 10
     t.string "sms_sender_id", limit: 10
+    t.boolean "link_master"
+    t.decimal "min_amount", precision: 8, scale: 2
+    t.text "extra_desc"
+    t.string "activity_loc", limit: 100
+    t.boolean "payment_type"
+    t.boolean "card_option_status"
   end
 
   create_table "entity_info", id: false, force: :cascade do |t|
@@ -319,6 +418,7 @@ ActiveRecord::Schema.define(version: 2020_01_28_110840) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "activity_type_code"
+    t.string "division_code", limit: 50
   end
 
   create_table "err_log", id: false, force: :cascade do |t|
@@ -329,6 +429,21 @@ ActiveRecord::Schema.define(version: 2020_01_28_110840) do
     t.string "nw", limit: 5
     t.text "err_msg"
     t.datetime "created_at", default: -> { "CURRENT_TIMESTAMP" }, null: false
+  end
+
+  create_table "fund_movement", id: false, force: :cascade do |t|
+    t.serial "id", null: false
+    t.integer "service_id"
+    t.string "ref_id", limit: 50
+    t.decimal "amount", precision: 11, scale: 3
+    t.string "narration", limit: 255
+    t.string "trans_type", limit: 5
+    t.string "trans_status", limit: 10
+    t.string "trans_desc", limit: 255
+    t.boolean "processed"
+    t.datetime "created_at", default: -> { "CURRENT_TIMESTAMP" }, null: false
+    t.datetime "updated_at"
+    t.string "entity_div_code", limit: 10
   end
 
   create_table "payment_callback", id: false, force: :cascade do |t|
@@ -351,10 +466,10 @@ ActiveRecord::Schema.define(version: 2020_01_28_110840) do
     t.datetime "created_at", default: -> { "CURRENT_TIMESTAMP" }, null: false
     t.datetime "updated_at"
     t.string "payment_mode", limit: 5
-    t.decimal "amount", precision: 11, scale: 3
+    t.decimal "amount", precision: 11, scale: 3, default: "0.0"
     t.string "customer_number", limit: 20
     t.string "trans_type", limit: 5
-    t.decimal "charge", precision: 11, scale: 3
+    t.decimal "charge", precision: 11, scale: 3, default: "0.0"
     t.integer "activity_sub_div_id"
     t.string "activity_main_code", limit: 50
     t.string "paid_by", limit: 255
@@ -363,6 +478,9 @@ ActiveRecord::Schema.define(version: 2020_01_28_110840) do
     t.string "recipient_email", limit: 255
     t.string "narration", limit: 255
     t.integer "qty"
+    t.string "customer_name", limit: 255
+    t.boolean "payment_option"
+    t.string "card_option", limit: 5
   end
 
   create_table "payment_request", id: false, force: :cascade do |t|
@@ -436,6 +554,17 @@ ActiveRecord::Schema.define(version: 2020_01_28_110840) do
     t.datetime "updated_at"
   end
 
+  create_table "sub_activity_master", id: false, force: :cascade do |t|
+    t.serial "id", null: false
+    t.string "assigned_code", limit: 10
+    t.string "activity_desc", limit: 155
+    t.integer "user_id"
+    t.boolean "active_status", default: true
+    t.boolean "del_status", default: false
+    t.datetime "created_at", default: -> { "CURRENT_TIMESTAMP" }
+    t.datetime "updated_at"
+  end
+
   create_table "suburb_masters", force: :cascade do |t|
     t.string "suburb_name"
     t.integer "city_town_id"
@@ -445,6 +574,18 @@ ActiveRecord::Schema.define(version: 2020_01_28_110840) do
     t.integer "user_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+  end
+
+  create_table "transferred_reports", id: false, force: :cascade do |t|
+    t.serial "id", null: false
+    t.string "phone_number", limit: 20
+    t.string "patient_id", limit: 20
+    t.string "transaction_id", limit: 20
+    t.decimal "trans_amount", precision: 10, scale: 2
+    t.datetime "trans_datetime"
+    t.string "user_id", limit: 50
+    t.datetime "created_at", default: -> { "CURRENT_TIMESTAMP" }, null: false
+    t.string "nw", limit: 5
   end
 
   create_table "users", force: :cascade do |t|
@@ -478,7 +619,9 @@ ActiveRecord::Schema.define(version: 2020_01_28_110840) do
     t.string "unlock_token"
     t.datetime "locked_at"
     t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "updated_at"
+    t.boolean "for_portal"
+    t.boolean "show_charge"
     t.index ["confirmation_token"], name: "index_users_on_confirmation_token", unique: true
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
@@ -573,6 +716,58 @@ ActiveRecord::Schema.define(version: 2020_01_28_110840) do
     t.datetime "updated_at", null: false
   end
 
+  create_table "ussd_current_trackers", id: :serial, force: :cascade do |t|
+    t.string "session_id"
+    t.string "function"
+    t.string "page"
+    t.string "mobile_number"
+    t.string "ussd_body"
+    t.string "msg_type"
+    t.boolean "previous_tracker", default: false
+    t.string "activity_type"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "ussd_div_sub_activity_temps", id: :serial, force: :cascade do |t|
+    t.string "mobile_number"
+    t.string "activity_index"
+    t.string "service_code"
+    t.string "entity_div_code"
+    t.string "sub_activity_desc"
+    t.string "activity_code"
+    t.datetime "created_at", default: -> { "now()" }, null: false
+    t.datetime "updated_at"
+  end
+
+  create_table "ussd_event_temps", id: :serial, force: :cascade do |t|
+    t.string "mobile_number"
+    t.string "activity_type"
+    t.string "service_code"
+    t.string "service_label"
+    t.string "entity_name"
+    t.string "entity_div_name"
+    t.string "entity_div_code"
+    t.string "event_index"
+    t.string "entity_alias"
+    t.string "allow_qr"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at"
+  end
+
+  create_table "ussd_lov_temp_temps", id: :serial, force: :cascade do |t|
+    t.string "mobile_number"
+    t.string "activity_type"
+    t.string "activity_code"
+    t.string "entity_div_code"
+    t.string "lov_id"
+    t.string "lov_desc"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at"
+    t.string "lov_index"
+    t.decimal "assigned_amount", precision: 11, scale: 3, default: "0.0"
+  end
+
   create_table "ussd_lov_temps", id: :integer, default: -> { "nextval('lov_temps_id_seq'::regclass)" }, force: :cascade do |t|
     t.string "mobile_number"
     t.string "activity_type"
@@ -583,6 +778,18 @@ ActiveRecord::Schema.define(version: 2020_01_28_110840) do
     t.datetime "created_at", null: false
     t.datetime "updated_at"
     t.string "lov_index"
+    t.decimal "assigned_amount", precision: 11, scale: 3, default: "0.0"
+  end
+
+  create_table "ussd_merchant_mini_history_temps", id: :serial, force: :cascade do |t|
+    t.string "record_index"
+    t.string "mobile_number"
+    t.string "customer_number"
+    t.string "amount"
+    t.string "status"
+    t.string "trans_date"
+    t.datetime "created_at", default: -> { "now()" }, null: false
+    t.datetime "updated_at"
   end
 
   create_table "ussd_more_algos", force: :cascade do |t|
@@ -639,16 +846,16 @@ ActiveRecord::Schema.define(version: 2020_01_28_110840) do
     t.string "activity_type_lov_id"
     t.string "activity_type_lov_desc"
     t.string "reference"
-    t.string "amount"
+    t.decimal "amount", precision: 10, scale: 2, default: "0.0"
     t.string "activity_purpose"
     t.datetime "created_at", null: false
     t.datetime "updated_at"
     t.string "fullname"
     t.string "month_code"
     t.string "month_full"
-    t.decimal "charge", default: "0.0"
+    t.decimal "charge", precision: 10, scale: 2, default: "0.0"
     t.string "activity_main_code"
-    t.string "total_amount"
+    t.decimal "total_amount", precision: 10, scale: 2, default: "0.0"
     t.string "payment_reference"
     t.integer "activity_sub_plan_id"
     t.string "activity_date"
@@ -673,6 +880,18 @@ ActiveRecord::Schema.define(version: 2020_01_28_110840) do
     t.string "activity_plan_id"
     t.string "recipient_number"
     t.string "recipient_type"
+    t.string "customer_number"
+    t.string "nw"
+    t.string "activity_code"
+    t.string "fullname1"
+    t.string "fullname2"
+    t.boolean "is_merchant"
+    t.decimal "min_amount", precision: 10, scale: 2, default: "0.0"
+    t.string "payment_option_desc"
+    t.boolean "card_option_status"
+    t.string "card_option_status_id"
+    t.string "card_option_status_desc"
+    t.boolean "payment_option"
   end
 
   create_table "ussd_tracker_logs", id: :integer, default: -> { "nextval('tracker_logs_id_seq'::regclass)" }, force: :cascade do |t|
@@ -698,6 +917,7 @@ ActiveRecord::Schema.define(version: 2020_01_28_110840) do
     t.string "activity_type"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "service_code"
   end
 
 end

@@ -1,0 +1,1 @@
+json.partial! "entity_div_social_handles/entity_div_social_handle", entity_div_social_handle: @entity_div_social_handle

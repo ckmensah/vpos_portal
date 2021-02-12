@@ -299,6 +299,7 @@ class UsersController < ApplicationController
                 #end
               end
             else
+
               logger.info "Not a Valid JSON ==============="
               flash.now[:danger] = "Sorry, There was an issue. Kindly check and try again."
               #respond_to do |format|
@@ -351,6 +352,7 @@ class UsersController < ApplicationController
   # PATCH/PUT /users/1
   # PATCH/PUT /users/1.json
   def update
+    with_password = params[:validator] == "validator" ? true : false
     if current_user.super_admin? || current_user.super_user?
       @entity_infos = EntityInfo.where(active_status: true).order(entity_name: :asc)
     end
@@ -371,20 +373,99 @@ class UsersController < ApplicationController
       if params[:user][:password].blank? && params[:user][:password_confirmation].blank?
         params[:user].delete(:password)
         params[:user].delete(:password_confirmation)
+        with_password = false
+      end
+      if params[:validator] == "validator"
+        if with_password
+
+          endpoint = '/edit_app_user_account_req'
+          payload = {:user_id => @user.id, :new_pass => user_params[:password]}
+          json_payload=JSON.generate(payload)
+          core_connection = VposCore::CoreConnect.new
+          connection = core_connection.connection
+          #signature = core_connection.compute_signature(_secret_key, json_payload)
+          logger.info "Core connection: #{core_connection.inspect}"
+          begin
+            result=connection.post do |req|
+              req.url endpoint
+              req.options.timeout = 90           # open/read timeout in seconds
+              req.options.open_timeout = 90      # connection open timeout in seconds
+              #req["Authorization"]="#{_client_key}:#{signature}"
+              req.body = json_payload
+            end
+
+            logger.info "Response:: #{result.inspect}"
+            json_valid_res = core_connection.json_validate(result.body)
+            if json_valid_res
+              logger.info "Valid JSON ================"
+              the_resp = JSON.parse(result.body)
+
+              resp_code = the_resp["resp_code"]
+              resp_desc = the_resp["resp_desc"]
+              logger.info "Response Description :: #{resp_desc.inspect}"
+              if resp_code == "00"
+                params[:user].delete(:password)
+                params[:user].delete(:password_confirmation)
+                if @user.update(user_params)
+                  flash.now[:notice] = "#{user_params[:user_name].capitalize} was successfully updated."
+                  format.js { render :show }
+                else
+                  @entity_divisions = EntityDivision.where(entity_code: user_params[:entity_code], active_status: true).order(division_name: :asc)
+                  logger.info "Error Messages:: #{@user.errors.messages.inspect}"
+                  format.js { render :scanner_edit }
+                end
+                #format.js { render :show }
+                #end
+              else
+                #logger.info "======== Password :: #{@user.encrypted_password}"
+                flash.now[:danger] = "Sorry, #{user_params[:user_name].capitalize} could not be updated. Kindly try again."
+                format.js { render :scanner_edit }
+              end
+            else
+              logger.info "Not a Valid JSON ==============="
+              flash.now[:danger] = "Sorry, There was an issue. Kindly check and try again."
+              #respond_to do |format|
+              format.js { render :scanner_edit }
+              #end
+            end
+          rescue Faraday::SSLError
+            logger.info "SSL Error ==============="
+            flash.now[:danger] = "Sorry, There was an issue. Kindly check and try again."
+            #respond_to do |format|
+            format.js { render :scanner_edit }
+              #end
+          rescue Faraday::TimeoutError
+            logger.info "Timeout Error ================="
+            flash.now[:danger] = "Sorry, There was a timeout issue. Kindly check and try again."
+            format.js { render :scanner_edit }
+          rescue Faraday::Error::ConnectionFailed => e
+            logger.info "Connection Failed ================"
+            logger.info "Error message :: #{e} ==================="
+            flash.now[:danger] = "Sorry, There was a connection issue. Kindly check and try again."
+            format.js { render :scanner_edit }
+          end
+
+        else
+          if @user.update(user_params)
+            flash.now[:notice] = "#{user_params[:user_name].capitalize} was successfully updated."
+            format.js { render :show }
+          else
+            @entity_divisions = EntityDivision.where(entity_code: user_params[:entity_code], active_status: true).order(division_name: :asc)
+            logger.info "Error Messages for validator :: #{@user.errors.messages.inspect}"
+            format.js { render :scanner_edit }
+          end
+        end
+      else
+        if @user.update(user_params)
+          flash.now[:notice] = "#{user_params[:user_name].capitalize} was successfully updated."
+          format.js { render :show }
+        else
+          @entity_divisions = EntityDivision.where(entity_code: user_params[:entity_code], active_status: true).order(division_name: :asc)
+          logger.info "Error Messages for non validator:: #{@user.errors.messages.inspect}"
+          format.js { render :edit }
+        end
       end
 
-      if @user.update(user_params)
-        format.html { redirect_to @user, notice: 'User was successfully updated.' }
-        flash.now[:notice] = "#{user_params[:user_name].capitalize} was successfully updated."
-        format.js { render :show }
-        format.json { render :show, status: :ok, location: @user }
-      else
-        @entity_divisions = EntityDivision.where(entity_code: user_params[:entity_code], active_status: true).order(division_name: :asc)
-        logger.info "Error Messages:: #{@user.errors.messages.inspect}"
-        format.html { render :edit }
-        format.js { render :edit }
-        format.json { render json: @user.errors, status: :unprocessable_entity }
-      end
     end
 
   end
@@ -480,3 +561,5 @@ class UsersController < ApplicationController
 
 
 end
+
+

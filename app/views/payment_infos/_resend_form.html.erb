@@ -119,20 +119,22 @@
             <%#= simple_form_for(@payment_info, url: transaction_resend_path(@payment_info, filter_main: params[:filter_main].to_unsafe_h, code: params[:code], after_submit: "after_submit", entity_code: params[:entity_code], count: params[:count], page: params[:page]), :remote => true) do |f| %>
             <%= simple_form_for(@payment_info, url: transaction_resend_path(@payment_info, filter_main: params[:filter_main], code: params[:code], after_submit: "after_submit", entity_code: params[:entity_code], count: params[:count], page: params[:page]), :remote => true) do |f| %>
 
-              <div class="w3-container w3-border w3-border-purple">
+<!--              <div class="w3-container w3-border w3-border-purple">-->
 
-                <div class="w3-half">
-                  <%= f.input :recipient_mail, label: "Recipient Email", required: true, input_html: {id: "rec_email", value: @recipient_mail, autofocus: true, autocomplete: "off", class: "form-control w3-input w3-border w3-white input-group input-append", style: "width: 90%;"} %>
-                </div>
-                <div class="w3-half">
-                  <%= f.input :copy_email, label: "Copy Email", required: true, input_html: {id: "copy_email", value: @copy_email, autocomplete: "off", class: "form-control w3-input w3-border w3-white input-group input-append", style: "width: 90%;"} %>
-                </div>
+<!--                <div class="w3-half">-->
+                  <%#= f.input :recipient_mail, label: "Recipient Email", required: true, input_html: {id: "rec_email", value: @recipient_mail, autofocus: true, autocomplete: "off", class: "form-control w3-input w3-border w3-white input-group input-append", style: "width: 90%;"} %>
+<!--                </div>-->
+<!--                <div class="w3-half">-->
+                  <%#= f.input :copy_email, label: "Copy Email", required: true, input_html: {id: "copy_email", value: @copy_email, autocomplete: "off", class: "form-control w3-input w3-border w3-white input-group input-append", style: "width: 90%;"} %>
+<!--                </div>-->
                 <%#= f.input :pay_id, as: :hidden, input_html: {value: @pay_info.id} %>
 
 
-              </div>
+<!--              </div>-->
+            <%= f.input :user_id, as: :hidden, input_html: {value: current_user.id} %>
 
-              <br/>
+
+            <br/>
               <div class="w3-center">
                 <%= f.submit "Submit", class: "w3-button w3-purple-vpos w3-border w3-border-purple w3-small w3-round-large", :data => {:disable_with => 'Please Wait...'}, style: "width:auto;float:center;", remote: true %>
                 <%= link_to 'Back', payment_info_index_path(filter_main: params[:filter_main], page: params[:page], count: params[:count]), class: 'w3-button w3-white w3-border w3-border-purple w3-small w3-round-large', remote: true %>

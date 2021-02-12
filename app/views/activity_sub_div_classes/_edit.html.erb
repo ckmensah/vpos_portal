@@ -19,6 +19,8 @@
             <%= f.error_notification message: f.object.errors[:base].to_sentence if f.object.errors[:base].present? %>
             <%#= f.input :entity_div_code, :as => :hidden, input_html:{value: params[:code]} %>
             <%= f.input :class_desc,  label: "Ticket Type", value_method: :id, required: true, input_html:{id: "act_class", autocomplete: "off",class:"form-control w3-input w3-border w3-white input-group input-append",style:""}  %>
+            <%= f.input :max_num, as: :integer,  label: "Max Ticket", value_method: :id, required: false, input_html:{id: "max_act_class_edit", min: 0, max: 9999999, oninput: "validity.valid||(value='');", autocomplete: "off",class:"form-control w3-input w3-border w3-white input-group input-append",style:""}  %>
+            <%= f.input :activity_group_code, label: "Activity Group", collection: @activity_groups, label_method: :full_group_name, value_method: :assigned_code, required: true, input_html: {id: "activity_key_edit", autocomplete: "off", class: "form-control w3-input w3-border w3-white input-group input-append", style: ""} %>
 
             <%# count = 1 %>
             <%# @activity_sub_div_classes.each do |act_class| %>

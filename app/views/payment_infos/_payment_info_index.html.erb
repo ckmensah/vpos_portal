@@ -15,7 +15,7 @@
 
 
     <div class="w3-third" style="padding-bottom: 15px">
-      <% if @payment_infos.exists? %>
+      <% if @payment_infos.size > 0 %>
         <strong>Download::</strong>
         <%= link_to "CSV", '#', id: "csv", class: 'w3-bar-item w3-btn w3-card-4 w3-dark-grey w3-small w3-round-xlarge w3-ripple' %>
         |
@@ -428,6 +428,7 @@
       <div class="w3-white w3-hover-shadow col-md-6 offset-md-3 w3-card-4 w3-border w3-border-purple rcorners w3-center">
         <h4 class="show w3-center"><strong>Filter Transactions</strong></h4>
         <% @networks = [["MTN", "MTN"], ["VOD", "VOD"], ["TIGO", "TIG"], ["AIRTEL", "AIR"]] %>
+        <% @transaction_types = [["Collections (CTM)", "CTM"], ["Cash (CSH)", "CSH"], ["Disbursements (MTC)", "MTC"]] %>
         <% @statuses = [["SUCCESS", "000"], ["FAILED", "001"], ["PENDING", "NIL"]] %>
         <%= simple_form_for :filter_main, :url => (payment_info_index_path(count: params[:count], page: params[:page])), :method => 'get', html: {class: 'form-horizontal'}, remote: true do |f| %>
           <div class="w3-container w3-border w3-border-purple">
@@ -466,10 +467,16 @@
                 <%= f.input :cust_num, class: "form-control", input_html: {style: "width: 90%"}, label: "Customer Number", boolean_style: :inline %>
               <% elsif current_user.merchant_service? %>
                 <%= f.input :cust_num, class: "form-control", input_html: {style: "width: 90%"}, label: "Customer Number", boolean_style: :inline %>
+                <%# a_service = EntityDivision.where(assigned_code: current_user.division_code, active_status: true).order(created_at: :desc).first %>
+                <%# if a_service && a_service.activity_type_code == "HSP" %>
+                  <%#= f.input :trans_type, collection: @transaction_type, label_method: :first, value_method: :last, class: "form-control", input_html: {id: "id_service_trans_type", style: "width: 90%"}, label: "Transaction Type", boolean_style: :inline %>
+                <%# end %>
                 <%= f.input :trans_id, label: "Transaction ID", class: "form-control", input_html: {style: "width: 90%"}, boolean_style: :inline %>
               <% end %>
+              <%= f.input :trans_type, collection: @transaction_types, label_method: :first, value_method: :last, class: "form-control", input_html: {id: "id_trans_type", style: "width: 90%"}, label: "Transaction Type", boolean_style: :inline %>
 
             </div>
+
 
 
             <div class="w3-half">

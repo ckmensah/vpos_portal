@@ -42,7 +42,7 @@
       </tr>
       </thead>
       <tbody>
-      <% @entity_divisions.each do |entity_division| %>
+      <% @entity_divisions.each_with_index do |entity_division, ind| %>
       <% division_act_lov = DivisionActivityLov.where(division_code: entity_division.assigned_code, active_status: true) %>
         <% activity_div = ActivityDiv.where(division_code: entity_division.assigned_code, active_status: true) %>
         <% act_sub_div_class = ActivitySubDivClass.where(entity_div_code: entity_division.assigned_code, del_status: false) %>
@@ -55,9 +55,9 @@
                             class: 'w3-button w3-purple-vpos w3-border w3-border-purple w3-tiny w3-round-large', remote:true%>
 
             <% if entity_division.activity_type.assigned_code == "SHW" || entity_division.activity_type.assigned_code == "SPO" %>
-                <button id="navbardrop" data-toggle="dropdown" class="w3-button w3-white w3-border dropdown-toggle w3-border-purple w3-tiny w3-round-large" style="width:80px; height: 30px; color: #800754 !important">TICKETS</button>
+                <button id="navbardrop" data-toggle="dropdown" onclick="ticketDropdownControl('ticket-dropdown-id-<%= ind + 1 %>', 'division-dropdown-id-<%= ind + 1 %>'); return false;" class="w3-button div-dropdown-2 w3-white w3-border dropdown-toggle w3-border-purple w3-tiny w3-round-large" style="width:80px; height: 30px; color: #800754 !important">TICKETS</button>
 
-                <div class="dropdown-menu dropdown-menu-right">
+                <div id="ticket-dropdown-id-<%= ind + 1 %>" class="dropdown-menu division-dropdown dropdown-menu-left">
                   <% if act_sub_div_class.exists? %>
                     <a class="dropdown-item" href= "<%= activity_sub_div_classes_path(code: entity_division.assigned_code, class_div_top: "class_div_top", entity_code: params[:entity_code], count1: params[:count1], count: params[:count]) %>" data-remote="true" ><strong>Ticket Types</strong></a>
                   <% else %>
@@ -102,7 +102,7 @@
                               style: "width:120px; height: 30px;",
                               class: 'w3-button w3-purple-vpos w3-border w3-border-purple w3-tiny w3-round-large', remote:true%>
                 <% end %>
-                <% if entity_division.activity_type.assigned_code == "CHC" #|| entity_division.activity_type.assigned_code == "SCH" #|| entity_division.activity_type.assigned_code == "OMC" #|| entity_division.activity_type.assigned_code == "DON" || entity_division.activity_type.assigned_code == "GEN" %>
+                <% if entity_division.activity_type.assigned_code == "CHC" || entity_division.activity_type.assigned_code == "SCH" #|| entity_division.activity_type.assigned_code == "OMC" #|| entity_division.activity_type.assigned_code == "DON" || entity_division.activity_type.assigned_code == "GEN" %>
                   <%= link_to 'ACTIVITY CODE', entity_div_sub_activity_index_path(entity_code: params[:entity_code], code: entity_division.assigned_code, count1: params[:count1], count: params[:count]),
                               style: "width:110px; height: 30px; color: #800754 !important",
                               class: 'w3-button w3-white w3-border w3-border-purple w3-tiny w3-round-large', remote:true%>
@@ -114,9 +114,9 @@
                   <!--<i class="fas fa-angle-down"></i>-->
                   <!--                    <button class="nav-link text-light dropdown-toggle" href="#" id="navbardrop" data-toggle="dropdown">Setup </button>-->
 
-                  <button id="navbardrop" data-toggle="dropdown" class="w3-button w3-white w3-border dropdown-toggle w3-border-purple w3-tiny w3-round-large" style="width:65px; height: 30px; color: #800754 !important">SETUP</button>
+                  <button id="navbardrop" data-toggle="dropdown" onclick="divisionDropdownControl('ticket-dropdown-id-<%= ind + 1 %>', 'division-dropdown-id-<%= ind + 1 %>'); return false;" class="w3-button div-dropdown-1 w3-white w3-border dropdown-toggle w3-border-purple w3-tiny w3-round-large" style="width:65px; height: 30px; color: #800754 !important">SETUP</button>
 
-                  <div class="dropdown-menu dropdown-menu-right">
+                  <div id="division-dropdown-id-<%= ind + 1 %>" class="dropdown-menu division-dropdown dropdown-menu-right">
                     <% if division_act_lov.exists? || activity_div.exists? %>
                       <a class="dropdown-item" href= "<%= division_edit_setup_path(entity_division, code: entity_division.assigned_code, entity_code: params[:entity_code], count1: params[:count1], count: params[:count], page: params[:page]) %>" data-remote="true" ><strong>General Setup</strong></a>
                     <% else %>
@@ -132,16 +132,26 @@
                                 style: "width:65px; height: 30px; color: #800754 !important",
                                 class: 'w3-button w3-white w3-border w3-border-purple w3-tiny w3-round-large', remote:true%>
                   <% else %>
-                    <button id="navbardrop" data-toggle="dropdown" class="w3-button w3-white w3-border dropdown-toggle w3-border-purple w3-tiny w3-round-large" style="width:65px; height: 30px; color: #800754 !important">SETUP</button>
+                    <button id="navbardrop" data-toggle="dropdown" onclick="divisionDropdownControl('ticket-dropdown-id-<%= ind + 1 %>', 'division-dropdown-id-<%= ind + 1 %>'); return false;" class="w3-button div-dropdown-1 w3-white w3-border dropdown-toggle w3-border-purple w3-tiny w3-round-large" style="width:65px; height: 30px; color: #800754 !important">SETUP</button>
 
-                    <div class="dropdown-menu dropdown-menu-right">
+                    <div id="division-dropdown-id-<%= ind + 1 %>" class="dropdown-menu division-dropdown dropdown-menu-right">
                       <% if division_act_lov.exists? || activity_div.exists? %>
                         <a class="dropdown-item" href= "<%= division_edit_setup_path(entity_division, code: entity_division.assigned_code, entity_code: params[:entity_code], count1: params[:count1], count: params[:count], page: params[:page]) %>" data-remote="true" ><strong>General Setup</strong></a>
                       <% else %>
                         <a class="dropdown-item" href= "<%= division_setup_path(entity_division, code: entity_division.assigned_code, entity_code: params[:entity_code], count1: params[:count1], count: params[:count], page: params[:page]) %>" data-remote="true" ><strong>General Setup</strong></a>
                       <% end %>
-                      <% if entity_division.activity_type.assigned_code == "MOP" %>
+                      <% if entity_division.activity_type.assigned_code == "MOP" || entity_division.activity_type.assigned_code == "HSP" %>
                         <a class="dropdown-item" href="<%= entity_admin_whitelist_index_path(code: entity_division.assigned_code, entity_code: params[:entity_code], count1: params[:count1], count: params[:count]) %>" data-remote="true"><strong>WhiteList Merchant</strong></a>
+                      <% end %>
+
+                      <% if entity_division.activity_type.assigned_code == "SHW" %>
+                        <% social_handle_state = EntityDivSocialHandle.where(entity_div_code: entity_division.assigned_code, del_status: false).first %>
+                        <% media_state = EntityDivMedium.where(entity_div_code: entity_division.assigned_code, del_status: false).first %>
+                        <% if social_handle_state || media_state %>
+                          <a class="dropdown-item" href="<%= entity_div_media_index_path(code: entity_division.assigned_code, entity_code: params[:entity_code], count1: params[:count1], count: params[:count]) %>" data-remote="true"><strong>Media</strong></a>
+                        <% else %>
+                          <a class="dropdown-item" href="<%= new_entity_div_medium_path(code: entity_division.assigned_code, entity_code: params[:entity_code], count1: params[:count1], count: params[:count]) %>" data-remote="true"><strong>Media</strong></a>
+                        <% end %>
                       <% end %>
 
                         <a class="dropdown-item" href="<%= entity_div_alert_recipient_index_path(entity_division, code: entity_division.assigned_code, entity_code: params[:entity_code], count1: params[:count1], count: params[:count]) %>" data-remote="true"><strong>Merchant Notification</strong></a>
@@ -308,6 +318,162 @@
 <script>
     $(function(){
         $('.pagination a').attr('data-remote', 'true')
+
     });
 
+    function ticketDropdownControl(ticketDropdownId, divisionDropdownId) {
+        console.log("Ticket Dropdown");
+        let ticket_dropdown_id = $('#' + ticketDropdownId);
+        // $('.division-dropdown').toggle();
+        ticket_dropdown_id.toggle();
+        $('#' + divisionDropdownId).hide();
+        ticket_dropdown_id.addClass("dropdown-menu-left");
+        ticket_dropdown_id.removeClass("dropdown-menu-right");
+    }
+
+    function divisionDropdownControl(ticketDropdownId, divisionDropdownId) {
+        console.log("Division Dropdown");
+        let div_dropdown_id = $('#' + divisionDropdownId);
+        // $('.division-dropdown').toggle();
+        div_dropdown_id.toggle();
+        $('#' + ticketDropdownId).hide();
+        div_dropdown_id.addClass("dropdown-menu-right");
+        div_dropdown_id.removeClass("dropdown-menu-left");
+    }
+
+    // $('.div-dropdown-2').click(function() {
+    //     console.log("Ticket Dropdown");
+    //     let ticket_dropdown_id = $('#' + ticketDropdownId);
+    //     ticket_dropdown_id.toggle();
+    //     $('#' + divisionDropdownId).hide();
+    //     ticket_dropdown_id.addClass("dropdown-menu-left");
+    //     ticket_dropdown_id.removeClass("dropdown-menu-right");
+    // });
+
+    // $('.div-dropdown-1').click(function() {
+    //     console.log("Division Dropdown");
+    //     let div_dropdown_id = $('#division-dropdown-id');
+    //     div_dropdown_id.toggle();
+    //     $('#ticket-dropdown-id').hide();
+    //     div_dropdown_id.addClass("dropdown-menu-right");
+    //     div_dropdown_id.removeClass("dropdown-menu-left");
+    // });
+
 </script>
+
+<!--<script>-->
+<!--  // EPIGRAM ON FAILURE-->
+<!--    function sum1(string) {-->
+<!--        const VOWELS = ["a", "e", "i", "o", "u"];-->
+<!--        return (-->
+<!--            string-->
+<!--                .replace(/[^a-zA-Z]*/g, "")-->
+<!--                .split("")-->
+<!--                .reduce((acc, char, array) => {-->
+<!--                    return acc + char.charCodeAt(0) * (isVowel() ? -1 : 1);-->
+
+<!--                    function isVowel() {-->
+<!--                        return VOWELS.includes(char);-->
+<!--                    }-->
+<!--                }, 0)-->
+<!--        );-->
+<!--    }-->
+
+<!--    // require("assert").equal(sum("iffy"), 220);-->
+<!--  // console.log("================================================================================");-->
+<!--  // console.log(-->
+<!--  //     sum1(-->
+<!--  //         "Dealing with failure is easy: Work hard to improve. Success is also easy to handle: You’ve solved the wrong problem. Work hard to improve."-->
+<!--  //     )-->
+<!--  // );-->
+
+
+
+<!--  // FIBONACCI-->
+<!--  function sumFibonacci(num) {-->
+<!--      // x[i-2]-->
+<!--      let fib0 = 0;-->
+<!--      // x[i-1]-->
+<!--      let fib1 = 1;-->
+<!--      // x[i]-->
+<!--      let fib = 1;-->
+<!--      let sum = fib0;-->
+<!--      while (fib < num) {-->
+<!--          if (isOdd(fib)) {-->
+<!--              sum += fib1;-->
+<!--          }-->
+<!--          fib = fib0 + fib1;-->
+<!--          fib1 += fib0;-->
+<!--          fib0 = fib1 - fib0;-->
+<!--      }-->
+
+<!--      return sum;-->
+
+<!--      function isOdd(n) {-->
+<!--          return n % 2;-->
+<!--      }-->
+<!--  }-->
+
+<!--  // console.log(sumFibonacci(10000));-->
+
+
+
+<!--  // LEGIONARIES-->
+<!--    function sum(max) {-->
+<!--        let count = 0;-->
+<!--        for (let i = 1; i <= max; i++) {-->
+<!--            const roman = toRoman(i);-->
+<!--            roman.replace(/X/g, () => {-->
+<!--                count++;-->
+<!--            });-->
+<!--        }-->
+
+<!--        return count;-->
+
+<!--        function toRoman(num) {-->
+<!--            if (typeof num !== "number") throw Error();-->
+
+<!--            const digits = String(num).split("");-->
+<!--            const key = [-->
+<!--                "",-->
+<!--                "C",-->
+<!--                "CC",-->
+<!--                "CCC",-->
+<!--                "CD",-->
+<!--                "D",-->
+<!--                "DC",-->
+<!--                "DCC",-->
+<!--                "DCCC",-->
+<!--                "CM",-->
+<!--                "",-->
+<!--                "X",-->
+<!--                "XX",-->
+<!--                "XXX",-->
+<!--                "XL",-->
+<!--                "L",-->
+<!--                "LX",-->
+<!--                "LXX",-->
+<!--                "LXXX",-->
+<!--                "XC",-->
+<!--                "",-->
+<!--                "I",-->
+<!--                "II",-->
+<!--                "III",-->
+<!--                "IV",-->
+<!--                "V",-->
+<!--                "VI",-->
+<!--                "VII",-->
+<!--                "VIII",-->
+<!--                "IX"-->
+<!--            ];-->
+<!--            let roman_num = "";-->
+<!--            let i = 3;-->
+<!--            while (i--) {-->
+<!--                roman_num = (key[+digits.pop() + i * 10] || "") + roman_num;-->
+<!--            }-->
+<!--            return Array(+digits.join("") + 1).join("M") + roman_num;-->
+<!--        }-->
+<!--    }-->
+
+<!--    // console.log(sum(2660));-->
+<!--</script>-->

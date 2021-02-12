@@ -1,6 +1,6 @@
 class ActivityDiv < ApplicationRecord
   CTRYCODE = "233"
-  attr_accessor :sport_type, :sport_category, :category_type, :for_fixture, :activity_sub_plan_id, :recipient_number,
+  attr_accessor :sport_type, :sport_category, :category_type, :for_fixture, :activity_sub_plan_id, :recipient_number, :act_group, :act_class,
                 :recipient_email, :amt, :entity_div_code, :src, :payment_mode, :nw, :qty, :customer_name, :ticket_valid
 
   belongs_to :entity_division, -> { where active_status: true }, class_name: 'EntityDivision', foreign_key: :division_code
@@ -18,6 +18,8 @@ class ActivityDiv < ApplicationRecord
   validate :for_sport_category, :if => :for_fixture
   validate :for_category_type, :if => :for_fixture
 
+  validates :act_group, presence: {message: " cannot be empty."} , :if => :ticket_valid
+  validates :act_class, presence: {message: " cannot be empty."} , :if => :ticket_valid
   validates :activity_sub_plan_id, presence: {message: " cannot be empty."} , :if => :ticket_valid
   #validates :recipient_number, presence: {message: " cannot be empty."} , :if => :ticket_valid
   validates :recipient_email, format: { with: URI::MailTo::EMAIL_REGEXP } , :if => :ticket_valid

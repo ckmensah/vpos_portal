@@ -1,0 +1,424 @@
+<div class="w3-container" >
+  <div id="id19" class="w3-modal w3-animate-opacity" style=" display: block">
+    <!--<div class="w3-modal-content w3-card-4" >-->
+    <br/>
+
+    <div class="">
+      <div class="w3-white w3-hover-shadow col-md-8 offset-md-2 w3-card-4 w3-border w3-border-purple rcorners w3-center">
+        <h4 class="show w3-center"><strong>Edit Media Setup</strong></h4>
+        <!--        <p id="for_division_setup"><%##= notice %></p>-->
+        <div id="edit_notice"></div>
+        <%= simple_form_for(@entity_div_medium, :html => { multipart: true }, url: entity_div_medium_path(@entity_div_medium, medium_type: params[:medium_type], code: params[:code], action_type: "for_create", entity_code: params[:entity_code], service_filter: $service_filter.present? ? $service_filter.to_enum.to_h : "", count1: params[:count1], page1: params[:page1], count: params[:count], page: params[:page] ),:remote => true) do |f| %>
+          <%= f.error_notification %>
+          <%= f.error_notification message: f.object.errors[:base].to_sentence if f.object.errors[:base].present? %>
+
+          <% if params[:medium_type] == "images" %>
+            <!--          <legend>Media Images</legend>-->
+            <h5 class="show w3-center"><strong>Media Images</strong></h5>
+            <%
+                @msg = "Maximum number of images is 1. Maximum image size should be 2MB or less."
+                @name = "media_note"
+            %>
+            <p id=""><%= render 'layouts/media_messages' %></p>
+
+            <div class="w3-container w3-border w3-border-purple">
+              <br/>
+              <div class="w3-responsive w3-center">
+                <br>
+<!--                        <img class="w3-hover-shadow w3-card-2 w3-border w3-round-xlarge" width=400 height=250 src="<%#= "https://res.cloudinary.com/appsnmob/#{image_media.media_data}" %>"  alt="your image" />-->
+                <img class="w3-hover-shadow w3-card-2 w3-border w3-round-xlarge" width=300 height=150 src="<%= "https://res.cloudinary.com/appsnmob/#{@entity_div_medium.media_data}" %>"  alt="your image" />
+                <br><br>
+                <div class="pre-scrollable" style="max-height: 50vh">
+                  <% if params[:create_media] == "create_media" %>
+                    <div id="master_div" class="form-group">
+                      <span class="btn btn-default btn-file"><%= f.input :media_data, as: :file, label: false, array: true, input_html:{multiple: true, id: "avatar-upload"}, accept: "image/jpeg,image/gif,image/png", value: @data_media %></span>
+                      <!--                    <input type="file" name="entity_div_medium[media_data]" id="avatar-upload" multiple>-->
+                    </div>
+                    <%= f.input :media_path,  as: :hidden, input_html:{value: "https://res.cloudinary.com/appsnmob/virtual_pos/media/images/"}    %>
+                    <%= f.input :media_type,  as: :hidden, input_html:{value: "IMG"}    %>
+                  <% else %>
+                    <div id="master_div" class="form-group">
+                      <!--                    <img id="img_prev" width=300 height=300 src="#" alt="your image" class="img-thumbnail hidden"/> <br/>-->
+                      <span class="btn btn-default btn-file"><%= f.input :media_data, as: :file, label: false, array: true, input_html:{multiple: true, id: "avatar-upload", accept: "image/jpeg,image/gif,image/png", value: @data_media} %></span>
+
+                      <!--                    <input type="file" name="entity_div_medium[media_data]" id="avatar-upload" multiple>-->
+                      <%#= f.hidden_field :media_data_cache %>
+                    </div>
+                    <%= f.input :media_path,  as: :hidden, input_html:{value: "https://res.cloudinary.com/appsnmob/virtual_pos/media/images/"}    %>
+                    <%= f.input :media_type,  as: :hidden, input_html:{value: "IMG"}    %>
+                    <!--                  <img id="img_prev" width=300 height=300 src="/tmp/RackMultipart20201210-84565-vmmiub.PNG" alt="your image" class="img-thumbnail hidden"/> <br/>-->
+
+                  <% end %>
+                  <!--                    <br/>-->
+                </div>
+
+              </div>
+              <br/>
+            </div>
+
+            <br>
+            <br>
+          <% elsif params[:medium_type] == "videos" %>
+            <!--          <legend>Media Videos</legend>-->
+            <h5 class="show w3-center"><strong>Media Videos</strong></h5>
+            <%
+                @msg = "Maximum number of videos is 1. Maximum image size should be 12MB or less."
+                @name = "media_note"
+            %>
+            <p id=""><%= render 'layouts/media_messages' %></p>
+            <div class="w3-container w3-border w3-border-purple">
+              <br/>
+              <div class="w3-responsive w3-center">
+                <br>
+                <%=
+                  cl_video_tag("#{@entity_div_medium.media_data}",
+                               :loop => true, :controls => true,
+                               :transformation => [
+                                   :height=>250, :crop=>"pad",
+                                   :quality=>70, :duration=>"60"],
+                               :fallback_content => "Your browser does not support HTML5 video tags." )
+                %>
+                <div class="pre-scrollable" style="max-height: 50vh">
+
+
+                  <% if params[:create_media] == "create_media" %>
+                    <div id="video_div" class="form-group">
+                      <span class="btn btn-default btn-file"><%= f.input :media_data_vid, as: :file, label: false, array: true, input_html:{multiple: true, id: "avatar-upload-vid", value: @data_media_vid, accept: "video/*"} %></span>
+                      <!--                    <input type="file" name="entity_div_medium[media_data_vid]" id="avatar-upload-vid">-->
+                    </div>
+                    <%= f.input :media_vid_path,  as: :hidden, input_html:{value: "https://res.cloudinary.com/appsnmob/virtual_pos/media/videos/"}    %>
+                    <%= f.input :media_vid_type,  as: :hidden, input_html:{value: "VID"}    %>
+
+                  <% else %>
+                    <div id="video_div" class="form-group">
+                      <span class="btn btn-default btn-file"><%= f.input :media_data_vid, as: :file, label: false, array: true, input_html:{multiple: true, id: "avatar-upload-vid", value: @data_media_vid, accept: "video/*"} %></span>
+                      <!--                    <input type="file" name="entity_div_medium[media_data_vid]" id="avatar-upload-vid">-->
+                    </div>
+                    <%= f.input :media_vid_path,  as: :hidden, input_html:{value: "https://res.cloudinary.com/appsnmob/virtual_pos/media/videos/"}    %>
+                    <%= f.input :media_vid_type,  as: :hidden, input_html:{value: "VID"}    %>
+                  <% end %>
+                  <!--                    <br/>-->
+                </div>
+
+              </div>
+
+              <br/>
+            </div>
+            <br>
+            <br>
+          <% elsif params[:medium_type] == "handles" %>
+          <% end %>
+
+          <%= f.input :entity_div_code,  as: :hidden, input_html:{value: params[:code]} %>
+          <%= f.input :active_status, :as => :hidden, input_html:{value: true} %>
+          <%= f.input :user_id, :as => :hidden, input_html:{value: current_user.id} %>
+          <input type="hidden" name="create_media" value="create_media">
+
+
+          <div>
+            <br>
+            <% if params[:medium_type] == "videos" || params[:medium_type] == "images" %>
+              <%= f.submit "Submit", id: "abc", class: "w3-button w3-purple-vpos w3-border w3-border-purple w3-small w3-round-large", :data => {:disable_with => 'Please Wait...'}, style: "width:auto;float:center;",remote:true %>
+            <% else %>
+            <% end %>
+
+            <% if params[:medium_type] == "images" %>
+              <%= link_to 'Back', image_media_path(code: params[:code], entity_code: params[:entity_code], service_filter: $service_filter.present? ? $service_filter.to_enum.to_h : "", count1: params[:count1], page1: params[:page1], page: params[:page], count: params[:count]), class: "w3-button w3-white w3-border w3-border-purple w3-small w3-round-large",remote:true %>
+            <% elsif params[:medium_type] == "videos" %>
+              <%= link_to 'Back', video_media_path(code: params[:code], entity_code: params[:entity_code], service_filter: $service_filter.present? ? $service_filter.to_enum.to_h : "", count1: params[:count1], page1: params[:page1], page: params[:page], count: params[:count]), class: "w3-button w3-white w3-border w3-border-purple w3-small w3-round-large",remote:true %>
+            <% end %>
+            <br><br>
+          </div>
+        <% end %>
+
+
+      </div>
+
+    </div>
+
+
+    <div class="col-md-7 col-md-offset-5">
+    </div>
+
+    <br/>
+    <div class="col-md-7 col-md-offset-5">
+      <br/>
+      <br/>
+    </div>
+    <!--</div>-->
+
+  </div>
+</div>
+
+
+
+<script>
+    function onlyUnique(value, index, self) {
+        return self.indexOf(value) === index;
+    }
+
+  function chromaticAsc(arr, outMaxRg, outMinRg){
+      // Array A is the INPUT
+      // Return value N is the OUTPUT
+      //
+      // Array is between -1,000,000 to 1,000,000 inclusive
+      // return value N is between 1 to 100,000 inclusive
+      //
+      // Make elements of array unique as unique_arr
+      // Sort array in ascending order as sortedArr
+      // Retrieve positive elements as Asp
+      // ###(Retrieve negative elements as Asn)
+
+      var OutMaxRg = outMaxRg;
+      var OutMinRg = outMinRg;
+
+      if (arr.length > 0){
+          var unique_arr = arr.filter(onlyUnique);
+          var sortedArr = unique_arr.sort(function(a, b){return a-b});
+          var Asp = [];
+          sortedArr.forEach(function(item){
+              if(item > 0){
+                  Asp.push(item)
+              }
+          });
+
+          console.log("Unique is ", unique_arr);
+          console.log("Sorted is ", sortedArr);
+          console.log("Asp is ", Asp);
+          if (Asp.length > 0) {
+              var minAspVal = Asp[0];
+              var maxAspVal = Asp[Asp.length - 1];
+              if (minAspVal >= OutMinRg && minAspVal <= OutMaxRg){
+                  var initCnt = 0;
+                  if (maxAspVal <= OutMaxRg) {
+                      for (arr_index = minAspVal; arr_index <= maxAspVal; arr_index++){
+                          if (Asp[initCnt] === arr_index) {
+                              if (arr_index === maxAspVal) {
+                                  return maxAspVal === OutMaxRg ? OutMaxRg : maxAspVal + 1
+                              }
+                          } else {
+                              return arr_index
+                          }
+                          initCnt++
+                      }
+
+                  } else {
+
+                      for (arr_index = minAspVal; arr_index <= OutMaxRg; arr_index++){
+                          if (Asp[initCnt] === arr_index) {
+                              if (arr_index === OutMaxRg) {
+                                  return OutMaxRg + 1
+                              }
+                          } else {
+                              return arr_index
+                          }
+                          initCnt++
+                      }
+                  }
+              } else {
+              return OutMaxRg
+              }
+          } else {
+              return OutMinRg
+          }
+
+      } else {
+          return OutMinRg
+      }
+
+  }
+
+  // Test
+  var arr1 = [120,189,274], outMinRg = 1, outMaxRg = 100;
+
+  console.log("======== |||||||||||||||||||||||||||||| =========");
+  console.log("Return Value = ", chromaticAsc(arr1, outMaxRg, outMinRg));
+
+
+
+
+    function playPause(video_id) {
+        console.log("Video ID is :: ", video_id);
+        var myVideo = document.getElementById(video_id);
+        if (myVideo.paused)
+            myVideo.play();
+        else
+            myVideo.pause();
+    }
+
+    function uploadCheck(input, image_type) {
+        var for_checked = true;
+        // var total_size = 0;
+        if (input.files && input.files.length > 1) {
+            alert("Sorry, maximum number of files should be 1.");
+            input.value = '';
+            for_checked = false;
+        } else if (input.files && input.files[0]) {
+            for (input_file = 0; input_file < input.files.length; input_file++) {
+                var maxImageSize = 2, maxVideoSize = 12;
+                var maxSize = image_type === "IMG" ? maxImageSize : maxVideoSize;
+                const maxAllowedSize =  maxSize * 1024 * 1024;
+                console.log("File Size is ", input.files[input_file].size);
+                if (input.files[input_file].size > maxAllowedSize) {
+                    // Here you can ask your users to load correct file
+                    image_type === "IMG" ? alert("File (" + input.files[input_file].name + ") exceeds "+ maxImageSize + "MB. Please try again.") : alert("File (" + input.files[input_file].name + ") exceeds "+ maxVideoSize + "MB. Please try again.");
+                    input.value = '';
+                    for_checked = false;
+                    break;
+                }
+            }
+        } else {
+            alert("Sorry, no files selected.");
+            input.value = '';
+            for_checked = false;
+        }
+        return for_checked
+    }
+
+    $(function() {
+        // function readURL(input) {
+        //     console.log("A TRIAL ================== ")
+        //     console.log(input.files)
+        //     if (input.files && input.files[0]) {
+        //         var reader = new FileReader();
+        //
+        //         reader.onload = function (e) {
+        //             $('#img_prev').attr('src', e.target.result);
+        //         }
+        //         reader.readAsDataURL(input.files[0]);
+        //     }
+        // }
+
+        function readImageURL(input) {
+            console.log("A TRIAL ================== ")
+            console.log(input.files)
+            var masterDiv = document.getElementById("master_div");
+            var imgDiv = document.createElement("div");
+            imgDiv.setAttribute("class", "w3-center");
+            masterDiv.appendChild(imgDiv);
+
+            if (input.files && input.files[0]) {
+                // document.getElementById('img_obj').value = input.files;
+                for (input_file = 0; input_file < input.files.length; input_file++) {
+                    var reader = new FileReader();
+                    const input_ind = input_file + 1;
+                    console.log("Target result First " + input_ind)
+                    var mediaImg = document.createElement("img");
+                    // mediaImg.type = "text";
+                    mediaImg.setAttribute("style", "width: 200px; height: 200px");
+                    mediaImg.setAttribute("alt", "your image");
+                    mediaImg.setAttribute("class", "img-thumbnail");
+                    mediaImg.setAttribute("id", "img_prev" + "_" + input_ind);
+                    imgDiv.appendChild(mediaImg);
+                    reader.onload = function (e) {
+                        // console.log("Target result " + input_ind, e.target.result)
+                        $("#img_prev" + "_" + input_ind).attr('src', e.target.result);
+                    }
+                    reader.readAsDataURL(input.files[input_file]);
+                }
+            }
+
+        }
+
+        function readVideoURL(input) {
+            console.log("A TRIAL Video ================== ")
+            console.log(input.files)
+            var masterVidDiv = document.getElementById("video_div");
+            var videoDiv = document.createElement("div");
+
+            videoDiv.setAttribute("class", "w3-center");
+
+            masterVidDiv.appendChild(videoDiv);
+            if (input.files && input.files[0]) {
+                // document.getElementById('img_obj').value = input.files;
+                for (input_file = 0; input_file < input.files.length; input_file++) {
+                    var reader = new FileReader();
+                    const input_ind = input_file + 1;
+                    console.log("Video Target result First " + input_ind)
+
+                    var mediaImg = document.createElement("video");
+                    // mediaImg.type = "video/webm";
+                    mediaImg.setAttribute("controls", "controls");
+                    mediaImg.setAttribute("style", "height: 200px");
+                    mediaImg.setAttribute("alt", "your video");
+                    mediaImg.setAttribute("class", "video-thumbnail");
+                    mediaImg.setAttribute("id", "video_prev" + "_" + input_ind);
+
+                    var playPauseBtn = document.createElement("button");
+                    playPauseBtn.type = "button";
+                    playPauseBtn.setAttribute("onclick", `playPause('video_prev` + `_`+input_ind+`'); return false;`);
+                    playPauseBtn.setAttribute("class", "w3-button w3-purple-vpos w3-border w3-border-purple w3-tiny w3-round-large jsBtn");
+                    playPauseBtn.innerText = "Play/Pause " + input.files[input_file].name;
+                    var underliner = document.createElement("hr");
+                    var btnDiv = document.createElement("div");
+                    btnDiv.setAttribute("style", "display: block;");
+                    var vidDiv = document.createElement("div");
+                    vidDiv.setAttribute("style", "display: block;");
+                    btnDiv.appendChild(playPauseBtn);
+                    videoDiv.appendChild(btnDiv);
+                    vidDiv.appendChild(mediaImg);
+                    videoDiv.appendChild(vidDiv);
+                    videoDiv.appendChild(underliner);
+
+                    reader.onload = function (e) {
+                        // console.log("Target result " + input_ind, e.target.result)
+                        $("#video_prev" + "_" + input_ind).attr('src', e.target.result);
+                    }
+                    reader.readAsDataURL(input.files[input_file]);
+                }
+            }
+
+        }
+
+
+
+        $("#avatar-upload").change(function(){
+            // $('#img_prev').removeClass('hidden');
+            // const imgTag = document.querySelector('img');
+            // var imgTag2 = document.getElementsByTagName('img');
+            // console.log("Image Tag classes ", imgTag.classList);
+            // console.log("Image Tag classes2 ", imgTag2);
+            // var img2Arr = []
+            // for (img2 = 0; img2 < imgTag2.length; img2++){
+            //     console.log("Individual ", imgTag2[img2].toString())
+            //     var splitImg2 = imgTag2[img2].toString().split('.')
+            //     img2Arr.push(splitImg2[1])
+            // }
+            // console.log("Image 2 array ", img2Arr)
+
+            // if (imgTag2.classList.contains('img-thumbnail')) {
+            if ($ ("img").hasClass("img-thumbnail")) {
+                console.log('Yahhh! Class is found.');
+                $('.img-thumbnail').remove();
+            } else {
+                console.log('Class does not exist.');
+            }
+            if (uploadCheck(this, "IMG")) {
+                readImageURL(this);
+            }
+
+        });
+
+        $("#avatar-upload-vid").change(function(){
+            if ($ ("video").hasClass("video-thumbnail")) {
+                console.log('Yahhh! Class is found for video.');
+                $('.video-thumbnail').remove();
+            } else {
+                console.log('Class does not exist for videos.');
+            }
+            if ($ ("button").hasClass("jsBtn")) {
+                $('.jsBtn').remove();
+            }
+            if ($ ("hr").has("hr")) {
+                $('hr').remove();
+            }
+            if (uploadCheck(this, "VID")) {
+                readVideoURL(this);
+            }
+        });
+
+    });
+
+
+
+</script>

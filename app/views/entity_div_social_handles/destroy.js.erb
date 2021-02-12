@@ -1,0 +1,4 @@
+<%# params[:entity_code] %>
+$("#social_handle").html("<%= escape_javascript(render("entity_div_social_handle_index")) %>");
+$('#notes20').html("<%= escape_javascript(render 'layouts/messages') %>");
+$('.pagination a').attr('data-remote', 'true');

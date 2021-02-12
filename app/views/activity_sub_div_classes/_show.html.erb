@@ -13,7 +13,6 @@
 
         <div class="w3-container">
           <br/>
-
           <% #assigned_service = @entity_division.assigned_service_codes != nil ? @entity_division.assigned_service_codes.where(active_status: true, del_status: false).order("assigned_service_code.created_at desc").first : false %>
           <% act_div_sub_class = ActivitySubDivClass.where(entity_div_code: params[:code], active_status: true).order(created_at: :desc) %>
           <div class="w3-container w3-responsive pre-scrollable w3-mobile">
@@ -21,49 +20,86 @@
             <% if params[:class_div_top] == "class_div_top" %>
               <% if params["multi_create"] == "multi_create" %>
                 <% %>
-                <div class="col-md-10 offset-md-1">
+                <div class="">
                   <table class="w3-table-all table-bordered w3-hoverable w3-card-4">
                     <tr class="w3-vpos-purple">
+                      <td>No.</td>
                       <td><strong>Activity Ticket Type(s) for <%= @activity_sub_div_class.entity_division.division_name %>:</strong></td>
+                      <td><strong>Number of Tickets</strong></td>
                     </tr>
                     <% count = 0 %>
-                    <% if @activity_sub_div_class.class_one.present? %>
+                    <% if @activity_sub_div_class.class_one.present? && @activity_sub_div_class.act_group_one.present? %>
                       <% count = count + 1 %>
                       <tr>
+                        <td><%= count %></td>
                         <td>
-                          <strong><%= count %>. <%= @activity_sub_div_class.class_one %></strong>
+                          <strong><%= @activity_sub_div_class.class_one %></strong>
+                        </td>
+                        <td>
+                          <strong><%= @activity_sub_div_class.max_num_one %></strong>
+                        </td>
+                        <td>
+                          <strong><%= @activity_sub_div_class.act_group_one %></strong>
                         </td>
                       </tr>
                     <% end %>
-                    <% if @activity_sub_div_class.class_two.present? %>
+                    <% if @activity_sub_div_class.class_two.present? && @activity_sub_div_class.act_group_two.present? %>
                       <% count = count + 1 %>
                       <tr>
+                        <td><%= count %></td>
                         <td>
-                          <strong><%= count %>. <%= @activity_sub_div_class.class_two %></strong>
+                          <strong><%= @activity_sub_div_class.class_two %></strong>
+                        </td>
+                        <td>
+                          <strong><%= @activity_sub_div_class.max_num_two %></strong>
+                        </td>
+                        <td>
+                          <strong><%= @activity_sub_div_class.act_group_two %></strong>
                         </td>
                       </tr>
                     <% end %>
-                    <% if @activity_sub_div_class.class_three.present? %>
+                    <% if @activity_sub_div_class.class_three.present? && @activity_sub_div_class.act_group_three.present? %>
                       <% count = count + 1 %>
                       <tr>
+                        <td><%= count %></td>
                         <td>
-                          <strong><%= count %>. <%= @activity_sub_div_class.class_three %></strong>
+                          <strong><%= @activity_sub_div_class.class_three %></strong>
+                        </td>
+                        <td>
+                          <strong><%= @activity_sub_div_class.max_num_three %></strong>
+                        </td>
+                        <td>
+                          <strong><%= @activity_sub_div_class.act_group_three %></strong>
                         </td>
                       </tr>
                     <% end %>
-                    <% if @activity_sub_div_class.class_four.present? %>
+                    <% if @activity_sub_div_class.class_four.present? && @activity_sub_div_class.act_group_four.present? %>
                       <% count = count + 1 %>
                       <tr>
+                        <td><%= count %></td>
                         <td>
-                          <strong><%= count %>. <%= @activity_sub_div_class.class_four %></strong>
+                          <strong><%= @activity_sub_div_class.class_four %></strong>
+                        </td>
+                        <td>
+                          <strong><%= @activity_sub_div_class.max_num_four %></strong>
+                        </td>
+                        <td>
+                          <strong><%= @activity_sub_div_class.act_group_four %></strong>
                         </td>
                       </tr>
                     <% end %>
-                    <% if @activity_sub_div_class.class_five.present? %>
+                    <% if @activity_sub_div_class.class_five.present? && @activity_sub_div_class.act_group_five.present? %>
                       <% count = count + 1 %>
                       <tr>
+                        <td><%= count %></td>
                         <td>
-                          <strong><%= count %>. <%= @activity_sub_div_class.class_five %></strong>
+                          <strong><%= @activity_sub_div_class.class_five %></strong>
+                        </td>
+                        <td>
+                          <strong><%= @activity_sub_div_class.max_num_five %></strong>
+                        </td>
+                        <td>
+                          <strong><%= @activity_sub_div_class.act_group_five %></strong>
                         </td>
                       </tr>
                     <% end %>
@@ -86,6 +122,18 @@
                     </td>
                   </tr>
                   <tr>
+                    <td class="raw_theme w3-border w3-border-black w3-leftbar"><strong>Maximum Ticket No.:</strong></td>
+                    <td>
+                      <strong><%= @activity_sub_div_class.max_num %></strong>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td class="raw_theme w3-border w3-border-black w3-leftbar"><strong>Activity Group:</strong></td>
+                    <td>
+                      <strong><%= @activity_sub_div_class.activity_group.activity_group_desc if @activity_sub_div_class.activity_group != nil %> (<%= @activity_sub_div_class.activity_group_code %>)</strong>
+                    </td>
+                  </tr>
+                  <tr>
                     <td class="raw_theme w3-border w3-border-black w3-leftbar"><strong>Date:</strong></td>
                     <td>
                       <strong><%= @activity_sub_div_class.created_at %></strong>
@@ -98,12 +146,16 @@
               <table class="w3-table-all table table-bordered w3-hoverable w3-card-4">
                 <tr class="w3-vpos-purple">
                   <td><strong>Ticket Type(s):</strong></td>
+                  <td><strong>Maximum No. of Tickets:</strong></td>
                 </tr>
 
                 <% if @activity_sub_div_class.class_one.present? %>
                   <tr>
                     <td>
                       <strong><%= @activity_sub_div_class.class_one %></strong>
+                    </td>
+                    <td>
+                      <strong><%= @activity_sub_div_class.max_num_one %></strong>
                     </td>
                   </tr>
                 <% end %>
@@ -112,12 +164,18 @@
                     <td>
                       <strong><%= @activity_sub_div_class.class_two %></strong>
                     </td>
+                    <td>
+                      <strong><%= @activity_sub_div_class.max_num_two %></strong>
+                    </td>
                   </tr>
                 <% end %>
                 <% if @activity_sub_div_class.class_three.present? %>
                   <tr>
                     <td>
                       <strong><%= @activity_sub_div_class.class_three %></strong>
+                    </td>
+                    <td>
+                      <strong><%= @activity_sub_div_class.max_num_three %></strong>
                     </td>
                   </tr>
                 <% end %>
@@ -126,12 +184,18 @@
                     <td>
                       <strong><%= @activity_sub_div_class.class_four %></strong>
                     </td>
+                    <td>
+                      <strong><%= @activity_sub_div_class.max_num_four %></strong>
+                    </td>
                   </tr>
                 <% end %>
                 <% if @activity_sub_div_class.class_five.present? %>
                   <tr>
                     <td>
                       <strong><%= @activity_sub_div_class.class_five %></strong>
+                    </td>
+                    <td>
+                      <strong><%= @activity_sub_div_class.max_num_five %></strong>
                     </td>
                   </tr>
                 <% end %>

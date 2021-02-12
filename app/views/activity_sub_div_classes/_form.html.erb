@@ -1,8 +1,7 @@
 
-
 <div class="">
 
-  <div class="w3-white w3-hover-shadow col-md-4 offset-md-4 w3-card-4 w3-border w3-border-purple rcorners w3-center">
+  <div class="w3-white w3-hover-shadow col-md-6 offset-md-3 w3-card-4 w3-border w3-border-purple rcorners w3-center">
     <h4 class="show w3-center"><strong>New Ticket Types</strong></h4>
     <div id="new_notice"></div>
     <div class="w3-container">
@@ -13,11 +12,67 @@
         <%= f.error_notification %>
         <%= f.error_notification message: f.object.errors[:base].to_sentence if f.object.errors[:base].present? %>
         <%= f.input :entity_div_code, :as => :hidden, input_html:{value: params[:code]} %>
-        <%= f.input :class_one,  label: "Ticket Type 1", value_method: :id, required: true, input_html:{id: "act_class_one", autocomplete: "off",class:"form-control w3-input w3-border w3-white input-group input-append",style:""}  %>
-        <%= f.input :class_two,  label: "Ticket Type 2", value_method: :id, required: true, input_html:{id: "act_class_two", autocomplete: "off",class:"form-control w3-input w3-border w3-white input-group input-append",style:""}  %>
-        <%= f.input :class_three,  label: "Ticket Type 3", value_method: :id, required: true, input_html:{id: "act_class_three", autocomplete: "off",class:"form-control w3-input w3-border w3-white input-group input-append",style:""}  %>
-        <%= f.input :class_four,  label: "Ticket Type 4", value_method: :id, required: true, input_html:{id: "act_class_four", autocomplete: "off",class:"form-control w3-input w3-border w3-white input-group input-append",style:""}  %>
-        <%= f.input :class_five,  label: "Ticket Type 5", value_method: :id, required: true, input_html:{id: "act_class_five", autocomplete: "off",class:"form-control w3-input w3-border w3-white input-group input-append",style:""}  %>
+        <div class="row">
+          <div class="w3-third">
+            <%= f.input :class_one,  label: "Ticket Type 1", value_method: :id, required: true, input_html:{id: "act_class_one", autocomplete: "off",class:"form-control w3-input w3-border w3-white input-group input-append",style:""}  %>
+          </div>
+          <div class="w3-third">
+            <%= f.input :max_num_one, as: :integer, label: "Max Ticket 1", value_method: :id, required: false, input_html:{id: "max_act_class_one", min: 0, max: 9999999, oninput: "validity.valid||(value='');", autocomplete: "off",class:"form-control w3-input w3-border w3-white input-group input-append",style:"width: 80%; float: right;"}  %>
+          </div>
+          <div class="w3-third">
+            <%= f.input :act_group_one, label: "Activity Group 1", collection: @activity_groups, label_method: :full_group_name, value_method: :assigned_code, required: true, input_html: {id: "activity_key_1", autocomplete: "off", class: "form-control w3-input w3-border w3-white input-group input-append", style: "width: 90%; float: right;"} %>
+          </div>
+
+        </div>
+        <hr/>
+        <div class="row">
+          <div class="w3-third">
+            <%= f.input :class_two,  label: "Ticket Type 2", value_method: :id, required: true, input_html:{id: "act_class_two", autocomplete: "off",class:"form-control w3-input w3-border w3-white input-group input-append",style:""}  %>
+          </div>
+          <div class="w3-third">
+            <%= f.input :max_num_two, as: :integer,  label: "Max Ticket 2", value_method: :id, required: false, input_html:{id: "max_act_class_two", min: 0, max: 9999999, oninput: "validity.valid||(value='');", autocomplete: "off",class:"form-control w3-input w3-border w3-white input-group input-append",style:"width: 80%; float: right;"}  %>
+          </div>
+          <div class="w3-third">
+            <%= f.input :act_group_two, label: "Activity Group 2", collection: @activity_groups, label_method: :full_group_name, value_method: :assigned_code, required: true, input_html: {id: "activity_key_2", autocomplete: "off", class: "form-control w3-input w3-border w3-white input-group input-append", style: "width: 90%; float: right;"} %>
+          </div>
+        </div>
+        <hr/>
+        <div class="row">
+          <div class="w3-third">
+            <%= f.input :class_three,  label: "Ticket Type 3", value_method: :id, required: true, input_html:{id: "act_class_three", autocomplete: "off",class:"form-control w3-input w3-border w3-white input-group input-append",style:""}  %>
+          </div>
+          <div class="w3-third">
+            <%= f.input :max_num_three, as: :integer,  label: "Max Ticket 3", value_method: :id, required: false, input_html:{id: "max_act_class_three", min: 0, max: 9999999, oninput: "validity.valid||(value='');", autocomplete: "off",class:"form-control w3-input w3-border w3-white input-group input-append",style:"width: 80%; float: right;"}  %>
+          </div>
+          <div class="w3-third">
+            <%= f.input :act_group_three, label: "Activity Group 3", collection: @activity_groups, label_method: :full_group_name, value_method: :assigned_code, required: true, input_html: {id: "activity_key_3", autocomplete: "off", class: "form-control w3-input w3-border w3-white input-group input-append", style: "width: 90%; float: right;"} %>
+          </div>
+        </div>
+        <hr/>
+        <div class="row">
+          <div class="w3-third">
+            <%= f.input :class_four,  label: "Ticket Type 4", value_method: :id, required: true, input_html:{id: "act_class_four", autocomplete: "off",class:"form-control w3-input w3-border w3-white input-group input-append",style:""}  %>
+          </div>
+          <div class="w3-third">
+            <%= f.input :max_num_four, as: :integer,  label: "Max Ticket 4", value_method: :id, required: false, input_html:{id: "max_act_class_four", min: 0, max: 9999999, oninput: "validity.valid||(value='');", autocomplete: "off",class:"form-control w3-input w3-border w3-white input-group input-append",style:"width: 80%; float: right;"}  %>
+          </div>
+          <div class="w3-third">
+            <%= f.input :act_group_four, label: "Activity Group 4", collection: @activity_groups, label_method: :full_group_name, value_method: :assigned_code, required: true, input_html: {id: "activity_key_4", autocomplete: "off", class: "form-control w3-input w3-border w3-white input-group input-append", style: "width: 90%; float: right;"} %>
+          </div>
+        </div>
+        <hr/>
+        <div class="row">
+          <div class="w3-third">
+            <%= f.input :class_five,  label: "Ticket Type 5", value_method: :id, required: true, input_html:{id: "act_class_five", autocomplete: "off",class:"form-control w3-input w3-border w3-white input-group input-append",style:""}  %>
+          </div>
+          <div class="w3-third">
+            <%= f.input :max_num_five, as: :integer,  label: "Max Ticket 5", value_method: :id, required: false, input_html:{id: "max_act_class_five", min: 0, max: 9999999, oninput: "validity.valid||(value='');", autocomplete: "off",class:"form-control w3-input w3-border w3-white input-group input-append",style:"width: 80%; float: right;"}  %>
+          </div>
+          <div class="w3-third">
+            <%= f.input :act_group_five, label: "Activity Group 5", collection: @activity_groups, label_method: :full_group_name, value_method: :assigned_code, required: true, input_html: {id: "activity_key_5", autocomplete: "off", class: "form-control w3-input w3-border w3-white input-group input-append", style: "width: 90%; float: right;"} %>
+          </div>
+        </div>
+        <hr/>
 
         <%# count = 1 %>
         <%# 5.times.each do |act_class| %>

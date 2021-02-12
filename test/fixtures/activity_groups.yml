@@ -1,0 +1,15 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  assigned_code: MyString
+  activity_group_desc: MyString
+  active_status: false
+  del_status: false
+  user_id: 1
+
+two:
+  assigned_code: MyString
+  activity_group_desc: MyString
+  active_status: false
+  del_status: false
+  user_id: 1

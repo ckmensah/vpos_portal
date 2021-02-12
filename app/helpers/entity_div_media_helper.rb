@@ -1,0 +1,2 @@
+module EntityDivMediaHelper
+end

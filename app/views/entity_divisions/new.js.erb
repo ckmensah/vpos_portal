@@ -2,5 +2,6 @@
 $("#notes3").html("<%= escape_javascript(render(:partial =>"new")) %>");
 <% else %>
 $("#notes2").html("<%= escape_javascript(render(:partial =>"new")) %>");
+$('.division-dropdown').hide();
 <% end %>
 $('#division_new').html("<%= escape_javascript(render 'layouts/messages') %>");

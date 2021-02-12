@@ -32,8 +32,12 @@ class ActivityDivsController < ApplicationController
 
   # GET /activity_divs/1/edit
   def edit
-    @networks = [["MTN", "MTN"], ["VOD", "VOD"], ["TIGO", "TIG"], ["AIRTEL", "AIR"]]
-    @activity_sub_divs = ActivitySubDiv.where(activity_div_id: @activity_div.id, active_status: true).order(classification: :asc)
+    @networks = [["MTN", "MTN"], ["VODAFONE", "VOD"], ["TIGO", "TIG"], ["AIRTEL", "AIR"]]
+    #@activity_sub_divs = ActivitySubDiv.where(activity_div_id: @activity_div.id, active_status: true).order(classification: :asc)
+    @activity_classes = []
+    @activity_sub_divs = []
+    @activity_groups = ActivityGroup.where(active_status: true, del_status: false).order(activity_group_desc: :asc)
+
   end
 
   # POST /activity_divs
@@ -66,14 +70,23 @@ class ActivityDivsController < ApplicationController
     @activity_div.nw = activity_div_params[:nw]
     @activity_div.customer_name = activity_div_params[:customer_name]
     @activity_div.qty = activity_div_params[:qty]
-    @networks = [["MTN", "MTN"], ["VOD", "VOD"], ["TIGO", "TIG"], ["AIRTEL", "AIR"]]
+    @activity_div.act_class = activity_div_params[:act_class]
+    @activity_div.act_group = activity_div_params[:act_group]
+    @networks = [["MTN", "MTN"], ["VODAFONE", "VOD"], ["TIGO", "TIG"], ["AIRTEL", "AIR"]]
     @activity_sub_divs = ActivitySubDiv.where(activity_div_id: @activity_div.id, active_status: true).order(classification: :asc)
+    #@activity_sub_divs = ActivitySubDiv.where(activity_div_id: @activity_div.id, active_status: true).order(classification: :asc)
+    #@activity_sub_divs = [["", ""]]
+    @activity_groups = ActivityGroup.where(active_status: true, del_status: false).order(activity_group_desc: :asc)
+    @activity_classes = activity_div_params[:act_group].present? ? ActivitySubDivClass.where(entity_div_code: params[:code], activity_group_code: activity_div_params[:act_group]).order(class_desc: :asc) : []
+    @activity_sub_divs = activity_div_params[:act_class].present? ? ActivitySubDiv.where(activity_div_id: params[:id], classification: activity_div_params[:act_class]) : []
 
     respond_to do |format|
       if @activity_div.valid?
         @activity_divs = ActivityDiv.where(division_code: params[:code], del_status: false).order(created_at: :desc)
         reference = @activity_div.entity_division != nil ? @activity_div.entity_division.division_name : ""
         endpoint = '/bulk_ticket_generate_req'
+        @activity_classes = []
+        @activity_sub_divs = []
 
         payload = {
             "activity_div_id": @activity_div.id, "activity_lov_id": "", "activity_main_code": "",
@@ -161,6 +174,6 @@ class ActivityDivsController < ApplicationController
     def activity_div_params
       params.require(:activity_div).permit(:division_code, :activity_div_desc, :activity_date, :activity_sub_plan_id, :recipient_number,
                                            :recipient_email, :entity_div_code, :src, :payment_mode, :nw, :amt, :qty, :customer_name, :ticket_valid,
-                                           :comment, :active_status, :del_status, :user_id)
+                                           :comment, :active_status, :del_status, :user_id, :act_group, :act_class)
     end
 end

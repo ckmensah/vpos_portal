@@ -21,8 +21,10 @@ class PaymentReports < ActiveRecord::Migration[5.2]
        payment_info.recipient_type,
        payment_info.recipient_email,
        payment_info.narration,
+       payment_info.qty,
        payment_info.trans_type,
        charge, processing_id,
+       payment_option, card_option,
        nw,
        service_id,
        reference,
@@ -44,3 +46,4 @@ class PaymentReports < ActiveRecord::Migration[5.2]
     self.connection.execute "DROP MATERIALIZED VIEW IF EXISTS payment_reports;"
   end
 end
+

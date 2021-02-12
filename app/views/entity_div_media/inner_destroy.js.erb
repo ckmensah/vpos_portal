@@ -1,0 +1,5 @@
+<% if params[:medium_type] == "images" %>
+$("#notes21").html("<%= escape_javascript(render(:partial =>"inner_destroy")) %>");
+<% elsif params[:medium_type] == "videos" %>
+$("#notes22").html("<%= escape_javascript(render(:partial =>"inner_destroy")) %>");
+<% end %>

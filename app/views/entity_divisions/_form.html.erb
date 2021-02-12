@@ -31,12 +31,27 @@
 
               <%= f.error_notification %>
               <%= f.error_notification message: f.object.errors[:base].to_sentence if f.object.errors[:base].present? %>
+            <%= f.input :allow_qr, label: false, as: :boolean, required: false, input_html: {id: "allow_qr", autocomplete: "off", class: "", style: "display: block; float: right; width: 50%"} %>
 
-            <div class="w3-container col-md-4 offset-md-4" style="width: 40%">
+            <div class="w3-center">
               <div class="w3-half"><label>Allow QR</label></div>
               <div class="w3-half">
-                <%= f.input :allow_qr, label: false, as: :boolean, required: false, input_html: {id: "allow_qr", autocomplete: "off", class: "", style: "display: block; float: left; width: 50%"} %>
+                <%#= f.input :allow_qr, label: false, as: :boolean, required: false, input_html: {id: "allow_qr", autocomplete: "off", class: "", style: "display: block; float: right; width: 50%"} %>
               </div>
+            </div>
+
+            <div class="w3-container col-md-10 offset-md-1" style="width: 100%">
+              <div class="w3-quarter"><label>Card Option Status</label></div>
+              <div class="w3-quarter">
+                <%= f.input :card_option_status, label: false, as: :boolean, required: false, input_html: {id: "card_status", autocomplete: "off", class: "", style: "display: block; float: right; width: 50%"} %>
+              </div>
+              <div>
+                <div class="w3-quarter"><label>Payment Type</label></div>
+                <div class="w3-quarter">
+                  <%= f.input :payment_type, label: false, as: :boolean, required: false, input_html: {id: "payment_type", autocomplete: "off", class: "", style: "display: block; float: right; width: 50%"} %>
+                </div>
+              </div>
+
               <br><br>
             </div>
 
@@ -60,6 +75,12 @@
 
                   <%= f.input :city_town_name, label: "City", collection: @city_masters, label_method: :city_town_name, value_method: :id, required: true, input_html:{id: "for_city", autocomplete: "off",class:"form-control w3-input w3-border w3-white input-group input-append",style:"width: 90%;"}  %>
                   <%= f.input :suburb_id, label: "Suburb", collection: @sub_masters, label_method: :suburb_name, value_method: :id, required: true, input_html:{id: "for_suburb", autocomplete: "off",class:"form-control w3-input w3-border w3-white input-group input-append",style:"width: 90%;"}  %>
+                  <div id="act_loc_div">
+                    <%= f.input :activity_loc, label: "Activity Location", required: true, input_html: {id: "act_loc", autocomplete: "off", min: 0, max: 999999, class: "form-control w3-input w3-border w3-white input-group input-append", style: "width: 90%;"} %>
+                  </div>
+                  <div id="extra_desc_div">
+                    <%= f.input :extra_desc, as: :text, label: "Activity Description", required: true, input_html: {id: "extra_desc", autocomplete: "off", class: "form-control w3-input w3-border w3-white input-group input-append", style: "width: 90%;"} %>
+                  </div>
                 </div>
 
 
@@ -411,11 +432,32 @@
 //    district_id.attr("title", "First select a district!");
         city_id.attr("title", "Secondly select a city after region selection!");
 
+        // if (activity_type_id.val() === "DON") {
+        //     document.getElementById("min_amt_div").style.display = "block";
+        // } else {
+        //     document.getElementById("min_amt_div").style.display = "none";
+        //     document.getElementById("min_amt").value = "";
+        // }
+
         if (activity_type_id.val() === "DON") {
             document.getElementById("min_amt_div").style.display = "block";
-        } else {
+            document.getElementById("extra_desc_div").style.display = "none";
+            document.getElementById("act_loc_div").style.display = "none";
+            document.getElementById("extra_desc").value = "";
+            document.getElementById("act_loc").value = "";
+        } else if (activity_type_id.val() === "SHW") {
+            document.getElementById("extra_desc_div").style.display = "block";
+            document.getElementById("act_loc_div").style.display = "block";
             document.getElementById("min_amt_div").style.display = "none";
             document.getElementById("min_amt").value = "";
+        }
+        else {
+            document.getElementById("extra_desc_div").style.display = "none";
+            document.getElementById("act_loc_div").style.display = "none";
+            document.getElementById("min_amt_div").style.display = "none";
+            document.getElementById("min_amt").value = "";
+            document.getElementById("extra_desc").value = "";
+            document.getElementById("act_loc").value = "";
         }
 
         region_id.change(function() {
@@ -466,10 +508,26 @@
 
         activity_type_id.change(function() {
             if (activity_type_id.val() === "DON") {
+                console.log("For Donations ==========================");
                 document.getElementById("min_amt_div").style.display = "block";
-            } else {
+                document.getElementById("extra_desc_div").style.display = "none";
+                document.getElementById("act_loc_div").style.display = "none";
+                document.getElementById("extra_desc").value = "";
+                document.getElementById("act_loc").value = "";
+            } else if (activity_type_id.val() === "SHW") {
+                console.log("For Show ==========================");
+                document.getElementById("extra_desc_div").style.display = "block";
+                document.getElementById("act_loc_div").style.display = "block";
                 document.getElementById("min_amt_div").style.display = "none";
                 document.getElementById("min_amt").value = "";
+            }
+            else {
+                document.getElementById("extra_desc_div").style.display = "none";
+                document.getElementById("act_loc_div").style.display = "none";
+                document.getElementById("min_amt_div").style.display = "none";
+                document.getElementById("min_amt").value = "";
+                document.getElementById("extra_desc").value = "";
+                document.getElementById("act_loc").value = "";
             }
         });
 

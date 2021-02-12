@@ -246,6 +246,18 @@
 
                 <% end %>
 
+                <% if @entity_division.activity_type_code == "SHW" %>
+                  <tr>
+                    <td class="raw_theme w3-border w3-border-black w3-leftbar"><strong>Activity Location:</strong></td>
+                    <td><strong><%= @entity_division.activity_loc %></strong></td>
+                  </tr>
+
+                  <tr>
+                    <td class="raw_theme w3-border w3-border-black w3-leftbar"><strong>Activity Description:</strong></td>
+                    <td><strong><%= @entity_division.extra_desc %></strong></td>
+                  </tr>
+                <% end %>
+
 
                 <tr>
                   <td class="raw_theme w3-border w3-border-black w3-leftbar"><strong>Status:</strong></td>
