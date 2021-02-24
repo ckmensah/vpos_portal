@@ -31,15 +31,16 @@
 
               <%= f.error_notification %>
               <%= f.error_notification message: f.object.errors[:base].to_sentence if f.object.errors[:base].present? %>
-            <%= f.input :allow_qr, label: false, as: :boolean, required: false, input_html: {id: "allow_qr", autocomplete: "off", class: "", style: "display: block; float: right; width: 50%"} %>
+            <%#= f.input :allow_qr, label: false, as: :boolean, required: false, input_html: {id: "allow_qr", autocomplete: "off", class: "", style: "display: block; float: right; width: 50%"} %>
 
             <div class="w3-center">
               <div class="w3-half"><label>Allow QR</label></div>
               <div class="w3-half">
-                <%#= f.input :allow_qr, label: false, as: :boolean, required: false, input_html: {id: "allow_qr", autocomplete: "off", class: "", style: "display: block; float: right; width: 50%"} %>
+                <%= f.input :allow_qr, label: false, as: :boolean, required: false, input_html: {id: "allow_qr", autocomplete: "off", class: "", style: "display: block; float: right; width: 50%"} %>
               </div>
             </div>
 
+            <br/>
             <div class="w3-container col-md-10 offset-md-1" style="width: 100%">
               <div class="w3-quarter"><label>Card Option Status</label></div>
               <div class="w3-quarter">

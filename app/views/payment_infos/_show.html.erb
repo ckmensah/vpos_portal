@@ -70,7 +70,7 @@
               <% if @pay_info.entity_division != nil && @pay_info.entity_division.activity_type_code == "OMC" %>
                 <tr>
                   <td class="raw_theme w3-border w3-border-black w3-leftbar"><strong>Attendant ID/Reference:</strong></td>
-                  <td><strong><%= @pay_info.reference %></strong></td>
+                  <td><strong><%= @pay_info.customer_name %></strong></td>
                 </tr>
               <% else %>
                 <% if @pay_info.entity_division != nil && @pay_info.entity_division.activity_type_code != "MOP" %>

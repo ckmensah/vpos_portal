@@ -48,7 +48,7 @@
                           <tr>
                             <td> <%= permission.subject_class %> </td>
                             <td> <%= permission.action %> </td>
-                            <td> <%= check_box_tag 'permissions[]', permission.id, @role_permissions.include?(permission.id), {array: true, class: "check_box", style: "display:block"} %> </td>
+                            <td> <%= check_box_tag 'permissions[]', permission.id, @role_permissions.include?(permission.id.to_s), {array: true, class: "check_box", style: "display:block"} %> </td>
                           </tr>
                         <% end %>
                       </table>

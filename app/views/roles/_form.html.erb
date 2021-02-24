@@ -37,6 +37,8 @@
 
 
                     <% @permissions.each do |permission| %>
+                      <%# logger.info "Role permissions :: =================" %>
+                      <%# logger.info @role_permissions.inspect %>
                       <tr>
                         <td> <%= permission.subject_class %> </td>
                         <td> <%= permission.action %> </td>

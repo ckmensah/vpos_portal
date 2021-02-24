@@ -7,7 +7,7 @@ class RolesController < ApplicationController
     params[:page].present? ? page = params[:page].to_i : page = 1
 
     logger.info "Current User:: #{current_user.inspect}"
-    current_user.super_admin? ? @roles = Role.where(active_status: true).paginate(:page => page, :per_page => params[:count]).order(created_at: :desc):@roles = Role.where("active_status = true AND id != 1").paginate(:page => page, :per_page => params[:count]).order(created_at: :desc)
+    current_user.super_admin? ? @roles = Role.paginate(:page => page, :per_page => params[:count]).order(created_at: :desc):@roles = Role.where("id != 1").paginate(:page => page, :per_page => params[:count]).order(created_at: :desc)
 
   end
 
@@ -17,7 +17,7 @@ class RolesController < ApplicationController
     params[:count] ? params[:count] : params[:count] = 50
     params[:page].present? ? page = params[:page].to_i : page = 1
 
-    current_user.super_admin? ? @roles = Role.where(active_status: true).paginate(:page => page, :per_page => params[:count]).order(created_at: :desc):@roles = Role.where("active_status = true AND id != 1").paginate(:page => page, :per_page => params[:count]).order(created_at: :desc)
+    current_user.super_admin? ? @roles = Role.paginate(:page => page, :per_page => params[:count]).order(created_at: :desc):@roles = Role.where("id != 1").paginate(:page => page, :per_page => params[:count]).order(created_at: :desc)
 
   end
 
@@ -38,25 +38,29 @@ class RolesController < ApplicationController
   # GET /roles/1/edit
   def edit
     @permissions = Permission.where("subject_class !='Role'").order(subject_class: :asc).compact
-    @role_permissions = @role.permissions.collect{|p| p.id}
+    @role_permissions = @role.permissions.collect{|p| p.id.to_s}
   end
+
 
   # POST /roles
   # POST /roles.json
   def create
     @role = Role.new(role_params)
-    @permissions1 = @role.permissions
     # @role.permissions = []
-    @permissions = Permission.where("subject_class !='Role'").order(subject_class: :asc).compact
-    @role_permissions = @role.permissions.collect{|p| p.id}
-    @role.set_permissions(params[:permissions]) if params[:permissions]
+
+
 
     respond_to do |format|
-      if @role.save
+      if params[:permissions] != nil && params[:permissions].length > 0 && @role.save
+        @role.set_permissions(params[:permissions]) if params[:permissions]
+        @permissions1 = @role.permissions
+
         format.html { redirect_to @role, notice: 'Role was successfully created.' }
         format.js {render :show}
         format.json { render :show, status: :created, location: @role }
       else
+        @permissions = Permission.where("subject_class !='Role'").order(subject_class: :asc).compact
+        @role_permissions = @role.permissions.collect{|p| p.id}
         format.html { render :new }
         format.js {render :new}
         format.json { render json: @role.errors, status: :unprocessable_entity }
@@ -67,16 +71,18 @@ class RolesController < ApplicationController
   # PATCH/PUT /roles/1
   # PATCH/PUT /roles/1.json
   def update
-    @permissions = @role.permissions
-    @permissions1 = @role.permissions
-    @role.permissions = []
-    @role.set_permissions(params[:permissions]) if params[:permissions]
     respond_to do |format|
-      if @role.update(role_params)
+      if params[:permissions] != nil && params[:permissions].length > 0 && @role.update(role_params)
+        @role.permissions = []
+        @role.set_permissions(params[:permissions]) if params[:permissions]
+        @permissions1 = @role.permissions
+
         format.html { redirect_to @role, notice: 'Role was successfully updated.' }
         format.js {render :show}
         format.json { render :show, status: :ok, location: @role }
       else
+        @permissions = Permission.where("subject_class !='Role'").order(subject_class: :asc).compact
+        @role_permissions = params[:permissions] != nil && params[:permissions].length > 0 ? params[:permissions] : []
         format.html { render :edit }
         format.js {render :edit}
         format.json { render json: @role.errors, status: :unprocessable_entity }
@@ -90,9 +96,9 @@ class RolesController < ApplicationController
 
     puts page = params[:page]
     if @role.active_status
-      @role.active_status = 0
+      @role.active_status = false
       @role.save(validate: false)
-      @roles = Role.where(active_status: true).paginate(:page => page, :per_page => params[:count]).order('created_at desc')
+      current_user.super_admin? ? @roles = Role.paginate(:page => page, :per_page => params[:count]).order(created_at: :desc):@roles = Role.where("id != 1").paginate(:page => page, :per_page => params[:count]).order(created_at: :desc)
       respond_to do |format|
         format.html { redirect_to roles_url, notice: 'Occupation master was successfully disabled.' }
         flash.now[:note] = 'Role was successfully disabled.'
@@ -101,9 +107,9 @@ class RolesController < ApplicationController
         # window.location.href = "<%= recipe_path(@recipe) %>"
       end
     else
-      @role.active_status = 1
+      @role.active_status = true
       @role.save(validate: false)
-      @role = Role.where(active_status: true).paginate(:page => page, :per_page => params[:count]).order('created_at desc')
+      current_user.super_admin? ? @roles = Role.paginate(:page => page, :per_page => params[:count]).order(created_at: :desc):@roles = Role.where("id != 1").paginate(:page => page, :per_page => params[:count]).order(created_at: :desc)
       respond_to do |format|
         format.html { redirect_to roles_url, notice: 'Allergy master was successfully enabled.' }
         flash.now[:notice] = 'Role was successfully enabled.'

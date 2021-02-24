@@ -437,22 +437,32 @@ class EntityDivisionsController < ApplicationController
     @entity_division_sub = EntityDivision.where(assigned_code: params[:code], active_status: true).order(created_at: :desc).first
 
     if @entity_division_sub && @entity_division_sub.activity_type_code == "DON"
-      @activity_codes = [["Donations (DON)", "DON"]]
+      @activity_type_desc = ActivityType.where(assigned_code: @entity_division_sub.activity_type_code).first
+      @activity_codes = [["#{@activity_type_desc.activity_type_desc} (DON)", "DON"]]
     elsif @entity_division_sub && @entity_division_sub.activity_type_code == "PDD"
-      @activity_codes = [["Predefined Donation (PDD)", "PDD"]]
+      @activity_type_desc = ActivityType.where(assigned_code: @entity_division_sub.activity_type_code).first
+      @activity_codes = [["#{@activity_type_desc.activity_type_desc} (PDD)", "PDD"]]
+    elsif @entity_division_sub && @entity_division_sub.activity_type_code == "SPC"
+      @activity_type_desc = ActivityType.where(assigned_code: @entity_division_sub.activity_type_code).first
+      @activity_codes = [["#{@activity_type_desc.activity_type_desc} (SPC)", "SPC"]]
     elsif @entity_division_sub && @entity_division_sub.activity_type_code == "GEN"
-      @activity_codes = [["General Merchant (GEN)", "GEN"]]
+      @activity_type_desc = ActivityType.where(assigned_code: @entity_division_sub.activity_type_code).first
+      @activity_codes = [["#{@activity_type_desc.activity_type_desc} (GEN)", "GEN"]]
     elsif @entity_division_sub && @entity_division_sub.activity_type_code == "OMC"
-      @activity_codes = [["Oil Marketing Company (OMC)", "OMC"]]
+      @activity_type_desc = ActivityType.where(assigned_code: @entity_division_sub.activity_type_code).first
+      @activity_codes = [["#{@activity_type_desc.activity_type_desc} (OMC)", "OMC"]]
     elsif @entity_division_sub && @entity_division_sub.activity_type_code == "MOP"
-      @activity_codes = [["Merchant Originated Prompt (MOP)", "MOP"]]
+      @activity_type_desc = ActivityType.where(assigned_code: @entity_division_sub.activity_type_code).first
+      @activity_codes = [["#{@activity_type_desc.activity_type_desc} (MOP)", "MOP"]]
     elsif @entity_division_sub && @entity_division_sub.activity_type_code == "HSP"
-      @activity_codes = [["Hospital (HSP)", "HSP"]]
+      @activity_type_desc = ActivityType.where(assigned_code: @entity_division_sub.activity_type_code).first
+      @activity_codes = [["#{@activity_type_desc.activity_type_desc} (HSP)", "HSP"]]
     else
       @entity_div_sub_activities = EntityDivSubActivity.where(entity_div_code: params[:code], active_status: true, del_status: false).order(div_sub_activity_desc: :asc)
       @activity_codes = @entity_div_sub_activities.map { |a| ["#{a.div_sub_activity_desc} (#{a.sub_activity_code})", "#{a.sub_activity_code}"] }.insert(0,['Select an Activity Code', ""])
     end
 
+    
     #@activity_codes = [["Donations (DON)", "DON"], ["Levy (LVY)", "LVY"], ["Project (PRJ)", "PRJ"], ["Pledges (PLG)", "PLG"]]
     @activity_sub_div_class = [['Select a class', ""], ["Double", 4], ["Single", 3], ["VIP", 1],  ["Standard", 2]]
     @activity_sub_div_cl = [["Double", 4], ["Single", 3], ["VIP", 1],  ["Standard", 2]]
@@ -503,17 +513,26 @@ class EntityDivisionsController < ApplicationController
     end
     @entity_division_sub = EntityDivision.where(assigned_code: params[:code], active_status: true).order(created_at: :desc).first
     if @entity_division_sub && @entity_division_sub.activity_type_code == "DON"
-      @activity_codes = [["Donations (DON)", "DON"]]
+      @activity_type_desc = ActivityType.where(assigned_code: @entity_division_sub.activity_type_code).first
+      @activity_codes = [["#{@activity_type_desc.activity_type_desc} (DON)", "DON"]]
     elsif @entity_division_sub && @entity_division_sub.activity_type_code == "PDD"
-      @activity_codes = [["Predefined Donation (PDD)", "PDD"]]
+      @activity_type_desc = ActivityType.where(assigned_code: @entity_division_sub.activity_type_code).first
+      @activity_codes = [["#{@activity_type_desc.activity_type_desc} (PDD)", "PDD"]]
+    elsif @entity_division_sub && @entity_division_sub.activity_type_code == "SPC"
+      @activity_type_desc = ActivityType.where(assigned_code: @entity_division_sub.activity_type_code).first
+      @activity_codes = [["#{@activity_type_desc.activity_type_desc} (SPC)", "SPC"]]
     elsif @entity_division_sub && @entity_division_sub.activity_type_code == "GEN"
-      @activity_codes = [["General Merchant (GEN)", "GEN"]]
+      @activity_type_desc = ActivityType.where(assigned_code: @entity_division_sub.activity_type_code).first
+      @activity_codes = [["#{@activity_type_desc.activity_type_desc} (GEN)", "GEN"]]
     elsif @entity_division_sub && @entity_division_sub.activity_type_code == "OMC"
-      @activity_codes = [["Oil Marketing Company (OMC)", "OMC"]]
+      @activity_type_desc = ActivityType.where(assigned_code: @entity_division_sub.activity_type_code).first
+      @activity_codes = [["#{@activity_type_desc.activity_type_desc} (OMC)", "OMC"]]
     elsif @entity_division_sub && @entity_division_sub.activity_type_code == "MOP"
-      @activity_codes = [["Merchant Originated Prompt (MOP)", "MOP"]]
+      @activity_type_desc = ActivityType.where(assigned_code: @entity_division_sub.activity_type_code).first
+      @activity_codes = [["#{@activity_type_desc.activity_type_desc} (MOP)", "MOP"]]
     elsif @entity_division_sub && @entity_division_sub.activity_type_code == "HSP"
-      @activity_codes = [["Hospital (HSP)", "HSP"]]
+      @activity_type_desc = ActivityType.where(assigned_code: @entity_division_sub.activity_type_code).first
+      @activity_codes = [["#{@activity_type_desc.activity_type_desc} (HSP)", "HSP"]]
     else
       @entity_div_sub_activities = EntityDivSubActivity.where(entity_div_code: params[:code], active_status: true, del_status: false).order(div_sub_activity_desc: :asc)
       @activity_codes = @entity_div_sub_activities.map { |a| ["#{a.div_sub_activity_desc} (#{a.sub_activity_code})", "#{a.sub_activity_code}"] }.insert(0,['Select an Activity Code', ""])
@@ -613,17 +632,26 @@ class EntityDivisionsController < ApplicationController
     @display_div_num = @activity_divs.size
     @entity_division_sub = EntityDivision.where(assigned_code: params[:code], active_status: true).order(created_at: :desc).first
     if @entity_division_sub && @entity_division_sub.activity_type_code == "DON"
-      @activity_codes = [["Donations (DON)", "DON"]]
+      @activity_type_desc = ActivityType.where(assigned_code: @entity_division_sub.activity_type_code).first
+      @activity_codes = [["#{@activity_type_desc.activity_type_desc} (DON)", "DON"]]
     elsif @entity_division_sub && @entity_division_sub.activity_type_code == "PDD"
-      @activity_codes = [["Predefined Donation (PDD)", "PDD"]]
+      @activity_type_desc = ActivityType.where(assigned_code: @entity_division_sub.activity_type_code).first
+      @activity_codes = [["#{@activity_type_desc.activity_type_desc} (PDD)", "PDD"]]
+    elsif @entity_division_sub && @entity_division_sub.activity_type_code == "SPC"
+      @activity_type_desc = ActivityType.where(assigned_code: @entity_division_sub.activity_type_code).first
+      @activity_codes = [["#{@activity_type_desc.activity_type_desc} (SPC)", "SPC"]]
     elsif @entity_division_sub && @entity_division_sub.activity_type_code == "GEN"
-      @activity_codes = [["General Merchant (GEN)", "GEN"]]
+      @activity_type_desc = ActivityType.where(assigned_code: @entity_division_sub.activity_type_code).first
+      @activity_codes = [["#{@activity_type_desc.activity_type_desc} (GEN)", "GEN"]]
     elsif @entity_division_sub && @entity_division_sub.activity_type_code == "OMC"
-      @activity_codes = [["Oil Marketing Company (OMC)", "OMC"]]
+      @activity_type_desc = ActivityType.where(assigned_code: @entity_division_sub.activity_type_code).first
+      @activity_codes = [["#{@activity_type_desc.activity_type_desc} (OMC)", "OMC"]]
     elsif @entity_division_sub && @entity_division_sub.activity_type_code == "MOP"
-      @activity_codes = [["Merchant Originated Prompt (MOP)", "MOP"]]
+      @activity_type_desc = ActivityType.where(assigned_code: @entity_division_sub.activity_type_code).first
+      @activity_codes = [["#{@activity_type_desc.activity_type_desc} (MOP)", "MOP"]]
     elsif @entity_division_sub && @entity_division_sub.activity_type_code == "HSP"
-      @activity_codes = [["Hospital (HSP)", "HSP"]]
+      @activity_type_desc = ActivityType.where(assigned_code: @entity_division_sub.activity_type_code).first
+      @activity_codes = [["#{@activity_type_desc.activity_type_desc} (HSP)", "HSP"]]
     else
       @entity_div_sub_activities = EntityDivSubActivity.where(entity_div_code: params[:code], active_status: true, del_status: false).order(div_sub_activity_desc: :asc)
       @activity_codes = @entity_div_sub_activities.map { |a| ["#{a.div_sub_activity_desc} (#{a.sub_activity_code})", "#{a.sub_activity_code}"] }.insert(0,['Select an Activity Code', ""])
@@ -678,17 +706,26 @@ class EntityDivisionsController < ApplicationController
 
     @entity_division_sub = EntityDivision.where(assigned_code: params[:code], active_status: true).order(created_at: :desc).first
     if @entity_division_sub && @entity_division_sub.activity_type_code == "DON"
-      @activity_codes = [["Donations (DON)", "DON"]]
+      @activity_type_desc = ActivityType.where(assigned_code: @entity_division_sub.activity_type_code).first
+      @activity_codes = [["#{@activity_type_desc.activity_type_desc} (DON)", "DON"]]
     elsif @entity_division_sub && @entity_division_sub.activity_type_code == "PDD"
-      @activity_codes = [["Predefined Donation (PDD)", "PDD"]]
+      @activity_type_desc = ActivityType.where(assigned_code: @entity_division_sub.activity_type_code).first
+      @activity_codes = [["#{@activity_type_desc.activity_type_desc} (PDD)", "PDD"]]
+    elsif @entity_division_sub && @entity_division_sub.activity_type_code == "SPC"
+      @activity_type_desc = ActivityType.where(assigned_code: @entity_division_sub.activity_type_code).first
+      @activity_codes = [["#{@activity_type_desc.activity_type_desc} (SPC)", "SPC"]]
     elsif @entity_division_sub && @entity_division_sub.activity_type_code == "GEN"
-      @activity_codes = [["General Merchant (GEN)", "GEN"]]
+      @activity_type_desc = ActivityType.where(assigned_code: @entity_division_sub.activity_type_code).first
+      @activity_codes = [["#{@activity_type_desc.activity_type_desc} (GEN)", "GEN"]]
     elsif @entity_division_sub && @entity_division_sub.activity_type_code == "OMC"
-      @activity_codes = [["Oil Marketing Company (OMC)", "OMC"]]
+      @activity_type_desc = ActivityType.where(assigned_code: @entity_division_sub.activity_type_code).first
+      @activity_codes = [["#{@activity_type_desc.activity_type_desc} (OMC)", "OMC"]]
     elsif @entity_division_sub && @entity_division_sub.activity_type_code == "MOP"
-      @activity_codes = [["Merchant Originated Prompt (MOP)", "MOP"]]
+      @activity_type_desc = ActivityType.where(assigned_code: @entity_division_sub.activity_type_code).first
+      @activity_codes = [["#{@activity_type_desc.activity_type_desc} (MOP)", "MOP"]]
     elsif @entity_division_sub && @entity_division_sub.activity_type_code == "HSP"
-      @activity_codes = [["Hospital (HSP)", "HSP"]]
+      @activity_type_desc = ActivityType.where(assigned_code: @entity_division_sub.activity_type_code).first
+      @activity_codes = [["#{@activity_type_desc.activity_type_desc} (HSP)", "HSP"]]
     else
       @entity_div_sub_activities = EntityDivSubActivity.where(entity_div_code: params[:code], active_status: true, del_status: false).order(div_sub_activity_desc: :asc)
       @activity_codes = @entity_div_sub_activities.map { |a| ["#{a.div_sub_activity_desc} (#{a.sub_activity_code})", "#{a.sub_activity_code}"] }.insert(0,['Select an Activity Code', ""])
