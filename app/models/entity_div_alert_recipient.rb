@@ -67,7 +67,7 @@ class EntityDivAlertRecipient < ApplicationRecord
           logger.info "test 2"
           not_empty = true
           for_alert_recipients = EntityDivAlertRecipient.new(entity_div_code: div_alert_params[:entity_div_code],
-                                                             recipient_name: value["recipient_name"], mobile_number: value["mobile_number"],
+                                                             recipient_name: value["recipient_name"], mobile_number: value["mobile_number"], email: value["email"],
                                                           active_status: true, del_status: false)
           logger.info "object is #{for_alert_recipients.inspect}"
           if for_alert_recipients.valid?
@@ -134,7 +134,7 @@ class EntityDivAlertRecipient < ApplicationRecord
       if value["recipient_name"].present? && value["mobile_number"].present? && div_alert_params["entity_div_code"].present?
         mobile_num = break_number(value["mobile_number"])
         for_alert_recipients = EntityDivAlertRecipient.new(entity_div_code: div_alert_params["entity_div_code"],
-                                                           recipient_name: value["recipient_name"], mobile_number: mobile_num,
+                                                           recipient_name: value["recipient_name"], mobile_number: mobile_num, email: value["email"],
                                                         active_status: true, del_status: false, user_id: current_user.id,
                                                            alerts: the_alerts, trans_rpt: the_trans_rpt)
 

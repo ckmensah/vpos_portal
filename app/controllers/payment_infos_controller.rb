@@ -83,7 +83,7 @@ class PaymentInfosController < ApplicationController
     @entity_code = params[:entity_code]
     @code = params[:code]
 
-    if params[:filter_main].present? || params[:entity_name].present? || params[:division_name].present? || params[:act_main_code].present? || params[:activity_type].present? || params[:lov_name].present? || params[:cust_num].present? || params[:trans_id].present? || params[:trans_type].present? || params[:nw].present? || params[:status].present? || params[:start_date].present? || params[:end_date].present?
+    if params[:filter_main].present? || params[:source].present? || params[:entity_name].present? || params[:division_name].present? || params[:act_main_code].present? || params[:activity_type].present? || params[:lov_name].present? || params[:cust_num].present? || params[:trans_id].present? || params[:trans_type].present? || params[:nw].present? || params[:status].present? || params[:start_date].present? || params[:end_date].present?
 
       filter_params = params[:filter_main]
       if params[:filter_main].present?
@@ -97,6 +97,7 @@ class PaymentInfosController < ApplicationController
         @trans_type = filter_params[:trans_type]
         @nw = filter_params[:nw]
         @status = filter_params[:status]
+        @source = filter_params[:source]
         @start_date = filter_params[:start_date]
         @end_date = filter_params[:end_date]
         @a_download = filter_params[:a_download]
@@ -110,12 +111,13 @@ class PaymentInfosController < ApplicationController
         params[:trans_type] = filter_params[:trans_type]
         params[:nw] = filter_params[:nw]
         params[:status] = filter_params[:status]
+        params[:source] = filter_params[:source]
         params[:start_date] = filter_params[:start_date]
         params[:end_date] = filter_params[:end_date]
         params[:a_download] = filter_params[:a_download]
       else
 
-        if  params[:entity_name].present? || params[:division_name].present? || params[:act_main_code].present? || params[:activity_type].present? || params[:lov_name].present? || params[:cust_num].present? || params[:trans_id].present? || params[:trans_type].present? || params[:nw].present? || params[:status].present? || params[:start_date].present? || params[:end_date].present?
+        if  params[:entity_name].present? || params[:source].present? || params[:division_name].present? || params[:act_main_code].present? || params[:activity_type].present? || params[:lov_name].present? || params[:cust_num].present? || params[:trans_id].present? || params[:trans_type].present? || params[:nw].present? || params[:status].present? || params[:start_date].present? || params[:end_date].present?
 
           @entity_name = params[:entity_name]
           @division_name = params[:division_name]
@@ -127,6 +129,7 @@ class PaymentInfosController < ApplicationController
           @trans_type = params[:trans_type]
           @nw = params[:nw]
           @status = params[:status]
+          @source = params[:source]
           @start_date = params[:start_date]
           @end_date = params[:end_date]
           @a_download = params[:a_download]
@@ -140,6 +143,7 @@ class PaymentInfosController < ApplicationController
           params[:trans_type] = @trans_type
           params[:nw] = @nw
           params[:status] = @status
+          params[:source] = @source
           params[:start_date] = @start_date
           params[:end_date] = @end_date
           params[:a_download] = @a_download
@@ -154,6 +158,7 @@ class PaymentInfosController < ApplicationController
           params[:trans_type] = filter_params[:trans_type]
           params[:nw] = filter_params[:nw]
           params[:status] = filter_params[:status]
+          params[:source] = filter_params[:source]
           params[:start_date] = filter_params[:start_date]
           params[:end_date] = filter_params[:end_date]
           params[:a_download] = filter_params[:a_download]
@@ -256,6 +261,10 @@ class PaymentInfosController < ApplicationController
 
       if @trans_type.present?
         search_arr << "trans_type = '#{@trans_type}'"
+      end
+
+      if @source.present?
+        search_arr << "src = '#{@source}'"
       end
 
       if @status.present?

@@ -37,6 +37,7 @@
             <input class="form-control" name="trans_id" value="<%= params[:trans_id] %>"/>
             <input class="form-control" name="nw" value="<%= params[:nw] %>"/>
             <input class="form-control" name="status" value="<%= params[:status] %>"/>
+            <input class="form-control" name="source" value="<%= params[:source] %>"/>
             <input class="form-control" name="start_date" value="<%= params[:start_date] %>"/>
             <input class="form-control" name="end_date" value="<%= params[:end_date] %>"/>
             <input class="form-control" name="a_download" value="<%= params[:a_download] %>"/>
@@ -64,6 +65,7 @@
             <input class="form-control" name="trans_id" value="<%= params[:trans_id] %>"/>
             <input class="form-control" name="nw" value="<%= params[:nw] %>"/>
             <input class="form-control" name="status" value="<%= params[:status] %>"/>
+            <input class="form-control" name="source" value="<%= params[:source] %>"/>
             <input class="form-control" name="start_date" value="<%= params[:start_date] %>"/>
             <input class="form-control" name="end_date" value="<%= params[:end_date] %>"/>
             <input class="form-control" name="a_download" value="<%= params[:a_download] %>"/>
@@ -103,7 +105,7 @@
                                                                             activity_type: params[:activity_type],
                                                                             lov_name: params[:lov_name],
                                                                             cust_num: params[:cust_num], trans_id: params[:trans_id],
-                                                                            nw: params[:nw], status: params[:status],
+                                                                            nw: params[:nw], status: params[:status], source: params[:source],
                                                                             start_date: params[:start_date],
                                                                             end_date: params[:end_date], a_download: params[:a_download]})},
                      id: "record", class: "w3-button w3-white w3-border w3-border-purple w3-round-large",
@@ -430,6 +432,7 @@
         <% @networks = [["MTN", "MTN"], ["VOD", "VOD"], ["TIGO", "TIG"], ["AIRTEL", "AIR"]] %>
         <% @transaction_types = [["Collections (CTM)", "CTM"], ["Cash (CSH)", "CSH"], ["Disbursements (MTC)", "MTC"]] %>
         <% @statuses = [["SUCCESS", "000"], ["FAILED", "001"], ["PENDING", "NIL"]] %>
+        <% @sources = [["Web", "WEB"], ["Portal", "PTL"], ["USSD", "USSD"]] %>
         <%= simple_form_for :filter_main, :url => (payment_info_index_path(count: params[:count], page: params[:page])), :method => 'get', html: {class: 'form-horizontal'}, remote: true do |f| %>
           <div class="w3-container w3-border w3-border-purple">
             <!--            <br/>-->
@@ -462,6 +465,8 @@
                 <%= f.input :act_main_code, collection: @menu_items, label_method: :activity_main_code_narration, value_method: :act_main_code_narration_val, class: "form-control", input_html: {id: "id_act_main_code", style: "width: 90%"}, label: "Menu Items", boolean_style: :inline %>
               <% end %>
               <%= f.input :lov_name, collection: @division_lovs, label_method: :lov_desc, value_method: :lov_desc, class: "form-control", input_html: {id: "id_div_lov", style: "width: 90%"}, label: "Service Option", boolean_style: :inline %>
+
+              <%= f.input :source, collection: @sources, label_method: :first, value_method: :last, class: "form-control", input_html: {id: "id_source", style: "width: 90%"}, label: "Source", boolean_style: :inline %>
 
               <% if current_user.merchant_admin? %>
                 <%= f.input :cust_num, class: "form-control", input_html: {style: "width: 90%"}, label: "Customer Number", boolean_style: :inline %>

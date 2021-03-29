@@ -1,7 +1,7 @@
 class ActivityType < ApplicationRecord
   self.table_name="activity_type"
   self.primary_key = :assigned_code
-  validates_uniqueness_of :activity_type_desc, :assigned_code
+  validates_uniqueness_of :assigned_code
 
   has_many :entity_divisions, class_name: 'EntityDivision', foreign_key: :activity_type_code
 

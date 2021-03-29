@@ -34,6 +34,7 @@
             </div>
 
             <%= f.input :mobile_number,  label: "Mobile Number",  value_method: :id, required: true, input_html:{id: "for_mobile_num", readonly: true, autocomplete: "off",class:"form-control w3-input w3-border w3-white input-group input-append",style:""}  %>
+            <%= f.input :email,  label: "Email",  value_method: :id, required: true, input_html:{id: "for_email", readonly: true, autocomplete: "off",class:"form-control w3-input w3-border w3-white input-group input-append",style:""}  %>
             <%= f.input :recipient_name,  label: "Recipient Name", value_method: :id, required: true, input_html:{id: "recipient_name", autocomplete: "off",class:"form-control w3-input w3-border w3-white input-group input-append",style:""}  %>
 
             <%= f.input :entity_div_code, :as => :hidden, input_html:{value: @entity_div_alert_recipient.entity_div_code} %>
