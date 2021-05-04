@@ -314,6 +314,14 @@ class FundMovementsController < ApplicationController
       @merchant_search = EntityInfo.where(active_status: true).order(entity_name: :asc)
       @merchant_code_search = EntityInfo.where(active_status: true).order(assigned_code: :asc)
       @merchant_service_search = EntityDivision.where(active_status: true).order(division_name: :asc)
+      @entity_div = @division_name.present? ? EntityDivision.where(assigned_code: @division_name, active_status: true).order(created_at: :desc).first : false
+      @division_name = @entity_div ? "(#{@entity_div.division_name})" : ""
+      #if @entity_name.present?
+      #  @entity_info = EntityInfo.where(assigned_code: @entity_name, active_status: true).order(created_at: :desc).first : EntityInfo.where(assigned_code: params[:entity_code], active_status: true).order(created_at: :desc).first
+      #else
+        @entity_info = @entity_div ? EntityInfo.where(assigned_code: @entity_div.entity_code, active_status: true).order(created_at: :desc).first : EntityInfo.where(assigned_code: params[:entity_name], active_status: true).order(created_at: :desc).first
+      #end
+      @entity_name = @entity_info ? @entity_info.entity_name : ""
 
       @entity_infos = EntityInfo.where(del_status: false).paginate(:page => params[:page], :per_page => params[:count]).order(created_at: :desc)
       if params[:count2] == "ALL"
@@ -324,7 +332,8 @@ class FundMovementsController < ApplicationController
     elsif current_user.merchant_admin?
       params[:entity_code] = current_user.entity_code
       @merchant_service_search = EntityDivision.where(active_status: true, entity_code: current_user.entity_code).order(division_name: :asc)
-
+      @entity_div = @division_name.present? ? EntityDivision.where(assigned_code: @division_name, active_status: true).order(created_at: :desc).first : EntityDivision.where(assigned_code: params[:division_code], active_status: true).order(created_at: :desc).first
+      @division_name = @entity_div ? "(#{@entity_div.division_name})" : ""
       @entity_info = EntityInfo.where(assigned_code: params[:entity_code], active_status: true).order(created_at: :desc).first
       @entity_name = @entity_info ? @entity_info.entity_name : ""
       @entity_divisions = EntityDivision.where(entity_code: params[:entity_code], active_status: true, del_status: false).paginate(:page => params[:page1], :per_page => params[:count1]).order(created_at: :desc)
