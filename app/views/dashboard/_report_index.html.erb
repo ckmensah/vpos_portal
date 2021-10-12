@@ -1,0 +1,244 @@
+
+<div>
+
+    <div class="w3-container">
+
+      <p id="notes1"></p>
+      <!--    <br>-->
+      <div class="">
+        <%= link_to 'DASHBOARD FILTER',"#report", :data =>{ toggle:'modal'}, style: "font-size: small; width: 200px;", class: 'btn btn-outline-purple tablink w3-vpos-purple' %>
+        <br>
+      </div>
+      <br>
+      <div class="w3-center">
+        <% if params[:filter_main].present? %>
+          <h2><button type="button" class="btn btn-outline-purple tablink w3-vpos-purple" style="width: 100%;" ><strong>DASHBOARD :: FILTERED TRANSACTIONS RESULT</strong></button></h2>
+        <% else %>
+          <h2><button type="button" class="btn btn-outline-purple tablink w3-vpos-purple" style="width: 100%;" ><strong>DASHBOARD :: TRANSACTIONS FOR TODAY</strong></button></h2>
+        <% end %>
+
+        <!--      <h4><strong>TRANSACTIONS FOR TODAY</strong></h4>-->
+      </div>
+
+      <br>
+
+
+      <div>
+        <div class="w3-half">
+          <div class="w3-responsive col-md-10 col-md-offset-1 w3-mobile">
+            <table class="w3-responsive table-striped w3-table-all table-bordered w3-hoverable w3-card-4">
+              <tr class="w3-vpos-purple">
+                <td><h5><strong>Total Successful Transaction (Count)</strong></h5></td>
+              </tr>
+
+              <tr>
+
+                <td style="text-align: center"><h2><strong><%= @payment_success_count %></strong></h2></td>
+              </tr>
+            </table>
+          </div>
+
+          <br>
+        </div>
+
+        <!--      <br>-->
+        <div class="w3-half">
+          <div class="w3-responsive col-md-12 col-md-offset-0 w3-mobile">
+            <table class="w3-responsive table-striped w3-table-all table-bordered w3-hoverable w3-card-4">
+              <tr class="w3-vpos-purple">
+                <td><h5><strong>Total Successful Transaction (Amount GHS)</strong></h5></td>
+              </tr>
+
+              <tr>
+                <td style="text-align: center"><h2><strong><%= @payment_success_amount %></strong></h2></td>
+              </tr>
+            </table>
+          </div>
+
+          <br>
+        </div>
+
+        <div>
+          <br>
+        </div>
+        <div class="w3-half">
+          <br>
+          <div class="w3-responsive col-md-10 col-md-offset-1 w3-mobile">
+            <table class="w3-responsive table-striped w3-table-all table-bordered w3-hoverable w3-card-4">
+              <tr class="w3-vpos-purple">
+                <td><h5><strong>Total Failed Transaction (Count)</strong></h5></td>
+              </tr>
+
+              <tr>
+                <td style="text-align: center"><h2><strong><%= @payment_fail_count %></strong></h2></td>
+              </tr>
+            </table>
+          </div>
+          <br>
+          <br>
+        </div>
+
+
+
+        <% if current_user.merchant_admin? || current_user.merchant_service? %>
+
+          <div class="w3-half">
+            <br>
+            <div class="w3-responsive col-md-12 col-md-offset-0 w3-mobile">
+              <table class="w3-responsive table-striped w3-table-all table-bordered w3-hoverable w3-card-4">
+                <tr class="w3-vpos-purple">
+                  <td><h5><strong>Net Balance (GHS)</strong></h5></td>
+                </tr>
+                <tr>
+                  <% if current_user.merchant_admin? %>
+                    <% if @division_name.present? %>
+                      <td style="text-align: center"><h2><strong>GHS <%= @service_account ? @service_account.net_bal : "0.00" %></strong></h2></td>
+                    <% else %>
+                      <td style="text-align: center"><h2><strong>GHS <%= @service_account_net %></strong></h2></td>
+                    <% end %>
+                  <% else %>
+                    <td style="text-align: center"><h2><strong>GHS <%=  @service_account ? @service_account.net_bal : "0.00" %></strong></h2></td>
+                  <% end %>
+
+                </tr>
+              </table>
+            </div>
+            <br>
+            <br>
+          </div>
+
+        <% end %>
+
+      </div>
+
+    </div>
+  </div>
+
+
+<!-- Filename: app/views/dashboard/index.html.erb -->
+
+<div>
+  <div id="chart-container1" class="w3-half">
+    <%= @chart_cnt.render %>
+  </div>
+  <div id="chart-container2" class="w3-half">
+    <%= @chart_amt.render %>
+  </div>
+  <div id="chart-container7" class="w3-half">
+    <%= @pie_chart_cnt.render %>
+  </div>
+  <div id="chart-container8" class="w3-half">
+    <%= @pie_chart_amt.render %>
+  </div>
+  <div id="chart-container3" class="w3-half">
+    <%= @final_daily_report.render %>
+  </div>
+  <div id="chart-container4" class="w3-half">
+    <%= @final_weekly_report.render %>
+  </div>
+  <div id="chart-container5" class="w3-half">
+    <%= @final_monthly_report.render %>
+  </div>
+  <div id="chart-container6" class="w3-half">
+    <%= @final_yearly_report.render %>
+  </div>
+  <br/>
+  <br/>
+  <br/>
+</div>
+
+  <div class="modal fade" id="report" role="dialog">
+    <div class="modal-dialog modal-dialog-centered ">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h4>Filter Dashboard</h4>
+          <button type="button" class="close" data-dismiss="modal">
+            <span aria-hidden="true">x</span>
+            <span class="sr-only">Close</span>
+          </button>
+        </div>
+
+        <div class="modal-body">
+
+          <% @activity_types = ActivityType.where(active_status: true) %>
+          <% @networks = [["MTN", "MTN"], ["VOD", "VOD"], ["TIGO", "TIG"], ["AIRTEL", "AIR"]] %>
+          <% @statuses = [["SUCCESS", "000"], ["FAIL", "001"], ["PENDING", "NIL"]] %>
+
+          <%= simple_form_for :filter_main, :url => (report_index_path(count: params[:count], page: params[:page])), :method =>'get', html: { class: 'form-horizontal' }, remote: true do |f| %>
+
+            <% if current_user.super_admin? || current_user.super_user? %>
+              <%= f.input :entity_name, collection: @payment_merchant, label_method: :entity_name, value_method: :assigned_code, class:"form-control", input_html: {id: "id_entity_info", style: "width: 100%;"}, label: "Merchant Name", boolean_style: :inline %>
+              <%#= f.label :division_name,"Merchant Service", style:"" %>
+              <%= f.input :division_name, collection: @payment_service, label_method: :division_name, value_method: :assigned_code, class:"form-control", input_html: {id: "id_entity_div", style: "width: 100%;"}, label: "Service Name", boolean_style: :inline %>
+              <%#= f.input :division_name, class:"form-control", input_html: {style: "width: 90%;", autocomplete: "off"}, label: "Merchant Service", boolean_style: :inline %>
+
+            <% elsif current_user.merchant_admin? %>
+
+              <%= f.input :division_name, collection: @payment_service, label_method: :division_name, value_method: :assigned_code, class:"form-control", input_html: {style: "width: 100%;"}, label: "Service Name", boolean_style: :inline %>
+              <%#= f.input :division_name, class:"form-control", input_html: {style: "width: 90%;", autocomplete: "off"}, label: "Merchant Service", boolean_style: :inline %>
+
+            <% elsif current_user.merchant_service? %>
+
+            <% end %>
+
+            <!--<input type="text" data-behaviour='datepicker' >-->
+            <%#= f.label :start_date,"Start Date", style:"float:left" %>
+            <div class="w3-half">
+              <%= f.input :start_date, as: :date, html5: true, class:"form-control input-group date", label: "Start Date", boolean_style: :inline, input_html: {style: "width: 90%", autocomplete: "off"} %>
+            </div>
+
+            <div class="w3-half">
+              <%= f.input :end_date, :id => "datepicker2", as: :date, html5: true, class:"form-control", label: "End Date", boolean_style: :inline, input_html: {style: "", data: {behaviour: 'datepicker', provide: 'datepicker'}, autocomplete: "off"} %>
+            </div>
+            <%#= f.label :end_date,"End Date", style:"" %>
+
+            <div class="w3-center">
+              <%= f.submit "Filter", :data =>{ :disable_with => 'Searching..'}, class: "btn btn-outline-purple tablink w3-vpos-purple", style: "width:auto;" %>
+            </div>
+
+          <% end %>
+
+          <!--                </fieldset>-->
+          <!--              </div>-->
+          <!--            </div>-->
+
+          <!--        </div>-->
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+
+
+
+  <script>
+      $(function(){
+
+          // $('.pagination a').attr('data-remote', 'true');
+          $('.modal-backdrop').remove();
+
+          // $('#datepicker1').datepicker({format: 'yyyy-mm-dd'});
+          // $('#datepicker2').datepicker({format: 'yyyy-mm-dd'});
+
+      });
+
+      $(document).ready(function(){
+          $('[data-toggle="tooltip"]').tooltip();
+          var entity_info_id = $('#id_entity_info');
+          var entity_div_id  = $('#id_entity_div');
+
+          entity_info_id.change(function() {
+              console.log("For entity_info id:: " + entity_info_id.val());
+              entity_div_id.attr("title", "Now select a service.");
+              Rails.ajax({
+                  type: "POST",
+                  url: "<%= general_division_ajax_call_path %>",
+                  data: "id_for_entity_info=" + entity_info_id.val(),
+                  dataType: "script"
+              });
+          });
+      });
+
+
+  </script>

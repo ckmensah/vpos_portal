@@ -181,10 +181,32 @@
                 </tr>
 
               <% if @pay_info.entity_division != nil && (@pay_info.entity_division.activity_type_code == "SHW" || @pay_info.entity_division.activity_type_code == "SPO") %>
+                <% @act_sub_div_obj = ActivitySubDiv.where(id: @pay_info.activity_sub_div_id).first %>
+                <% if @act_sub_div_obj %>
+                  <% @classification = @act_sub_div_obj.classification.present? ? ActivitySubDivClass.where(id: @act_sub_div_obj.classification).first : false %>
+                  <% if @classification %>
+                    <tr>
+                      <td class="raw_theme w3-border w3-border-black w3-leftbar"><strong>Ticket Type:</strong></td>
+                      <td><strong><%= @classification.class_desc %></strong></td>
+                    </tr>
+                  <% end %>
+
+                  <tr>
+                    <td class="raw_theme w3-border w3-border-black w3-leftbar"><strong>Activity Time:</strong></td>
+                    <td><strong><%= @act_sub_div_obj.activity_time.strftime('%H:%M') if @act_sub_div_obj.activity_time.present? %></strong></td>
+                  </tr>
+                <% end %>
+
+                <tr>
+                  <td class="raw_theme w3-border w3-border-black w3-leftbar"><strong>Recipient Email:</strong></td>
+                  <td><strong><%= @pay_info.recipient_email %></strong></td>
+                </tr>
+
                 <tr>
                   <td class="raw_theme w3-border w3-border-black w3-leftbar"><strong>Quantity:</strong></td>
                   <td><strong><%= @pay_info.qty %></strong></td>
                 </tr>
+
               <% end %>
 
               <% if @pay_info.entity_division != nil && @pay_info.entity_division.activity_type_code == "HSP" %>
@@ -335,6 +357,7 @@
           <br/>
           <div class="w3-center">
             <%= link_to 'Back', payment_info_index_path(params: params.to_unsafe_h, page: params[:page], count: params[:count]), class: 'w3-button w3-white w3-border w3-border-purple w3-small w3-round-large', remote: true %>
+<!--            <button type="button" onclick="document.getElementById('pay_show').style.display='none'" class="w3-card-4 w3-btn w3-dark-grey w3-border w3-ripple w3-round-large w3-border-grey">Back</button>-->
           </div>
           <br/>
         </div>

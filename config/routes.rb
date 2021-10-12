@@ -129,6 +129,11 @@ Rails.application.routes.draw do
   get '/entity_div_sub_activities/entity_div_sub_activity_index' => 'entity_div_sub_activities#entity_div_sub_activity_index', :as => 'entity_div_sub_activity_index'
 
 
+  # ================== DASHBOARD ROUTES =======================
+  get '/reports' => 'dashboard#index', :as => 'reports'
+  get '/report_index' => 'dashboard#report_index', :as => 'report_index'
+
+  # =================== AJAX ROUTES ===========================
   post '/suburb_masters/city_update', :as => 'suburb_city_ajax_call'
   post '/suburb_masters/suburb_update', :as => 'general_suburb_ajax_call'
   post '/entity_divisions/category_div_update', :as => 'div_cat_to_cat_div_ajax_call'

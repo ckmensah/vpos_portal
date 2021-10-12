@@ -932,10 +932,10 @@ class PaymentInfosController < ApplicationController
           resp_desc = the_resp["resp_desc"]
           logger.info "Response Description :: #{resp_desc.inspect}"
           if resp_code == "00"
-            #payment_info_index
+            payment_info_index
             flash.now[:notice] = "Resend was successful."
             respond_to do |format|
-              format.js { render :resend_show }
+              format.js { render :payment_info_index }
             end
           else
             #payment_info_index

@@ -77,6 +77,7 @@ gem 'shrine', '~> 2.12'
 gem "shrine-cloudinary"
 gem "cloudinary"
 gem 'dropzonejs-rails'
+gem 'fusioncharts-rails'
 
 
 

@@ -14,6 +14,17 @@
 //= require rails-ujs
 //= require bootstrap-sprockets
 //= require select2
+//= require fusioncharts/fusioncharts
+//= require fusioncharts/fusioncharts.charts
+//= require fusioncharts/fusioncharts.excelexport
+//= require fusioncharts/themes/fusioncharts.theme.candy
+//= require fusioncharts/themes/fusioncharts.theme.carbon
+//= require fusioncharts/themes/fusioncharts.theme.fint
+//= require fusioncharts/themes/fusioncharts.theme.fusion
+//= require fusioncharts/themes/fusioncharts.theme.gammel
+//= require fusioncharts/themes/fusioncharts.theme.ocean
+//= require fusioncharts/themes/fusioncharts.theme.umber
+//= require fusioncharts/themes/fusioncharts.theme.zune
 //= require_tree .
 
 
