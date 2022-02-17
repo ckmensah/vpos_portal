@@ -1,0 +1,54 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <strong>User:</strong>
+  <%= @user_role.user_id %>
+</p>
+
+<p>
+  <strong>Role code:</strong>
+  <%= @user_role.role_code %>
+</p>
+
+<p>
+  <strong>Entity code:</strong>
+  <%= @user_role.entity_code %>
+</p>
+
+<p>
+  <strong>Division code:</strong>
+  <%= @user_role.division_code %>
+</p>
+
+<p>
+  <strong>Show charge:</strong>
+  <%= @user_role.show_charge %>
+</p>
+
+<p>
+  <strong>For portal:</strong>
+  <%= @user_role.for_portal %>
+</p>
+
+<p>
+  <strong>Creator:</strong>
+  <%= @user_role.creator_id %>
+</p>
+
+<p>
+  <strong>Comment:</strong>
+  <%= @user_role.comment %>
+</p>
+
+<p>
+  <strong>Active status:</strong>
+  <%= @user_role.active_status %>
+</p>
+
+<p>
+  <strong>Del status:</strong>
+  <%= @user_role.del_status %>
+</p>
+
+<%= link_to 'Edit', edit_user_role_path(@user_role) %> |
+<%= link_to 'Back', user_roles_path %>

@@ -1,0 +1,6 @@
+<% if params[:medium_type] == "images" %>
+$("#notes21").html("<%= escape_javascript(render(:partial =>"edit")) %>");
+<% elsif params[:medium_type] == "videos" %>
+$("#notes22").html("<%= escape_javascript(render(:partial =>"edit")) %>");
+<% end %>
+$('#edit_notice').html("<%= escape_javascript(render 'layouts/messages') %>");

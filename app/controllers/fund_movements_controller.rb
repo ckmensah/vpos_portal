@@ -32,15 +32,15 @@ class FundMovementsController < ApplicationController
       @fund_movements = FundMovement.paginate(:page => params[:page], :per_page => params[:count2]).order(created_at: :desc)
 
     elsif current_user.merchant_admin?
-      params[:entity_code] = current_user.entity_code
+      params[:entity_code] = current_user.user_entity_code
 
       @entity_info = EntityInfo.where(assigned_code: params[:entity_code], active_status: true).order(created_at: :desc).first
       @entity_name = @entity_info ? @entity_info.entity_name : ""
       @entity_divisions = EntityDivision.where(entity_code: params[:entity_code], active_status: true, del_status: false).paginate(:page => params[:page1], :per_page => params[:count1]).order(created_at: :desc)
 
-      @merchant_service_search = EntityDivision.where(active_status: true, entity_code: current_user.entity_code).order(division_name: :asc)
+      @merchant_service_search = EntityDivision.where(active_status: true, entity_code: current_user.user_entity_code).order(division_name: :asc)
       entity_div_id_str = "'0'"
-      @entity_divs = EntityDivision.where(entity_code: current_user.entity_code, active_status: true)
+      @entity_divs = EntityDivision.where(entity_code: current_user.user_entity_code, active_status: true)
       @entity_divs.each do |entity_div|
         entity_div_id_str << ",'#{entity_div.assigned_code}'"
       end
@@ -48,8 +48,8 @@ class FundMovementsController < ApplicationController
       @fund_movements = FundMovement.where("entity_div_code IN #{final_div_ids}").paginate(:page => params[:page], :per_page => params[:count2]).order(created_at: :desc)
 
     elsif current_user.merchant_service?
-      params[:entity_code] = current_user.entity_code
-      params[:division_code] = current_user.division_code
+      params[:entity_code] = current_user.user_entity_code
+      params[:division_code] = current_user.user_division_code
 
       @entity_info = EntityInfo.where(assigned_code: params[:entity_code], active_status: true).order(created_at: :desc).first
       @entity_name = @entity_info ? @entity_info.entity_name : ""
@@ -330,8 +330,8 @@ class FundMovementsController < ApplicationController
         @fund_movements = FundMovement.where(the_search).paginate(:page => params[:page], :per_page => params[:count2]).order(created_at: :desc)
       end
     elsif current_user.merchant_admin?
-      params[:entity_code] = current_user.entity_code
-      @merchant_service_search = EntityDivision.where(active_status: true, entity_code: current_user.entity_code).order(division_name: :asc)
+      params[:entity_code] = current_user.user_entity_code
+      @merchant_service_search = EntityDivision.where(active_status: true, entity_code: current_user.user_entity_code).order(division_name: :asc)
       @entity_div = @division_name.present? ? EntityDivision.where(assigned_code: @division_name, active_status: true).order(created_at: :desc).first : EntityDivision.where(assigned_code: params[:division_code], active_status: true).order(created_at: :desc).first
       @division_name = @entity_div ? "(#{@entity_div.division_name})" : ""
       @entity_info = EntityInfo.where(assigned_code: params[:entity_code], active_status: true).order(created_at: :desc).first
@@ -339,7 +339,7 @@ class FundMovementsController < ApplicationController
       @entity_divisions = EntityDivision.where(entity_code: params[:entity_code], active_status: true, del_status: false).paginate(:page => params[:page1], :per_page => params[:count1]).order(created_at: :desc)
 
       entity_div_id_str = "'0'"
-      @entity_divs = EntityDivision.where(entity_code: current_user.entity_code, active_status: true)
+      @entity_divs = EntityDivision.where(entity_code: current_user.user_entity_code, active_status: true)
       @entity_divs.each do |entity_div|
         entity_div_id_str << ",'#{entity_div.assigned_code}'"
       end
@@ -350,8 +350,8 @@ class FundMovementsController < ApplicationController
         @fund_movements = FundMovement.where("entity_div_code IN #{final_div_ids}").where(the_search).paginate(:page => params[:page], :per_page => params[:count2]).order(created_at: :desc)
       end
     elsif current_user.merchant_service?
-      params[:entity_code] = current_user.entity_code
-      params[:division_code] = current_user.division_code
+      params[:entity_code] = current_user.user_entity_code
+      params[:division_code] = current_user.user_division_code
 
       #@entity_info = EntityInfo.where(assigned_code: params[:entity_code], active_status: true).order(created_at: :desc).first
       #@entity_name = @entity_info ? @entity_info.entity_name : ""

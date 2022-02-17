@@ -24,12 +24,12 @@ class PaymentInfosController < ApplicationController
       #@payment_infos = PaymentReport.where("split_part(trans_status, '/', 1) = '000'").paginate(:page => params[:page], :per_page => params[:count]).order('created_at desc')
       @payment_infos = PaymentReport.where("processed = true").paginate(:page => params[:page], :per_page => params[:count]).order('created_at desc')
     elsif current_user.merchant_admin?
-      @merchant_service_search = EntityDivision.where(active_status: true, entity_code: current_user.entity_code).order(division_name: :asc)
+      @merchant_service_search = EntityDivision.where(active_status: true, entity_code: current_user.user_entity_code).order(division_name: :asc)
       entity_div_id_str = "'0'"
       ref_div_id_str = "'0'"
       activity_type_str = "'0'"
       activity_type_arr = []
-      @entity_divs = EntityDivision.where(entity_code: current_user.entity_code, active_status: true)
+      @entity_divs = EntityDivision.where(entity_code: current_user.user_entity_code, active_status: true)
       @entity_divs.each do |entity_div|
         entity_div_id_str << ",'#{entity_div.assigned_code}'"
         unless activity_type_arr.include?("'#{entity_div.activity_type_code}'")
@@ -47,14 +47,14 @@ class PaymentInfosController < ApplicationController
       @activity_types = ActivityType.where("active_status = true AND assigned_code IN #{final_activity_types}")
       #@references = PaymentReport.select(:reference).where("entity_div_code IN #{final_ref_div_ids}").group(:reference).order(reference: :asc)
       @menu_items = PaymentReport.joins("INNER JOIN entity_division ON payment_reports.entity_div_code = entity_division.assigned_code")
-                        .select(:activity_main_code, :narration).where("entity_code = '#{current_user.entity_code}' AND active_status = true AND activity_type_code = 'CHC'")
+                        .select(:activity_main_code, :narration).where("entity_code = '#{current_user.user_entity_code}' AND active_status = true AND activity_type_code = 'CHC'")
                         .group(:activity_main_code, :narration).order(activity_main_code: :asc)
       @division_lovs = DivisionActivityLov.select(:lov_desc).where("active_status = true AND division_code IN #{final_div_ids}").group(:lov_desc).order(lov_desc: :asc)
       #@payment_infos = PaymentReport.where("split_part(trans_status, '/', 1) = '000' AND entity_div_code IN #{final_div_ids} ").paginate(:page => params[:page], :per_page => params[:count]).order('created_at desc')
       @payment_infos = PaymentReport.where("processed = true AND entity_div_code IN #{final_div_ids} ").paginate(:page => params[:page], :per_page => params[:count]).order('created_at desc')
     elsif current_user.merchant_service?
       entity_div_id_str = "'0'"
-      @entity_divs = EntityDivision.where("entity_code = '#{current_user.entity_code}' and active_status = true")
+      @entity_divs = EntityDivision.where("entity_code = '#{current_user.user_entity_code}' and active_status = true")
       if @entity_divs.exists?
         @entity_divs.each do |entity_div|
           entity_div_id_str << ",'#{entity_div.assigned_code}'"
@@ -64,10 +64,10 @@ class PaymentInfosController < ApplicationController
       @division_lovs = DivisionActivityLov.select(:lov_desc).where("division_code IN #{final_div_ids}").group(:lov_desc).order(lov_desc: :asc)
       #@references = PaymentReport.select(:reference).where("entity_div_code IN #{final_div_ids}").group(:reference).order(reference: :asc)
       @menu_items = PaymentReport.joins("INNER JOIN entity_division ON payment_reports.entity_div_code = entity_division.assigned_code")
-                        .select(:activity_main_code, :narration).where("entity_div_code = '#{current_user.division_code}' AND active_status = true AND activity_type_code = 'CHC'")
+                        .select(:activity_main_code, :narration).where("entity_div_code = '#{current_user.user_division_code}' AND active_status = true AND activity_type_code = 'CHC'")
                         .group(:activity_main_code, :narration).order(activity_main_code: :asc)
-      #@payment_infos = PaymentReport.where("split_part(trans_status, '/', 1) = '000' AND entity_div_code = '#{current_user.division_code}'").paginate(:page => params[:page], :per_page => params[:count]).order('created_at desc')
-      @payment_infos = PaymentReport.where("processed = true AND entity_div_code = '#{current_user.division_code}'").paginate(:page => params[:page], :per_page => params[:count]).order('created_at desc')
+      #@payment_infos = PaymentReport.where("split_part(trans_status, '/', 1) = '000' AND entity_div_code = '#{current_user.user_division_code}'").paginate(:page => params[:page], :per_page => params[:count]).order('created_at desc')
+      @payment_infos = PaymentReport.where("processed = true AND entity_div_code = '#{current_user.user_division_code}'").paginate(:page => params[:page], :per_page => params[:count]).order('created_at desc')
     end
     #logger.info "Report #{@payment_infos.inspect}"
   end
@@ -92,6 +92,7 @@ class PaymentInfosController < ApplicationController
         @act_main_code = filter_params[:act_main_code]
         @activity_type = filter_params[:activity_type]
         @lov_name = filter_params[:lov_name]
+        @ref = filter_params[:ref]
         @cust_num = filter_params[:cust_num]
         @trans_id = filter_params[:trans_id]
         @trans_type = filter_params[:trans_type]
@@ -106,6 +107,7 @@ class PaymentInfosController < ApplicationController
         params[:act_main_code] = filter_params[:act_main_code]
         params[:activity_type] = filter_params[:activity_type]
         params[:lov_name] = filter_params[:lov_name]
+        params[:ref] = filter_params[:ref]
         params[:cust_num] = filter_params[:cust_num]
         params[:trans_id] = filter_params[:trans_id]
         params[:trans_type] = filter_params[:trans_type]
@@ -124,6 +126,7 @@ class PaymentInfosController < ApplicationController
           @act_main_code = params[:act_main_code]
           @activity_type = params[:activity_type]
           @lov_name = params[:lov_name]
+          @ref = params[:ref]
           @cust_num = params[:cust_num]
           @trans_id = params[:trans_id]
           @trans_type = params[:trans_type]
@@ -138,6 +141,7 @@ class PaymentInfosController < ApplicationController
           params[:act_main_code] = @act_main_code
           params[:activity_type] = @activity_type
           params[:lov_name] = @lov_name
+          params[:ref] = @ref
           params[:cust_num] = @cust_num
           params[:trans_id] = @trans_id
           params[:trans_type] = @trans_type
@@ -153,6 +157,7 @@ class PaymentInfosController < ApplicationController
           params[:act_main_code] = filter_params[:act_main_code]
           params[:activity_type] = filter_params[:activity_type]
           params[:lov_name] = filter_params[:lov_name]
+          params[:ref] = filter_params[:ref]
           params[:cust_num] = filter_params[:cust_num]
           params[:trans_id] = filter_params[:trans_id]
           params[:trans_type] = filter_params[:trans_type]
@@ -213,7 +218,7 @@ class PaymentInfosController < ApplicationController
         if current_user.super_admin? || current_user.super_user?
           @entity_divisi = EntityDivision.where(active_status: true, activity_type_code: @activity_type)
         elsif current_user.merchant_admin?
-          @entity_divisi = EntityDivision.where(active_status: true, activity_type_code: @activity_type, entity_code: current_user.entity_code)
+          @entity_divisi = EntityDivision.where(active_status: true, activity_type_code: @activity_type, entity_code: current_user.user_entity_code)
         end
         logger.info "=======================&&&&&&&&&&&&&&&&&&&&&&&=============================="
         logger.info "Entity service object :: #{@entity_divisi.inspect}"
@@ -244,6 +249,11 @@ class PaymentInfosController < ApplicationController
         logger.info "Final Lov Str :: #{final_lov_str.inspect}"
         search_arr << "activity_lov_id IN #{final_lov_str}"
         #search_arr << "activity_lov_id = #{@lov_name}"
+      end
+
+
+      if @ref.present?
+        search_arr << "LOWER(reference) LIKE '%#{@ref.downcase}%'"
       end
 
 
@@ -329,6 +339,7 @@ class PaymentInfosController < ApplicationController
       @merchant_search = EntityInfo.where(active_status: true).order(entity_name: :asc)
       @merchant_service_search = EntityDivision.where(active_status: true).order(division_name: :asc)
       @division_lovs = DivisionActivityLov.select(:lov_desc).where(active_status: true).group(:lov_desc).order(lov_desc: :asc)
+      #@references = PaymentReport.select(:reference).group(:reference).order(reference: :asc)
       @menu_items = PaymentReport.joins("INNER JOIN entity_division ON payment_reports.entity_div_code = entity_division.assigned_code")
                         .select(:activity_main_code, :narration).where("active_status = true AND activity_type_code = 'CHC'")
                         .group(:activity_main_code, :narration).order(activity_main_code: :asc)
@@ -339,11 +350,11 @@ class PaymentInfosController < ApplicationController
       end
 
     elsif current_user.merchant_admin?
-      @merchant_service_search = EntityDivision.where(active_status: true, entity_code: current_user.entity_code).order(division_name: :asc)
+      @merchant_service_search = EntityDivision.where(active_status: true, entity_code: current_user.user_entity_code).order(division_name: :asc)
       entity_div_id_str = "'0'"
       activity_type_str = "'0'"
       activity_type_arr = []
-      @entity_divs = EntityDivision.where(entity_code: current_user.entity_code, active_status: true)
+      @entity_divs = EntityDivision.where(entity_code: current_user.user_entity_code, active_status: true)
       @entity_divs.each do |entity_div|
         entity_div_id_str << ",'#{entity_div.assigned_code}'"
         unless activity_type_arr.include?("'#{entity_div.activity_type_code}'")
@@ -355,10 +366,11 @@ class PaymentInfosController < ApplicationController
       final_activity_types = "(#{activity_type_str})"
 
       @division_lovs = DivisionActivityLov.select(:lov_desc).where("active_status = true AND division_code IN #{final_div_ids}").group(:lov_desc).order(lov_desc: :asc)
+      @references = PaymentReport.select(:reference).where("division_code IN #{final_div_ids}").group(:reference).order(reference: :asc)
       @activity_types = ActivityType.where("active_status = true AND assigned_code IN #{final_activity_types}")
       #@references = PaymentReport.select(:reference).where("entity_div_code IN #{final_div_ids}").group(:reference).order(reference: :asc)
       @main_items = PaymentReport.joins("INNER JOIN entity_division ON payment_reports.entity_div_code = entity_division.assigned_code")
-                        .select(:activity_main_code, :narration).where("entity_code = '#{current_user.entity_code}' AND active_status = true AND activity_type_code = 'CHC'")
+                        .select(:activity_main_code, :narration).where("entity_code = '#{current_user.user_entity_code}' AND active_status = true AND activity_type_code = 'CHC'")
                         .group(:activity_main_code, :narration).order(activity_main_code: :asc)
       if params[:count] == "All"
         @payment_infos = PaymentReport.where("entity_div_code IN #{final_div_ids}").where(the_search).paginate(:page => params[:page], :per_page => 100000000000).order('created_at desc')
@@ -366,15 +378,16 @@ class PaymentInfosController < ApplicationController
         @payment_infos = PaymentReport.where("entity_div_code IN #{final_div_ids}").where(the_search).paginate(:page => params[:page], :per_page => params[:count]).order('created_at desc')
       end
     elsif current_user.merchant_service?
-      @division_lovs = DivisionActivityLov.select(:lov_desc).where("active_status = true AND division_code = '#{current_user.division_code}'").group(:lov_desc).order(lov_desc: :asc)
-      #@references = PaymentReport.select(:reference).where("entity_div_code = '#{current_user.division_code}'").group(:reference).order(reference: :asc)
+      @division_lovs = DivisionActivityLov.select(:lov_desc).where("active_status = true AND division_code = '#{current_user.user_division_code}'").group(:lov_desc).order(lov_desc: :asc)
+      #@references = PaymentReport.select(:reference).where("division_code = '#{current_user.user_division_code}'").group(:reference).order(reference: :asc)
+      #@references = PaymentReport.select(:reference).where("entity_div_code = '#{current_user.user_division_code}'").group(:reference).order(reference: :asc)
       @main_items = PaymentReport.joins("INNER JOIN entity_division ON payment_reports.entity_div_code = entity_division.assigned_code")
-                        .select(:activity_main_code, :narration).where("entity_div_code = '#{current_user.division_code}' AND active_status = true AND activity_type_code = 'CHC'")
+                        .select(:activity_main_code, :narration).where("entity_div_code = '#{current_user.user_division_code}' AND active_status = true AND activity_type_code = 'CHC'")
                         .group(:activity_main_code, :narration).order(activity_main_code: :asc)
       if params[:count] == "All"
-        @payment_infos = PaymentReport.where(entity_div_code: current_user.division_code).where(the_search).paginate(:page => params[:page], :per_page => 100000000000).order('created_at desc')
+        @payment_infos = PaymentReport.where(entity_div_code: current_user.user_division_code).where(the_search).paginate(:page => params[:page], :per_page => 100000000000).order('created_at desc')
       else
-        @payment_infos = PaymentReport.where(entity_div_code: current_user.division_code).where(the_search).paginate(:page => params[:page], :per_page => params[:count]).order('created_at desc')
+        @payment_infos = PaymentReport.where(entity_div_code: current_user.user_division_code).where(the_search).paginate(:page => params[:page], :per_page => params[:count]).order('created_at desc')
       end
     end
 
@@ -408,9 +421,9 @@ class PaymentInfosController < ApplicationController
       @entity_infos = EntityInfo.where(active_status: true).order(entity_name: :asc)
       @entity_divisions = EntityDivision.where(active_status: true).order(division_name: :asc)
     elsif current_user.merchant_admin?
-      @entity_divisions = EntityDivision.where(entity_code: current_user.entity_code, active_status: true).order(division_name: :asc)
+      @entity_divisions = EntityDivision.where(entity_code: current_user.user_entity_code, active_status: true).order(division_name: :asc)
     elsif current_user.merchant_service?
-      #@financial_statement = PaymentReport.select("trans_type, narration, date, sum(amount) AS amount").where("entity_div_code = '#{current_user.division_code}'").group("trans_type, narration, date").order(date: :asc)
+      #@financial_statement = PaymentReport.select("trans_type, narration, date, sum(amount) AS amount").where("entity_div_code = '#{current_user.user_division_code}'").group("trans_type, narration, date").order(date: :asc)
     end
 
   end
@@ -488,7 +501,7 @@ class PaymentInfosController < ApplicationController
     elsif current_user.merchant_admin?
       entity_div_id_str = "'0'"
       entity_div_id_arr = []
-      @entity_divs = EntityDivision.where(entity_code: current_user.entity_code, active_status: true)
+      @entity_divs = EntityDivision.where(entity_code: current_user.user_entity_code, active_status: true)
       @entity_divs.each do |entity_div|
         unless entity_div_id_arr.include?("'#{entity_div.assigned_code}'")
           entity_div_id_str << ",'#{entity_div.assigned_code}'"
@@ -498,7 +511,7 @@ class PaymentInfosController < ApplicationController
       final_div_ids = "(#{entity_div_id_str})"
       logger.info "Final Div IDs :: #{final_div_ids.inspect}"
 
-      @entity_divisions = EntityDivision.where(entity_code: current_user.entity_code, active_status: true).order(division_name: :asc)
+      @entity_divisions = EntityDivision.where(entity_code: current_user.user_entity_code, active_status: true).order(division_name: :asc)
       @financial_statement = EntityServiceAccountTrxn.wallet_join.where("entity_div_code IN #{final_div_ids}").where(the_search).group("trans_type, date").order(date: :asc)
       @credit_obj = EntityServiceAccountTrxn.find_by_sql("select sum(net_bal_aft - net_bal_bef) actual_amt from entity_service_account_trxn where #{the_search}")[0]
       @credit_total = @credit_obj.actual_amt
@@ -513,16 +526,16 @@ class PaymentInfosController < ApplicationController
       logger.info "================== MERCHANT Credit Total :: #{number_to_currency(@credit_total, unit: "GHS ", precision: 3)} and Debit Total :: #{number_to_currency(@debit_total, unit: "GHS ", precision: 3)}"
 
     elsif current_user.merchant_service?
-      @division_name = current_user.division_code
-      @financial_statement = EntityServiceAccountTrxn.wallet_join.where("entity_div_code = '#{current_user.division_code}'").where(the_search).group("trans_type, date").order(date: :asc)
+      @division_name = current_user.user_division_code
+      @financial_statement = EntityServiceAccountTrxn.wallet_join.where("entity_div_code = '#{current_user.user_division_code}'").where(the_search).group("trans_type, date").order(date: :asc)
       @credit_obj = EntityServiceAccountTrxn.find_by_sql("select sum(net_bal_aft - net_bal_bef) actual_amt from entity_service_account_trxn where #{the_search}")[0]
       @credit_total = @credit_obj.actual_amt
       @fund_moves = FundMovement.select("trans_type, narration, to_char(created_at, 'YYYY-MM-DD') AS date, sum(amount) AS amt")
-      @fund_movements = @fund_moves.where("entity_div_code = '#{current_user.division_code}'").where(the_search_fund).group("trans_type, narration, date").order(date: :asc)
-      @service_name = "('#{current_user.division_code}')"
-      @debit_obj = FundMovement.select("amount").where("entity_div_code = '#{current_user.division_code}'").where(the_search_fund)
+      @fund_movements = @fund_moves.where("entity_div_code = '#{current_user.user_division_code}'").where(the_search_fund).group("trans_type, narration, date").order(date: :asc)
+      @service_name = "('#{current_user.user_division_code}')"
+      @debit_obj = FundMovement.select("amount").where("entity_div_code = '#{current_user.user_division_code}'").where(the_search_fund)
       @debit_total = @debit_obj.sum(:amount)
-      @balance_bf, @closing_bal = EntityServiceAccountTrxn.closing_bal_n_bbf(@start_date, @end_date, current_user.division_code)
+      @balance_bf, @closing_bal = EntityServiceAccountTrxn.closing_bal_n_bbf(@start_date, @end_date, current_user.user_division_code)
       logger.info "================== SERVICE 1st BALANCE B/F :: #{number_to_currency(@balance_bf, unit: "GHS ", precision: 3)}"
       logger.info "================== SERVICE 1st CLOSING BAL :: #{number_to_currency(@closing_bal, unit: "GHS ", precision: 3)}"
       logger.info "================== SERVICE Credit Total :: #{number_to_currency(@credit_total, unit: "GHS ", precision: 3)} and Debit Total :: #{number_to_currency(@debit_total, unit: "GHS ", precision: 3)}"
@@ -531,7 +544,7 @@ class PaymentInfosController < ApplicationController
     respond_to do |format|
       if current_user.merchant_service?
         if @start_date.present? && @end_date.present?
-          @div_obj = EntityDivision.where(assigned_code: current_user.division_code, active_status: true).order(created_at: :desc).first
+          @div_obj = EntityDivision.where(assigned_code: current_user.user_division_code, active_status: true).order(created_at: :desc).first
           @div_name = @div_obj ? @div_obj.division_name : ""
           format.js { render :financial_statement_index }
           format.csv { send_data @financial_statement.to_finance_csv(@financial_statement, @fund_movements, @fund_moves, @service_name, @balance_bf), :filename => "financial_statement.csv" }
@@ -566,9 +579,9 @@ class PaymentInfosController < ApplicationController
       @entity_infos = EntityInfo.where(active_status: true).order(entity_name: :asc)
       @entity_divisions = EntityDivision.where(active_status: true).order(division_name: :asc)
     elsif current_user.merchant_admin?
-      @entity_divisions = EntityDivision.where(entity_code: current_user.entity_code, active_status: true).order(division_name: :asc)
+      @entity_divisions = EntityDivision.where(entity_code: current_user.user_entity_code, active_status: true).order(division_name: :asc)
     elsif current_user.merchant_service?
-      #@financial_statement = PaymentReport.select("trans_type, narration, date, sum(amount) AS amount").where("entity_div_code = '#{current_user.division_code}'").group("trans_type, narration, date").order(date: :asc)
+      #@financial_statement = PaymentReport.select("trans_type, narration, date, sum(amount) AS amount").where("entity_div_code = '#{current_user.user_division_code}'").group("trans_type, narration, date").order(date: :asc)
     end
   end
 
@@ -648,7 +661,7 @@ class PaymentInfosController < ApplicationController
     elsif current_user.merchant_admin?
       entity_div_id_str = "'0'"
       entity_div_id_arr = []
-      @entity_divs = EntityDivision.where(entity_code: current_user.entity_code, active_status: true)
+      @entity_divs = EntityDivision.where(entity_code: current_user.user_entity_code, active_status: true)
       @entity_divs.each do |entity_div|
         unless entity_div_id_arr.include?("'#{entity_div.assigned_code}'")
           entity_div_id_str << ",'#{entity_div.assigned_code}'"
@@ -658,7 +671,7 @@ class PaymentInfosController < ApplicationController
       final_div_ids = "(#{entity_div_id_str})"
       logger.info "Final Div IDs :: #{final_div_ids.inspect}"
 
-      @entity_divisions = EntityDivision.where(entity_code: current_user.entity_code, active_status: true).order(division_name: :asc)
+      @entity_divisions = EntityDivision.where(entity_code: current_user.user_entity_code, active_status: true).order(division_name: :asc)
       @financial_statement = PaymentReport.financial_join.where("payment_reports.entity_div_code IN #{final_div_ids}").where(the_search).group("payment_reports.trans_type, date").order(date: :asc)
       @fund_movements = FundMovement.select("trans_type, narration, to_char(created_at, 'YYYY-MM-DD') AS date, sum(amount) AS amt")
                             .where("entity_div_code IN #{final_div_ids}").where(the_search_fund).group("trans_type, narration, date").order(date: :asc)
@@ -668,13 +681,13 @@ class PaymentInfosController < ApplicationController
       @balance_bf = PaymentReport.balance_bf(@payment_reports_bbf, @fund_movements_bbf)[0]
       logger.info "================== 1st MERCHANT BALANCE B/F :: #{number_to_currency(@balance_bf, unit: "GHS ", precision: 3)}"
     elsif current_user.merchant_service?
-      @division_name = current_user.division_code
-      @financial_statement = PaymentReport.financial_join.where("payment_reports.entity_div_code = '#{current_user.division_code}'").where(the_search).group("payment_reports.trans_type, date").order(date: :asc)
+      @division_name = current_user.user_division_code
+      @financial_statement = PaymentReport.financial_join.where("payment_reports.entity_div_code = '#{current_user.user_division_code}'").where(the_search).group("payment_reports.trans_type, date").order(date: :asc)
       @fund_movements = FundMovement.select("trans_type, narration, to_char(created_at, 'YYYY-MM-DD') AS date, sum(amount) AS amt")
-                            .where("entity_div_code = '#{current_user.division_code}'").where(the_search_fund).group("trans_type, narration, date").order(date: :asc)
-      @payment_reports_bbf = PaymentReport.financial_join.where("payment_reports.entity_div_code = '#{current_user.division_code}'").where(the_search_bbf).group("payment_reports.trans_type, date").order(date: :asc)
+                            .where("entity_div_code = '#{current_user.user_division_code}'").where(the_search_fund).group("trans_type, narration, date").order(date: :asc)
+      @payment_reports_bbf = PaymentReport.financial_join.where("payment_reports.entity_div_code = '#{current_user.user_division_code}'").where(the_search_bbf).group("payment_reports.trans_type, date").order(date: :asc)
       @fund_movements_bbf = FundMovement.select("trans_type, narration, to_char(created_at, 'YYYY-MM-DD') AS date, sum(amount) AS amt")
-                                .where("entity_div_code = '#{current_user.division_code}'").where(the_search_fund_bbf).group("trans_type, narration, date").order(date: :asc)
+                                .where("entity_div_code = '#{current_user.user_division_code}'").where(the_search_fund_bbf).group("trans_type, narration, date").order(date: :asc)
       @balance_bf = PaymentReport.balance_bf(@payment_reports_bbf, @fund_movements_bbf)[0]
       logger.info "================== 1st SERVICE BALANCE B/F :: #{number_to_currency(@balance_bf, unit: "GHS ", precision: 3)}"
     end
@@ -780,7 +793,7 @@ class PaymentInfosController < ApplicationController
     elsif current_user.merchant_admin?
       entity_div_id_str = "'0'"
       entity_div_id_arr = []
-      @entity_divs = EntityDivision.where(entity_code: current_user.entity_code, active_status: true)
+      @entity_divs = EntityDivision.where(entity_code: current_user.user_entity_code, active_status: true)
       @entity_divs.each do |entity_div|
         unless entity_div_id_arr.include?("'#{entity_div.assigned_code}'")
           entity_div_id_str << ",'#{entity_div.assigned_code}'"
@@ -790,7 +803,7 @@ class PaymentInfosController < ApplicationController
       final_div_ids = "(#{entity_div_id_str})"
       logger.info "Final Div IDs :: #{final_div_ids.inspect}"
 
-      @entity_divisions = EntityDivision.where(entity_code: current_user.entity_code, active_status: true).order(division_name: :asc)
+      @entity_divisions = EntityDivision.where(entity_code: current_user.user_entity_code, active_status: true).order(division_name: :asc)
       @financial_statement = EntityServiceAccountTrxn.wallet_join.where("entity_div_code IN #{final_div_ids}").where(the_search).group("trans_type, date").order(date: :asc)
       @credit_obj = EntityServiceAccountTrxn.find_by_sql("select sum(net_bal_aft - net_bal_bef) actual_amt from entity_service_account_trxn where #{the_search}")[0]
       @credit_total = @credit_obj.actual_amt
@@ -805,16 +818,16 @@ class PaymentInfosController < ApplicationController
       logger.info "================== MERCHANT Credit Total :: #{number_to_currency(@credit_total, unit: "GHS ", precision: 3)} and Debit Total :: #{number_to_currency(@debit_total, unit: "GHS ", precision: 3)}"
 
     elsif current_user.merchant_service?
-      @division_name = current_user.division_code
-      @financial_statement = EntityServiceAccountTrxn.wallet_join.where("entity_div_code = '#{current_user.division_code}'").where(the_search).group("trans_type, date").order(date: :asc)
+      @division_name = current_user.user_division_code
+      @financial_statement = EntityServiceAccountTrxn.wallet_join.where("entity_div_code = '#{current_user.user_division_code}'").where(the_search).group("trans_type, date").order(date: :asc)
       @credit_obj = EntityServiceAccountTrxn.find_by_sql("select sum(net_bal_aft - net_bal_bef) actual_amt from entity_service_account_trxn where #{the_search}")[0]
       @credit_total = @credit_obj.actual_amt
       @fund_moves = FundMovement.select("trans_type, narration, to_char(created_at, 'YYYY-MM-DD') AS date, sum(amount) AS amt")
-      @fund_movements = @fund_moves.where("entity_div_code = '#{current_user.division_code}'").where(the_search_fund).group("trans_type, narration, date").order(date: :asc)
-      @service_name = "('#{current_user.division_code}')"
-      @debit_obj = FundMovement.select("amount").where("entity_div_code = '#{current_user.division_code}'").where(the_search_fund)
+      @fund_movements = @fund_moves.where("entity_div_code = '#{current_user.user_division_code}'").where(the_search_fund).group("trans_type, narration, date").order(date: :asc)
+      @service_name = "('#{current_user.user_division_code}')"
+      @debit_obj = FundMovement.select("amount").where("entity_div_code = '#{current_user.user_division_code}'").where(the_search_fund)
       @debit_total = @debit_obj.sum(:amount)
-      @balance_bf, @closing_bal = EntityServiceAccountTrxn.closing_bal_n_bbf(@start_date, @end_date, current_user.division_code)
+      @balance_bf, @closing_bal = EntityServiceAccountTrxn.closing_bal_n_bbf(@start_date, @end_date, current_user.user_division_code)
       logger.info "================== SERVICE 1st BALANCE B/F :: #{number_to_currency(@balance_bf, unit: "GHS ", precision: 3)}"
       logger.info "================== SERVICE 1st CLOSING BAL :: #{number_to_currency(@closing_bal, unit: "GHS ", precision: 3)}"
       logger.info "================== SERVICE Credit Total :: #{number_to_currency(@credit_total, unit: "GHS ", precision: 3)} and Debit Total :: #{number_to_currency(@debit_total, unit: "GHS ", precision: 3)}"

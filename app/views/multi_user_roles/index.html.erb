@@ -1,0 +1,39 @@
+<p id="notice"><%= notice %></p>
+
+<h1>Multi User Roles</h1>
+
+<table>
+  <thead>
+    <tr>
+      <th>User</th>
+      <th>Entity code</th>
+      <th>Role code</th>
+      <th>Creator</th>
+      <th>Comment</th>
+      <th>Active status</th>
+      <th>Del status</th>
+      <th colspan="3"></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @multi_user_roles.each do |multi_user_role| %>
+      <tr>
+        <td><%= multi_user_role.user_id %></td>
+        <td><%= multi_user_role.entity_code %></td>
+        <td><%= multi_user_role.role_code %></td>
+        <td><%= multi_user_role.creator_id %></td>
+        <td><%= multi_user_role.comment %></td>
+        <td><%= multi_user_role.active_status %></td>
+        <td><%= multi_user_role.del_status %></td>
+        <td><%= link_to 'Show', multi_user_role %></td>
+        <td><%= link_to 'Edit', edit_multi_user_role_path(multi_user_role) %></td>
+        <td><%= link_to 'Destroy', multi_user_role, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<br>
+
+<%= link_to 'New Multi User Role', new_multi_user_role_path %>

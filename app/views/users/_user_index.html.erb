@@ -9,14 +9,14 @@
       <% if current_user.super_admin? || current_user.super_user?  %>
         <button type="button" onclick="document.getElementById('user_filter').style.display='block'" style="font-size: small; width: 165px;" class="w3-btn btn btn-outline-purple tablink w3-vpos-purple">USER FILTER</button>
 
-        <%= link_to 'NEW', user_new_path(user_filter: $user_filter.present? ? $user_filter.to_enum.to_h : "", count: params[:count], page: params[:page]), style: "width:120px;",
+        <%= link_to 'NEW', user_new_path(user_filter: session[:user_filter].present? ? session[:user_filter].to_enum.to_h : "", count: params[:count], page: params[:page]), style: "width:120px;",
                     class: 'w3-button w3-purple-vpos w3-border w3-border-purple w3-small w3-round-large',remote:true %>
         <% end %>
     </div>
     <div class="w3-half">
       <%= select_tag :count, options_for_select([50, 100, 150, 200, 500], params[:count].to_i),
                      :data => {  :remote => true, :url => url_for(:controller => "users", :action => "user_index",
-                                                                  :params => {user_filter: $user_filter.present? ? $user_filter.to_enum.to_h : ""})},
+                                                                  :params => {user_filter: session[:user_filter].present? ? session[:user_filter].to_enum.to_h : ""})},
                      id:"record", class: "w3-button w3-white w3-border w3-border-purple w3-round-large",
                      style: "width:auto; height:35px; float:right", remote:true %>
 
@@ -52,7 +52,7 @@
         <% end %>
 
           <tr>
-            <td><%= link_to 'VIEW', user_show_path(user, user_filter: $user_filter.present? ? $user_filter.to_enum.to_h : "", count: params[:count], page: params[:page]),
+            <td><%= link_to 'VIEW', user_show_path(user, user_filter: session[:user_filter].present? ? session[:user_filter].to_enum.to_h : "", count: params[:count], page: params[:page]),
                             style: "width:70px; height: 30px;",
                             class: 'w3-button w3-purple-vpos w3-border w3-border-purple w3-tiny w3-round-large', remote:true%></td>
             <td><strong><%= user.last_name %> <%= user.first_name %></strong></td>
@@ -77,16 +77,16 @@
             <td><strong><%= user.created_at %></strong></td>
             <td>
               <% if current_user.super_admin? || current_user.super_user?  %>
-                <%= link_to 'EDIT', user_edit_path(user, user_filter: $user_filter.present? ? $user_filter.to_enum.to_h : "", count: params[:count], page: params[:page]),
+                <%= link_to 'EDIT', user_edit_path(user, user_filter: session[:user_filter].present? ? session[:user_filter].to_enum.to_h : "", count: params[:count], page: params[:page]),
                             style: "width:70px; height: 30px; color: #800754 !important",
                             class: 'w3-button w3-white w3-border w3-border-purple w3-tiny w3-round-large', remote:true%>
                 <% if user.active_status %>
-                  <%= link_to 'DISABLE', user_delete_path(user, user_filter: $user_filter.present? ? $user_filter.to_enum.to_h : "", count: params[:count], page: params[:page]),
+                  <%= link_to 'DISABLE', user_delete_path(user, user_filter: session[:user_filter].present? ? session[:user_filter].to_enum.to_h : "", count: params[:count], page: params[:page]),
                               style: "width:80px; height: 30px; color: #800754 !important",
                               method: :delete, data: { confirm: "Do you wish to disable: #{user.user_name}?" },
                               class: 'w3-button w3-white w3-border w3-border-purple w3-tiny w3-round-large', remote:true%>
                 <% else %>
-                  <%= link_to 'ENABLE', user_delete_path(user, count: params[:count], user_filter: $user_filter.present? ? $user_filter.to_enum.to_h : "", page: params[:page]),
+                  <%= link_to 'ENABLE', user_delete_path(user, count: params[:count], user_filter: session[:user_filter].present? ? session[:user_filter].to_enum.to_h : "", page: params[:page]),
                               style: "width:80px; height: 30px;",
                               method: :delete, data: { confirm: "Do you wish to enable: #{user.user_name}?" },
                               class: 'w3-button w3-vpos-purple w3-border w3-border-purple w3-tiny w3-round-large', remote:true%>
@@ -104,7 +104,7 @@
       <div class="flickr_pagination"  style="float: right">
         <%= will_paginate @users, class: "w3-card", renderer: BootstrapPagination::Rails,
                           :params => { :controller => "users", :action => "user_index",
-                                       user_filter: $user_filter.present? ? $user_filter.to_enum.to_h : "",
+                                       user_filter: session[:user_filter].present? ? session[:user_filter].to_enum.to_h : "",
                                        count: params[:count], page: params[:page] } %>
         <%#= js_will_paginate @payment_infos, :params => { :controller => "payment_infos", :action => "payment_info_index" } %>
       </div>
@@ -145,7 +145,7 @@
               <div class="w3-half">
                 <%= f.input :username, class: "form-control", input_html: {id: "id_username", style: "width: 90%;", autocomplete: "off"}, label: "User Name", boolean_style: :inline %>
                 <%= f.input :contact_num, class: "form-control", input_html: {id: "id_contact_num", style: "width: 90%;", autocomplete: "off"}, label: "Contact Number", boolean_style: :inline %>
-                <%= f.input :role_name, class: "form-control", collection: @roles, label_method: :role_name, value_method: :id, input_html: {id: "id_role", style: "width: 90%;", autocomplete: "off"}, label: "Role", boolean_style: :inline %>
+                <%= f.input :role_name, class: "form-control", collection: @roles, label_method: :role_name, value_method: :assigned_code, input_html: {id: "id_role", style: "width: 90%;", autocomplete: "off"}, label: "Role", boolean_style: :inline %>
               </div>
 
               <div class="w3-half">

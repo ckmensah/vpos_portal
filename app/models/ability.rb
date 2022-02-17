@@ -5,7 +5,8 @@ class Ability
 
   def initialize(user)
     # Define abilities for the passed in user here. For example:
-    user.role.permissions.each do |permission|
+    #user.role.permissions.each do |permission|
+    user.user_roles&.first.role.permissions.each do |permission|
       if permission.subject_class == "all"
         can permission.action.to_sym, permission.subject_class.to_sym
       else

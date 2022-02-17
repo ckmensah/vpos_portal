@@ -95,6 +95,13 @@ Rails.application.routes.draw do
   post 'inner_create' => 'entity_div_media#inner_create', :as => 'media_inner_create'
   get '/inner_del/:id' => 'entity_div_media#inner_destroy', :as => 'inner_destroy'
 
+  get '/activity_type_media/activity_type_media_index' => 'activity_type_media#activity_type_media_index', :as => 'activity_type_media_index'
+  get '/activity_type_media/image_media' => 'activity_type_media#image_media', :as => 'act_image_media'
+  get '/activity_type_media/video_media' => 'activity_type_media#video_media', :as => 'act_video_media'
+  get 'inner_new' => 'activity_type_media#inner_new', :as => 'act_inner_new'
+  post 'inner_create' => 'activity_type_media#inner_create', :as => 'act_media_inner_create'
+  get '/inner_del/:id' => 'activity_type_media#inner_destroy', :as => 'act_inner_destroy'
+
   get '/fund_movements/settlement_entity_info_index' => 'fund_movements#settlement_entity_info_index', :as => 'settlement_entity_info_index'
   get '/fund_movements/settlement_entity_division_index/:entity_code' => 'fund_movements#settlement_entity_division_index', :as => 'settlement_entity_division_index'
   get '/fund_movements/settlement_entity_division_index' => 'fund_movements#settlement_entity_division_index', :as => 'settlement_entity_div_index'
@@ -140,6 +147,7 @@ Rails.application.routes.draw do
   post '/entity_divisions/fixture_update', :as => 'cat_div_to_fixture_ajax_call'
   post '/entity_divisions/division_update', :as => 'general_division_ajax_call'
   post '/entity_divisions/lov_update', :as => 'general_lov_ajax_call'
+  post '/entity_divisions/ref_update', :as => 'general_ref_ajax_call'
   post '/activity_sub_div_classes/classification_update', :as => 'general_class_ajax_call'
   post '/activity_sub_div_classes/ticket_update', :as => 'general_ticket_ajax_call'
   #post '/users/divisions', :as => 'general_role_ajax_call'
@@ -182,6 +190,9 @@ Rails.application.routes.draw do
   resources :entity_div_social_handles
   resources :entity_div_media
   resources :activity_groups
+  resources :activity_type_media
+  resources :user_roles
+  resources :multi_user_roles
 
 
 

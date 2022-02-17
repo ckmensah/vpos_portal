@@ -1,0 +1,8 @@
+<% if params[:medium_type] == "images" %>
+$("#image_media").html("<%= escape_javascript(render(:partial =>"image_media")) %>");
+$('#notes21').html("<%= escape_javascript(render 'layouts/messages') %>");
+<% elsif params[:medium_type] == "videos" %>
+$("#video_media").html("<%= escape_javascript(render(:partial =>"video_media")) %>");
+$('#notes22').html("<%= escape_javascript(render 'layouts/messages') %>");
+<% end %>
+$('.pagination a').attr('data-remote', 'true');

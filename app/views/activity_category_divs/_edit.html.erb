@@ -24,7 +24,7 @@
             <% if current_user.super_admin? || current_user.super_user? || current_user.merchant_admin? %>
               <%= f.input :division_code, :as => :hidden, input_html:{value: params[:code]} %>
             <% elsif current_user.merchant_service? %>
-              <%= f.input :division_code, :as => :hidden, input_html:{value: current_user.division_code} %>
+              <%= f.input :division_code, :as => :hidden, input_html:{value: current_user.user_division_code} %>
             <% end %>
             <%= f.input :activity_div_cat_id, :as => :hidden, input_html:{value: params[:div_cat_id]} %>
             <%= f.input :active_status, :as => :hidden, input_html:{value: true} %>

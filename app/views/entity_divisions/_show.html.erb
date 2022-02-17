@@ -258,6 +258,15 @@
                   </tr>
                 <% end %>
 
+                <tr>
+                  <td class="raw_theme w3-border w3-border-black w3-leftbar"><strong>Event Status:</strong></td>
+                  <% if @entity_division.event_progress %>
+                    <td><strong>Active</strong></td>
+                  <% else %>
+                    <td><strong>Ended</strong></td>
+                  <% end %>
+                </tr>
+
 
                 <tr>
                   <td class="raw_theme w3-border w3-border-black w3-leftbar"><strong>Status:</strong></td>
@@ -267,6 +276,7 @@
                     <td><strong>Inactive</strong></td>
                   <% end %>
                 </tr>
+
 
                 <tr>
                   <% if @entity_division.activity_type_code == "OMC" %>

@@ -56,7 +56,8 @@ class ApplicationController < ActionController::Base
 
   #load the permissions for the current user so that UI can be manipulated
   def load_permissions
-    @current_permissions = current_user.role.permissions.collect { |i| [i.subject_class, i.action] }
+    #@current_permissions = current_user.role.permissions.collect { |i| [i.subject_class, i.action] }
+    @current_permissions = current_user.user_roles&.first.role.permissions.collect { |i| [i.subject_class, i.action] }
   end
 
   def configure_permitted_parameters

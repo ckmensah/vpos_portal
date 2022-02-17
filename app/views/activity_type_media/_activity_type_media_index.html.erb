@@ -1,0 +1,39 @@
+
+<div class="w3-container">
+  <!--<div class="row">-->
+  <h5 style="text-decoration: underline;"><strong>MEDIA</strong></h5>
+
+  <div class="w3-responsive">
+    <button type="button" class="btn btn-outline-purple sub-tablink" style="font-size: small; width: 120px;" onclick="openMedia(event, 'image_media')">IMAGES</button>
+    <button type="button" class="btn btn-outline-purple sub-tablink" style="font-size: small; width: 120px;" onclick="openMedia(event, 'video_media')">VIDEOS</button>
+    <%= link_to 'BACK', activity_type_index_path(code: params[:code], entity_code: params[:entity_code], count1: params[:count1], count: params[:count], page: params[:page]), style: "width:120px;",
+                class: 'w3-button w3-white w3-border w3-border-purple w3-small w3-round-large',remote:true %>
+  </div>
+
+  <div id="image_media" class="media" style="display: block">
+    <%= render :partial=> "image_media" %>
+  </div>
+
+  <div id="video_media" class="media" style="display:none">
+    <%= render :partial=> "video_media" %>
+  </div>
+
+  <script>
+      function openMedia(evt, mediaName) {
+          var i, x, tablinks;
+          x = document.getElementsByClassName("media");
+          for (i = 0; i < x.length; i++) {
+              x[i].style.display = "none";
+          }
+          tablinks = document.getElementsByClassName("sub-tablink");
+          for (i = 0; i < x.length; i++) {
+              tablinks[i].className = tablinks[i].className.replace(" w3-vpos-purple", "");
+          }
+
+          document.getElementById(mediaName).style.display = "block";
+          evt.currentTarget.className += " w3-vpos-purple";
+      }
+  </script>
+
+  <!--</div>-->
+</div>

@@ -249,7 +249,7 @@
               <% @merchant_service_trxn = EntityServiceAccountTrxn.where(entity_div_code: @pay_info.entity_div_code, processing_id: @pay_info.processing_id).order(created_at: :desc).first %>
               <% @assigned_fee = AssignedFee.where(entity_div_code: @pay_info.entity_div_code).order(created_at: :desc).first %>
 
-              <% if current_user.super_admin? || current_user.super_user? || current_user.show_charge == true %>
+              <% if current_user.super_admin? || current_user.super_user? || current_user.user_show_charge == true %>
                 <% if @pay_info.charge != nil && @pay_info.charge > 0 && @merchant_service_trxn && @merchant_service_trxn.charge != nil && @merchant_service_trxn.charge > 0 %>
                   <tr>
                     <td class="raw_theme w3-border w3-border-black w3-leftbar"><strong>Merchant Charge:</strong></td>

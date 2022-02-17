@@ -31,7 +31,7 @@
     </div>
   <% elsif current_user.merchant_admin?  %>
     <div id="entity_division" class="city active">
-      <% params[:entity_code] = current_user.entity_code %>
+      <% params[:entity_code] = current_user.user_entity_code %>
       <%= render :partial=> "/entity_divisions/entity_division_index" %>
     </div>
   <% end %>
@@ -42,7 +42,7 @@
       <%= render :partial=> "/entity_infos/sports_index" %>
     </div>
   <% elsif current_user.merchant_admin? %>
-    <%# an_entity_info = EntityInfo.where(active_status: true, assigned_code: current_user.entity_code).order(created_at: :desc).first %>
+    <%# an_entity_info = EntityInfo.where(active_status: true, assigned_code: current_user.user_entity_code).order(created_at: :desc).first %>
     <%# if an_entity_info %>
       <%# if an_entity_info.entity_cat_id == "SPO" #|| an_entity_div.activity_type_code == "SHW" %>
 
@@ -50,15 +50,15 @@
       <%# end %>
     <%# end %>
     <div id="sports" class="city" style="display:none">
-      <% params[:entity_code] = current_user.entity_code %>
+      <% params[:entity_code] = current_user.user_entity_code %>
       <%= render :partial=> "/entity_divisions/main_sports_index" %>
     </div>
   <% elsif current_user.merchant_service? %>
-    <% an_entity_div = EntityDivision.where(active_status: true, assigned_code: current_user.division_code).order(created_at: :desc).first %>
+    <% an_entity_div = EntityDivision.where(active_status: true, assigned_code: current_user.user_division_code).order(created_at: :desc).first %>
     <% if an_entity_div %>
       <% if an_entity_div.activity_type_code == "SPO" #|| an_entity_div.activity_type_code == "SHW" %>
         <div id="sports" class="city" style="display:none">
-          <% params[:entity_code] = current_user.entity_code %>
+          <% params[:entity_code] = current_user.user_entity_code %>
           <%= render :partial=> "/entity_divisions/main_sports_index" %>
         </div>
       <% else %>

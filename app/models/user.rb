@@ -1,12 +1,19 @@
 class User < ApplicationRecord
+  attr_accessor :for_role_code, :for_the_portal, :for_division_code,
+                :for_creator_id, :for_show_charge, :for_entity_code
   validates_uniqueness_of :user_name
   CTRYCODE = "233"
   #has_many :entity_, class_name: 'ActivitySubDivClass', foreign_key: :entity_div_code
-  belongs_to :role, class_name: "Role", foreign_key: :role_id
-  belongs_to :entity_info, -> { where active_status: true }, class_name: "EntityInfo", foreign_key: :entity_code
+  has_many :user_roles, -> { where active_status: true }, class_name: "UserRole", foreign_key: :user_id
+  has_many :multi_user_roles, -> { where active_status: true }, class_name: "MultiUserRole", foreign_key: :user_id
+  #belongs_to :role, class_name: "Role", foreign_key: :role_id
+  #belongs_to :entity_info, -> { where active_status: true }, class_name: "EntityInfo", foreign_key: :entity_code
   belongs_to :entity_division, -> { where active_status: true }, class_name: "EntityDivision", foreign_key: :division_code
+  has_many :roles, through: :user_roles, primary_key: :assigned_code
+  has_many :entity_infos, through: :user_roles, primary_key: :assigned_code
 
-  default_scope {where(active_status: true, for_portal: true)}
+  #default_scope {where(active_status: true, for_portal: true)}
+  default_scope {user_roles_join.where("users.active_status = true AND user_roles.del_status = false AND user_roles.for_portal = true")}
 
   validates :user_name, presence: {message: " cannot be empty."} #, uniqueness: {scope: :entity_id, message: "Momo Number has already been set up." }
   validates :last_name, presence: {message: " cannot be empty."}
@@ -16,7 +23,8 @@ class User < ApplicationRecord
   #validates :assigned_no, presence: {message: "Momo Number cannot be empty."}, :if => :assigned_no_valid#, uniqueness: {scope: :entity_id, message: "Mobile Money Number has already been set up." }, :if => :assigned_no_valid
   validates :contact_number, presence: {message: " cannot be empty."}, numericality: {message: " accepts only positive numbers."}
   validates :email, presence: {message: " cannot be empty."}
-  validates :role_id, presence: {message: "Please choose a role"}
+  #validates :role_id, presence: {message: "Please choose a role"}
+  validates :for_role_code, presence: {message: "Please choose a role"}
 
   validate :validate_division_code #, :if => :skip_update_validation
   validate :validate_entity_code #, :if => :skip_update_validation
@@ -56,18 +64,18 @@ class User < ApplicationRecord
 
 
   def validate_division_code
-    if self.role_id == 4 || self.role_id == 5
-      unless self.division_code.present?
-        errors.add :division_code, " cannot be empty."
+    if self.for_role_code == "MS" || self.for_role_code == "TV"
+      unless self.for_division_code.present?
+        errors.add :for_division_code, " cannot be empty."
       end
     end
   end
 
 
   def validate_entity_code
-    if self.role_id == 3 || self.role_id == 4 || self.role_id == 5
-      unless self.entity_code.present?
-        errors.add :entity_code, " cannot be empty."
+    if self.for_role_code == "MMA" || self.for_role_code == "MA" || self.for_role_code == "MS" || self.for_role_code == "TV"
+      unless self.for_entity_code.present?
+        errors.add :for_entity_code, " cannot be empty."
       end
     end
   end
@@ -91,34 +99,69 @@ class User < ApplicationRecord
          :recoverable, :rememberable, :validatable, :trackable
 
 
+  #############################################################################
+  ########################### USER ROLES ######################################
+  #############################################################################
+
+  def self.user_roles_join
+    joins("LEFT JOIN user_roles ON users.id = user_roles.user_id")
+  end
+
   def super_admin?
-    self.role.id == 1
+    #logger.info "I was here ================== 1"
+    self.roles.first.assigned_code == "SA" if self.roles.first
   end
 
   def super_user?
-    self.role.id == 2
+    self.roles.first.assigned_code == "SU" if self.roles.first
   end
 
   def merchant_admin?
-    self.role.id == 3
+    self.roles.first.assigned_code == "MA" if self.roles.first
+  end
+
+  def multi_merchant_admin?
+    self.roles.first.assigned_code == "MMA" if self.roles.first
   end
 
   def merchant_service?
-    self.role.id == 4
+    self.roles.first.assigned_code == "MS" if self.roles.first
   end
 
   def validator?
-    self.role.id == 5
+    self.roles.first.assigned_code == "TV" if self.roles.first
   end
 
 
-  #def merchant_user?
-  #  self.role.id == 3
-  #end
-  #
-  #def service_user?
-  #  self.role.id == 4
-  #end
+
+  #############################################################################
+  ########################### EXTRA USER VALUES ###############################
+  #############################################################################
+
+  def user_entity_code
+    user_role_obj = self.user_roles&.order(created_at: :desc).first
+    user_role_obj ? user_role_obj.entity_code : ""
+  end
+
+  def user_division_code
+    user_role_obj = self.user_roles&.order(created_at: :desc).first
+    user_role_obj ? user_role_obj.division_code : ""
+  end
+
+  def user_show_charge
+    user_role_obj = self.user_roles&.order(created_at: :desc).first
+    user_role_obj ? user_role_obj.show_charge : nil
+  end
+
+  def user_creator_id
+    user_role_obj = self.user_roles&.order(created_at: :desc).first
+    user_role_obj ? user_role_obj.creator_id : ""
+  end
+
+  def user_for_portal
+    user_role_obj = self.user_roles&.order(created_at: :desc).first
+    user_role_obj ? user_role_obj.for_portal : nil
+  end
 
 
 

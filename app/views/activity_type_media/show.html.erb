@@ -1,0 +1,44 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <strong>Activity type code:</strong>
+  <%= @activity_type_medium.activity_type_code %>
+</p>
+
+<p>
+  <strong>Media path:</strong>
+  <%= @activity_type_medium.media_path %>
+</p>
+
+<p>
+  <strong>Media data:</strong>
+  <%= @activity_type_medium.media_data %>
+</p>
+
+<p>
+  <strong>Media type:</strong>
+  <%= @activity_type_medium.media_type %>
+</p>
+
+<p>
+  <strong>Comment:</strong>
+  <%= @activity_type_medium.comment %>
+</p>
+
+<p>
+  <strong>Active status:</strong>
+  <%= @activity_type_medium.active_status %>
+</p>
+
+<p>
+  <strong>Del status:</strong>
+  <%= @activity_type_medium.del_status %>
+</p>
+
+<p>
+  <strong>User:</strong>
+  <%= @activity_type_medium.user_id %>
+</p>
+
+<%= link_to 'Edit', edit_activity_type_medium_path(@activity_type_medium) %> |
+<%= link_to 'Back', activity_type_media_path %>

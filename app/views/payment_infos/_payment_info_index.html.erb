@@ -33,6 +33,7 @@
             <input class="form-control" name="act_main_code" value="<%= params[:act_main_code] %>"/>
             <input class="form-control" name="activity_type" value="<%= params[:activity_type] %>"/>
             <input class="form-control" name="lov_name" value="<%= params[:lov_name] %>"/>
+            <input class="form-control" name="ref" value="<%= params[:ref] %>"/>
             <input class="form-control" name="cust_num" value="<%= params[:cust_num] %>"/>
             <input class="form-control" name="trans_id" value="<%= params[:trans_id] %>"/>
             <input class="form-control" name="nw" value="<%= params[:nw] %>"/>
@@ -60,6 +61,7 @@
             <input class="form-control" name="division_name" value="<%= params[:division_name] %>"/>
             <input class="form-control" name="act_main_code" value="<%= params[:act_main_code] %>"/>
             <input class="form-control" name="activity_type" value="<%= params[:activity_type] %>"/>
+            <input class="form-control" name="lov_name" value="<%= params[:lov_name] %>"/>
             <input class="form-control" name="lov_name" value="<%= params[:lov_name] %>"/>
             <input class="form-control" name="cust_num" value="<%= params[:cust_num] %>"/>
             <input class="form-control" name="trans_id" value="<%= params[:trans_id] %>"/>
@@ -103,7 +105,7 @@
                                                                             division_name: params[:division_name],
                                                                             act_main_code: params[:act_main_code],
                                                                             activity_type: params[:activity_type],
-                                                                            lov_name: params[:lov_name],
+                                                                            lov_name: params[:lov_name], ref: params[:ref],
                                                                             cust_num: params[:cust_num], trans_id: params[:trans_id],
                                                                             nw: params[:nw], status: params[:status], source: params[:source],
                                                                             start_date: params[:start_date],
@@ -122,9 +124,9 @@
     <table class=" w3-responsive table-striped w3-table-all table-bordered w3-hoverable w3-card-4">
       <thead>
       <% if current_user.merchant_service? %>
-        <% entity_div = EntityDivision.where(assigned_code: current_user.division_code, activity_type_code: "MOP", active_status: true).order(created_at: :desc).first %>
+        <% entity_div = EntityDivision.where(assigned_code: current_user.user_division_code, activity_type_code: "MOP", active_status: true).order(created_at: :desc).first %>
       <%# elsif current_user.merchant_admin? %>
-        <%# entity_div = EntityDivision.where(entity_code: current_user.entity_code, activity_type_code: "MOP", active_status: true).order(created_at: :desc).first %>
+        <%# entity_div = EntityDivision.where(entity_code: current_user.user_entity_code, activity_type_code: "MOP", active_status: true).order(created_at: :desc).first %>
       <% else %>
         <% entity_div = false %>
       <% end %>
@@ -139,7 +141,7 @@
 
         <th>Customer No.</th>
         <th>Trans. ID</th>
-        <% if current_user.super_admin? || current_user.super_user? || current_user.show_charge == true %>
+        <% if current_user.super_admin? || current_user.super_user? || current_user.user_show_charge == true %>
           <th>Gross Amt</th>
           <% if entity_div %>
             <th>Selected Option</th>
@@ -264,7 +266,7 @@
           <% end %>
           <td><%= payment_info.customer_number %></td>
           <td><%= payment_info.processing_id if payment_info.processing_id.present? %></td>
-          <% if current_user.super_admin? || current_user.super_user? || current_user.show_charge == true %>
+          <% if current_user.super_admin? || current_user.super_user? || current_user.user_show_charge == true %>
             <td><%= for_gross_amt.round(3) %></td>
             <% if entity_div %>
               <% if payment_info.activity_lov_id.present? %>
@@ -382,7 +384,7 @@
         <!--        <td colspan="1"><strong><%#= total_charge.round(3) %></strong> <%## count %></td>-->
         <!--        <td colspan="1"><strong><%#= amount.round(3) %></strong> <%## count %></td> -->
 
-        <% if current_user.super_admin? || current_user.super_user? || current_user.show_charge == true %>
+        <% if current_user.super_admin? || current_user.super_user? || current_user.user_show_charge == true %>
           <td colspan="1"><strong><%= total_gross_amt.round(3) %></strong> <%# count %></td>
           <% if entity_div %>
             <td colspan="1"><strong></strong> <%# count %></td>
@@ -397,7 +399,7 @@
           <td colspan="1"><strong><%= total_actual_amt.round(3) %></strong> <%# count %></td>
         <% end %>
 
-        <% if current_user.super_admin? || current_user.super_user? || current_user.show_charge == true %>
+        <% if current_user.super_admin? || current_user.super_user? || current_user.user_show_charge == true %>
           <td class="w3-vpos-purple" colspan="5"></td>
         <% else %>
           <td class="w3-vpos-purple" colspan="5"></td>
@@ -457,7 +459,7 @@
                 <%= f.input :activity_type, collection: @activity_types, label_method: :activity_type_desc, value_method: :assigned_code, class: "form-control", input_html: {style: "width: 90%;"}, label: "Activity Type", boolean_style: :inline %>
               <% end %>
               <% if current_user.merchant_service? %>
-                <% a_service = EntityDivision.where(assigned_code: current_user.division_code, active_status: true).order(created_at: :desc).first %>
+                <% a_service = EntityDivision.where(assigned_code: current_user.user_division_code, active_status: true).order(created_at: :desc).first %>
                 <% if a_service && a_service.activity_type_code == "CHC" %>
                   <%= f.input :act_main_code, collection: @menu_items, label_method: :activity_main_code_narration, value_method: :act_main_code_narration_val, class: "form-control", input_html: {id: "id_service_act_main_code", style: "width: 90%"}, label: "Menu Items", boolean_style: :inline %>
                 <% end %>
@@ -472,7 +474,7 @@
                 <%= f.input :cust_num, class: "form-control", input_html: {style: "width: 90%"}, label: "Customer Number", boolean_style: :inline %>
               <% elsif current_user.merchant_service? %>
                 <%= f.input :cust_num, class: "form-control", input_html: {style: "width: 90%"}, label: "Customer Number", boolean_style: :inline %>
-                <%# a_service = EntityDivision.where(assigned_code: current_user.division_code, active_status: true).order(created_at: :desc).first %>
+                <%# a_service = EntityDivision.where(assigned_code: current_user.user_division_code, active_status: true).order(created_at: :desc).first %>
                 <%# if a_service && a_service.activity_type_code == "HSP" %>
                   <%#= f.input :trans_type, collection: @transaction_type, label_method: :first, value_method: :last, class: "form-control", input_html: {id: "id_service_trans_type", style: "width: 90%"}, label: "Transaction Type", boolean_style: :inline %>
                 <%# end %>
@@ -487,10 +489,14 @@
             <div class="w3-half">
 
               <% if current_user.super_admin? || current_user.super_user? %>
+                <%= f.input :ref, class: "form-control", input_html: {style: "width: 100%"}, label: "Reference", boolean_style: :inline %>
                 <%= f.input :cust_num, class: "form-control", input_html: {style: "width: 100%"}, label: "Customer Number", boolean_style: :inline %>
                 <%= f.input :trans_id, label: "Transaction ID", class: "form-control", input_html: {style: ""}, boolean_style: :inline %>
               <% elsif current_user.merchant_admin? %>
+                <%= f.input :ref, class: "form-control", input_html: {style: "width: 100%"}, label: "Reference", boolean_style: :inline %>
                 <%= f.input :trans_id, label: "Transaction ID", class: "form-control", input_html: {style: ""}, boolean_style: :inline %>
+              <% elsif current_user.merchant_service? %>
+                <%= f.input :ref, class: "form-control", input_html: {style: "width: 100%"}, label: "Reference", boolean_style: :inline %>
               <% end %>
               <%= f.input :nw, collection: @networks, label_method: :first, value_method: :last, class: "form-control", input_html: {style: ""}, label: "Network", boolean_style: :inline %>
 
@@ -508,7 +514,7 @@
                 <%= f.input :start_date, :id => "datepicker1", as: :date, html5: true, class: "form-control input-group date", label: "Start Date", boolean_style: :inline, input_html: {style: "", data: {behaviour: 'datepicker', provide: 'datepicker'}, autocomplete: "off"} %>
                 <%= f.input :end_date, :id => "datepicker2", as: :date, html5: true, class: "form-control", label: "End Date", boolean_style: :inline, input_html: {style: "", data: {behaviour: 'datepicker', provide: 'datepicker'}, autocomplete: "off"} %>
               <% elsif current_user.merchant_service? %>
-                <% a_service = EntityDivision.where(assigned_code: current_user.division_code, active_status: true).order(created_at: :desc).first %>
+                <% a_service = EntityDivision.where(assigned_code: current_user.user_division_code, active_status: true).order(created_at: :desc).first %>
                 <% if a_service && a_service.activity_type_code == "CHC" %>
                   <%= f.input :start_date, :id => "datepicker1", as: :date, html5: true, class: "form-control input-group date", label: "Start Date", boolean_style: :inline, input_html: {style: "", data: {behaviour: 'datepicker', provide: 'datepicker'}, autocomplete: "off"} %>
                   <%= f.input :end_date, :id => "datepicker2", as: :date, html5: true, class: "form-control", label: "End Date", boolean_style: :inline, input_html: {style: "", data: {behaviour: 'datepicker', provide: 'datepicker'}, autocomplete: "off"} %>
@@ -593,6 +599,7 @@
         var entity_info_id = $('#id_entity_info');
         var entity_div_id = $('#id_entity_div');
         var div_lov_id = $('#id_div_lov');
+        // var ref_id = $('#id_ref');
 
         entity_info_id.change(function () {
             console.log("For entity_info id:: " + entity_info_id.val());
@@ -615,6 +622,17 @@
                 dataType: "script"
             });
         });
+
+<!--        entity_div_id.change(function () {-->
+<!--            console.log("For entity service id:: " + entity_div_id.val());-->
+<!--            ref_id.attr("title", "Now select a reference.");-->
+<!--            Rails.ajax({-->
+<!--                type: "POST",-->
+<!--                url: "<%#= general_ref_ajax_call_path %>",-->
+<!--                data: "id_for_entity_service=" + entity_div_id.val(),-->
+<!--                dataType: "script"-->
+<!--            });-->
+<!--        });-->
 
     });
 

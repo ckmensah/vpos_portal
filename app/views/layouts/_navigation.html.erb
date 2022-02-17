@@ -16,10 +16,10 @@
     <% if current_user.super_admin? || current_user.super_user? %>
       <%= image_tag("vposss.png", class: "img-responsive", id: "navbar-logo", :width => 150, height: 50) %>
       <% elsif current_user.merchant_admin? %>
-      <% entity_info = EntityInfo.where(active_status: true, assigned_code: current_user.entity_code).order(created_at: :desc).last %>
+      <% entity_info = EntityInfo.where(active_status: true, assigned_code: current_user.user_entity_code).order(created_at: :desc).last %>
       <h5><%= entity_info.entity_name %></h5>
     <% elsif current_user.merchant_service? %>
-      <% entity_division = EntityDivision.where(active_status: true, assigned_code: current_user.division_code).order(created_at: :desc).last %>
+      <% entity_division = EntityDivision.where(active_status: true, assigned_code: current_user.user_division_code).order(created_at: :desc).last %>
       <h4><%= entity_division.division_name %></h4>
     <% end %>
 

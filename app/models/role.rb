@@ -1,12 +1,16 @@
 class Role < ApplicationRecord
-  has_many :users, class_name: "User", foreign_key: :user_id
-  has_many :permission_roles, class_name: "PermissionRole", foreign_key: :role_id
+  has_many :permission_roles, class_name: "PermissionRole", foreign_key: :role_code, primary_key: :assigned_code
+  has_many :user_roles, class_name: "UserRole", foreign_key: :role_code
   has_many :permissions, through: :permission_roles
-  # has_and_belongs_to_many :permissions, class_name: "Permission"
+  has_many :users, through: :user_roles
 
+  validates :assigned_code, presence: true
   validates :role_name, presence: true, uniqueness: true
 
-
+  def full_roles
+    "#{role_name} (#{assigned_code})"
+  end
+  
   def set_permissions(permissions)
     permissions.each do |id|
       permission = Permission.find(id)

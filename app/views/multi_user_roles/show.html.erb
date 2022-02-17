@@ -1,0 +1,39 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <strong>User:</strong>
+  <%= @multi_user_role.user_id %>
+</p>
+
+<p>
+  <strong>Entity code:</strong>
+  <%= @multi_user_role.entity_code %>
+</p>
+
+<p>
+  <strong>Role code:</strong>
+  <%= @multi_user_role.role_code %>
+</p>
+
+<p>
+  <strong>Creator:</strong>
+  <%= @multi_user_role.creator_id %>
+</p>
+
+<p>
+  <strong>Comment:</strong>
+  <%= @multi_user_role.comment %>
+</p>
+
+<p>
+  <strong>Active status:</strong>
+  <%= @multi_user_role.active_status %>
+</p>
+
+<p>
+  <strong>Del status:</strong>
+  <%= @multi_user_role.del_status %>
+</p>
+
+<%= link_to 'Edit', edit_multi_user_role_path(@multi_user_role) %> |
+<%= link_to 'Back', multi_user_roles_path %>

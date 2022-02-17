@@ -1,0 +1,21 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  activity_type_code: MyString
+  media_path: MyString
+  media_data: MyString
+  media_type: MyString
+  comment: MyText
+  active_status: false
+  del_status: false
+  user_id: 1
+
+two:
+  activity_type_code: MyString
+  media_path: MyString
+  media_data: MyString
+  media_type: MyString
+  comment: MyText
+  active_status: false
+  del_status: false
+  user_id: 1

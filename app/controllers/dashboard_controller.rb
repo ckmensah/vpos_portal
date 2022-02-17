@@ -27,13 +27,13 @@ class DashboardController < ApplicationController
       @service_account_details = EntityServiceAccountTrxn.where(entity_div_code: "0").order(created_at: :desc)
 
     elsif current_user.merchant_admin?
-      #@payment_service = EntityDivision.where(active_status: true, assigned_code: current_user.division_code)
+      #@payment_service = EntityDivision.where(active_status: true, assigned_code: current_user.user_division_code)
       division_str = "'0'"
       entity_str = "'0'"
       #@merchant = EntityInfo.where("LOWER(entity_name) LIKE '%#{@entity_name.downcase}%'")
       #@merchant.each { |entity_div| entity_str << ",'#{entity_div.assigned_code}'" } if @merchant.exists?
       #final_info_str = "(#{entity_str})"
-      @entity_divis = EntityDivision.where("active_status = true AND entity_code = '#{current_user.entity_code}'")
+      @entity_divis = EntityDivision.where("active_status = true AND entity_code = '#{current_user.user_entity_code}'")
       @entity_divis.each { |entity_div| division_str << ",'#{entity_div.assigned_code}'" } if @entity_divis.exists?
       final_div_str = "(#{division_str})"
       logger.info "Final Div Str :: #{final_div_str.inspect}"
@@ -50,11 +50,11 @@ class DashboardController < ApplicationController
       @pay_success = @payment_reports.where("processed = true")
       @pay_fail = @payment_reports.where("processed = false")
     elsif current_user.merchant_service?
-      @service_account = EntityServiceAccount.where(entity_div_code: current_user.division_code).order(created_at: :desc).first
-      @service_account_details = EntityServiceAccountTrxn.where(entity_div_code: current_user.division_code).order(created_at: :desc).limit(5)
+      @service_account = EntityServiceAccount.where(entity_div_code: current_user.user_division_code).order(created_at: :desc).first
+      @service_account_details = EntityServiceAccountTrxn.where(entity_div_code: current_user.user_division_code).order(created_at: :desc).limit(5)
 
-      @payment_reports = PaymentReport.where("created_at BETWEEN '#{Time.now.strftime('%Y-%m-%d')} 00:00:00' AND '#{Time.now.strftime('%Y-%m-%d')} 23:59:59' AND entity_div_code = '#{current_user.division_code}' AND nw IS NOT NULL")
-      #@payment_success_count = PaymentReport.where("split_part(trans_status, '/', 1) = '000' AND entity_div_code = #{current_user.division_code}").count
+      @payment_reports = PaymentReport.where("created_at BETWEEN '#{Time.now.strftime('%Y-%m-%d')} 00:00:00' AND '#{Time.now.strftime('%Y-%m-%d')} 23:59:59' AND entity_div_code = '#{current_user.user_division_code}' AND nw IS NOT NULL")
+      #@payment_success_count = PaymentReport.where("split_part(trans_status, '/', 1) = '000' AND entity_div_code = #{current_user.user_division_code}").count
       @pay_success = @payment_reports.where("processed = true")
       @pay_fail = @payment_reports.where("processed = false")
     else
@@ -186,9 +186,9 @@ class DashboardController < ApplicationController
         search_arr << "entity_div_code = '#{@division_name}'"
       end
     elsif current_user.merchant_admin?
-      #@payment_service = EntityDivision.where(active_status: true, assigned_code: current_user.division_code)
+      #@payment_service = EntityDivision.where(active_status: true, assigned_code: current_user.user_division_code)
       division_str = "'0'"
-      @entity_divis = EntityDivision.where("active_status = true AND entity_code = '#{current_user.entity_code}'")
+      @entity_divis = EntityDivision.where("active_status = true AND entity_code = '#{current_user.user_entity_code}'")
       @entity_divis.each { |entity_div| division_str << ",'#{entity_div.assigned_code}'" } if @entity_divis.exists?
       final_div_str = "(#{division_str})"
       logger.info "Final Div Str  :: #{final_div_str.inspect}"
@@ -226,7 +226,7 @@ class DashboardController < ApplicationController
       #@merchant = EntityInfo.where("LOWER(entity_name) LIKE '%#{@entity_name.downcase}%'")
       #@merchant.each { |entity_div| entity_str << ",'#{entity_div.assigned_code}'" } if @merchant.exists?
       #final_info_str = "(#{entity_str})"
-      @entity_divis = EntityDivision.where("entity_code = '#{current_user.entity_code}'")
+      @entity_divis = EntityDivision.where("entity_code = '#{current_user.user_entity_code}'")
       @entity_divis.each { |entity_div| division_str << ",'#{entity_div.assigned_code}'" } if @entity_divis.exists?
       final_div_str = "(#{division_str})"
       logger.info "Final Div Str :: #{final_div_str.inspect}"
@@ -249,16 +249,16 @@ class DashboardController < ApplicationController
 
     elsif current_user.merchant_service?
       #if params[:filtered] == "filtered"
-      #  @payment_reports = PaymentReport.where("entity_div_code = #{current_user.division_code}").where(the_search)
+      #  @payment_reports = PaymentReport.where("entity_div_code = #{current_user.user_division_code}").where(the_search)
       #else
-      @payment_reports = PaymentReport.where("entity_div_code = '#{current_user.division_code}' AND nw IS NOT NULL").where(the_search)
+      @payment_reports = PaymentReport.where("entity_div_code = '#{current_user.user_division_code}' AND nw IS NOT NULL").where(the_search)
       #end
       #  @pay_success_count = @payment_reports.where("split_part(trans_status, '/', 1) = '000'")
       @pay_success = @payment_reports.where("processed = true")
       @pay_fail = @payment_reports.where("processed = false")
 
-      @service_account = EntityServiceAccount.where(entity_div_code: current_user.division_code).order(created_at: :desc).first
-      @service_account_details = EntityServiceAccountTrxn.where(entity_div_code: current_user.division_code).order(created_at: :desc).limit(5)
+      @service_account = EntityServiceAccount.where(entity_div_code: current_user.user_division_code).order(created_at: :desc).first
+      @service_account_details = EntityServiceAccountTrxn.where(entity_div_code: current_user.user_division_code).order(created_at: :desc).limit(5)
 
     else
     end

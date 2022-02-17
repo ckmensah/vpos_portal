@@ -1,0 +1,45 @@
+<p id="notice"><%= notice %></p>
+
+<h1>User Roles</h1>
+
+<table>
+  <thead>
+    <tr>
+      <th>User</th>
+      <th>Role code</th>
+      <th>Entity code</th>
+      <th>Division code</th>
+      <th>Show charge</th>
+      <th>For portal</th>
+      <th>Creator</th>
+      <th>Comment</th>
+      <th>Active status</th>
+      <th>Del status</th>
+      <th colspan="3"></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @user_roles.each do |user_role| %>
+      <tr>
+        <td><%= user_role.user_id %></td>
+        <td><%= user_role.role_code %></td>
+        <td><%= user_role.entity_code %></td>
+        <td><%= user_role.division_code %></td>
+        <td><%= user_role.show_charge %></td>
+        <td><%= user_role.for_portal %></td>
+        <td><%= user_role.creator_id %></td>
+        <td><%= user_role.comment %></td>
+        <td><%= user_role.active_status %></td>
+        <td><%= user_role.del_status %></td>
+        <td><%= link_to 'Show', user_role %></td>
+        <td><%= link_to 'Edit', edit_user_role_path(user_role) %></td>
+        <td><%= link_to 'Destroy', user_role, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<br>
+
+<%= link_to 'New User Role', new_user_role_path %>

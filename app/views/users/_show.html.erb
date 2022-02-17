@@ -38,7 +38,7 @@
 
             <tr>
               <td class="raw_theme w3-border cell-cust-grad w3-leftbar"><strong>Portal Credentials:</strong></td>
-              <% if @user.for_portal != nil && @user.for_portal %>
+              <% if @user.user_roles&.first.for_portal != nil && @user.user_roles&.first.for_portal %>
                 <td><strong>Yes</strong></td>
               <% else %>
                 <td><strong>No</strong></td>
@@ -47,7 +47,7 @@
 
             <tr>
               <td class="raw_theme w3-border cell-cust-grad w3-leftbar"><strong>Show Charges:</strong></td>
-              <% if @user.show_charge != nil && @user.show_charge %>
+              <% if @user.user_roles&.first.show_charge != nil && @user.user_roles&.first.show_charge %>
                 <td><strong>Yes</strong></td>
               <% else %>
                 <td><strong>No</strong></td>
@@ -61,12 +61,12 @@
 
             <tr>
               <td class="raw_theme w3-border cell-cust-grad w3-leftbar"><strong>Merchant:</strong></td>
-              <td><strong><%= @user.entity_info.entity_name if @user.entity_info != nil && @user.entity_code.present? %></strong></td>
+              <td><strong><%= @user.user_roles&.first.entity_info.entity_name if @user.user_roles&.first.entity_info != nil && @user.user_roles&.first.entity_code.present? %></strong></td>
             </tr>
 
             <tr>
               <td class="raw_theme w3-border cell-cust-grad w3-leftbar"><strong>Merchant Service:</strong></td>
-              <td><strong><%= @user.entity_division.division_name if @user.entity_division != nil && @user.division_code.present? %></strong></td>
+              <td><strong><%= @user.user_roles&.first.entity_division.division_name if @user.user_roles&.first.entity_division != nil && @user.user_roles&.first.division_code.present? %></strong></td>
             </tr>
 
             <tr>
@@ -78,7 +78,7 @@
                   <td><strong>Inactive</strong></td>
               <% end %>
             </tr>
-
+                                    
 
             <tr>
               <td class="raw_theme w3-border cell-cust-grad w3-leftbar"><strong>Date:</strong></td>
@@ -94,7 +94,7 @@
             <% if params[:validator] == "validator" %>
               <%= link_to 'Back', validator_index_path(page: params[:page], count: params[:count]), class: "w3-button w3-white w3-border w3-border-purple w3-small w3-round-large",remote:true %>
             <% else %>
-              <%= link_to 'Back', user_index_path(user_filter: $user_filter.present? ? $user_filter.to_enum.to_h : "", page: params[:page], count: params[:count]), class: "w3-button w3-white w3-border w3-border-purple w3-small w3-round-large",remote:true %>
+              <%= link_to 'Back', user_index_path(user_filter: session[:user_filter].present? ? session[:user_filter].to_enum.to_h : "", page: params[:page], count: params[:count]), class: "w3-button w3-white w3-border w3-border-purple w3-small w3-round-large",remote:true %>
             <% end %>          </div>
           <br/>
         </div>

@@ -15,7 +15,7 @@
     <div class="w3-half">
       <%= select_tag :count, options_for_select([50, 100, 150, 200, 500], params[:count].to_i),
                      :data => {  :remote => true, :url => url_for(:controller => "entity_divisions", :action => "entity_index",
-                                                                  :params => {filter_main1: $merchant_filter.present? ? $merchant_filter.to_enum.to_h : ""})},
+                                                                  :params => {filter_main1: session[:merchant_filter].present? ? session[:merchant_filter].to_enum.to_h : ""})},
                      id:"record", class: "w3-button w3-white w3-border w3-border-purple w3-round-large",
                      style: "width:auto; height:35px; float:right", remote:true %>
 
@@ -59,7 +59,7 @@
             <% end %>
             <td><strong><%= entity_info.created_at %></strong></td>
             <td>
-              <%= link_to 'ADD SERVICES', new_entity_division_path(entity_code: entity_info, filter_main1: $merchant_filter.present? ? $merchant_filter.to_enum.to_h : "", interface_type: "info", count: params[:count], page: params[:page]),
+              <%= link_to 'ADD SERVICES', new_entity_division_path(entity_code: entity_info, filter_main1: session[:merchant_filter].present? ? session[:merchant_filter].to_enum.to_h : "", interface_type: "info", count: params[:count], page: params[:page]),
                           style: "width:120px; height: 30px;",
                           class: 'w3-button w3-purple-vpos w3-border w3-border-purple w3-tiny w3-round-large', remote:true%>
 
@@ -77,7 +77,7 @@
       <div class="flickr_pagination"  style="float: right">
         <%= will_paginate @entity_info_divs, class: "w3-card", renderer: BootstrapPagination::Rails,
                           :params => { :controller => "entity_divisions", :action => "entity_index",
-                                       filter_main1: $merchant_filter.present? ? $merchant_filter.to_enum.to_h : "",
+                                       filter_main1: session[:merchant_filter].present? ? session[:merchant_filter].to_enum.to_h : "",
                                        count: params[:count], page: params[:page] } %>
         <%#= js_will_paginate @payment_infos, :params => { :controller => "payment_infos", :action => "payment_info_index" } %>
       </div>

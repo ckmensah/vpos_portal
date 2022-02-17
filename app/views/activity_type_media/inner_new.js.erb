@@ -1,0 +1,9 @@
+<% if params[:medium_type] == "handles" %>
+$("#notes20").html("<%= escape_javascript(render(:partial =>"inner_new")) %>");
+<% elsif params[:medium_type] == "images" %>
+$("#notes21").html("<%= escape_javascript(render(:partial =>"inner_new")) %>");
+<% elsif params[:medium_type] == "videos" %>
+$('#notes22').html("<%= escape_javascript(render(:partial =>"inner_new")) %>");
+<% end %>
+
+$('#inner_new_notice').html("<%= escape_javascript(render 'layouts/messages') %>");

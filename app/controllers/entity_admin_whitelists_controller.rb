@@ -160,7 +160,7 @@ class EntityAdminWhitelistsController < ApplicationController
     params[:page5] ? params[:page5] : params[:page5] = 1
     puts "JUST STARTING.................."
     if current_user.merchant_admin?
-      params[:entity_code] = current_user.entity_code
+      params[:entity_code] = current_user.user_entity_code
     end
     @entity_admin_whitelist = EntityAdminWhitelist.where(entity_division_code: params[:code], mobile_number: params[:id], active_status: true, del_status: false).order('id desc').first
 

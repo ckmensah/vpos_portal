@@ -14,8 +14,9 @@ class EntityInfosController < ApplicationController
     if current_user.super_admin? || current_user.super_user?
       #all_merchants = EntityDivision.all
       #EntityDivision.same_created_at(all_merchants)
-      $merchant_filter = ""
-      $service_filter = ""
+      #$merchant_filter = ""                                                                                                             
+      session[:merchant_filter] = nil
+      session[:service_filter] = nil
       @merchant_search = EntityInfo.where(active_status: true).order(entity_name: :asc)
       @merchant_code_search = EntityInfo.where(active_status: true).order(entity_name: :asc)
       @merchant_cat_search = EntityCategory.where(active_status: true).order(category_name: :asc)
@@ -27,15 +28,15 @@ class EntityInfosController < ApplicationController
       @entity_div_sports = EntityDivision.where(active_status: true, activity_type_code: "SPO").paginate(:page => params[:page], :per_page => params[:count]).order('created_at desc')
 
     elsif current_user.merchant_admin?
-      @entity_infos = EntityInfo.where(assigned_code: current_user.entity_code, del_status: false).paginate(:page => params[:page], :per_page => params[:count]).order('created_at desc')
-      @entity_divisions = EntityDivision.where(entity_code: current_user.entity_code, del_status: false).paginate(:page => params[:page], :per_page => params[:count]).order('created_at desc')
-      @entity_info_sports = EntityInfo.where( assigned_code: current_user.entity_code, active_status: true, entity_cat_id: "SPO").paginate(:page => params[:page], :per_page => params[:count]).order('created_at desc')
-      @entity_div_sports = EntityDivision.where( assigned_code: current_user.entity_code, active_status: true, activity_type_code: "SPO").paginate(:page => params[:page], :per_page => params[:count]).order('created_at desc')
+      @entity_infos = EntityInfo.where(assigned_code: current_user.user_entity_code, del_status: false).paginate(:page => params[:page], :per_page => params[:count]).order('created_at desc')
+      @entity_divisions = EntityDivision.where(entity_code: current_user.user_entity_code, del_status: false).paginate(:page => params[:page], :per_page => params[:count]).order('created_at desc')
+      @entity_info_sports = EntityInfo.where( assigned_code: current_user.user_entity_code, active_status: true, entity_cat_id: "SPO").paginate(:page => params[:page], :per_page => params[:count]).order('created_at desc')
+      @entity_div_sports = EntityDivision.where( assigned_code: current_user.user_entity_code, active_status: true, activity_type_code: "SPO").paginate(:page => params[:page], :per_page => params[:count]).order('created_at desc')
 
     elsif current_user.merchant_service?
-      @entity_divs = EntityDivision.where(active_status: true, assigned_code: current_user.division_code).first
+      @entity_divs = EntityDivision.where(active_status: true, assigned_code: current_user.user_division_code).first
       @entity_infos = EntityInfo.where(assigned_code: @entity_divs.entity_code, del_status: false).paginate(:page => params[:page], :per_page => params[:count]).order('created_at desc')
-      @entity_divisions = EntityDivision.where(assigned_code: current_user.division_code, del_status: false).paginate(:page => params[:page], :per_page => params[:count]).order('created_at desc')
+      @entity_divisions = EntityDivision.where(assigned_code: current_user.user_division_code, del_status: false).paginate(:page => params[:page], :per_page => params[:count]).order('created_at desc')
       @entity_info_sports = EntityInfo.where(assigned_code: @entity_divs.entity_code, active_status: true, entity_cat_id: "SPO").paginate(:page => params[:page], :per_page => params[:count]).order('created_at desc')
       @entity_div_sports = EntityDivision.where(assigned_code: @entity_divs.entity_code, active_status: true, activity_type_code: "SPO").paginate(:page => params[:page], :per_page => params[:count]).order('created_at desc')
 
@@ -137,16 +138,16 @@ class EntityInfosController < ApplicationController
       #@entity_info_sports = EntityInfo.where(active_status: true, entity_cat_id: "SPO").paginate(:page => params[:page], :per_page => params[:count]).order('created_at desc')
 
     elsif current_user.merchant_admin?
-      @entity_infos = EntityInfo.where(assigned_code: current_user.entity_code, del_status: false).paginate(:page => params[:page], :per_page => params[:count]).order('created_at desc')
-      #@entity_divisions = EntityDivision.where(entity_code: current_user.entity_code, del_status: false).paginate(:page => params[:page], :per_page => params[:count]).order('created_at desc')
-      #@entity_info_sports = EntityInfo.where( assigned_code: current_user.entity_code, active_status: true, entity_cat_id: "SPO").paginate(:page => params[:page], :per_page => params[:count]).order('created_at desc')
+      @entity_infos = EntityInfo.where(assigned_code: current_user.user_entity_code, del_status: false).paginate(:page => params[:page], :per_page => params[:count]).order('created_at desc')
+      #@entity_divisions = EntityDivision.where(entity_code: current_user.user_entity_code, del_status: false).paginate(:page => params[:page], :per_page => params[:count]).order('created_at desc')
+      #@entity_info_sports = EntityInfo.where( assigned_code: current_user.user_entity_code, active_status: true, entity_cat_id: "SPO").paginate(:page => params[:page], :per_page => params[:count]).order('created_at desc')
 
     elsif current_user.merchant_service?
-      @entity_divs = EntityDivision.where(active_status: true, assigned_code: current_user.division_code).first
+      @entity_divs = EntityDivision.where(active_status: true, assigned_code: current_user.user_division_code).first
       if @entity_divs
         @entity_infos = EntityInfo.where(assigned_code: @entity_divs.entity_code, del_status: false).paginate(:page => params[:page], :per_page => params[:count]).order('created_at desc')
       end
-      #@entity_divisions = EntityDivision.where(assigned_code: current_user.division_code, del_status: false).paginate(:page => params[:page], :per_page => params[:count]).order('created_at desc')
+      #@entity_divisions = EntityDivision.where(assigned_code: current_user.user_division_code, del_status: false).paginate(:page => params[:page], :per_page => params[:count]).order('created_at desc')
       #@entity_info_sports = EntityInfo.where(assigned_code: @entity_divs.entity_code, active_status: true, entity_cat_id: "SPO").paginate(:page => params[:page], :per_page => params[:count]).order('created_at desc')
     end
   end
@@ -165,17 +166,17 @@ class EntityInfosController < ApplicationController
       @entity_info_sports = EntityInfo.where(active_status: true, entity_cat_id: "SPO").paginate(:page => params[:page], :per_page => params[:count]).order('created_at desc')
 
     elsif current_user.merchant_admin?
-      #@entity_infos = EntityInfo.where(assigned_code: current_user.entity_code, del_status: false).paginate(:page => params[:page], :per_page => params[:count]).order('created_at desc')
-      #@entity_divisions = EntityDivision.where(entity_code: current_user.entity_code, del_status: false).paginate(:page => params[:page], :per_page => params[:count]).order('created_at desc')
-      @entity_info_sports = EntityInfo.where( assigned_code: current_user.entity_code, active_status: true, entity_cat_id: "SPO").paginate(:page => params[:page], :per_page => params[:count]).order('created_at desc')
+      #@entity_infos = EntityInfo.where(assigned_code: current_user.user_entity_code, del_status: false).paginate(:page => params[:page], :per_page => params[:count]).order('created_at desc')
+      #@entity_divisions = EntityDivision.where(entity_code: current_user.user_entity_code, del_status: false).paginate(:page => params[:page], :per_page => params[:count]).order('created_at desc')
+      @entity_info_sports = EntityInfo.where( assigned_code: current_user.user_entity_code, active_status: true, entity_cat_id: "SPO").paginate(:page => params[:page], :per_page => params[:count]).order('created_at desc')
 
     elsif current_user.merchant_service?
-      @entity_divs = EntityDivision.where(active_status: true, assigned_code: current_user.division_code).first
+      @entity_divs = EntityDivision.where(active_status: true, assigned_code: current_user.user_division_code).first
       if @entity_divs
         #@entity_infos = EntityInfo.where(assigned_code: @entity_divs.entity_code, del_status: false).paginate(:page => params[:page], :per_page => params[:count]).order('created_at desc')
         @entity_info_sports = EntityInfo.where(assigned_code: @entity_divs.entity_code, active_status: true, entity_cat_id: "SPO").paginate(:page => params[:page], :per_page => params[:count]).order('created_at desc')
       end
-      #@entity_divisions = EntityDivision.where(assigned_code: current_user.division_code, del_status: false).paginate(:page => params[:page], :per_page => params[:count]).order('created_at desc')
+      #@entity_divisions = EntityDivision.where(assigned_code: current_user.user_division_code, del_status: false).paginate(:page => params[:page], :per_page => params[:count]).order('created_at desc')
     end
 
   end
@@ -340,9 +341,9 @@ class EntityInfosController < ApplicationController
       if current_user.super_admin? || current_user.super_user?
         @entity_infos = EntityInfo.where(del_status: false).paginate(:page => params[:page], :per_page => params[:count]).order('created_at desc')
       elsif current_user.merchant_admin?
-        @entity_infos = EntityInfo.where(assigned_code: current_user.entity_code, del_status: false).paginate(:page => params[:page], :per_page => params[:count]).order('created_at desc')
+        @entity_infos = EntityInfo.where(assigned_code: current_user.user_entity_code, del_status: false).paginate(:page => params[:page], :per_page => params[:count]).order('created_at desc')
       elsif current_user.merchant_service?
-        @entity_divs = EntityDivision.where(active_status: true, assigned_code: current_user.division_code).first
+        @entity_divs = EntityDivision.where(active_status: true, assigned_code: current_user.user_division_code).first
         if @entity_divs
           @entity_infos = EntityInfo.where(assigned_code: @entity_divs.entity_code, del_status: false).paginate(:page => params[:page], :per_page => params[:count]).order('created_at desc')
         end

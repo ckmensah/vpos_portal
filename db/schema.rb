@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_01_06_164146) do
+ActiveRecord::Schema.define(version: 2022_02_16_101227) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -142,6 +142,30 @@ ActiveRecord::Schema.define(version: 2021_01_06_164146) do
     t.boolean "del_status", default: false
     t.datetime "created_at", default: -> { "CURRENT_TIMESTAMP" }, null: false
     t.datetime "updated_at"
+    t.string "channel", limit: 5
+  end
+
+  create_table "activity_type_media", force: :cascade do |t|
+    t.string "activity_type_code"
+    t.string "media_path"
+    t.string "media_data"
+    t.string "media_type"
+    t.text "comment"
+    t.boolean "active_status"
+    t.boolean "del_status"
+    t.integer "user_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["active_status"], name: "activity_type_media_active_status_idx"
+    t.index ["activity_type_code"], name: "activity_type_media_activity_type_code_idx"
+    t.index ["comment"], name: "activity_type_media_comment_idx"
+    t.index ["created_at"], name: "activity_type_media_created_at_idx"
+    t.index ["del_status"], name: "activity_type_media_del_status_idx"
+    t.index ["media_data"], name: "activity_type_media_media_data_idx"
+    t.index ["media_path"], name: "activity_type_media_media_path_idx"
+    t.index ["media_type"], name: "activity_type_media_media_type_idx"
+    t.index ["updated_at"], name: "activity_type_media_updated_at_idx"
+    t.index ["user_id"], name: "activity_type_media_user_id_idx"
   end
 
   create_table "alert_logs", id: false, force: :cascade do |t|
@@ -174,6 +198,17 @@ ActiveRecord::Schema.define(version: 2021_01_06_164146) do
     t.boolean "approved"
     t.datetime "created_at", default: -> { "CURRENT_TIMESTAMP" }, null: false
     t.datetime "updated_at"
+    t.index ["cap"], name: "assigned_fees_cap_idx"
+    t.index ["charged_to"], name: "assigned_fees_charged_to_idx"
+    t.index ["comment"], name: "assigned_fees_comment_idx"
+    t.index ["created_at"], name: "assigned_fees_created_at_idx"
+    t.index ["entity_div_code"], name: "assigned_fees_entity_div_code_idx"
+    t.index ["fee"], name: "assigned_fees_fee_idx"
+    t.index ["flat_percent"], name: "assigned_fees_flat_percent_idx"
+    t.index ["limit_capped"], name: "assigned_fees_limit_capped_idx"
+    t.index ["trans_type"], name: "assigned_fees_trans_type_idx"
+    t.index ["updated_at"], name: "assigned_fees_updated_at_idx"
+    t.index ["user_id"], name: "assigned_fees_user_id_idx"
   end
 
   create_table "assigned_service_code", id: false, force: :cascade do |t|
@@ -186,6 +221,12 @@ ActiveRecord::Schema.define(version: 2021_01_06_164146) do
     t.boolean "del_status", default: false
     t.datetime "created_at", default: -> { "CURRENT_TIMESTAMP" }, null: false
     t.datetime "updated_at"
+    t.index ["comment"], name: "assigned_service_code_comment_idx"
+    t.index ["created_at"], name: "assigned_service_code_created_at_idx"
+    t.index ["entity_div_code"], name: "assigned_service_code_entity_div_code_idx"
+    t.index ["service_code"], name: "assigned_service_code_service_code_idx"
+    t.index ["updated_at"], name: "assigned_service_code_updated_at_idx"
+    t.index ["user_id"], name: "assigned_service_code_user_id_idx"
   end
 
   create_table "auth_req", id: false, force: :cascade do |t|
@@ -201,6 +242,20 @@ ActiveRecord::Schema.define(version: 2021_01_06_164146) do
     t.datetime "updated_at"
     t.string "entity_code"
     t.string "division_code"
+  end
+
+  create_table "bulk_purchase_items", id: false, force: :cascade do |t|
+    t.serial "id", null: false
+    t.string "entity_div_code", limit: 10
+    t.integer "activity_lov_id"
+    t.integer "qty", limit: 2
+    t.decimal "amount", precision: 11, scale: 3
+    t.string "reference", limit: 100
+    t.string "session_id", limit: 20
+    t.string "customer_number", limit: 20
+    t.boolean "processed"
+    t.datetime "created_at", default: -> { "CURRENT_TIMESTAMP" }
+    t.datetime "updated_at"
   end
 
   create_table "city_town_masters", force: :cascade do |t|
@@ -288,6 +343,7 @@ ActiveRecord::Schema.define(version: 2021_01_06_164146) do
     t.datetime "updated_at"
     t.boolean "alerts"
     t.boolean "trans_rpt"
+    t.string "email"
   end
 
   create_table "entity_div_media", id: false, force: :cascade do |t|
@@ -301,6 +357,13 @@ ActiveRecord::Schema.define(version: 2021_01_06_164146) do
     t.integer "user_id"
     t.datetime "created_at", default: -> { "CURRENT_TIMESTAMP" }, null: false
     t.datetime "updated_at"
+    t.index ["created_at"], name: "entity_div_media_created_at_idx"
+    t.index ["entity_div_code"], name: "entity_div_media_entity_div_code_idx"
+    t.index ["media_data"], name: "entity_div_media_media_data_idx"
+    t.index ["media_path"], name: "entity_div_media_media_path_idx"
+    t.index ["media_type"], name: "entity_div_media_media_type_idx"
+    t.index ["updated_at"], name: "entity_div_media_updated_at_idx"
+    t.index ["user_id"], name: "entity_div_media_user_id_idx"
   end
 
   create_table "entity_div_social_handle", id: false, force: :cascade do |t|
@@ -351,6 +414,7 @@ ActiveRecord::Schema.define(version: 2021_01_06_164146) do
     t.string "activity_loc", limit: 100
     t.boolean "payment_type"
     t.boolean "card_option_status"
+    t.boolean "event_progress", default: true
   end
 
   create_table "entity_info", id: false, force: :cascade do |t|
@@ -419,6 +483,16 @@ ActiveRecord::Schema.define(version: 2021_01_06_164146) do
     t.datetime "updated_at", null: false
     t.string "activity_type_code"
     t.string "division_code", limit: 50
+    t.index ["activity_type_code"], name: "entity_wallet_configs_activity_type_code_idx"
+    t.index ["client_key"], name: "entity_wallet_configs_client_key_idx"
+    t.index ["comment"], name: "entity_wallet_configs_comment_idx"
+    t.index ["created_at"], name: "entity_wallet_configs_created_at_idx"
+    t.index ["division_code"], name: "entity_wallet_configs_division_code_idx"
+    t.index ["entity_code"], name: "entity_wallet_configs_entity_code_idx"
+    t.index ["secret_key"], name: "entity_wallet_configs_secret_key_idx"
+    t.index ["service_id"], name: "entity_wallet_configs_service_id_idx"
+    t.index ["updated_at"], name: "entity_wallet_configs_updated_at_idx"
+    t.index ["user_id"], name: "entity_wallet_configs_user_id_idx"
   end
 
   create_table "err_log", id: false, force: :cascade do |t|
@@ -444,6 +518,18 @@ ActiveRecord::Schema.define(version: 2021_01_06_164146) do
     t.datetime "created_at", default: -> { "CURRENT_TIMESTAMP" }, null: false
     t.datetime "updated_at"
     t.string "entity_div_code", limit: 10
+  end
+
+  create_table "multi_user_roles", force: :cascade do |t|
+    t.integer "user_id"
+    t.string "entity_code"
+    t.string "role_code"
+    t.integer "creator_id"
+    t.text "comment"
+    t.boolean "active_status"
+    t.boolean "del_status"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "payment_callback", id: false, force: :cascade do |t|
@@ -507,6 +593,7 @@ ActiveRecord::Schema.define(version: 2021_01_06_164146) do
     t.integer "user_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "role_code"
   end
 
   create_table "permissions", force: :cascade do |t|
@@ -538,6 +625,7 @@ ActiveRecord::Schema.define(version: 2021_01_06_164146) do
     t.integer "user_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "assigned_code", limit: 15
   end
 
   create_table "staged_request", id: false, force: :cascade do |t|
@@ -586,6 +674,21 @@ ActiveRecord::Schema.define(version: 2021_01_06_164146) do
     t.string "user_id", limit: 50
     t.datetime "created_at", default: -> { "CURRENT_TIMESTAMP" }, null: false
     t.string "nw", limit: 5
+  end
+
+  create_table "user_roles", force: :cascade do |t|
+    t.integer "user_id"
+    t.string "role_code"
+    t.string "entity_code"
+    t.string "division_code"
+    t.boolean "show_charge"
+    t.boolean "for_portal"
+    t.integer "creator_id"
+    t.text "comment"
+    t.boolean "active_status"
+    t.boolean "del_status"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "users", force: :cascade do |t|
@@ -705,6 +808,9 @@ ActiveRecord::Schema.define(version: 2021_01_06_164146) do
     t.string "price"
     t.datetime "created_at", null: false
     t.datetime "updated_at"
+    t.boolean "max_ticket_reached"
+    t.integer "ticket_count", default: 0
+    t.integer "max_num_ticket", default: 0
   end
 
   create_table "ussd_back_trackers", id: :integer, default: -> { "nextval('back_trackers_id_seq'::regclass)" }, force: :cascade do |t|
@@ -714,6 +820,22 @@ ActiveRecord::Schema.define(version: 2021_01_06_164146) do
     t.boolean "status", default: true
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+  end
+
+  create_table "ussd_cart_temps", id: :serial, force: :cascade do |t|
+    t.string "session_id"
+    t.string "activity_type"
+    t.string "cart_index"
+    t.string "lov_id"
+    t.string "lov_desc"
+    t.decimal "unit_amount", precision: 11, scale: 2
+    t.integer "qty"
+    t.boolean "status", default: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at"
+    t.decimal "total_amount", precision: 11, scale: 2
+    t.string "mobile_number"
+    t.string "entity_div_code"
   end
 
   create_table "ussd_current_trackers", id: :serial, force: :cascade do |t|
@@ -753,6 +875,7 @@ ActiveRecord::Schema.define(version: 2021_01_06_164146) do
     t.string "allow_qr"
     t.datetime "created_at", null: false
     t.datetime "updated_at"
+    t.boolean "event_progress"
   end
 
   create_table "ussd_lov_temp_temps", id: :serial, force: :cascade do |t|
@@ -892,6 +1015,11 @@ ActiveRecord::Schema.define(version: 2021_01_06_164146) do
     t.string "card_option_status_id"
     t.string "card_option_status_desc"
     t.boolean "payment_option"
+    t.string "payment_mode"
+    t.boolean "max_ticket_reached"
+    t.integer "ticket_count", default: 0
+    t.integer "max_num_ticket", default: 0
+    t.boolean "event_progress"
   end
 
   create_table "ussd_tracker_logs", id: :integer, default: -> { "nextval('tracker_logs_id_seq'::regclass)" }, force: :cascade do |t|

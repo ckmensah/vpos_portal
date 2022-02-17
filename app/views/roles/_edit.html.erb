@@ -25,9 +25,17 @@
               <div class="w3-center" style="">
 
                 <%= f.error_notification %>
-
-                <%= f.label :role_name, "Name" %>
-                <%= f.input :role_name, class:"form-control", label: false, boolean_style: :inline, input_html:{autocomplete: 'off'} %>
+                
+                <div class="w3-row-padding">
+                  <div class="w3-half">
+                    <%= f.label :assigned_code, "Role Code" %>
+                    <%= f.input :assigned_code, class:"form-control", label: false, boolean_style: :inline, input_html:{readonly: true, autocomplete: 'off'} %>
+                  </div>
+                  <div class="w3-half">
+                    <%= f.label :role_name, "Name" %>
+                    <%= f.input :role_name, class:"form-control", label: false, boolean_style: :inline, input_html:{autocomplete: 'off'} %>
+                  </div>
+                </div>
 
                 <div class="w3-border w3-border-purple w3-white">
                   <br/>

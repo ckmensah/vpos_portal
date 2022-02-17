@@ -179,7 +179,7 @@ class EntityDivAlertRecipientsController < ApplicationController
     params[:page6] ? params[:page6] : params[:page6] = 1
     puts "JUST STARTING.................."
     if current_user.merchant_admin?
-      params[:entity_code] = current_user.entity_code
+      params[:entity_code] = current_user.user_entity_code
     end
     @entity_div_alert_recipient = EntityDivAlertRecipient.where(entity_div_code: params[:code], mobile_number: params[:id], active_status: true, del_status: false).order('id desc').first
 

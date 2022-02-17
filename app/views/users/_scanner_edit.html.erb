@@ -22,7 +22,7 @@
             <%# else %>
             <div class="">
               <!--                <div class=""><label>Allow QR</label></div>-->
-              <%= f.input :show_charge, label: "Show Charges", as: :boolean, required: false, input_html: {id: "show_charge", autocomplete: "off", class: "", style: "display: block; float: left; width: 50%"} %>
+              <%= f.input :for_show_charge, label: "Show Charges", as: :boolean, required: false, input_html: {id: "show_charge", autocomplete: "off", class: "", style: "display: block; float: left; width: 50%"} %>
             </div>
             <%# end %>
 
@@ -35,13 +35,13 @@
 
             </div>
             <div class="w3-half">
-              <%= f.input :role_id, collection: Role.where(id: 5, active_status: true).order(role_name: :asc), label_method: :role_name, value_method: :id, :required => false , label: "Role:", :input_html => {id: "edit_id_role", include_blank: false, autocomplete: "off", style:"",  :class => 'form-control w3-input w3-border w3-white input-group input-append'} %>
+              <%= f.input :for_role_code, collection: Role.where(assigned_code: "TV", active_status: true).order(role_name: :asc), label_method: :role_name, value_method: :assigned_code, :required => false , label: "Role:", :input_html => {id: "edit_id_role", include_blank: false, autocomplete: "off", style:"",  :class => 'form-control w3-input w3-border w3-white input-group input-append'} %>
               <% if current_user.super_admin? || current_user.super_user? %>
               <div id="edit_id_entity_valid" style="display: none">
-                <%= f.input :entity_code,  label: "Merchant", collection: @entity_infos, label_method: :entity_name, value_method: :assigned_code, required: true, input_html:{id: "edit_id_entity_info", autocomplete: "off",class:"form-control w3-input w3-border w3-white input-group input-append",style:""}  %>
+                <%= f.input :for_entity_code,  label: "Merchant", collection: @entity_infos, label_method: :entity_name, value_method: :assigned_code, required: true, input_html:{id: "edit_id_entity_info", autocomplete: "off",class:"form-control w3-input w3-border w3-white input-group input-append",style:""}  %>
               </div>
               <div id="edit_id_service_valid" style="display: none">
-                <%= f.input :division_code,  label: "Service", collection: @entity_divisions, label_method: :division_name, value_method: :assigned_code, required: true, input_html:{id: "edit_id_entity_div", autocomplete: "off",class:"form-control w3-input w3-border w3-white input-group input-append",style:""}  %>
+                <%= f.input :for_division_code,  label: "Service", collection: @entity_divisions, label_method: :division_name, value_method: :assigned_code, required: true, input_html:{id: "edit_id_entity_div", autocomplete: "off",class:"form-control w3-input w3-border w3-white input-group input-append",style:""}  %>
               </div>
               <% end %>
 
@@ -52,8 +52,8 @@
 
 
             <%= f.input :active_status, :as => :hidden, input_html:{value: true} %>
-            <%= f.input :creator_id, :as => :hidden, input_html:{value: current_user.id} %>
-            <%#= f.input :user_id, :as => :hidden, input_html:{value: current_user.id} %>
+            <%= f.input :for_creator_id, :as => :hidden, input_html:{value: current_user.id} %>
+            <%= f.input :for_the_portal, :as => :hidden, input_html:{value: false} %>
             <div>
               <%= f.submit "Submit", class: "w3-button w3-purple-vpos w3-border w3-border-purple w3-small w3-round-large", :data => {:disable_with => 'Please Wait...'}, style: "width:auto;float:center;",remote:true %>
               <%= link_to 'Back', validator_index_path(page: params[:page], count: params[:count]), class: "w3-button w3-white w3-border w3-border-purple w3-small w3-round-large",remote:true %>
@@ -107,8 +107,8 @@
             });
         });
 
-        if (role_id.val() == "5") {
-            console.log("For 5..");
+        if (role_id.val() == "TV") {
+            console.log("For TV..");
             document.getElementById(entity_valid_id).style.display = "block";
             document.getElementById(service_valid_id).style.display = "block";
         }
@@ -117,8 +117,8 @@
         role_id.change(function() {
             console.log("For role id:: " + role_id.val());
             // entity_div_id.attr("title", "Now select a service.");
-            if (role_id.val() == "5") {
-                console.log("For 5..");
+            if (role_id.val() == "TV") {
+                console.log("For TV..");
                 document.getElementById(entity_valid_id).style.display = "block";
                 document.getElementById(service_valid_id).style.display = "block";
             }

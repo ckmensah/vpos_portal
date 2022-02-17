@@ -7,7 +7,7 @@
     <button type="button" class="btn btn-outline-purple sub-tablink w3-vpos-purple" style="font-size: small; width: 150px;" onclick="openMedia(event, 'social_handle')">SOCIAL HANDLES</button>
     <button type="button" class="btn btn-outline-purple sub-tablink" style="font-size: small; width: 120px;" onclick="openMedia(event, 'image_media')">IMAGES</button>
     <button type="button" class="btn btn-outline-purple sub-tablink" style="font-size: small; width: 120px;" onclick="openMedia(event, 'video_media')">VIDEOS</button>
-    <%= link_to 'BACK', entity_division_index_path(code: params[:code], entity_code: params[:entity_code], service_filter: $service_filter.present? ? $service_filter.to_enum.to_h : "", count1: params[:count1], count: params[:count], page: $entity_division_page), style: "width:120px;",
+    <%= link_to 'BACK', entity_division_index_path(code: params[:code], entity_code: params[:entity_code], service_filter: session[:service_filter].present? ? session[:service_filter].to_enum.to_h : "", count1: params[:count1], count: params[:count], page: $entity_division_page), style: "width:120px;",
                 class: 'w3-button w3-white w3-border w3-border-purple w3-small w3-round-large',remote:true %>
   </div>
 

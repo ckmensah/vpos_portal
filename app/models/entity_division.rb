@@ -476,6 +476,38 @@ class EntityDivision < ApplicationRecord
   end
 
 
+  def self.entity_event_instance(entity_div_obj, current_user)
+    EntityDivision.new(entity_code: entity_div_obj.entity_code, assigned_code: entity_div_obj.assigned_code,
+                       division_name: entity_div_obj.division_name, division_alias: entity_div_obj.division_alias,
+                       suburb_id: entity_div_obj.suburb_id, activity_type_code: entity_div_obj.activity_type_code,
+                       service_label: entity_div_obj.service_label, user_id: current_user.id, active_status: true,
+                       del_status: false, allow_qr: entity_div_obj.allow_qr,
+                       msg_sender_id: entity_div_obj.msg_sender_id, sms_sender_id: entity_div_obj.sms_sender_id,
+                       link_master: entity_div_obj.link_master, min_amount: entity_div_obj.min_amount,
+                       extra_desc: entity_div_obj.extra_desc, activity_loc: entity_div_obj.activity_loc,
+                       payment_type: entity_div_obj.payment_type, card_option_status: entity_div_obj.card_option_status)
+  end
+
+  def self.event_state(entity_div_obj, current_user)
+    event_feedback = nil
+    entity_div_obj.active_status = false
+    entity_div_obj.del_status = true
+    entity_div_obj.save(validate: false)
+    entity_division = entity_event_instance(entity_div_obj, current_user)
+    if entity_div_obj.event_progress
+      event_feedback = "end_event"
+      entity_division.event_progress = false
+    elsif entity_div_obj.event_progress == false
+      event_feedback = "start_event"
+      entity_division.event_progress = true
+    end
+    entity_division.save(validate: false)
+
+    event_feedback
+  end
+
+
+
   def self.division_lov_save(div_lov_params, division_code, entity_division_params, current_user)
 
     if entity_division_params[:div_lov_query] == 'yes'
