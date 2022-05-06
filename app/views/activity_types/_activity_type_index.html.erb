@@ -47,15 +47,15 @@
             <td><strong><%= activity_type.created_at %></strong></td>
             <td>
               <% media_state = ActivityTypeMedium.where(activity_type_code: activity_type.assigned_code, del_status: false).first %>
-              <% if media_state %>
+              <%# if media_state %>
                 <%= link_to 'MEDIA', activity_type_media_index_path(code: activity_type.assigned_code, count1: params[:count1], count: params[:count]),
                             style: "width:100px; height: 30px; color: #800754 !important",
                             class: 'w3-button w3-white w3-border w3-border-purple w3-tiny w3-round-large', remote:true%>
-              <% else %>
-                <%= link_to 'MEDIA', new_activity_type_medium_path(code: activity_type.assigned_code, count1: params[:count1], count: params[:count]),
+              <%# else %>
+                <%#= link_to 'MEDIA', new_activity_type_medium_path(code: activity_type.assigned_code, count1: params[:count1], count: params[:count]),
                             style: "width:100px; height: 30px; color: #800754 !important",
                             class: 'w3-button w3-white w3-border w3-border-purple w3-tiny w3-round-large', remote:true%>
-              <% end %>
+              <%# end %>
               <%= link_to 'EDIT', edit_activity_type_path(activity_type, count: params[:count], page: params[:page]),
                           style: "width:100px; height: 30px; color: #800754 !important",
                           class: 'w3-button w3-white w3-border w3-border-purple w3-tiny w3-round-large', remote:true%>

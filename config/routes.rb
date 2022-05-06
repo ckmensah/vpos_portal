@@ -1,5 +1,6 @@
 Rails.application.routes.draw do
 
+  resources :loan_requests
   root 'home#index'
   #devise_for :users
    get "/users" => redirect("/")

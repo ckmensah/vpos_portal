@@ -1173,10 +1173,22 @@ class EntityDivisionsController < ApplicationController
         @new_record.save(validate: false)
         @assigned_service_code = AssignedServiceCode.where(del_status: false, entity_div_code: @entity_division.assigned_code).order(created_at: :desc)
         @active_service_code = @assigned_service_code.where(active_status: true).first
-        unless entity_division_params[:service_code] == @active_service_code.service_code
-          logger.info "LOGGER 2 ========================================================"
-          @active_service_code.update(service_code: entity_division_params[:service_code], user_id: current_user.id)
+        if @active_service_code
+          unless entity_division_params[:service_code] == @active_service_code.service_code
+            logger.info "LOGGER 2 ========================================================"
+            #@active_service_code.update(service_code: entity_division_params[:service_code], user_id: current_user.id)
+            @service_code = AssignedServiceCode.new(entity_div_code: @new_record.entity_code, service_code: entity_division_params[:service_code],
+                                                    active_status: true, del_status: false, user_id: current_user.id)
+            @service_code.save(validate: false)
+            AssignedServiceCode.update_last_but_one("assigned_service_code", "entity_div_code", @active_service_code.entity_div_code)
+
+          end
+        else
+          @service_code = AssignedServiceCode.new(entity_div_code: @new_record.entity_code, service_code: entity_division_params[:service_code],
+                                                  active_status: true, del_status: false, user_id: current_user.id)
+          @service_code.save(validate: false)
         end
+
         EntityDivision.update_last_but_one("entity_division", "assigned_code", @entity_division.assigned_code)
 
         @for_wallet_config = EntityWalletConfig.where(entity_code: params[:entity_code], division_code: @entity_division.assigned_code,

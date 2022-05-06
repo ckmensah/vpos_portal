@@ -1,7 +1,7 @@
 class EntityInfo < ApplicationRecord
   self.table_name="entity_info"
   self.primary_key = :assigned_code
-  attr_accessor :action_type, :wallet_query #, :service_id, :secret_key, :client_key, :activity_type
+  attr_accessor :action_type, :wallet_query, :wallet_file #, :service_id, :secret_key, :client_key, :activity_type
 
   has_many :entity_divisions, class_name: 'EntityDivision', foreign_key: :entity_code
   has_many :entity_info_extras,  class_name: 'EntityInfoExtra', foreign_key: :entity_code

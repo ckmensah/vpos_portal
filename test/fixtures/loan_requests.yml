@@ -1,0 +1,23 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  full_name: MyString
+  id_number: MyString
+  ref_number: MyString
+  location: MyString
+  amount: 9.99
+  comment: MyText
+  active_status: false
+  del_status: false
+  user_id: 1
+
+two:
+  full_name: MyString
+  id_number: MyString
+  ref_number: MyString
+  location: MyString
+  amount: 9.99
+  comment: MyText
+  active_status: false
+  del_status: false
+  user_id: 1

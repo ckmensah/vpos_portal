@@ -252,7 +252,7 @@ class UsersController < ApplicationController
                                   for_portal: user_params[:for_the_portal],
                                   show_charge: user_params[:for_show_charge],
                                   creator_id: user_params[:for_creator_id],
-                                  active_status: true, del_status: true)
+                                  active_status: true, del_status: false)
     user_role_save.save(validate: false)
   end
 
@@ -396,7 +396,7 @@ class UsersController < ApplicationController
   # PATCH/PUT /users/1
   # PATCH/PUT /users/1.json
   def update
-    new_record = User.new(user_params)
+    @new_record = User.new(user_params)
     with_password = params[:validator] == "validator" ? true : false
     if current_user.super_admin? || current_user.super_user?
       @entity_infos = EntityInfo.where(active_status: true).order(entity_name: :asc)
@@ -423,7 +423,9 @@ class UsersController < ApplicationController
         params[:user].delete(:password_confirmation)
         with_password = false
       end
-      if new_record.valid?
+      logger.info "User Name :: #{@new_record.user_name}"
+      # if @new_record.user_name != @user.user_name && @new_record.email != @user.email && @new_record.valid?
+      # if @new_record.valid?
         if params[:validator] == "validator"
           if with_password
 
@@ -517,11 +519,13 @@ class UsersController < ApplicationController
             format.js { render :edit }
           end
         end
-      else
-        @user.update(user_params)
-        @entity_divisions = EntityDivision.where(entity_code: user_params[:for_entity_code], active_status: true).order(division_name: :asc)
-        format.js { render params[:validator] == "validator" ? "scanner_edit" : "edit" }
-      end
+      # else
+      #   logger.info "Error Messages for new record :: #{@new_record.errors.messages.inspect}"
+      #   @user.update(user_params)
+      #   logger.info "Error Messages for old record :: #{@user.errors.messages.inspect}"
+      #   @entity_divisions = EntityDivision.where(entity_code: user_params[:for_entity_code], active_status: true).order(division_name: :asc)
+      #   format.js { render params[:validator] == "validator" ? "scanner_edit" : "edit" }
+      # end
 
     end
 

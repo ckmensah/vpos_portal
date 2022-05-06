@@ -45,6 +45,16 @@ class EntityInfosController < ApplicationController
   end
 
 
+  def import_data(file)
+    CSV.foreach(file.path, headers: true) do |row|
+      @entity_wallet_conf = EntityWalletConfig.where(id: row["id"]).first
+      div_code = row["division_code"].present? ? row["division_code"].to_s : nil
+      @entity_wallet_conf.division_code = div_code
+      @entity_wallet_conf.updated_at = @entity_wallet_conf.updated_at.strftime('%Y-%m-%d %H:%M:%S.%N')
+      @entity_wallet_conf.save(validate: false)
+    end
+  end
+
 
   def entity_info_index
     params[:count] ? params[:count] : params[:count] = 50
@@ -212,6 +222,11 @@ class EntityInfosController < ApplicationController
   def create
     @entity_info = EntityInfo.new(entity_info_params)
     @new_record = EntityInfo.new(entity_info_params)
+
+    # import_data(entity_info_params[:wallet_file])
+    # logger.info "Please stop here =============================---------------------------====================="
+    # dfjkldsf
+
     @the_wallet_params = params[:the_activity_wallets]
     if entity_info_params[:action_type] != "for_update"
       #@entity_info.assigned_code = EntityInfo.gen_entity_info_code
@@ -301,6 +316,7 @@ class EntityInfosController < ApplicationController
   def update
     # @new_record = @entity_info
     @new_record = EntityInfo.new(entity_info_params)
+
     # @new_extra = EntityInfoExtra.new(entity_info_params[:entity_info_extra])
     # # @entity_info_extra = @entity_info.entity_info_extras.first
     # @entity_info_extra = @entity_info.entity_info_extras.where(active_status: true, del_status: false).order(created_at: :desc).first

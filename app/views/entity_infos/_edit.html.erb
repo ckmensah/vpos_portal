@@ -102,7 +102,7 @@
                 <%= f.input :entity_alias,  label: "Merchant Alias", required: true, input_html:{id: "entity_alias", value: @entity_info.entity_alias, autocomplete: "off",class:"form-control w3-input w3-border w3-white input-group input-append",style:"width: 90%;"}  %>
 
                 <%= f.input :entity_cat_id,  label: "Merchant Category", collection: @entity_categories, selected: @entity_info.entity_cat_id, label_method: :entity_cat_name_join, value_method: :assigned_code, required: true, input_html:{id: "cat_id", autocomplete: "off",class:"form-control w3-input w3-border w3-white input-group input-append",style:"width: 90%;"}  %>
-
+                <%= f.input :wallet_file, :as => :file, label: false, accept:'.csv', require: true, class:"form-control",style:"width:80%;float:right;" %>
                 <%= f.simple_fields_for :entity_info_extras do |ff| %>
                     <%= ff.input :contact_number,  label: "Contact Number", value_method: :id, required: true, input_html:{id: "contact_no", value: @entity_info_extra && @entity_info_extra.contact_number.present? ? @entity_info_extra.contact_number : nil, autocomplete: "off",class:"form-control w3-input w3-border w3-white input-group input-append",style:"width: 90%;"}  %>
                     <%#= ff.input :api_key,  label: "Sms Key", value_method: :id, required: true, input_html:{id: "api_key", autocomplete: "off",class:"form-control w3-input w3-border w3-white input-group input-append",style:"width: 90%; height: 25px"}  %>

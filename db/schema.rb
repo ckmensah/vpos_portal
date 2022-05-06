@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_02_16_101227) do
+ActiveRecord::Schema.define(version: 2022_05_04_160344) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -518,6 +518,21 @@ ActiveRecord::Schema.define(version: 2022_02_16_101227) do
     t.datetime "created_at", default: -> { "CURRENT_TIMESTAMP" }, null: false
     t.datetime "updated_at"
     t.string "entity_div_code", limit: 10
+  end
+
+  create_table "loan_requests", force: :cascade do |t|
+    t.string "division_code"
+    t.string "full_name"
+    t.string "id_number"
+    t.string "ref_number"
+    t.string "location"
+    t.decimal "amount", precision: 11, scale: 2
+    t.text "comment"
+    t.boolean "active_status"
+    t.boolean "del_status"
+    t.integer "user_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "multi_user_roles", force: :cascade do |t|
