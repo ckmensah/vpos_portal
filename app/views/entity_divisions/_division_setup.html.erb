@@ -9,7 +9,7 @@
         <h4 class="show w3-center"><strong>Service Setup</strong></h4>
         <p id="for_division_setup"><%#= notice %></p>
         <div id="entity_info_new"></div>
-        <%= simple_form_for(@entity_division, url: create_division_setup_path(@entity_division, code: params[:code], action_type: "for_update", entity_code: params[:entity_code], service_filter: $service_filter.present? ? $service_filter.to_enum.to_h : "", count1: params[:count1], page1: params[:page1], count: params[:count], page: params[:page] ),:remote => true) do |f| %>
+        <%= simple_form_for(@entity_division, url: create_division_setup_path(@entity_division, code: params[:code], action_type: "for_update", entity_code: params[:entity_code], service_filter: session[:service_filter].present? ? session[:service_filter].to_enum.to_h : "", count1: params[:count1], page1: params[:page1], count: params[:count], page: params[:page] ),:remote => true) do |f| %>
           <div class="w3-container w3-border w3-border-purple">
             <br/>
             <%= f.error_notification %>
@@ -281,7 +281,7 @@
           <div>
             <br>
             <%= f.submit "Submit", class: "w3-button w3-purple-vpos w3-border w3-border-purple w3-small w3-round-large", :data => {:disable_with => 'Please Wait...'}, style: "width:auto;float:center;",remote:true %>
-            <%= link_to 'Back', entity_division_index_path(params[:entity_code], service_filter: $service_filter.present? ? $service_filter.to_enum.to_h : "", count1: params[:count1], page1: params[:page1], page: params[:page], count: params[:count]), class: "w3-button w3-white w3-border w3-border-purple w3-small w3-round-large",remote:true %>
+            <%= link_to 'Back', entity_division_index_path(params[:entity_code], service_filter: session[:service_filter].present? ? session[:service_filter].to_enum.to_h : "", count1: params[:count1], page1: params[:page1], page: params[:page], count: params[:count]), class: "w3-button w3-white w3-border w3-border-purple w3-small w3-round-large",remote:true %>
             <br><br>
           </div>
         <% end %>

@@ -115,7 +115,7 @@
                 <% if params[:interface_type] == "info" %>
                   <%= link_to 'Back', entity_index_path(entity_code: params[:entity_code], filter_main1: session[:merchant_filter].present? ? session[:merchant_filter].to_enum.to_h : "", page: params[:page], count: params[:count]), class: "w3-button w3-white w3-border w3-border-purple w3-small w3-round-large", remote: true %>
                 <% else %>
-                  <%= link_to 'Back', entity_division_index_path(entity_code: params[:entity_code], service_filter: $service_filter.present? ? $service_filter.to_enum.to_h : "", count1: params[:count1], page1: params[:page1], page: params[:page], count: params[:count]), class: "w3-button w3-white w3-border w3-border-purple w3-small w3-round-large", remote: true %>
+                  <%= link_to 'Back', entity_division_index_path(entity_code: params[:entity_code], service_filter: session[:service_filter].present? ? session[:service_filter].to_enum.to_h : "", count1: params[:count1], page1: params[:page1], page: params[:page], count: params[:count]), class: "w3-button w3-white w3-border w3-border-purple w3-small w3-round-large", remote: true %>
                 <% end %>
               </div>
             <% end %>
@@ -308,7 +308,7 @@
               <% if params[:interface_type] == "info" %>
                 <%= link_to 'Back', entity_index_path(entity_code: params[:entity_code], filter_main1: $merchant_filter.present? ? $merchant_filter.to_enum.to_h : "", count1: params[:count1], page1: params[:page1], page: params[:page], count: params[:count]), class: "w3-button w3-white w3-border w3-border-purple w3-small w3-round-large", remote: true %>
               <% else %>
-                <%= link_to 'Back', entity_division_index_path(entity_code: params[:entity_code], service_filter: $service_filter.present? ? $service_filter.to_enum.to_h : "", count1: params[:count1], page1: params[:page1], page: params[:page], count: params[:count]), class: "w3-button w3-white w3-border w3-border-purple w3-small w3-round-large", remote: true %>
+                <%= link_to 'Back', entity_division_index_path(entity_code: params[:entity_code], service_filter: session[:service_filter].present? ? session[:service_filter].to_enum.to_h : "", count1: params[:count1], page1: params[:page1], page: params[:page], count: params[:count]), class: "w3-button w3-white w3-border w3-border-purple w3-small w3-round-large", remote: true %>
               <% end %>
             </div>
 

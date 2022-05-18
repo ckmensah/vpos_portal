@@ -125,7 +125,7 @@
                 <% if params[:interface_type] == "info" %>
                     <%= link_to 'Back', entity_index_path(entity_code: params[:entity_code], page: params[:page], count: params[:count]), class: "w3-button w3-white w3-border w3-border-purple w3-small w3-round-large", remote: true %>
                 <% else %>
-                    <%= link_to 'Back', entity_division_index_path(entity_code: params[:entity_code], service_filter: $service_filter.present? ? $service_filter.to_enum.to_h : "", count1: params[:count1], page1: params[:page1], page: params[:page], count: params[:count]), class: "w3-button w3-white w3-border w3-border-purple w3-small w3-round-large", remote: true %>
+                    <%= link_to 'Back', entity_division_index_path(entity_code: params[:entity_code], service_filter: session[:service_filter].present? ? session[:service_filter].to_enum.to_h : "", count1: params[:count1], page1: params[:page1], page: params[:page], count: params[:count]), class: "w3-button w3-white w3-border w3-border-purple w3-small w3-round-large", remote: true %>
                 <% end %>
                 <%#= link_to 'Back', entity_index_path(entity_code: params[:entity_code], page: params[:page], count: params[:count]), class: "w3-button w3-white w3-border w3-border-purple w3-small w3-round-large", remote: true %>
               </div>

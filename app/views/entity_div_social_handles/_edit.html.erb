@@ -17,7 +17,7 @@
             <div class="w3-container">
               <br/>
               <div id="social_handle_note"></div>
-              <%= link_to 'Back', entity_div_social_handle_index_path(code: params[:code], entity_code: params[:entity_code], service_filter: $service_filter.present? ? $service_filter.to_enum.to_h : "", count1: params[:count1], page1: params[:page1], page: params[:page], count: params[:count]), class: "w3-button w3-white w3-border w3-border-purple w3-small w3-round-large",remote:true %>
+              <%= link_to 'Back', entity_div_social_handle_index_path(code: params[:code], entity_code: params[:entity_code], service_filter: session[:service_filter].present? ? session[:service_filter].to_enum.to_h : "", count1: params[:count1], page1: params[:page1], page: params[:page], count: params[:count]), class: "w3-button w3-white w3-border w3-border-purple w3-small w3-round-large",remote:true %>
             </div>
           <% else %>
             <% social_media = EntityDivSocialHandle.media_handle_desc( @entity_div_social_handle.assigned_code) %>
@@ -26,7 +26,7 @@
             <div class="w3-container">
               <br/>
             <div id="social_handle_note"></div>
-            <%= simple_form_for(@entity_div_social_handle, :html => { multipart: true }, url: entity_div_social_handle_path(@entity_div_social_handle, medium_type: params[:medium_type], code: params[:code], action_type: "for_create", entity_code: params[:entity_code], service_filter: $service_filter.present? ? $service_filter.to_enum.to_h : "", count1: params[:count1], page1: params[:page1], count: params[:count], page: params[:page] ),:remote => true) do |f| %>
+            <%= simple_form_for(@entity_div_social_handle, :html => { multipart: true }, url: entity_div_social_handle_path(@entity_div_social_handle, medium_type: params[:medium_type], code: params[:code], action_type: "for_create", entity_code: params[:entity_code], service_filter: session[:service_filter].present? ? session[:service_filter].to_enum.to_h : "", count1: params[:count1], page1: params[:page1], count: params[:count], page: params[:page] ),:remote => true) do |f| %>
               <%= f.error_notification %>
               <%= f.error_notification message: f.object.errors[:base].to_sentence if f.object.errors[:base].present? %>
               <%= f.input :handle,  label: "#{social_media} Handle",  value_method: :id, required: true, input_html:{id: "for_handle", autocomplete: "off",class:"form-control w3-input w3-border w3-white input-group input-append",style:""}  %>
@@ -35,7 +35,7 @@
               <%= f.input :user_id, :as => :hidden, input_html:{value: current_user.id} %>
               <div>
                 <%= f.submit "Submit", class: "w3-button w3-purple-vpos w3-border w3-border-purple w3-small w3-round-large", :data => {:disable_with => 'Please Wait...'}, style: "width:auto;float:center;",remote:true %>
-                <%= link_to 'Back', entity_div_social_handle_index_path(code: params[:code], entity_code: params[:entity_code], service_filter: $service_filter.present? ? $service_filter.to_enum.to_h : "", count1: params[:count1], page1: params[:page1], page: params[:page], count: params[:count]), class: "w3-button w3-white w3-border w3-border-purple w3-small w3-round-large",remote:true %>
+                <%= link_to 'Back', entity_div_social_handle_index_path(code: params[:code], entity_code: params[:entity_code], service_filter: session[:service_filter].present? ? session[:service_filter].to_enum.to_h : "", count1: params[:count1], page1: params[:page1], page: params[:page], count: params[:count]), class: "w3-button w3-white w3-border w3-border-purple w3-small w3-round-large",remote:true %>
               </div>
             <% end %>
             </div>

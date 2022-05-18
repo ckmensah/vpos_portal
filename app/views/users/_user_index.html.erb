@@ -41,11 +41,11 @@
       <tbody>
       <% @users.each do |user| %>
 
-        <% if user.entity_code.present? && user.division_code.present? && user.access_type == 'S' %>
-          <% entity_user = EntityDivision.where(active_status: true, assigned_code: user.division_code).order(created_at: :desc).first %>
+        <% if user.user_entity_code.present? && user.user_division_code.present? && user.access_type == 'S' %>
+          <% entity_user = EntityDivision.where(active_status: true, assigned_code: user.user_division_code).order(created_at: :desc).first %>
           <% entity_user_name = entity_user.present? ? entity_user.division_name : "" %>
-        <% elsif user.entity_code.present? && user.access_type == 'M' && (user.division_code == nil || user.division_code == "") %>
-        <% entity_user = EntityInfo.where(active_status: true, assigned_code: user.entity_code).order(created_at: :desc).first %>
+        <% elsif user.user_entity_code.present? && user.access_type == 'M' && (user.user_division_code == nil || user.user_division_code == "") %>
+        <% entity_user = EntityInfo.where(active_status: true, assigned_code: user.user_entity_code).order(created_at: :desc).first %>
         <% entity_user_name = entity_user.present? ? entity_user.entity_name : "" %>
         <% else %>
           <% entity_user_name = "appsNmobile" %>

@@ -10,7 +10,7 @@
 <!--        <p id="for_division_setup"><%##= notice %></p>-->
         <div id="new_notice"></div>
 
-        <%= simple_form_for(@entity_div_medium, :html => { multipart: true }, url: entity_div_media_path(@entity_div_medium, code: params[:code], action_type: "for_create", entity_code: params[:entity_code], service_filter: $service_filter.present? ? $service_filter.to_enum.to_h : "", count1: params[:count1], page1: params[:page1], count: params[:count], page: params[:page] ),:remote => true) do |f| %>
+        <%= simple_form_for(@entity_div_medium, :html => { multipart: true }, url: entity_div_media_path(@entity_div_medium, code: params[:code], action_type: "for_create", entity_code: params[:entity_code], service_filter: session[:service_filter].present? ? session[:service_filter].to_enum.to_h : "", count1: params[:count1], page1: params[:page1], count: params[:count], page: params[:page] ),:remote => true) do |f| %>
           <%= f.error_notification %>
           <%= f.error_notification message: f.object.errors[:base].to_sentence if f.object.errors[:base].present? %>
           <div class="w3-container w3-border w3-border-purple">
@@ -164,7 +164,7 @@
           <div>
             <br>
             <%= f.submit "Submit", id: "abc", class: "w3-button w3-purple-vpos w3-border w3-border-purple w3-small w3-round-large", :data => {:disable_with => 'Please Wait...'}, style: "width:auto;float:center;",remote:true %>
-            <%= link_to 'Back', entity_division_index_path(params[:entity_code], service_filter: $service_filter.present? ? $service_filter.to_enum.to_h : "", count1: params[:count1], page1: params[:page1], page: params[:page], count: params[:count]), class: "w3-button w3-white w3-border w3-border-purple w3-small w3-round-large",remote:true %>
+            <%= link_to 'Back', entity_division_index_path(params[:entity_code], service_filter: session[:service_filter].present? ? session[:service_filter].to_enum.to_h : "", count1: params[:count1], page1: params[:page1], page: params[:page], count: params[:count]), class: "w3-button w3-white w3-border w3-border-purple w3-small w3-round-large",remote:true %>
             <br><br>
           </div>
         <% end %>

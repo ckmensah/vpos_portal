@@ -17,7 +17,7 @@
           <div class="">
             <%= link_to 'NEW', new_activity_sub_div_class_path(code: params[:code], class_div_top: params[:class_div_top], entity_code: params[:entity_code], count1: params[:count1], count4: params[:count4], count: params[:count], page: params[:page]), style: "width:120px;",
                         class: 'w3-button w3-purple-vpos w3-border w3-border-purple w3-small w3-round-large',remote:true %>
-            <%= link_to 'BACK', entity_division_index_path(code: params[:code], entity_code: params[:entity_code], service_filter: $service_filter.present? ? $service_filter.to_enum.to_h : "", count1: params[:count1], count: params[:count], page: $entity_division_page), style: "width:120px;",
+            <%= link_to 'BACK', entity_division_index_path(code: params[:code], entity_code: params[:entity_code], service_filter: session[:service_filter].present? ? session[:service_filter].to_enum.to_h : "", count1: params[:count1], count: params[:count], page: $entity_division_page), style: "width:120px;",
                         class: 'w3-button w3-white w3-border w3-border-purple w3-small w3-round-large',remote:true %>
           </div>
 <!--          <div class="w3-half">-->

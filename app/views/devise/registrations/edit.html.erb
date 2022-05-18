@@ -47,7 +47,9 @@
         </div>
 
 
-        <%#= f.input :active_status, :as => :hidden, input_html:{value: true} %>
+        <%= f.input :for_role_code, :as => :hidden, input_html:{value: current_user.user_role_code} %>
+        <%= f.input :for_division_code, :as => :hidden, input_html:{value: current_user.user_division_code} %>
+        <%= f.input :for_entity_code, :as => :hidden, input_html:{value: current_user.user_entity_code} %>
         <%#= f.input :user_id, :as => :hidden, input_html:{value: current_user.id} %>
 
       </div>

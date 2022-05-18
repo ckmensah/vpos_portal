@@ -118,7 +118,7 @@
         });
 
         console.log("Role ID " + role_id.val());
-        if (role_id.val() == "5") {
+        if (role_id.val() == "TV") {
             console.log("For 1 and 2");
             document.getElementById(entity_id).style.display = "block";
             document.getElementById(service_id).style.display = "block";
@@ -129,7 +129,7 @@
             role_id.change(function() {
             console.log("For role id:: " + role_id.val());
             // entity_div_id.attr("title", "Now select a service.");
-            if (role_id.val() == "5") {
+            if (role_id.val() == "TV") {
                 console.log("For 5");
                 document.getElementById(entity_id).style.display = "block";
                 document.getElementById(service_id).style.display = "block";

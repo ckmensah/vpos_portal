@@ -39,7 +39,7 @@
                           class: 'w3-button w3-purple-vpos w3-border w3-border-purple w3-tiny w3-round-large', remote:true %>
             <% end %>
             <%= link_to 'NO', image_media_path(code: params[:code], entity_code: params[:entity_code],
-                                               service_filter: $service_filter.present? ? $service_filter.to_enum.to_h : "",
+                                               service_filter: session[:service_filter].present? ? session[:service_filter].to_enum.to_h : "",
                                                count1: params[:count1], page1: params[:page1], page: params[:page], count: params[:count]),
                         style: "width:100px; height: 30px;",
                         class: "w3-button w3-white w3-border w3-border-purple w3-tiny w3-round-large",remote:true %>
@@ -85,7 +85,7 @@
                           class: 'w3-button w3-purple-vpos w3-border w3-border-purple w3-tiny w3-round-large', remote:true %>
             <% end %>
               <%= link_to 'NO', video_media_path(code: params[:code], entity_code: params[:entity_code],
-                                                 service_filter: $service_filter.present? ? $service_filter.to_enum.to_h : "",
+                                                 service_filter: session[:service_filter].present? ? session[:service_filter].to_enum.to_h : "",
                                                  count1: params[:count1], page1: params[:page1], page: params[:page], count: params[:count]),
                           style: "width:100px; height: 30px;",
                           class: "w3-button w3-white w3-border w3-border-purple w3-tiny w3-round-large",remote:true %>

@@ -163,6 +163,11 @@ class User < ApplicationRecord
     user_role_obj ? user_role_obj.for_portal : nil
   end
 
+  def user_role_code
+    user_role_obj = self.user_roles&.order(created_at: :desc).first
+    user_role_obj ? user_role_obj.role_code : nil
+  end
+
 
 
 end

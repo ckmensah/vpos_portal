@@ -8,7 +8,7 @@
         <h4 class="show w3-center"><strong>Edit Media Setup</strong></h4>
         <!--        <p id="for_division_setup"><%##= notice %></p>-->
         <div id="edit_notice"></div>
-        <%= simple_form_for(@entity_div_medium, :html => { multipart: true }, url: entity_div_medium_path(@entity_div_medium, medium_type: params[:medium_type], code: params[:code], action_type: "for_create", entity_code: params[:entity_code], service_filter: $service_filter.present? ? $service_filter.to_enum.to_h : "", count1: params[:count1], page1: params[:page1], count: params[:count], page: params[:page] ),:remote => true) do |f| %>
+        <%= simple_form_for(@entity_div_medium, :html => { multipart: true }, url: entity_div_medium_path(@entity_div_medium, medium_type: params[:medium_type], code: params[:code], action_type: "for_create", entity_code: params[:entity_code], service_filter: session[:service_filter].present? ? session[:service_filter].to_enum.to_h : "", count1: params[:count1], page1: params[:page1], count: params[:count], page: params[:page] ),:remote => true) do |f| %>
           <%= f.error_notification %>
           <%= f.error_notification message: f.object.errors[:base].to_sentence if f.object.errors[:base].present? %>
 
@@ -123,9 +123,9 @@
             <% end %>
 
             <% if params[:medium_type] == "images" %>
-              <%= link_to 'Back', image_media_path(code: params[:code], entity_code: params[:entity_code], service_filter: $service_filter.present? ? $service_filter.to_enum.to_h : "", count1: params[:count1], page1: params[:page1], page: params[:page], count: params[:count]), class: "w3-button w3-white w3-border w3-border-purple w3-small w3-round-large",remote:true %>
+              <%= link_to 'Back', image_media_path(code: params[:code], entity_code: params[:entity_code], service_filter: session[:service_filter].present? ? session[:service_filter].to_enum.to_h : "", count1: params[:count1], page1: params[:page1], page: params[:page], count: params[:count]), class: "w3-button w3-white w3-border w3-border-purple w3-small w3-round-large",remote:true %>
             <% elsif params[:medium_type] == "videos" %>
-              <%= link_to 'Back', video_media_path(code: params[:code], entity_code: params[:entity_code], service_filter: $service_filter.present? ? $service_filter.to_enum.to_h : "", count1: params[:count1], page1: params[:page1], page: params[:page], count: params[:count]), class: "w3-button w3-white w3-border w3-border-purple w3-small w3-round-large",remote:true %>
+              <%= link_to 'Back', video_media_path(code: params[:code], entity_code: params[:entity_code], service_filter: session[:service_filter].present? ? session[:service_filter].to_enum.to_h : "", count1: params[:count1], page1: params[:page1], page: params[:page], count: params[:count]), class: "w3-button w3-white w3-border w3-border-purple w3-small w3-round-large",remote:true %>
             <% end %>
             <br><br>
           </div>

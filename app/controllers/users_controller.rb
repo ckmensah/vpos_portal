@@ -25,12 +25,12 @@ class UsersController < ApplicationController
       @users = User.unscoped.user_roles_join.where("user_roles.role_code != 'SA' AND users.id NOT IN (#{current_user.id}, 1) AND user_roles.for_portal = true AND user_roles.del_status = false").paginate(:page => page, :per_page => params[:count]).order('users.created_at desc')
 
     elsif current_user.merchant_admin?
-      @validators = User.unscoped.user_roles_join.where("user_roles.entity_code = '#{current_user.entity_code}' AND user_roles.for_portal = false").paginate(:page => page, :per_page => params[:count]).order('users.created_at desc')
-      @users = User.unscoped.user_roles_join.where("user_roles.entity_code = '#{current_user.entity_code}' AND user_roles.for_portal = true").paginate(:page => page, :per_page => params[:count]).order('users.created_at desc')
+      @validators = User.unscoped.user_roles_join.where("user_roles.entity_code = '#{current_user.user_entity_code}' AND user_roles.for_portal = false").paginate(:page => page, :per_page => params[:count]).order('users.created_at desc')
+      @users = User.unscoped.user_roles_join.where("user_roles.entity_code = '#{current_user.user_entity_code}' AND user_roles.for_portal = true").paginate(:page => page, :per_page => params[:count]).order('users.created_at desc')
 
     elsif current_user.merchant_service?
-      #@validators = User.unscoped.user_roles_join.where(entity_code: current_user.entity_code, division_code: current_user.division_code, for_portal: false).paginate(:page => page, :per_page => params[:count]).order('users.created_at desc')
-      #@users = User.unscoped.user_roles_join.where(entity_code: current_user.entity_code, division_code: current_user.division_code, for_portal: true).paginate(:page => page, :per_page => params[:count]).order('users.created_at desc')
+      #@validators = User.unscoped.user_roles_join.where(entity_code: current_user.user_entity_code, division_code: current_user.user_division_code, for_portal: false).paginate(:page => page, :per_page => params[:count]).order('users.created_at desc')
+      #@users = User.unscoped.user_roles_join.where(entity_code: current_user.user_entity_code, division_code: current_user.user_division_code, for_portal: true).paginate(:page => page, :per_page => params[:count]).order('users.created_at desc')
 
     end
 
@@ -152,8 +152,8 @@ class UsersController < ApplicationController
       @users = User.unscoped.user_roles_join.where("user_roles.role_code != 'SA' AND users.id != #{current_user.id} AND user_roles.for_portal = true AND user_roles.del_status = false").where(the_search).paginate(:page => page, :per_page => params[:count]).order('users.created_at desc')
 
     elsif current_user.merchant_admin?
-      #@validators = User.unscoped.user_roles_join.where(entity_code: current_user.entity_code, for_portal: false).paginate(:page => page, :per_page => params[:count]).order('users.created_at desc')
-      #@users = User.unscoped.user_roles_join.where(entity_code: current_user.entity_code, for_portal: true).paginate(:page => page, :per_page => params[:count]).order('users.created_at desc')
+      #@validators = User.unscoped.user_roles_join.where(entity_code: current_user.user_entity_code, for_portal: false).paginate(:page => page, :per_page => params[:count]).order('users.created_at desc')
+      #@users = User.unscoped.user_roles_join.where(entity_code: current_user.user_entity_code, for_portal: true).paginate(:page => page, :per_page => params[:count]).order('users.created_at desc')
     else
 
     end
@@ -176,7 +176,7 @@ class UsersController < ApplicationController
     elsif current_user.super_user?
       @validators = User.unscoped.user_roles_join.where("user_roles.for_portal = false").paginate(:page => page, :per_page => params[:count]).order('users.created_at desc')
     elsif current_user.merchant_admin?
-      @validators = User.unscoped.user_roles_join.where("user_roles.entity_code = '#{current_user.entity_code}' AND user_roles.for_portal = false").paginate(:page => page, :per_page => params[:count]).order('users.created_at desc')
+      @validators = User.unscoped.user_roles_join.where("user_roles.entity_code = '#{current_user.user_entity_code}' AND user_roles.for_portal = false").paginate(:page => page, :per_page => params[:count]).order('users.created_at desc')
     else
     end
   end
@@ -212,7 +212,7 @@ class UsersController < ApplicationController
     if current_user.super_admin? || current_user.super_user?
       @entity_infos = EntityInfo.where(active_status: true).order(entity_name: :asc)
       #@entity_divisions = EntityDivision.where(id: 0, active_status: true).order(division_name: :asc)
-      @entity_divisions = @user.entity_code.present? ? EntityDivision.where(entity_code: @user.entity_code, active_status: true).order(division_name: :asc) : EntityDivision.where(id: 0, active_status: true).order(division_name: :asc)
+      @entity_divisions = @user.user_entity_code.present? ? EntityDivision.where(entity_code: @user.user_entity_code, active_status: true).order(division_name: :asc) : EntityDivision.where(id: 0, active_status: true).order(division_name: :asc)
 
     end
   end
@@ -240,7 +240,7 @@ class UsersController < ApplicationController
     if current_user.super_admin? || current_user.super_user?
       @entity_infos = EntityInfo.where(active_status: true).order(entity_name: :asc)
       #@entity_divisions = EntityDivision.where(id: 0, active_status: true).order(division_name: :asc)
-      @entity_divisions = @user.entity_code.present? ? EntityDivision.where(entity_code: @user.entity_code, active_status: true).order(division_name: :asc) : EntityDivision.where(id: 0, active_status: true).order(division_name: :asc)
+      @entity_divisions = @user.user_entity_code.present? ? EntityDivision.where(entity_code: @user.user_entity_code, active_status: true).order(division_name: :asc) : EntityDivision.where(id: 0, active_status: true).order(division_name: :asc)
 
     end
   end
@@ -273,7 +273,7 @@ class UsersController < ApplicationController
         @user.access_type = "S"
       end
     end
-    @user.show_charge = false if user_params[:for_role_code] == "1" || user_params[:for_role_code] == "2"
+    @user.show_charge = false if user_params[:for_role_code] == "SA" || user_params[:for_role_code] == "SU"
     respond_to do |format|
       @entity_divisions = EntityDivision.where(entity_code: user_params[:for_entity_code], active_status: true).order(division_name: :asc)
       logger.info "Validator Validation ======================================="
@@ -283,11 +283,13 @@ class UsersController < ApplicationController
       logger.info "ID's are :: #{@entity_info_id.inspect}, #{@entity_div_id.inspect}"
       if @user.valid?
         if params[:validator] == "validator"
+          @roles_id = Role.where(active_status: true, assigned_code: "TV").order(created_at: :desc).first
+          @the_role_id = @roles_id ? @roles_id.id : nil
           endpoint = '/create_app_user_account_req'
           payload = {:email => user_params[:email], :password => user_params[:password], :username => user_params[:user_name],
                      :last_name => user_params[:last_name], :first_name => user_params[:first_name],
                      :contact_number => user_params[:contact_number], :entity_code => user_params[:for_entity_code],
-                     :division_code => user_params[:for_division_code], :role_id => user_params[:for_role_code].to_i,
+                     :division_code => user_params[:for_division_code], :role_id => @the_role_id,
                      :creator_id => user_params[:for_creator_id].to_i}
           json_payload=JSON.generate(payload)
           core_connection = VposCore::CoreConnect.new
@@ -316,6 +318,8 @@ class UsersController < ApplicationController
                 user_id = the_resp["user_id"]
                 user_role_save(user_id, user_params)
                 flash.now[:notice] = "#{user_params[:user_name].capitalize} was successfully created."
+                @user = User.where(id: user_id).first
+                logger.info "User Object :: #{@user.inspect}"
                 #respond_to do |format|
                   format.js { render :show }
                 #end
@@ -550,7 +554,7 @@ class UsersController < ApplicationController
         elsif current_user.super_user?
           @validators = User.unscoped.user_roles_join.where("user_roles.for_portal = false AND user_roles.del_status = false").paginate(:page => page, :per_page => params[:count]).order('users.created_at desc')
         elsif current_user.merchant_admin?
-          @validators = User.unscoped.user_roles_join.where("user_roles.entity_code = '#{current_user.entity_code}' AND user_roles.for_portal = false AND user_roles.del_status = false").paginate(:page => page, :per_page => params[:count]).order('users.created_at desc')
+          @validators = User.unscoped.user_roles_join.where("user_roles.entity_code = '#{current_user.user_entity_code}' AND user_roles.for_portal = false AND user_roles.del_status = false").paginate(:page => page, :per_page => params[:count]).order('users.created_at desc')
         else
         end
       else
@@ -561,7 +565,7 @@ class UsersController < ApplicationController
         elsif current_user.super_user?
           @users = User.unscoped.user_roles_join.where("user_roles.role_code = 'SA' AND users.id != #{current_user.id} AND user_roles.for_portal = true AND user_roles.del_status = false").paginate(:page => page, :per_page => params[:count]).order('users.created_at desc')
         elsif current_user.merchant_admin?
-          @users = User.unscoped.user_roles_join.where("user_roles.entity_code = '#{current_user.entity_code}' AND user_roles.for_portal = true AND user_roles.del_status = false").paginate(:page => page, :per_page => params[:count]).order('users.created_at desc')
+          @users = User.unscoped.user_roles_join.where("user_roles.entity_code = '#{current_user.user_entity_code}' AND user_roles.for_portal = true AND user_roles.del_status = false").paginate(:page => page, :per_page => params[:count]).order('users.created_at desc')
         else
         end
       end
@@ -582,7 +586,7 @@ class UsersController < ApplicationController
         elsif current_user.super_user?
           @validators = User.unscoped.user_roles_join.where("user_roles.for_portal = false AND user_roles.del_status = false").paginate(:page => page, :per_page => params[:count]).order('users.created_at desc')
         elsif current_user.merchant_admin?
-          @validators = User.unscoped.user_roles_join.where("user_roles.entity_code = '#{current_user.entity_code}' AND user_roles.for_portal = false AND user_roles.del_status = false").paginate(:page => page, :per_page => params[:count]).order('users.created_at desc')
+          @validators = User.unscoped.user_roles_join.where("user_roles.entity_code = '#{current_user.user_entity_code}' AND user_roles.for_portal = false AND user_roles.del_status = false").paginate(:page => page, :per_page => params[:count]).order('users.created_at desc')
         else
         end
       else
@@ -593,7 +597,7 @@ class UsersController < ApplicationController
         elsif current_user.super_user?
           @users = User.unscoped.user_roles_join.where("user_roles.role_code = 'SA' AND users.id != #{current_user.id} AND user_roles.for_portal = true AND user_roles.del_status = false").paginate(:page => page, :per_page => params[:count]).order('users.created_at desc')
         elsif current_user.merchant_admin?
-          @users = User.unscoped.user_roles_join.where("user_roles.entity_code = '#{current_user.entity_code}' AND user_roles.for_portal = true AND user_roles.del_status = false").paginate(:page => page, :per_page => params[:count]).order('users.created_at desc')
+          @users = User.unscoped.user_roles_join.where("user_roles.entity_code = '#{current_user.user_entity_code}' AND user_roles.for_portal = true AND user_roles.del_status = false").paginate(:page => page, :per_page => params[:count]).order('users.created_at desc')
         else
         end
       end
