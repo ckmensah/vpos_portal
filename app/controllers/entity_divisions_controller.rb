@@ -1177,14 +1177,14 @@ class EntityDivisionsController < ApplicationController
           unless entity_division_params[:service_code] == @active_service_code.service_code
             logger.info "LOGGER 2 ========================================================"
             #@active_service_code.update(service_code: entity_division_params[:service_code], user_id: current_user.id)
-            @service_code = AssignedServiceCode.new(entity_div_code: @new_record.entity_code, service_code: entity_division_params[:service_code],
+            @service_code = AssignedServiceCode.new(entity_div_code: @entity_division.assigned_code, service_code: entity_division_params[:service_code],
                                                     active_status: true, del_status: false, user_id: current_user.id)
             @service_code.save(validate: false)
             AssignedServiceCode.update_last_but_one("assigned_service_code", "entity_div_code", @active_service_code.entity_div_code)
 
           end
         else
-          @service_code = AssignedServiceCode.new(entity_div_code: @new_record.entity_code, service_code: entity_division_params[:service_code],
+          @service_code = AssignedServiceCode.new(entity_div_code: @entity_division.assigned_code, service_code: entity_division_params[:service_code],
                                                   active_status: true, del_status: false, user_id: current_user.id)
           @service_code.save(validate: false)
         end
