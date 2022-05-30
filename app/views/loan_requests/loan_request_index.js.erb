@@ -1,0 +1,7 @@
+<% if current_user.super_admin? || current_user.super_user? %>
+$("#entity_division").html("<%= escape_javascript(render(:partial =>"loan_request_index")) %>");
+$('#notes20').html("<%= escape_javascript(render 'layouts/messages') %>");
+<% else %>
+$("#loan_request").html("<%= escape_javascript(render(:partial =>"loan_request_index")) %>");
+$('#notes1').html("<%= escape_javascript(render 'layouts/messages') %>");
+<% end %>

@@ -1,6 +1,5 @@
 Rails.application.routes.draw do
 
-  resources :loan_requests
   root 'home#index'
   #devise_for :users
    get "/users" => redirect("/")
@@ -136,6 +135,8 @@ Rails.application.routes.draw do
   get '/sub_activity_masters/sub_activity_master_index' => 'sub_activity_masters#sub_activity_master_index', :as => 'sub_activity_master_index'
   get '/entity_div_sub_activities/entity_div_sub_activity_index' => 'entity_div_sub_activities#entity_div_sub_activity_index', :as => 'entity_div_sub_activity_index'
 
+  get '/loan_requests/loan_request_index' => 'loan_requests#loan_request_index', :as => 'loan_request_index'
+
 
   # ================== DASHBOARD ROUTES =======================
   get '/reports' => 'dashboard#index', :as => 'reports'
@@ -194,7 +195,7 @@ Rails.application.routes.draw do
   resources :activity_type_media
   resources :user_roles
   resources :multi_user_roles
-
+  resources :loan_requests
 
 
 

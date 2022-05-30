@@ -23,7 +23,7 @@ class EntityDivisionsController < ApplicationController
     params[:count1] ? params[:count1] : params[:count1] = 50
     params[:page1] ? params[:page1] : params[:page1] = 1
     $entity_division_page = params[:page]
-
+    session[:loan_req_filter] = nil
     if current_user.super_admin? || current_user.super_user?
       @entity_info = EntityInfo.where(assigned_code: params[:entity_code], active_status: true, del_status: false).order(created_at: :desc).first
       @entity_info ? @entity_name = "#{@entity_info.entity_name} (#{@entity_info.entity_alias})" : ""

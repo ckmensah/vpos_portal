@@ -1,0 +1,94 @@
+
+
+<div class="w3-container" >
+  <div id="loan_req_filter" class="w3-modal w3-animate-opacity" style=" display: none">
+    <span onclick="document.getElementById('loan_req_filter').style.display='none'"
+          class="w3-button w3-display-topright">&times;</span>
+    <!--<div class="w3-modal-content w3-card-4" >-->
+    <br/>
+    <%#= render 'form' %>
+
+    <div class="">
+      <div class="w3-white w3-hover-shadow col-md-6 offset-md-3 w3-card-4 w3-border w3-border-purple rcorners w3-center">
+        <h4 class="show w3-center"><strong>Filter Services</strong></h4>
+        <%= simple_form_for :filter_main, :url => (loan_request_index_path(count: params[:count], page: params[:page])), :method => 'get', html: {class: 'form-horizontal'}, remote: true do |f| %>
+          <div class="w3-container w3-border w3-border-purple">
+            <br/>
+            <input type="hidden" class="form-control" name="count" value="<%= params[:count] %>"/>
+            <input type="hidden" class="form-control" name="page" value="<%= params[:page] %>"/>
+            <input type="hidden" class="form-control" name="entity_code" value="<%= params[:entity_code] %>"/>
+            <input type="hidden" class="form-control" name="code" value="<%= params[:code] %>"/>
+            <div class="">
+              <% if current_user.merchant_service? %>
+                <%= f.input :fullname, class: "form-control", input_html: {id: "id_fullname", style: "width: 90%;", autocomplete: "off"}, label: "Full Name", boolean_style: :inline %>
+                <%= f.input :id_number, class: "form-control", input_html: {id: "id_num", style: "width: 100%;", autocomplete: "off"}, label: "ID No.", boolean_style: :inline %>
+                <%= f.input :ref_no, class: "form-control", input_html: {id: "id_ref", style: "width: 100%;", autocomplete: "off"}, label: "Reference No.", boolean_style: :inline %>
+
+                <div class="w3-half">
+                  <%= f.input :start_date, :id => "datepicker1", as: :date, html5: true, class: "form-control input-group date", label: "Start Date", boolean_style: :inline, input_html: {style: "width: 90%", data: {behaviour: 'datepicker', provide: 'datepicker'}, autocomplete: "off"} %>
+                </div>
+
+                <div class="w3-half">
+                  <%= f.input :end_date, :id => "datepicker2", as: :date, html5: true, class: "form-control", label: "End Date", boolean_style: :inline, input_html: {style: "", data: {behaviour: 'datepicker', provide: 'datepicker'}, autocomplete: "off"} %>
+                </div>
+
+              <% else %>
+
+                <div class="w3-half">
+                  <%#= f.input :merchant_name, class: "form-control", collection: @merchant_names, label_method: :division_name, value_method: :assigned_code, input_html: {id: "id_division_name", style: "width: 90%;", autocomplete: "off"}, label: "Merchant Name", boolean_style: :inline %>
+                  <%= f.input :div_name, class: "form-control", collection: @service_names, label_method: :division_name,
+                              value_method: :assigned_code, input_html: {id: "id_division_name", style: "width: 90%;", autocomplete: "off"},
+                              label: "Service Name", boolean_style: :inline if current_user.merchant_admin? %>
+                  <%= f.input :fullname, class: "form-control", input_html: {id: "id_fullname", style: "width: 90%;", autocomplete: "off"}, label: "Full Name", boolean_style: :inline %>
+                  <%= f.input :id_number, class: "form-control", input_html: {id: "id_num", style: "width: 90%;", autocomplete: "off"}, label: "ID No.", boolean_style: :inline %>
+                </div>
+
+                <div class="w3-half">
+                  <%= f.input :ref_no, class: "form-control", input_html: {id: "id_ref", style: "width: 100%;", autocomplete: "off"}, label: "Reference No.", boolean_style: :inline %>
+                  <div class="w3-half">
+                    <%= f.input :start_date, :id => "datepicker1", as: :date, html5: true, class: "form-control input-group date", label: "Start Date", boolean_style: :inline, input_html: {style: "width: 90%", data: {behaviour: 'datepicker', provide: 'datepicker'}, autocomplete: "off"} %>
+                  </div>
+
+                  <div class="w3-half">
+                    <%= f.input :end_date, :id => "datepicker2", as: :date, html5: true, class: "form-control", label: "End Date", boolean_style: :inline, input_html: {style: "", data: {behaviour: 'datepicker', provide: 'datepicker'}, autocomplete: "off"} %>
+                  </div>
+                </div>
+              <% end %>
+
+            </div>
+
+            <br/>
+          </div>
+
+          <br>
+
+          <div>
+            <br><br>
+            <%= f.submit "Filter", class: "w3-button w3-purple-vpos w3-border w3-border-purple w3-small w3-round-large", :data => {:disable_with => 'Searching...'}, style: "width:auto;float:center;",remote:true %>
+            <button type="button" onclick="document.getElementById('loan_req_filter').style.display='none'" class="w3-button w3-white w3-border w3-border-purple w3-small w3-round-large">Back</button>
+            <br><br>
+          </div>
+        <% end %>
+
+
+      </div>
+
+    </div>
+
+
+    <div class="col-md-7 col-md-offset-5">
+    </div>
+
+    <br/>
+    <div class="col-md-7 col-md-offset-5">
+      <br/>
+      <br/>
+    </div>
+    <!--</div>-->
+
+  </div>
+</div>
+
+
+
+

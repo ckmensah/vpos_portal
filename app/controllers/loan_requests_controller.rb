@@ -1,64 +1,42 @@
 class LoanRequestsController < ApplicationController
-  before_action :set_loan_request, only: [:show, :edit, :update, :destroy]
+  before_action :set_loan_request, only: [:show ]
+  # load_and_authorize_resource
+  # before_action :load_permissions
 
   # GET /loan_requests
   # GET /loan_requests.json
   def index
-    @loan_requests = LoanRequest.all
+    unless current_user.super_admin? || current_user.super_user?
+      session[:loan_req_filter] = nil
+      loan_request_index
+    end
   end
 
-  # GET /loan_requests/1
-  # GET /loan_requests/1.json
+  def loan_request_index
+    params[:count] ? params[:count] :params[:count] = 10
+    params[:page].present? ? page = params[:page].to_i : page = 1
+
+    the_search = LoanRequest.filter_activities(params, session)
+
+    if current_user.super_admin? || current_user.super_user?
+      @services = EntityDivision.where(active_status: true, assigned_code: params[:code]).order(created_at: :desc).first
+      @service_names = @services ? @services.division_name : ""
+      @loan_requests = LoanRequest.where(the_search).where(division_code: params[:code]).paginate(:page => page, :per_page => params[:count2]).order(created_at: :desc)
+    elsif current_user.merchant_admin?
+      dropdown_condition = "entity_code = '#{current_user.user_entity_code}' AND del_status = false"
+      @service_division_names = EntityDivision.where(dropdown_condition).order(division_name: :asc)
+      div_str = LoanRequest.tuple_of_divs(current_user.user_entity_code)
+      @loan_requests = LoanRequest.where(the_search).where("division_code (#{div_str})").paginate(:page => page, :per_page => params[:count2]).order(created_at: :desc)
+    elsif current_user.merchant_service?
+      @loan_requests = LoanRequest.where(the_search).where(division_code: current_user.user_division_code).paginate(:page => page, :per_page => params[:count2]).order(created_at: :desc)
+    # else
+    #   @loan_requests = LoanRequest.where(the_search).where(del_status: false, entity_code: current_user.user_entity_code).paginate(:page => page, :per_page => params[:count1]).order(created_at: :desc)
+    end
+
+  end
+
   def show
-  end
 
-  # GET /loan_requests/new
-  def new
-    @loan_request = LoanRequest.new
-  end
-
-  # GET /loan_requests/1/edit
-  def edit
-  end
-
-  # POST /loan_requests
-  # POST /loan_requests.json
-  def create
-    @loan_request = LoanRequest.new(loan_request_params)
-
-    respond_to do |format|
-      if @loan_request.save
-        format.html { redirect_to @loan_request, notice: 'Loan request was successfully created.' }
-        format.json { render :show, status: :created, location: @loan_request }
-      else
-        format.html { render :new }
-        format.json { render json: @loan_request.errors, status: :unprocessable_entity }
-      end
-    end
-  end
-
-  # PATCH/PUT /loan_requests/1
-  # PATCH/PUT /loan_requests/1.json
-  def update
-    respond_to do |format|
-      if @loan_request.update(loan_request_params)
-        format.html { redirect_to @loan_request, notice: 'Loan request was successfully updated.' }
-        format.json { render :show, status: :ok, location: @loan_request }
-      else
-        format.html { render :edit }
-        format.json { render json: @loan_request.errors, status: :unprocessable_entity }
-      end
-    end
-  end
-
-  # DELETE /loan_requests/1
-  # DELETE /loan_requests/1.json
-  def destroy
-    @loan_request.destroy
-    respond_to do |format|
-      format.html { redirect_to loan_requests_url, notice: 'Loan request was successfully destroyed.' }
-      format.json { head :no_content }
-    end
   end
 
   private

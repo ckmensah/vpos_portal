@@ -2,55 +2,59 @@ class LoanRequest < ApplicationRecord
   belongs_to :entity_division, class_name: "EntityDivision", foreign_key: :division_code
 
 
+  def self.tuple_of_divs(entity_code)
+    entity_div = EntityDivision.where(active_status: true, entity_code: entity_code).first
+    div_arr = ['0']
+    if entity_div
+      entity_div.each_with_index do |div, ind|
+        unless div_arr.include?("'#{div.assigned_code}'")
+          div_arr << "'#{div.assigned_code}'"
+        end
+      end
+    end
+    div_arr.join(",")
+  end
+
   def self.filter_activities(params, session)
     search_arr = []
-    #@entity_code = params[:entity_code]
     if params[:filter_exist].present? && params[:filter_exist] == "filter_exist"
-      logger.info "Global Filter params #{session[:bene_info_filter].inspect}"
-      params[:filter_main] = session[:bene_info_filter]
+      logger.info "Global Filter params #{session[:loan_req_filter].inspect}"
+      params[:filter_main] = session[:loan_req_filter]
     end
     if params[:filter_main].present?
-      session[:bene_info_filter] = params[:filter_main]
+      session[:loan_req_filter] = params[:filter_main]
       filter_params = params[:filter_main]
       logger.info "Filter Params #{filter_params.inspect}"
-      logger.info "Filter Params 2 #{session[:bene_info_filter].inspect}"
+      logger.info "Filter Params 2 #{session[:loan_req_filter].inspect}"
       @merch_name = filter_params[:merchant_name]
-      @benef_name = filter_params[:benef_name]
-      @id_type = filter_params[:id_type]
+      @div_name = filter_params[:division_name]
+      @fullname = filter_params[:fullname]
       @id_number = filter_params[:id_number]
-      @contact_no = filter_params[:contact_no]
-      @status = filter_params[:status]
-      @custom_id = filter_params[:custom_id]
-      @start_date = filter_params[:start_date]
-      @end_date = filter_params[:end_date]
+      @ref_no = filter_params[:ref_no]
 
 
 
       if @merch_name.present?
-        search_arr << "(entity_code = '#{@merch_name}')"
+        div_str = tuple_of_divs(@merch_name)
+        search_arr << "division_code IN (#{div_str})"
       end
 
-      if @benef_name.present?
-        search_arr << "assigned_code = '#{@benef_name}'"
+      if @div_name.present?
+        search_arr << "division_code = '#{@div_name}'"
       end
 
-      if @id_type.present?
+      if @fullname.present?
         #search_arr << "id_type LIKE '%#{@id_type}%'"
-        search_arr << "id_type = '#{@id_type}'"
+        search_arr << "full_name ilike '%#{@fullname}%'"
       end
 
       if @id_number.present?
-        search_arr << "id_no LIKE '%#{@id_number}%'"
+        search_arr << "id_number iLIKE '%#{@id_number}%'"
       end
 
-      if @contact_no.present?
-        search_arr << "contact_number LIKE '%#{@contact_no}%'"
+      if @ref_no.present?
+        search_arr << "ref_number ilike '%#{@ref_no}%'"
       end
-
-      if @custom_id.present?
-        search_arr << "custom_id LIKE '%#{@custom_id}%'"
-      end
-
 
       if @status.present?
         if @status == "P"

@@ -1,0 +1,99 @@
+
+<div>
+  <br>
+  <p id="notes20"><%#= notice %></p>
+  <% if current_user.super_admin? || current_user.super_user? %>
+    <h4>Loan Request for <%= @service_name %></h4>
+  <%  end %>
+  <br>
+  <div>
+    <div class="w3-half">
+      <button type="button" onclick="document.getElementById('loan_req_filter').style.display='block'" style="font-size: small; width: 200px;" class="w3-btn btn btn-outline-purple tablink w3-vpos-purple">LOAN REQUEST FILTER</button>
+
+      <% if current_user.super_admin? || current_user.super_user? %>
+        <%= link_to 'BACK', entity_division_index_path(code: params[:code], entity_code: params[:entity_code], filter_main: session[:loan_req_filter].present? ? session[:loan_req_filter].to_enum.to_h : "", count1: params[:count1], count: params[:count], page: $entity_division_page), style: "width:120px;",
+                    class: 'w3-button w3-white w3-border w3-border-purple w3-small w3-round-large',remote:true %>
+      <% end %>
+
+    </div>
+    <div class="w3-half">
+      <%= select_tag :count2, options_for_select([50, 100, 150, 200, 500], params[:count2].to_i),
+                     :data => {  :remote => true, :url => url_for(:controller => "loan_requests", :action => "loan_request_index",
+                                                                  :params => {code: params[:code], entity_code: params[:entity_code],
+                                                                              count1: params[:count1], filter_main: session[:loan_req_filter].present? ? session[:loan_req_filter].to_enum.to_h : "",
+                                                                              count: params[:count], page: params[:page] })},
+                     id:"record", class: "w3-button w3-white w3-border w3-border-purple w3-round-large",
+                     style: "width:auto; height:35px; float:right", remote:true %>
+
+    </div>
+  </div>
+  <br>
+  <div class="table-responsive-md">
+    <br>
+    <table class="table w3-responsive table-striped">
+      <thead>
+      <tr>
+        <% unless current_user.super_admin? || current_user.super_user? %>
+          <th>Service Name</th>
+        <% end %>
+        <th>Full Name</th>
+        <th>ID Number</th>
+        <th>Reference No.</th>
+        <th>Amount</th>
+<!--        <th>Status</th>-->
+        <th>Date</th>
+        <th></th>
+      </tr>
+      </thead>
+      <tbody>
+      <% @loan_requests.each do |loan_request| %>
+        <% @entity_divi = EntityDivision.where(active_status: true, assigned_code: loan_request.division_code).order(created_at: :desc).first %>
+        <tr>
+
+          <% unless current_user.super_admin? || current_user.super_user? %>
+            <td><%= @entity_divi.division_name if @entity_divi %></td>
+          <% end %>
+          <td><%= loan_request.full_name %></td>
+          <td><%= loan_request.id_number %></td>
+          <td><%= loan_request.ref_number %></td>
+          <td><%= loan_request.amount %></td>
+          <%# if loan_request.active_status %>
+<!--            <td>Active</td>-->
+          <%# else %>
+<!--            <td>Inactive</td>-->
+          <%# end %>
+          <td><%= loan_request.created_at %></td>
+          <td>
+            <%= link_to 'VIEW', loan_request_path(loan_request, code: params[:code], entity_code: params[:entity_code],
+                                                  filter_main: session[:loan_req_filter].present? ? session[:loan_req_filter].to_enum.to_h : "",
+                                                  count1: params[:count1], count2: params[:count2], count: params[:count], page: params[:page]),
+                          style: "width:60px; height: 30px;",
+                          class: 'w3-button w3-purple-vpos w3-border w3-border-purple w3-tiny w3-round-large', remote:true%>
+          </td>
+        </tr>
+        <% end %>
+      </tbody>
+    </table>
+        
+    <% unless params[:count2] == "All" %>
+      <div class="flickr_pagination"  style="float: right">
+        <%= will_paginate @loan_requests, class: "w3-card", renderer: BootstrapPagination::Rails,
+                          :params => { :controller => "loan_requests", :action => "loan_request_index", code: params[:code],
+                                       entity_code: params[:entity_code], count1: params[:count1],
+                                       filter_main: session[:loan_req_filter].present? ? session[:loan_req_filter].to_enum.to_h : "",
+                                       count2: params[:count2], count: params[:count], page: params[:page] } %>
+      </div>
+    <% end %>
+  </div>
+
+
+</div>
+
+<%= render "filter" %>
+
+<script>
+    $(function(){
+        $('.pagination a').attr('data-remote', 'true')
+    });
+
+</script>

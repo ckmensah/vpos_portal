@@ -172,11 +172,11 @@ class UsersController < ApplicationController
     #end
     #
     if current_user.super_admin?
-      @validators = User.unscoped.user_roles_join.where("user_roles.for_portal = false").paginate(:page => page, :per_page => params[:count]).order('users.created_at desc')
+      @validators = User.unscoped.user_roles_join.where("user_roles.for_portal = false AND user_roles.del_status = false").paginate(:page => page, :per_page => params[:count]).order('users.created_at desc')
     elsif current_user.super_user?
-      @validators = User.unscoped.user_roles_join.where("user_roles.for_portal = false").paginate(:page => page, :per_page => params[:count]).order('users.created_at desc')
+      @validators = User.unscoped.user_roles_join.where("user_roles.for_portal = false AND user_roles.del_status = false").paginate(:page => page, :per_page => params[:count]).order('users.created_at desc')
     elsif current_user.merchant_admin?
-      @validators = User.unscoped.user_roles_join.where("user_roles.entity_code = '#{current_user.user_entity_code}' AND user_roles.for_portal = false").paginate(:page => page, :per_page => params[:count]).order('users.created_at desc')
+      @validators = User.unscoped.user_roles_join.where("user_roles.entity_code = '#{current_user.user_entity_code}' AND user_roles.for_portal = false AND user_roles.del_status = false").paginate(:page => page, :per_page => params[:count]).order('users.created_at desc')
     else
     end
   end
@@ -318,7 +318,7 @@ class UsersController < ApplicationController
                 user_id = the_resp["user_id"]
                 user_role_save(user_id, user_params)
                 flash.now[:notice] = "#{user_params[:user_name].capitalize} was successfully created."
-                @user = User.where(id: user_id).first
+                @user = User.unscoped.where(id: user_id).first
                 logger.info "User Object :: #{@user.inspect}"
                 #respond_to do |format|
                   format.js { render :show }
@@ -349,7 +349,8 @@ class UsersController < ApplicationController
             #respond_to do |format|
               format.js { render :new_validator }
             #end
-          rescue Faraday::Error::ConnectionFailed => e
+          # rescue Faraday::Error::ConnectionFailed => e
+          rescue Faraday::ConnectionFailed => e
             logger.info "Connection Failed ================"
             logger.info "Error message :: #{e} ==================="
             flash.now[:danger] = "Sorry, There was a connection issue. Kindly check and try again."
@@ -494,7 +495,8 @@ class UsersController < ApplicationController
               logger.info "Timeout Error ================="
               flash.now[:danger] = "Sorry, There was a timeout issue. Kindly check and try again."
               format.js { render :scanner_edit }
-            rescue Faraday::Error::ConnectionFailed => e
+            # rescue Faraday::Error::ConnectionFailed => e
+            rescue Faraday::ConnectionFailed => e
               logger.info "Connection Failed ================"
               logger.info "Error message :: #{e} ==================="
               flash.now[:danger] = "Sorry, There was a connection issue. Kindly check and try again."

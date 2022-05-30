@@ -1,43 +1,35 @@
-<p id="notice"><%= notice %></p>
 
-<h1>Loan Requests</h1>
 
-<table>
-  <thead>
-    <tr>
-      <th>Full name</th>
-      <th>Id number</th>
-      <th>Ref number</th>
-      <th>Location</th>
-      <th>Amount</th>
-      <th>Comment</th>
-      <th>Active status</th>
-      <th>Del status</th>
-      <th>User</th>
-      <th colspan="3"></th>
-    </tr>
-  </thead>
+<div class="container col-md-12 offset-md-0">
+  <!--<div class="row">-->
+  <!--  <h4 style="text-decoration: underline;"><strong>LOCATION   </strong></h4>-->
 
-  <tbody>
-    <% @loan_requests.each do |loan_request| %>
-      <tr>
-        <td><%= loan_request.full_name %></td>
-        <td><%= loan_request.id_number %></td>
-        <td><%= loan_request.ref_number %></td>
-        <td><%= loan_request.location %></td>
-        <td><%= loan_request.amount %></td>
-        <td><%= loan_request.comment %></td>
-        <td><%= loan_request.active_status %></td>
-        <td><%= loan_request.del_status %></td>
-        <td><%= loan_request.user_id %></td>
-        <td><%= link_to 'Show', loan_request %></td>
-        <td><%= link_to 'Edit', edit_loan_request_path(loan_request) %></td>
-        <td><%= link_to 'Destroy', loan_request, method: :delete, data: { confirm: 'Are you sure?' } %></td>
-      </tr>
-    <% end %>
-  </tbody>
-</table>
+  <div class="w3-responsive">
+    <button type="button" class="btn btn-outline-purple tablink" style="font-size: small; width: 160px;" onclick="openCity(event, 'loan_request')">Loan Request</button>
+  </div>
 
-<br>
+  <div id="loan_request" class="city active">
+    <%= render :partial=> "loan_request_index" %>
+  </div>
 
-<%= link_to 'New Loan Request', new_loan_request_path %>
+
+
+  <script>
+      function openCity(evt, cityName) {
+          var i, x, tablinks;
+          x = document.getElementsByClassName("city");
+          for (i = 0; i < x.length; i++) {
+              x[i].style.display = "none";
+          }
+          tablinks = document.getElementsByClassName("tablink");
+          for (i = 0; i < x.length; i++) {
+              tablinks[i].className = tablinks[i].className.replace(" w3-vpos-purple", "");
+          }
+
+          document.getElementById(cityName).style.display = "block";
+          evt.currentTarget.className += " w3-vpos-purple";
+      }
+  </script>
+
+  <!--</div>-->
+</div>
