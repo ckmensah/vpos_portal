@@ -18,10 +18,12 @@ class LoanRequestsController < ApplicationController
 
     the_search = LoanRequest.filter_activities(params, session)
 
-    if current_user.super_admin? || current_user.super_user?
+    if params[:code].present? && (current_user.super_admin? || current_user.super_user?)
       @services = EntityDivision.where(active_status: true, assigned_code: params[:code]).order(created_at: :desc).first
       @service_names = @services ? @services.division_name : ""
       @loan_requests = LoanRequest.where(the_search).where(division_code: params[:code]).paginate(:page => page, :per_page => params[:count2]).order(created_at: :desc)
+    elsif current_user.super_admin? || current_user.super_user?
+      @loan_requests = LoanRequest.where(the_search).paginate(:page => page, :per_page => params[:count2]).order(created_at: :desc)
     elsif current_user.merchant_admin?
       dropdown_condition = "entity_code = '#{current_user.user_entity_code}' AND del_status = false"
       @service_division_names = EntityDivision.where(dropdown_condition).order(division_name: :asc)

@@ -94,6 +94,9 @@
 
 
         <% if current_user.super_admin? || current_user.super_user? %>
+          <li class="nav-item">
+            <a class="nav-link text-light" href="<%= loan_requests_path %>">Loan Request</a>
+          </li>
           <li class="nav-item dropdown">
             <!--<i class="fas fa-angle-down"></i>-->
             <a class="nav-link text-light dropdown-toggle" href="#" id="navbardrop" data-toggle="dropdown">Setup </a>
@@ -111,9 +114,9 @@
 
           </li>
           <% elsif current_user.merchant_admin? || current_user.merchant_service? %>
-<!--          <li class="nav-item">-->
-<!--            <a class="nav-link text-light" href="<%#= loan_requests_path %>">Loan Request</a>-->
-<!--          </li>-->
+          <li class="nav-item">
+            <a class="nav-link text-light" href="<%= loan_requests_path %>">Loan Request</a>
+          </li>
           <% end %>
 
 

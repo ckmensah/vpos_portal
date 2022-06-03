@@ -2,15 +2,15 @@
 <div>
   <br>
   <p id="notes20"><%#= notice %></p>
-  <% if current_user.super_admin? || current_user.super_user? %>
-    <h4>Loan Request for <%= @service_name %></h4>
+  <% if params[:code] && (current_user.super_admin? || current_user.super_user?) %>
+    <h4>Loan Request for <%= @service_names %></h4>
   <%  end %>
   <br>
   <div>
     <div class="w3-half">
       <button type="button" onclick="document.getElementById('loan_req_filter').style.display='block'" style="font-size: small; width: 200px;" class="w3-btn btn btn-outline-purple tablink w3-vpos-purple">LOAN REQUEST FILTER</button>
 
-      <% if current_user.super_admin? || current_user.super_user? %>
+      <% if params[:code] && (current_user.super_admin? || current_user.super_user?) %>
         <%= link_to 'BACK', entity_division_index_path(code: params[:code], entity_code: params[:entity_code], filter_main: session[:loan_req_filter].present? ? session[:loan_req_filter].to_enum.to_h : "", count1: params[:count1], count: params[:count], page: $entity_division_page), style: "width:120px;",
                     class: 'w3-button w3-white w3-border w3-border-purple w3-small w3-round-large',remote:true %>
       <% end %>
@@ -33,7 +33,7 @@
     <table class="table w3-responsive table-striped">
       <thead>
       <tr>
-        <% unless current_user.super_admin? || current_user.super_user? %>
+        <% unless params[:code] && (current_user.super_admin? || current_user.super_user?) %>
           <th>Service Name</th>
         <% end %>
         <th>Full Name</th>
@@ -50,7 +50,7 @@
         <% @entity_divi = EntityDivision.where(active_status: true, assigned_code: loan_request.division_code).order(created_at: :desc).first %>
         <tr>
 
-          <% unless current_user.super_admin? || current_user.super_user? %>
+          <% unless params[:code] && (current_user.super_admin? || current_user.super_user?) %>
             <td><%= @entity_divi.division_name if @entity_divi %></td>
           <% end %>
           <td><%= loan_request.full_name %></td>
