@@ -47,7 +47,7 @@
         </div>
 
         <%= link_to "Excel", '#', id: "excel", class: 'w3-bar-item w3-btn w3-card-4 w3-black w3-small w3-round-xlarge w3-ripple' %>
-        <!--        |-->
+        |
         <div class="excel_div hidden" style="display: none">
           <%= form_tag payment_info_index_path(format: "xls"), method: :get, input_html: {display: "block", id: "excel_form"} do %>
             <!--<input id="excel_perpage" class="form-control" name="per_page"/>-->
@@ -72,6 +72,28 @@
             <input class="form-control" name="end_date" value="<%= params[:end_date] %>"/>
             <input class="form-control" name="a_download" value="<%= params[:a_download] %>"/>
             <input type="submit" value="Search" id="excel_submit">
+          <% end %>
+        </div>
+
+        <%= link_to "CSV_ALL", '#', id: "csv_all", class: 'w3-bar-item w3-btn w3-card-4 w3-dark-red w3-small w3-round-xlarge w3-ripple' %>
+        <div class="csv_all_div hidden" style="display: none">
+          <%= form_tag payment_info_index_path(format: "csv"), method: :get, input_html: {display: "block", id: "csv_all_form"} do %>
+            <input class="form-control" name="count" value="All"/>
+            <input class="form-control" name="entity_name" value="<%= params[:entity_name] %>"/>
+            <input class="form-control" name="division_name" value="<%= params[:division_name] %>"/>
+            <input class="form-control" name="act_main_code" value="<%= params[:act_main_code] %>"/>
+            <input class="form-control" name="activity_type" value="<%= params[:activity_type] %>"/>
+            <input class="form-control" name="lov_name" value="<%= params[:lov_name] %>"/>
+            <input class="form-control" name="ref" value="<%= params[:ref] %>"/>
+            <input class="form-control" name="cust_num" value="<%= params[:cust_num] %>"/>
+            <input class="form-control" name="trans_id" value="<%= params[:trans_id] %>"/>
+            <input class="form-control" name="nw" value="<%= params[:nw] %>"/>
+            <input class="form-control" name="status" value="<%= params[:status] %>"/>
+            <input class="form-control" name="source" value="<%= params[:source] %>"/>
+            <input class="form-control" name="start_date" value="<%= params[:start_date] %>"/>
+            <input class="form-control" name="end_date" value="<%= params[:end_date] %>"/>
+            <input class="form-control" name="a_download" value="<%= params[:a_download] %>"/>
+            <input type="submit" value="Search" class="btn btn-primary" id="csv_all_submit">
           <% end %>
         </div>
 
@@ -328,7 +350,7 @@
           <td><%= payment_info.created_at %></td>
           <td>
             <% if current_user.super_admin? || current_user.super_user? || current_user.merchant_admin? %>
-              <% if @merchant && (@merchant.activity_type_code == "SHW" || @merchant.activity_type_code == "SPO") %>
+              <% if @merchant && (@merchant.activity_type_code == "SHW" || @merchant.activity_type_code == "SPO" || @merchant.activity_type_code == "BAT") %>
                 <%= link_to 'VIEW', payment_info_path(payment_info, params: params.to_unsafe_h, count: params[:count], page: params[:page]),
                             style: "width:70px; height: 30px;",
                             class: 'w3-button w3-purple-vpos w3-border w3-border-purple w3-tiny w3-round-large', remote: true %>
@@ -648,6 +670,10 @@
 
     $('#excel').click(function () {
         $('#excel_submit').click();
+    });
+
+    $('#csv_all').click(function () {
+        $('#csv_all_submit').click();
     });
 
 </script>

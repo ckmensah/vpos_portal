@@ -39,4 +39,6 @@ Rails.application.configure do
   #config.active_storage.service = :cloudinary
   # Raises error for missing translations
   # config.action_view.raise_on_missing_translations = true
+  config.active_record.async_query_executor = :global_thread_pool
+
 end

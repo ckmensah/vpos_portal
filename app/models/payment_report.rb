@@ -45,7 +45,7 @@ order by to_char(created_at, 'YYYY-MM-DD') asc"
 
 
   def self.to_csv(general_report, current_user, for_activity_type, options = {})
-    CSV.generate(options) do |csv|
+    CSV.generate(options ='') do |csv|
       #headers = %w{Merchant Service Reference Selected_Option Activity_Type Mobile_No Name/Reference Network Tranx_ID Gross_Amount Charge Actual_Amount Source Status Payment_Description Date}
       #headers = %w{Merchant Service Service_Alias Extra_Ref Reference Selected_Option Activity_Type Mobile_No Name/Reference Network Tranx_ID Gross_Amount M-Charge C-Charge Actual_Amount Source Status Payment_Description Date}
 
@@ -335,7 +335,7 @@ order by to_char(created_at, 'YYYY-MM-DD') asc"
 
 
   def self.to_finance_csv(payment_report, fund_movements, balance_bf, options = {})
-    CSV.generate(options) do |csv|
+    CSV.generate(options ='') do |csv|
       headers = %w{Value_Date Description Debit Credit Balance}
       balance = balance_bf
       csv << headers
