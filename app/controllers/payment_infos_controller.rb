@@ -31,6 +31,13 @@ class PaymentInfosController < ApplicationController
                         .group(:activity_main_code, :narration).order(activity_main_code: :asc).load_async
       #@payment_infos = PaymentReport.where("split_part(trans_status, '/', 1) = '000'").paginate(:page => params[:page], :per_page => params[:count]).order('created_at desc')
       @payment_infos = PaymentReport.where("processed = true").paginate(:page => params[:page], :per_page => params[:count]).order('created_at desc').load_async
+      # @payment_infos = PaymentInfo.joins("left join payment_request on payment_info.id = payment_request.payment_info_id left join payment_callback on payment_request.processing_id = payment_callback.trans_ref left join division_activity_lov on payment_info.activity_lov_id = division_activity_lov.id")
+      #                             .select("payment_info.id, payment_info.session_id, payment_info.entity_div_code, payment_info.activity_lov_id, payment_info.activity_div_id, payment_info.activity_sub_div_id, payment_info.activity_main_code, payment_info.processed as processed, payment_info.src,
+      #                                      payment_info.created_at,payment_info.payment_mode,payment_info.amount,payment_info.customer_number,payment_info.customer_name,payment_info.recipient_number,
+      #                                      payment_info.recipient_type,payment_info.recipient_email,payment_info.narration,payment_info.qty,payment_info.trans_type, payment_info.charge,
+      #                                      payment_info.payment_option,payment_info.card_option, payment_info.nw, payment_request.processing_id, payment_request.service_id, payment_request.reference,
+      #                                      payment_callback.trans_ref, payment_callback.nw_trans_id, payment_callback.trans_msg, payment_callback.trans_status, division_activity_lov.lov_desc")
+      #                             .where("payment_info.processed = true").paginate(:page => params[:page], :per_page => params[:count]).order('payment_info.created_at desc').load_async
     elsif current_user.merchant_admin?
       @merchant_service_search = EntityDivision.where(active_status: true, entity_code: current_user.user_entity_code).order(division_name: :asc).load_async
       entity_div_id_str = "'0'"
@@ -60,22 +67,70 @@ class PaymentInfosController < ApplicationController
       @division_lovs = DivisionActivityLov.select(:lov_desc).where("active_status = true AND division_code IN #{final_div_ids}").group(:lov_desc).order(lov_desc: :asc).load_async
       #@payment_infos = PaymentReport.where("split_part(trans_status, '/', 1) = '000' AND entity_div_code IN #{final_div_ids} ").paginate(:page => params[:page], :per_page => params[:count]).order('created_at desc')
       @payment_infos = PaymentReport.where("processed = true AND entity_div_code IN #{final_div_ids} ").paginate(:page => params[:page], :per_page => params[:count]).order('created_at desc').load_async
+      # @payment_infos = PaymentInfo.joins("left join payment_request on payment_info.id = payment_request.payment_info_id left join payment_callback on payment_request.processing_id = payment_callback.trans_ref left join division_activity_lov on payment_info.activity_lov_id = division_activity_lov.id")
+      #                             .select("payment_info.id, payment_info.session_id, payment_info.entity_div_code, payment_info.activity_lov_id, payment_info.activity_div_id, payment_info.activity_sub_div_id, payment_info.activity_main_code, payment_info.processed, payment_info.src,
+      #                                      payment_info.created_at,payment_info.payment_mode,payment_info.amount,payment_info.customer_number,payment_info.customer_name,payment_info.recipient_number,
+      #                                      payment_info.recipient_type,payment_info.recipient_email,payment_info.narration,payment_info.qty,payment_info.trans_type, payment_info.charge,
+      #                                      payment_info.payment_option,payment_info.card_option, payment_info.nw, payment_request.processing_id, payment_request.service_id, payment_request.reference,
+      #                                      payment_callback.trans_ref, payment_callback.nw_trans_id, payment_callback.trans_msg, payment_callback.trans_status, division_activity_lov.lov_desc")
+      #                             .where("payment_info.processed = true AND payment_info.entity_div_code IN #{final_div_ids}").paginate(:page => params[:page], :per_page => params[:count]).order('payment_info.created_at desc').load_async
+
     elsif current_user.merchant_service?
+        entity_div_id_str = "'0'"
+        @entity_divs = EntityDivision.where("entity_code = '#{current_user.user_entity_code}' and active_status = true").load_async
+        if @entity_divs.exists?
+          @entity_divs.each do |entity_div|
+            entity_div_id_str << ",'#{entity_div.assigned_code}'"
+          end
+        end
+        final_div_ids = "(#{entity_div_id_str})"
+        @division_lovs = DivisionActivityLov.select(:lov_desc).where("division_code IN #{final_div_ids}").group(:lov_desc).order(lov_desc: :asc).load_async
+        #@references = PaymentReport.select(:reference).where("entity_div_code IN #{final_div_ids}").group(:reference).order(reference: :asc)
+        @menu_items = PaymentReport.joins("INNER JOIN entity_division ON payment_reports.entity_div_code = entity_division.assigned_code")
+                          .select(:activity_main_code, :narration).where("entity_div_code = '#{current_user.user_division_code}' AND active_status = true AND activity_type_code = 'CHC'")
+                          .group(:activity_main_code, :narration).order(activity_main_code: :asc).load_async
+        #@payment_infos = PaymentReport.where("split_part(trans_status, '/', 1) = '000' AND entity_div_code = '#{current_user.user_division_code}'").paginate(:page => params[:page], :per_page => params[:count]).order('created_at desc')
+        @payment_infos = PaymentReport.where("processed = true AND entity_div_code = '#{current_user.user_division_code}'").paginate(:page => params[:page], :per_page => params[:count]).order('created_at desc').load_async
+        # @payment_infos = PaymentInfo.joins("left join payment_request on payment_info.id = payment_request.payment_info_id left join payment_callback on payment_request.processing_id = payment_callback.trans_ref left join division_activity_lov on payment_info.activity_lov_id = division_activity_lov.id")
+        #                             .select("payment_info.id, payment_info.session_id, payment_info.entity_div_code, payment_info.activity_lov_id, payment_info.activity_div_id, payment_info.activity_sub_div_id, payment_info.activity_main_code, payment_info.processed, payment_info.src,
+        #                                      payment_info.created_at,payment_info.payment_mode,payment_info.amount,payment_info.customer_number,payment_info.customer_name,payment_info.recipient_number,
+        #                                      payment_info.recipient_type,payment_info.recipient_email,payment_info.narration,payment_info.qty,payment_info.trans_type, payment_info.charge,
+        #                                      payment_info.payment_option,payment_info.card_option, payment_info.nw, payment_request.processing_id, payment_request.service_id, payment_request.reference,
+        #                                      payment_callback.trans_ref, payment_callback.nw_trans_id, payment_callback.trans_msg, payment_callback.trans_status, division_activity_lov.lov_desc")
+        #                             .where("payment_info.processed = true AND payment_info.entity_div_code = '#{current_user.user_division_code}'").paginate(:page => params[:page], :per_page => params[:count]).order('payment_info.created_at desc').load_async
+
+
+    elsif current_user.multi_merchant_admin?
+      @merchant_service_search = EntityDivision.where(active_status: true, entity_code: current_user.multi_user_entity_code).order(division_name: :asc).load_async
       entity_div_id_str = "'0'"
-      @entity_divs = EntityDivision.where("entity_code = '#{current_user.user_entity_code}' and active_status = true").load_async
-      if @entity_divs.exists?
-        @entity_divs.each do |entity_div|
-          entity_div_id_str << ",'#{entity_div.assigned_code}'"
+      ref_div_id_str = "'0'"
+      activity_type_str = "'0'"
+      activity_type_arr = []
+      @entity_divs = EntityDivision.where(entity_code: current_user.multi_user_entity_code, active_status: true).load_async
+      @entity_divs.each do |entity_div|
+        entity_div_id_str << ",'#{entity_div.assigned_code}'"
+        unless activity_type_arr.include?("'#{entity_div.activity_type_code}'")
+          activity_type_arr << "'#{entity_div.activity_type_code}'"
+          activity_type_str << ",'#{entity_div.activity_type_code}'"
+        end
+        if entity_div.activity_type_code == "CHC"
+          ref_div_id_str << ",'#{entity_div.assigned_code}'"
         end
       end
       final_div_ids = "(#{entity_div_id_str})"
-      @division_lovs = DivisionActivityLov.select(:lov_desc).where("division_code IN #{final_div_ids}").group(:lov_desc).order(lov_desc: :asc).load_async
-      #@references = PaymentReport.select(:reference).where("entity_div_code IN #{final_div_ids}").group(:reference).order(reference: :asc)
+      final_ref_div_ids = "(#{ref_div_id_str})"
+      final_activity_types = "(#{activity_type_str})"
+
+      @activity_types = ActivityType.where("active_status = true AND assigned_code IN #{final_activity_types}").load_async
+      #@references = PaymentReport.select(:reference).where("entity_div_code IN #{final_ref_div_ids}").group(:reference).order(reference: :asc)
       @menu_items = PaymentReport.joins("INNER JOIN entity_division ON payment_reports.entity_div_code = entity_division.assigned_code")
-                        .select(:activity_main_code, :narration).where("entity_div_code = '#{current_user.user_division_code}' AND active_status = true AND activity_type_code = 'CHC'")
-                        .group(:activity_main_code, :narration).order(activity_main_code: :asc).load_async
-      #@payment_infos = PaymentReport.where("split_part(trans_status, '/', 1) = '000' AND entity_div_code = '#{current_user.user_division_code}'").paginate(:page => params[:page], :per_page => params[:count]).order('created_at desc')
-      @payment_infos = PaymentReport.where("processed = true AND entity_div_code = '#{current_user.user_division_code}'").paginate(:page => params[:page], :per_page => params[:count]).order('created_at desc').load_async
+                                 .select(:activity_main_code, :narration).where("entity_code = '#{current_user.user_entity_code}' AND active_status = true AND activity_type_code = 'CHC'")
+                                 .group(:activity_main_code, :narration).order(activity_main_code: :asc).load_async
+      @division_lovs = DivisionActivityLov.select(:lov_desc).where("active_status = true AND division_code IN #{final_div_ids}").group(:lov_desc).order(lov_desc: :asc).load_async
+      #@payment_infos = PaymentReport.where("split_part(trans_status, '/', 1) = '000' AND entity_div_code IN #{final_div_ids} ").paginate(:page => params[:page], :per_page => params[:count]).order('created_at desc')
+      @payment_infos = PaymentReport.where("processed = true AND entity_div_code IN #{final_div_ids} ").paginate(:page => params[:page], :per_page => params[:count]).order('created_at desc').load_async
+
+
     end
     #logger.info "Report #{@payment_infos.inspect}"
   end
@@ -359,8 +414,22 @@ class PaymentInfosController < ApplicationController
                         .group(:activity_main_code, :narration).order(activity_main_code: :asc).load_async
       if params[:count] == "All"
         @payment_infos = PaymentReport.where(the_search).paginate(:page => params[:page], :per_page => 100000000000).order('created_at desc').load_async
+        # @payment_infos = PaymentInfo.joins("left join payment_request on payment_info.id = payment_request.payment_info_id left join payment_callback on payment_request.processing_id = payment_callback.trans_ref left join division_activity_lov on payment_info.activity_lov_id = division_activity_lov.id")
+        #                             .select("payment_info.id, payment_info.session_id, payment_info.entity_div_code, payment_info.activity_lov_id, payment_info.activity_div_id, payment_info.activity_sub_div_id, payment_info.activity_main_code, payment_info.processed, payment_info.src,
+        #                                      payment_info.created_at,payment_info.payment_mode,payment_info.amount,payment_info.customer_number,payment_info.customer_name,payment_info.recipient_number,
+        #                                      payment_info.recipient_type,payment_info.recipient_email,payment_info.narration,payment_info.qty,payment_info.trans_type, payment_info.charge,
+        #                                      payment_info.payment_option,payment_info.card_option, payment_info.nw, payment_request.processing_id, payment_request.service_id, payment_request.reference,
+        #                                      payment_callback.trans_ref, payment_callback.nw_trans_id, payment_callback.trans_msg, payment_callback.trans_status, division_activity_lov.lov_desc")
+        #                             .where(the_search).paginate(:page => params[:page], :per_page => 100000000000).order('payment_info.created_at desc').load_async
       else
         @payment_infos = PaymentReport.where(the_search).paginate(:page => params[:page], :per_page => params[:count]).order('created_at desc').load_async
+        # @payment_infos = PaymentInfo.joins("left join payment_request on payment_info.id = payment_request.payment_info_id left join payment_callback on payment_request.processing_id = payment_callback.trans_ref left join division_activity_lov on payment_info.activity_lov_id = division_activity_lov.id")
+        #                             .select("payment_info.id, payment_info.session_id, payment_info.entity_div_code, payment_info.activity_lov_id, payment_info.activity_div_id, payment_info.activity_sub_div_id, payment_info.activity_main_code, payment_info.processed, payment_info.src,
+        #                                      payment_info.created_at,payment_info.payment_mode,payment_info.amount,payment_info.customer_number,payment_info.customer_name,payment_info.recipient_number,
+        #                                      payment_info.recipient_type,payment_info.recipient_email,payment_info.narration,payment_info.qty,payment_info.trans_type, payment_info.charge,
+        #                                      payment_info.payment_option,payment_info.card_option, payment_info.nw, payment_request.processing_id, payment_request.service_id, payment_request.reference,
+        #                                      payment_callback.trans_ref, payment_callback.nw_trans_id, payment_callback.trans_msg, payment_callback.trans_status, division_activity_lov.lov_desc")
+        #                             .where(the_search).paginate(:page => params[:page], :per_page => params[:count]).order('payment_info.created_at desc').load_async
       end
 
     elsif current_user.merchant_admin?
@@ -388,8 +457,22 @@ class PaymentInfosController < ApplicationController
                         .group(:activity_main_code, :narration).order(activity_main_code: :asc).load_async
       if params[:count] == "All"
         @payment_infos = PaymentReport.where("entity_div_code IN #{final_div_ids}").where(the_search).paginate(:page => params[:page], :per_page => 100000000000).order('created_at desc').load_async
+        # @payment_infos = PaymentInfo.joins("left join payment_request on payment_info.id = payment_request.payment_info_id left join payment_callback on payment_request.processing_id = payment_callback.trans_ref left join division_activity_lov on payment_info.activity_lov_id = division_activity_lov.id")
+        #                             .select("payment_info.id, payment_info.session_id, payment_info.entity_div_code, payment_info.activity_lov_id, payment_info.activity_div_id, payment_info.activity_sub_div_id, payment_info.activity_main_code, payment_info.processed, payment_info.src,
+        #                                      payment_info.created_at,payment_info.payment_mode,payment_info.amount,payment_info.customer_number,payment_info.customer_name,payment_info.recipient_number,
+        #                                      payment_info.recipient_type,payment_info.recipient_email,payment_info.narration,payment_info.qty,payment_info.trans_type, payment_info.charge,
+        #                                      payment_info.payment_option,payment_info.card_option, payment_info.nw, payment_request.processing_id, payment_request.service_id, payment_request.reference,
+        #                                      payment_callback.trans_ref, payment_callback.nw_trans_id, payment_callback.trans_msg, payment_callback.trans_status, division_activity_lov.lov_desc")
+        #                             .where("payment_info.entity_div_code IN #{final_div_ids}").where(the_search).paginate(:page => params[:page], :per_page => 100000000000).order('payment_info.created_at desc').load_async
       else
         @payment_infos = PaymentReport.where("entity_div_code IN #{final_div_ids}").where(the_search).paginate(:page => params[:page], :per_page => params[:count]).order('created_at desc').load_async
+        # @payment_infos = PaymentInfo.joins("left join payment_request on payment_info.id = payment_request.payment_info_id left join payment_callback on payment_request.processing_id = payment_callback.trans_ref left join division_activity_lov on payment_info.activity_lov_id = division_activity_lov.id")
+        #                             .select("payment_info.id, payment_info.session_id, payment_info.entity_div_code, payment_info.activity_lov_id, payment_info.activity_div_id, payment_info.activity_sub_div_id, payment_info.activity_main_code, payment_info.processed, payment_info.src,
+        #                                      payment_info.created_at,payment_info.payment_mode,payment_info.amount,payment_info.customer_number,payment_info.customer_name,payment_info.recipient_number,
+        #                                      payment_info.recipient_type,payment_info.recipient_email,payment_info.narration,payment_info.qty,payment_info.trans_type, payment_info.charge,
+        #                                      payment_info.payment_option,payment_info.card_option, payment_info.nw, payment_request.processing_id, payment_request.service_id, payment_request.reference,
+        #                                      payment_callback.trans_ref, payment_callback.nw_trans_id, payment_callback.trans_msg, payment_callback.trans_status, division_activity_lov.lov_desc")
+        #                             .where("payment_info.entity_div_code IN #{final_div_ids}").where(the_search).paginate(:page => params[:page], :per_page => params[:count]).order('payment_info.created_at desc').load_async
       end
     elsif current_user.merchant_service?
       @division_lovs = DivisionActivityLov.select(:lov_desc).where("active_status = true AND division_code = '#{current_user.user_division_code}'").group(:lov_desc).order(lov_desc: :asc).load_async
@@ -400,8 +483,22 @@ class PaymentInfosController < ApplicationController
                         .group(:activity_main_code, :narration).order(activity_main_code: :asc).load_async
       if params[:count] == "All"
         @payment_infos = PaymentReport.where(entity_div_code: current_user.user_division_code).where(the_search).paginate(:page => params[:page], :per_page => 100000000000).order('created_at desc').load_async
+        # @payment_infos = PaymentInfo.joins("left join payment_request on payment_info.id = payment_request.payment_info_id left join payment_callback on payment_request.processing_id = payment_callback.trans_ref left join division_activity_lov on payment_info.activity_lov_id = division_activity_lov.id")
+        #                           .select("payment_info.id, payment_info.session_id, payment_info.entity_div_code, payment_info.activity_lov_id, payment_info.activity_div_id, payment_info.activity_sub_div_id, payment_info.activity_main_code, payment_info.processed, payment_info.src,
+        #                                    payment_info.created_at,payment_info.payment_mode,payment_info.amount,payment_info.customer_number,payment_info.customer_name,payment_info.recipient_number,
+        #                                    payment_info.recipient_type,payment_info.recipient_email,payment_info.narration,payment_info.qty,payment_info.trans_type, payment_info.charge,
+        #                                    payment_info.payment_option,payment_info.card_option, payment_info.nw, payment_request.processing_id, payment_request.service_id, payment_request.reference,
+        #                                    payment_callback.trans_ref, payment_callback.nw_trans_id, payment_callback.trans_msg, payment_callback.trans_status,division_activity_lov.lov_desc")
+        #                           .where("payment_info.entity_div_code = '#{current_user.user_division_code}'").where(the_search).paginate(:page => params[:page], :per_page => 100000000000).order('payment_info.created_at desc').load_async
       else
         @payment_infos = PaymentReport.where(entity_div_code: current_user.user_division_code).where(the_search).paginate(:page => params[:page], :per_page => params[:count]).order('created_at desc').load_async
+        # @payment_infos = PaymentInfo.joins("left join payment_request on payment_info.id = payment_request.payment_info_id left join payment_callback on payment_request.processing_id = payment_callback.trans_ref left join division_activity_lov on payment_info.activity_lov_id = division_activity_lov.id")
+        #                           .select("payment_info.id, payment_info.session_id, payment_info.entity_div_code, payment_info.activity_lov_id, payment_info.activity_div_id, payment_info.activity_sub_div_id, payment_info.activity_main_code, payment_info.processed, payment_info.src,
+        #                                    payment_info.created_at,payment_info.payment_mode,payment_info.amount,payment_info.customer_number,payment_info.customer_name,payment_info.recipient_number,
+        #                                    payment_info.recipient_type,payment_info.recipient_email,payment_info.narration,payment_info.qty,payment_info.trans_type, payment_info.charge,
+        #                                    payment_info.payment_option,payment_info.card_option, payment_info.nw, payment_request.processing_id, payment_request.service_id, payment_request.reference,
+        #                                    payment_callback.trans_ref, payment_callback.nw_trans_id, payment_callback.trans_msg, payment_callback.trans_status,division_activity_lov.lov_desc")
+        #                           .where("payment_info.entity_div_code = '#{current_user.user_division_code}'").where(the_search).paginate(:page => params[:page], :per_page => params[:count]).order('payment_info.created_at desc').load_async
       end
     end
 

@@ -1,6 +1,6 @@
 class User < ApplicationRecord
   attr_accessor :for_role_code, :for_the_portal, :for_division_code,
-                :for_creator_id, :for_show_charge, :for_entity_code
+                :for_creator_id, :for_show_charge, :for_entity_code, :for_entity_code_multi
   validates_uniqueness_of :user_name
   CTRYCODE = "233"
   #has_many :entity_, class_name: 'ActivitySubDivClass', foreign_key: :entity_div_code
@@ -10,7 +10,9 @@ class User < ApplicationRecord
   #belongs_to :entity_info, -> { where active_status: true }, class_name: "EntityInfo", foreign_key: :entity_code
   belongs_to :entity_division, -> { where active_status: true }, class_name: "EntityDivision", foreign_key: :division_code
   has_many :roles, through: :user_roles, primary_key: :assigned_code
+  has_many :multi_users, through: :multi_user_roles, primary_key: :assigned_code
   has_many :entity_infos, through: :user_roles, primary_key: :assigned_code
+  has_many :client_webhook_configs, class_name: "ClientWebhookConfig", foreign_key: :user_id
 
   #default_scope {where(active_status: true, for_portal: true)}
   default_scope {user_roles_join.where("users.active_status = true AND user_roles.del_status = false AND user_roles.for_portal = true")}
@@ -73,11 +75,15 @@ class User < ApplicationRecord
 
 
   def validate_entity_code
-    if self.for_role_code == "MMA" || self.for_role_code == "MA" || self.for_role_code == "MS" || self.for_role_code == "TV"
-      unless self.for_entity_code.present?
-        errors.add :for_entity_code, " cannot be empty."
+    if self.for_role_code == "MA" || self.for_role_code == "MS" || self.for_role_code == "TV"
+      unless self.for_entity_code.present? #|| self.for_entity_code_multi.present?
+        errors.add :for_entity_code, " cannot be empty." if :for_entity_code.present?
       end
-    end
+    elsif self.for_role_code == "MMA"
+      unless self.for_entity_code_multi.present?
+        errors.add :for_entity_code_multi, " cannot be empty."
+      end
+     end
   end
 
 
@@ -105,6 +111,11 @@ class User < ApplicationRecord
 
   def self.user_roles_join
     joins("LEFT JOIN user_roles ON users.id = user_roles.user_id")
+  end
+
+  def self.multi_user_roles_join
+    joins("LEFT JOIN multi_user_roles ON users.id = multi_user_roles.user_id")
+    # joins("LEFT JOIN multi_user_roles ON user_roles.user_id = multi_user_roles.user_id")
   end
 
   def super_admin?
@@ -140,6 +151,11 @@ class User < ApplicationRecord
 
   def user_entity_code
     user_role_obj = self.user_roles&.order(created_at: :desc).first
+    user_role_obj ? user_role_obj.entity_code : ""
+  end
+
+  def multi_user_entity_code
+    user_role_obj = self.multi_user_roles&.order(created_at: :desc)
     user_role_obj ? user_role_obj.entity_code : ""
   end
 

@@ -52,6 +52,10 @@
           <div id="id_entity" style="display: none">
             <%= f.input :for_entity_code,  label: "Merchant", collection: @entity_infos, label_method: :entity_name, value_method: :assigned_code, required: true, input_html:{id: "id_entity_info", autocomplete: "off",class:"form-control w3-input w3-border w3-white input-group input-append",style:""}  %>
           </div>
+            <div id="id_entity_multi" style="display: none">
+            <%= f.input :for_entity_code_multi,  label: "Merchant", collection: @entity_infos, label_method: :entity_name, value_method: :assigned_code, required: true, input_html:{id: "id_entity_info_multi", autocomplete: "off",class:"form-control w3-input w3-border w3-white input-group input-append", style:"width: 100%",:multiple=>"multiple"}, include_blank: false, :include_hidden => false %>
+            <%#= f.input :for_entity_code,  label: "Merchant", collection: @entity_infos, label_method: :entity_name, value_method: :assigned_code, required: true, input_html:{id: "id_entity_info_multi", autocomplete: "off",class:"form-control w3-input w3-border w3-white input-group input-append", multiple: "multiple"}  %>
+            </div>
           <div id="id_service" style="display: none">
             <%= f.input :for_division_code,  label: "Service", collection: @entity_divisions, label_method: :division_name, value_method: :assigned_code, required: true, input_html:{id: "id_entity_div", autocomplete: "off",class:"form-control w3-input w3-border w3-white input-group input-append",style:""}  %>
           </div>
@@ -109,9 +113,11 @@
     $(document).ready(function(){
         $('[data-toggle="tooltip"]').tooltip();
         var entity_info_id = $('#id_entity_info');
+        var entity_info_id_multi = $('#id_entity_info_multi');
         var role_id = $('#id_role');
         var service_id = "id_service";
         var entity_id = "id_entity";
+        var entity_id_multi = "id_entity_multi";
         var entity_div_id  = $('#id_entity_div');
         <% if params[:validator] == "validator" %>
 
@@ -132,11 +138,13 @@
         if (role_id.val() == "SA" || role_id.val() == "SU") {
             console.log("For SA and SU");
             document.getElementById(entity_id).style.display = "none";
+            document.getElementById(entity_id_multi).style.display = "none";
             document.getElementById(service_id).style.display = "none";
             entity_info_id.val("");
             entity_div_id.empty();
         } else if (role_id.val() == "MA") {
             console.log("For MA");
+            document.getElementById(entity_id_multi).style.display = "none";
             document.getElementById(entity_id).style.display = "block";
             document.getElementById(service_id).style.display = "none";
             entity_info_id.val("");
@@ -144,13 +152,31 @@
 
         } else if (role_id.val() == "TV") {
             console.log("For TV");
+            document.getElementById(entity_id_multi).style.display = "none";
             document.getElementById(entity_id).style.display = "block";
             document.getElementById(service_id).style.display = "none";
 
         } else if (role_id.val() == "MS") {
             console.log("For MS and TV");
+            document.getElementById(entity_id_multi).style.display = "none";
             document.getElementById(entity_id).style.display = "block";
             document.getElementById(service_id).style.display = "block";
+
+        }  else if (role_id.val() == "MMA") {
+            console.log("For MMA");
+            document.getElementById(entity_id).style.display = "none";
+            document.getElementById(entity_id_multi).style.display = "block";
+            document.getElementById(service_id).style.display = "none";
+            entity_info_id.val("");
+            entity_info_id_multi.val("");
+            entity_div_id.val("");
+
+            // $(entity_info_id_multi).select2({
+            //     allowClear: true,
+            //     theme: 'bootstrap',
+            //     width: 'resolve',
+            //     placeholder: 'Select Merchant/s'
+            // }(jQuery));
         }
 
         role_id.change(function() {
@@ -158,12 +184,14 @@
             // entity_div_id.attr("title", "Now select a service.");
             if (role_id.val() == "SA" || role_id.val() == "SU") {
                 console.log("For SA and SU");
+                document.getElementById(entity_id_multi).style.display = "none";
                 document.getElementById(entity_id).style.display = "none";
                 document.getElementById(service_id).style.display = "none";
                 entity_info_id.val("");
                 entity_div_id.empty();
             } else if (role_id.val() == "MA") {
                 console.log("For MA");
+                document.getElementById(entity_id_multi).style.display = "none";
                 document.getElementById(entity_id).style.display = "block";
                 document.getElementById(service_id).style.display = "none";
                 entity_info_id.val("");
@@ -171,20 +199,53 @@
 
             } else if (role_id.val() == "TV") {
                 console.log("For TV");
+                document.getElementById(entity_id_multi).style.display = "none";
                 document.getElementById(entity_id).style.display = "block";
                 document.getElementById(service_id).style.display = "none";
 
             } else if (role_id.val() == "MS") {
                 console.log("For MS and TV");
+                document.getElementById(entity_id_multi).style.display = "none";
                 document.getElementById(entity_id).style.display = "block";
                 document.getElementById(service_id).style.display = "block";
+
+            } else if (role_id.val() == "MMA") {
+                console.log("For MMA");
+                document.getElementById(entity_id).style.display = "none";
+                document.getElementById(entity_id_multi).style.display = "block";
+                document.getElementById(service_id).style.display = "none";
+                entity_info_id.val("");
+                entity_info_id_multi.val("");
+                entity_div_id.val("");
+
+                // $(entity_info_id_multi).select2({
+                //     allowClear: true,
+                //     theme: 'bootstrap',
+                //     width: 'resolve',
+                //     placeholder: 'Select Merchant/s'
+                // }(jQuery));
             }
+
+            // $('#id_entity_info_multi').select2();
 
             // $('#img_prev').removeClass('hidden');
         });
 
     });
 
+</script>
+
+<script>
+    $(document).ready(function() {
+        var entity_info_id_multi = $('#id_entity_info_multi');
+        $(entity_info_id_multi).select2({
+            allowClear: true,
+            multiple:true,
+            theme: 'bootstrap',
+            width: 'resolve',
+            placeholder: 'Select Merchant/s'
+        });
+    });
 </script>
 
 

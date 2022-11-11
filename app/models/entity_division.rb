@@ -26,6 +26,7 @@ class EntityDivision < ApplicationRecord
   has_many :entity_div_media, class_name: "EntityDivMedium", foreign_key: :entity_div_code
   has_many :entity_div_social_handles, class_name: "EntityDivSocialHandle", foreign_key: :entity_div_code
   has_many :loan_requests, class_name: 'LoanRequest', foreign_key: :division_code
+  has_many :client_webhook_configs, class_name: 'ClientWebhookConfig', foreign_key: :entity_div_code
 
   # has_many :entity_wallet_configs, class_name: 'EntityWalletConfig', foreign_key: :division_code
   # has_many :assigned_service_code, class_name: 'AssignedServiceCode', foreign_key: :entity_div_code

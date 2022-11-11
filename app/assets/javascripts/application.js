@@ -11,9 +11,10 @@
 // about supported directives.
 //
 // require turbolinks
+//= require jquery
 //= require rails-ujs
 //= require bootstrap-sprockets
-//= require select2
+//= require select2-full
 //= require fusioncharts/fusioncharts
 //= require fusioncharts/fusioncharts.charts
 //= require fusioncharts/fusioncharts.excelexport

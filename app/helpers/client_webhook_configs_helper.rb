@@ -1,0 +1,2 @@
+module ClientWebhookConfigsHelper
+end

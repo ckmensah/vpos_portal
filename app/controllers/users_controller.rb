@@ -13,7 +13,7 @@ class UsersController < ApplicationController
 
     @entity_infos = EntityInfo.where(active_status: true).order(entity_name: :asc)
     @entity_divisions = EntityDivision.where(active_status: true).order(division_name: :asc)
-    @roles = Role.where("active_status = true AND id NOT IN (1,5)").order(role_name: :asc)
+    @roles = Role.where("active_status = true AND id NOT IN (1,9)").order(role_name: :asc)
 
 
     if current_user.super_admin?
@@ -27,6 +27,10 @@ class UsersController < ApplicationController
     elsif current_user.merchant_admin?
       @validators = User.unscoped.user_roles_join.where("user_roles.entity_code = '#{current_user.user_entity_code}' AND user_roles.for_portal = false").paginate(:page => page, :per_page => params[:count]).order('users.created_at desc')
       @users = User.unscoped.user_roles_join.where("user_roles.entity_code = '#{current_user.user_entity_code}' AND user_roles.for_portal = true").paginate(:page => page, :per_page => params[:count]).order('users.created_at desc')
+
+    elsif current_user.multi_merchant_admin?
+      @validators = User.unscoped.user_roles_join.where("user_roles.entity_code IN '#{current_user.multi_user_entity_code}' AND user_roles.for_portal = false").paginate(:page => page, :per_page => params[:count]).order('users.created_at desc')
+      @users = User.unscoped.user_roles_join.where("user_roles.entity_code IN '#{current_user.multi_user_entity_code}' AND user_roles.for_portal = true AND").paginate(:page => page, :per_page => params[:count]).order('users.created_at desc')
 
     elsif current_user.merchant_service?
       #@validators = User.unscoped.user_roles_join.where(entity_code: current_user.user_entity_code, division_code: current_user.user_division_code, for_portal: false).paginate(:page => page, :per_page => params[:count]).order('users.created_at desc')
@@ -256,7 +260,6 @@ class UsersController < ApplicationController
     user_role_save.save(validate: false)
   end
 
-
   # POST /users
   # POST /users.json
   def create
@@ -266,18 +269,25 @@ class UsersController < ApplicationController
     end
     @user.for_portal = user_params[:for_role_code] == "TV" ? false : true
 
-    unless user_params[:for_role_code] == "SA" || user_params[:for_role_code] == "SA"
+    unless user_params[:for_role_code] == "SA" || user_params[:for_role_code] == "SU"
       if user_params[:for_role_code] == "MA"
         @user.access_type = "M"
       elsif user_params[:for_role_code] == "MS"
         @user.access_type = "S"
+      elsif user_params[:for_role_code] == "MMA"
+        @user.access_type = "MM"
       end
     end
     @user.show_charge = false if user_params[:for_role_code] == "SA" || user_params[:for_role_code] == "SU"
     respond_to do |format|
+      if user_params[:for_entity_code].present?
       @entity_divisions = EntityDivision.where(entity_code: user_params[:for_entity_code], active_status: true).order(division_name: :asc)
-      logger.info "Validator Validation ======================================="
+      elsif user_params[:for_entity_code_multi].present?
+      @entity_divisions = EntityDivision.where("entity_code IN ('#{user_params[:for_entity_code_multi]}') and active_status = true").order(division_name: :asc)
+      end
+        logger.info "Validator Validation ======================================="
       @entity_info_id = user_params[:for_entity_code]
+      @entity_info_id_multi = user_params[:for_entity_code_multi]
       @entity_div_id = user_params[:for_division_code]
       logger.info "=========================================================="
       logger.info "ID's are :: #{@entity_info_id.inspect}, #{@entity_div_id.inspect}"
@@ -361,8 +371,28 @@ class UsersController < ApplicationController
           #format.json { render :show, status: :created, location: @user }
         else
           if @user.save
+            if user_params[:for_role_code] == "SA" || user_params[:for_role_code] == "SU" || user_params[:for_role_code] == "MA" || user_params[:for_role_code] == "MS" || user_params[:for_role_code] == "TV"
             user_role_save(@user.id, user_params)
-          end
+            elsif user_params[:for_role_code] == "MMA"
+              if user_params[:for_entity_code_multi].present? && user_params[:for_entity_code_multi].count >= 1
+                user_role_save(@user.id, user_params)
+                user_params[:for_entity_code_multi].each do |i|
+                  next if i.empty?
+                  # user_role_save = UserRole.new(user_id: @user.id, role_code: user_params[:for_role_code],
+                  #                               entity_code: i, for_portal: user_params[:for_the_portal],
+                  #                               show_charge: user_params[:for_show_charge],
+                  #                               creator_id: user_params[:for_creator_id],
+                  #                               active_status: true, del_status: false)
+                  # user_role_save.save(validate: false)
+                  multi_user_role_save = MultiUserRole.new(user_id: @user.id, role_code: user_params[:for_role_code],
+                                                  entity_code: i,
+                                                  creator_id: user_params[:for_creator_id],
+                                                  active_status: true, del_status: false)
+                    multi_user_role_save.save(validate: false)
+                end
+              end
+             end
+            end
           format.html { redirect_to @user, notice: 'User was successfully created.' }
           flash.now[:notice] = "#{@user.user_name.capitalize} was successfully created."
           format.js { render :show }
@@ -627,7 +657,7 @@ class UsersController < ApplicationController
                                  :division_code, :contact_number, :password, :password_confirmation,
                                  :for_portal, :show_charge, :free_id, :role_id, :creator_id, :for_show_charge,
                                  :for_role_code, :for_the_portal, :for_entity_code, :for_division_code, :for_creator_id,
-                                 :active_status, :del_status)
+                                 :active_status, :del_status, {:for_entity_code_multi => []})
   end
 
 

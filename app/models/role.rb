@@ -1,6 +1,7 @@
 class Role < ApplicationRecord
   has_many :permission_roles, class_name: "PermissionRole", foreign_key: :role_code, primary_key: :assigned_code
   has_many :user_roles, class_name: "UserRole", foreign_key: :role_code
+  has_many :multi_user_roles, class_name: "MultiUserRole", foreign_key: :role_code
   has_many :permissions, through: :permission_roles
   has_many :users, through: :user_roles
 

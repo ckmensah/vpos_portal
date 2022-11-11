@@ -78,6 +78,8 @@ gem "shrine-cloudinary"
 gem "cloudinary"
 gem 'dropzonejs-rails'
 gem 'fusioncharts-rails'
+gem 'redis'
+gem 'sidekiq'
 
 
 

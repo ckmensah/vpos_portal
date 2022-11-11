@@ -121,7 +121,7 @@
     </div>
 
     <div class="w3-third">
-      <%= select_tag :count, options_for_select([50, 100, 150, 200, 500, "All"], params[:count]),
+      <%= select_tag :count, options_for_select([50, 100, 150, 200, 500], params[:count]),
                      :data => {:remote => true, :url => url_for(:controller => "payment_infos", :action => "payment_info_index",
                                                                 :params => {entity_name: params[:entity_name],
                                                                             division_name: params[:division_name],
@@ -350,7 +350,7 @@
           <td><%= payment_info.created_at %></td>
           <td>
             <% if current_user.super_admin? || current_user.super_user? || current_user.merchant_admin? %>
-              <% if @merchant && (@merchant.activity_type_code == "SHW" || @merchant.activity_type_code == "SPO" || @merchant.activity_type_code == "BAT") %>
+              <% if @merchant && (@merchant.activity_type_code == "SHW" || @merchant.activity_type_code == "SPO") %>
                 <%= link_to 'VIEW', payment_info_path(payment_info, params: params.to_unsafe_h, count: params[:count], page: params[:page]),
                             style: "width:70px; height: 30px;",
                             class: 'w3-button w3-purple-vpos w3-border w3-border-purple w3-tiny w3-round-large', remote: true %>

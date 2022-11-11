@@ -1,4 +1,5 @@
 Rails.application.routes.draw do
+  resources :client_webhook_configs
 
   root 'home#index'
   #devise_for :users
@@ -136,6 +137,8 @@ Rails.application.routes.draw do
   get '/entity_div_sub_activities/entity_div_sub_activity_index' => 'entity_div_sub_activities#entity_div_sub_activity_index', :as => 'entity_div_sub_activity_index'
 
   get '/loan_requests/loan_request_index' => 'loan_requests#loan_request_index', :as => 'loan_request_index'
+  get '/client_webhook_configs/client_webhook_index' => 'client_webhook_configs#client_webhook_index', :as => 'client_webhook_index'
+
 
 
   # ================== DASHBOARD ROUTES =======================

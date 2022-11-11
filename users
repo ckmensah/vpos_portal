@@ -1,0 +1,162 @@
+\d
+select * from number_validations;
+select * from account_lookups
+;
+truncate account_lookups restart_identity;
+truncate account_lookups restart identity;
+select * from account_lookups;
+select * from account_lookups;
+select * from reprocess_callback_reqs;
+select * from account_lookups;
+\d reprocess_callback_reqs;
+select * from reprocess_callback_reqs limit 0;
+select * from reprocess_callback_reqs;
+\d
+select * from reprocess_callback_reqs limit 0;
+select * from reprocess_callback_reqs;
+truncate reprocess_callback_reqs restart identity;
+select * from reprocess_callback_reqs;
+select * from reprocess_callback_reqs;
+truncate reprocess_callback_reqs restart identity;
+select * from reprocess_callback_reqs;
+select * from reprocess_callback_reqs;
+select * from reprocess_callback_reqs;
+select * from reprocess_callback_reqs;
+truncate reprocess_callback_reqs restart identity;
+select * from reprocess_callback_reqs;
+\d
+select * from premium_clients order by created_at desc limit 10
+;
+\d
+select * from users order by created_at desc limit 10;
+\d users;
+select * from premium_clients order by created_at desc limit 10;
+\d premium_clients;
+alter table premium_clients add column lookup_status boolean;
+\d premium_clients;
+\d
+select * from users;
+select * from users where id =74;
+\d users;
+select * from users where id =74;
+select * from fund_movement oder by created_at desc limit 1;
+select * from fund_movement order by created_at desc limit 1;
+select * from fund_movements order by created_at desc limit 1;
+\d
+\d activity_approvals;
+\d authorizer_cycles;
+\d authorizer_configs;
+select * from authorizer_config_users order by created_at desc limit 1;
+select * from activity_approvals order by created_at desc limit 1;
+select * from authorizer_config_users order by created_at desc limit 10;
+select * from authorizer_config_users order by created_at desc limit 100;
+select * from activity_approvals order by created_at desc limit 1;
+select * from authorizer_config_user_exts order by created_at desc limit 100;
+select * from fund_movements where id = 715;
+update fund_movements set approved= true where id = 715;
+update fund_movements set approved= true where id = 714;
+select * from roles;
+\d
+|d
+\
+\d
+\d transactions
+\d recipients;
+\d
+ \d payment_request;
+\d reserved_tax_component;
+\d
+select * from reprocess_callback_reqs;
+select * from reprocess_callback_reqs order by created_at desc limit 3;
+select * from reprocess_callback_reqs order by created_at desc limit 3;
+\d reprocess_callback_reqs;
+\d account_lookups;
+\d
+select * from reprocess_callback_reqs;
+alter table reprocess_callback_reqs add column response_msg varchar;
+select * from reprocess_callback_reqs;
+\d entity_service;
+\d entity_code;
+\d entity_info;
+\d
+select * from reprocess_callback_reqs;
+select * from reprocess_callback_reqs order by created_at desc limit 3;
+\d
+select * from payment_reports limit 0;
+\d payment_reports
+\d payment_request;
+\d payment_request;
+\d payment_request;
+\d payment_info;
+\d payment_info;
+\d payment_request;
+\d payment_callback;
+\d
+select * from client_webhook_config;
+\d
+\d payment_request;
+\d
+select * from entity_division order by created_at desc limit 3;
+\d
+\d payment_request;
+\d payment_callback;
+\d payment_info;
+\d payment_reports
+\d entity_service_account_trxn;
+\d entity_division;
+\d assigned_fees;
+select * from entity_division order by created_at desc limit 3;
+select * from entity_division order by created_at desc limit 10;
+\d users;
+\d user_roles;
+select * from multiple_user_roles;
+select * from multi_user_roles;
+select * from division_activity_lov;
+select * from payment_info order by created_at desc limit 10;
+select * from entity_division order by created_at desc limit 10;
+select * from entity_division where activity_type_code='SPO' order by created_at desc limit 10;
+select * from entity_division order by created_at desc;
+\d
+refresh materialized view payment_reports;
+select * from entity_division where activity_type_code='BAT' order by created_at desc limit 10;
+select * from payment_info order by created_at desc limit 10;
+select * from payment_reports order by created_at desc 20;
+select * from payment_reports order by created_at desc limit 20;
+select * from payment_info order by created_at desc limit 20;
+select * from payment_request order by created_at desc limit 20;
+select * from payment_callback order by created_at desc limit 20;
+\d
+\d activity_approvals;
+\d authorizer_config;
+\d authorizer_configs;
+select * from authorizer_config order by created_at desc limit 10;
+select * from authorizer_configs order by created_at desc limit 10;
+select * from authorizer_config_users order by created_at desc limit 10;
+select * from authorizer_config_user_ext order by created_at desc limit 10;
+select * from authorizer_config_user_exts order by created_at desc limit 10;
+\d  payment_request;
+\d entity_service_account_trxn;
+select * from entity_service_account_main;
+select * from entity_service_account_trxn;
+select * from entity_service_account_trxn;
+\d callback_status;
+\d payment_request;
+\d entity_service_account_trxn;
+\d
+\d entity_service_account_trxn;
+\d payment_request;
+\d
+\d payment_info;
+\d payment_request;
+\d
+\d client_webhook_config;
+\d client_webhook_config
+\d
+\d activity_type;
+\d sub_activity_master;
+\d entity_division;
+\d entity_service_account;
+\d client_webhook_config;
+\d entity_division;
+\d entity_categories;
+\s users;
