@@ -73,7 +73,7 @@
                   <td><strong><%= @pay_info.customer_name %></strong></td>
                 </tr>
               <% else %>
-                <% if @pay_info.entity_division != nil && @pay_info.entity_division.activity_type_code != "MOP" %>
+                <% if @pay_info.entity_division != nil && (@pay_info.entity_division.activity_type_code != "MOP" && @pay_info.entity_division.activity_type_code != "PDD") %>
                   <tr>
                     <td class="raw_theme w3-border w3-border-black w3-leftbar"><strong>Reference Name:</strong></td>
                     <td><strong><%= @pay_info.reference %></strong></td>
@@ -241,6 +241,13 @@
                 <tr>
                   <td class="raw_theme w3-border w3-border-black w3-leftbar"><strong>Transaction Type:</strong></td>
                   <td><strong><%= @pay_info.trans_type %></strong></td>
+                </tr>
+              <% end %>
+
+              <% if @pay_info.entity_division != nil && @pay_info.entity_division.activity_type_code == "PDD" %>
+                <tr>
+                  <td class="raw_theme w3-border w3-border-black w3-leftbar"><strong>Location</strong></td>
+                  <td><strong><%= @pay_info.reference %></strong></td>
                 </tr>
               <% end %>
 

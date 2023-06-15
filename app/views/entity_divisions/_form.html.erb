@@ -31,30 +31,45 @@
 
               <%= f.error_notification %>
               <%= f.error_notification message: f.object.errors[:base].to_sentence if f.object.errors[:base].present? %>
+
             <%#= f.input :allow_qr, label: false, as: :boolean, required: false, input_html: {id: "allow_qr", autocomplete: "off", class: "", style: "display: block; float: right; width: 50%"} %>
 
-            <div class="w3-center">
-              <div class="w3-half"><label>Allow QR</label></div>
-              <div class="w3-half">
-                <%= f.input :allow_qr, label: false, as: :boolean, required: false, input_html: {id: "allow_qr", autocomplete: "off", class: "", style: "display: block; float: right; width: 50%"} %>
-              </div>
-            </div>
+<!--            <div class="w3-center">-->
+<!--              <div class="w3-half"><label>Allow QR</label></div>-->
+<!--              <div class="w3-half">-->
+                <%#= f.input :allow_qr, label: "Allow QR", as: :boolean, required: false, wrapper: :checkbox, input_html: {id: "allow_qr", autocomplete: "off", class: "", style: "display: block; float: right; width: 50%"} %>
+<!--              </div>-->
+<!--            </div>-->
 
-            <br/>
-            <div class="w3-container col-md-10 offset-md-1" style="width: 100%">
-              <div class="w3-quarter"><label>Card Option Status</label></div>
-              <div class="w3-quarter">
-                <%= f.input :card_option_status, label: false, as: :boolean, required: false, input_html: {id: "card_status", autocomplete: "off", class: "", style: "display: block; float: right; width: 50%"} %>
-              </div>
-              <div>
-                <div class="w3-quarter"><label>Payment Type</label></div>
-                <div class="w3-quarter">
-                  <%= f.input :payment_type, label: false, as: :boolean, required: false, input_html: {id: "payment_type", autocomplete: "off", class: "", style: "display: block; float: right; width: 50%"} %>
-                </div>
-              </div>
+<!--            <br/>-->
+<!--            <div class="w3-container col-md-10 offset-md-1" style="width: 100%">-->
+<!--              <div class="w3-quarter"><label>Card Option Status</label></div>-->
+<!--              <div class="w3-quarter">-->
+                <%#= f.input :card_option_status, label: false, as: :boolean, required: false, input_html: {id: "card_status", autocomplete: "off", class: "", style: "display: block; float: right; width: 50%"} %>
+<!--              </div>-->
+<!--              <div>-->
+<!--                <div class="w3-quarter"><label>Payment Type</label></div>-->
+<!--                <div class="w3-quarter">-->
+                  <%#= f.input :payment_type, label: false, as: :boolean, required: false, input_html: {id: "payment_type", autocomplete: "off", class: "", style: "display: block; float: right; width: 50%"} %>
+<!--                </div>-->
+<!--              </div>-->
 
-              <br><br>
+<!--              <div>-->
+<!--                <div class="w3-quarter"><label>Reference</label></div>-->
+<!--                <div class="w3-quarter">-->
+                  <%#= f.input :reference, label: false, as: :boolean, required: false, input_html: {id: "reference", autocomplete: "off", class: "",checked: false, style: "display: block; float: right; width: 50%"} %>
+<!--                </div>-->
+<!--              </div>-->
+
+<!--              <br><br>-->
+<!--            </div>-->
+            <div class="container-fluid col-md-10 justify-content-between form-inline">
+            <%= f.input :allow_qr, label: "Allow QR", as: :boolean, required: false, wrapper: :inline_boolean, input_html: {id: "allow_qr", autocomplete: "off", class: "", style: "display: block; float: right; width: 50%"} %>
+            <%= f.input :card_option_status, label: "Card Options Status", as: :boolean,wrapper: :inline_boolean, required: false, input_html: {id: "card_status", autocomplete: "off", class: "", style: "display: block; float: right; width: 50%"} %>
+            <%= f.input :payment_type, label: "Payment Type", as: :boolean, required: false,wrapper: :inline_boolean, input_html: {id: "payment_type", autocomplete: "off", class: "", style: "display: block; float: right; width: 50%"} %>
+            <%= f.input :reference, label: "Reference", as: :boolean, required: false,wrapper: :inline_boolean, input_html: {id: "reference", autocomplete: "off", class: "",checked: false, style: "display: block; float: right; width: 50%"} %>
             </div>
+            <br><br>
 
             <div class="w3-third">
 
@@ -76,6 +91,9 @@
 
                   <%= f.input :city_town_name, label: "City", collection: @city_masters, label_method: :city_town_name, value_method: :id, required: true, input_html:{id: "for_city", autocomplete: "off",class:"form-control w3-input w3-border w3-white input-group input-append",style:"width: 90%;"}  %>
                   <%= f.input :suburb_id, label: "Suburb", collection: @sub_masters, label_method: :suburb_name, value_method: :id, required: true, input_html:{id: "for_suburb", autocomplete: "off",class:"form-control w3-input w3-border w3-white input-group input-append",style:"width: 90%;"}  %>
+<!--                  <div id="ref_label">-->
+                    <%#= f.input :ref_label, label: "Reference Label", collection: [%w[Name name], ["Account Number", "Acct"],[""]], required: true, input_html: { id: "ref_label", autocomplete: "off", class: "form-control w3-input w3-border w3-white input-group input-append", style: "width: 90%;"} %>
+<!--                  </div>-->
                   <div id="act_loc_div">
                     <%= f.input :activity_loc, label: "Activity Location", required: true, input_html: {id: "act_loc", autocomplete: "off", min: 0, max: 999999, class: "form-control w3-input w3-border w3-white input-group input-append", style: "width: 90%;"} %>
                   </div>

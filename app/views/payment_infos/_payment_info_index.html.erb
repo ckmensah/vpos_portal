@@ -121,7 +121,7 @@
     </div>
 
     <div class="w3-third">
-      <%= select_tag :count, options_for_select([50, 100, 150, 200, 500], params[:count]),
+      <%= select_tag :count, options_for_select([50, 100, 150, 200, 500, "All"], params[:count]),
                      :data => {:remote => true, :url => url_for(:controller => "payment_infos", :action => "payment_info_index",
                                                                 :params => {entity_name: params[:entity_name],
                                                                             division_name: params[:division_name],
@@ -162,6 +162,12 @@
         <% end %>
 
         <th>Customer No.</th>
+        <% entity_dive = EntityDivision.where(active_status: true, del_status: false, assigned_code: current_user.user_division_code).order(created_at: :desc).first %>
+        <% if current_user.merchant_service? %>
+          <%if entity_dive %>
+            <th>Location</th>
+          <% end %>
+        <% end %>
         <th>Trans. ID</th>
         <% if current_user.super_admin? || current_user.super_user? || current_user.user_show_charge == true %>
           <th>Gross Amt</th>
@@ -286,7 +292,14 @@
             <% end %>
           <% elsif current_user.merchant_service? %>
           <% end %>
+
           <td><%= payment_info.customer_number %></td>
+          <% entity_dive = EntityDivision.where(active_status: true, del_status: false, assigned_code: current_user.user_division_code).order(created_at: :desc).first %>
+          <% if current_user.merchant_service? %>
+              <%if entity_dive %>
+              <td><%= payment_info.reference %></td>
+            <% end %>
+          <% end %>
           <td><%= payment_info.processing_id if payment_info.processing_id.present? %></td>
           <% if current_user.super_admin? || current_user.super_user? || current_user.user_show_charge == true %>
             <td><%= for_gross_amt.round(3) %></td>
@@ -457,6 +470,7 @@
         <% @transaction_types = [["Collections (CTM)", "CTM"], ["Cash (CSH)", "CSH"], ["Disbursements (MTC)", "MTC"]] %>
         <% @statuses = [["SUCCESS", "000"], ["FAILED", "001"], ["PENDING", "NIL"]] %>
         <% @sources = [["Web", "WEB"], ["Portal", "PTL"], ["USSD", "USSD"]] %>
+        <% @locations = RegionMaster.where(active_status: true, del_status: false) %>
         <%= simple_form_for :filter_main, :url => (payment_info_index_path(count: params[:count], page: params[:page])), :method => 'get', html: {class: 'form-horizontal'}, remote: true do |f| %>
           <div class="w3-container w3-border w3-border-purple">
             <!--            <br/>-->
@@ -502,8 +516,9 @@
                 <%# end %>
                 <%= f.input :trans_id, label: "Transaction ID", class: "form-control", input_html: {style: "width: 90%"}, boolean_style: :inline %>
               <% end %>
+              <% if current_user.super_admin? || current_user.super_user? %>
               <%= f.input :trans_type, collection: @transaction_types, label_method: :first, value_method: :last, class: "form-control", input_html: {id: "id_trans_type", style: "width: 90%"}, label: "Transaction Type", boolean_style: :inline %>
-
+              <% end %>
             </div>
 
 
@@ -518,7 +533,13 @@
                 <%= f.input :ref, class: "form-control", input_html: {style: "width: 100%"}, label: "Reference", boolean_style: :inline %>
                 <%= f.input :trans_id, label: "Transaction ID", class: "form-control", input_html: {style: ""}, boolean_style: :inline %>
               <% elsif current_user.merchant_service? %>
-                <%= f.input :ref, class: "form-control", input_html: {style: "width: 100%"}, label: "Reference", boolean_style: :inline %>
+                  <% that_service = EntityDivision.where(assigned_code: current_user.user_division_code, active_status: true).order(created_at: :desc).first %>
+                  <% if that_service && that_service.activity_type_code == "PDD" %>
+                    <%= f.input :ref,  collection: @locations, class: "form-control", label_method: :region_name, value_method: :region_name,input_html: {style: "width: 100%"}, label: "Location", boolean_style: :inline %>
+                 <% else %>
+                  <%= f.input :ref, class: "form-control", input_html: {style: "width: 100%"}, label: "Reference", boolean_style: :inline %>
+                <% end %>
+
               <% end %>
               <%= f.input :nw, collection: @networks, label_method: :first, value_method: :last, class: "form-control", input_html: {style: ""}, label: "Network", boolean_style: :inline %>
 

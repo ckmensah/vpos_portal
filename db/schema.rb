@@ -2,16 +2,15 @@
 # of editing this file, please use the migrations feature of Active Record to
 # incrementally modify your database, and then regenerate this schema definition.
 #
-# Note that this schema.rb definition is the authoritative source for your
-# database schema. If you need to create the application database on another
-# system, you should be using db:schema:load, not running all the migrations
-# from scratch. The latter is a flawed and unsustainable approach (the more migrations
-# you'll amass, the slower it'll run and the greater likelihood for issues).
+# This file is the source Rails uses to define your schema when running `bin/rails
+# db:schema:load`. When creating a new database, `bin/rails db:schema:load` tends to
+# be faster and is potentially less error prone than running all of your
+# migrations from scratch. Old migrations may fail to apply correctly if those
+# migrations use external dependencies or application code.
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_05_04_160344) do
-
+ActiveRecord::Schema[7.0].define(version: 2022_05_04_160344) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -24,8 +23,8 @@ ActiveRecord::Schema.define(version: 2022_05_04_160344) do
     t.boolean "active_status", default: true
     t.boolean "del_status", default: false
     t.integer "user_id"
-    t.datetime "created_at", default: -> { "CURRENT_TIMESTAMP" }
-    t.datetime "updated_at"
+    t.datetime "created_at", precision: nil, default: -> { "CURRENT_TIMESTAMP" }
+    t.datetime "updated_at", precision: nil
   end
 
   create_table "activity_category_div", id: false, force: :cascade do |t|
@@ -38,8 +37,8 @@ ActiveRecord::Schema.define(version: 2022_05_04_160344) do
     t.boolean "active_status", default: true
     t.boolean "del_status", default: false
     t.integer "user_id"
-    t.datetime "created_at", default: -> { "CURRENT_TIMESTAMP" }
-    t.datetime "updated_at"
+    t.datetime "created_at", precision: nil, default: -> { "CURRENT_TIMESTAMP" }
+    t.datetime "updated_at", precision: nil
   end
 
   create_table "activity_div_cat", id: false, force: :cascade do |t|
@@ -49,8 +48,8 @@ ActiveRecord::Schema.define(version: 2022_05_04_160344) do
     t.boolean "active_status", default: true
     t.boolean "del_status", default: false
     t.integer "user_id"
-    t.datetime "created_at", default: -> { "CURRENT_TIMESTAMP" }
-    t.datetime "updated_at"
+    t.datetime "created_at", precision: nil, default: -> { "CURRENT_TIMESTAMP" }
+    t.datetime "updated_at", precision: nil
   end
 
   create_table "activity_divs", force: :cascade do |t|
@@ -60,8 +59,8 @@ ActiveRecord::Schema.define(version: 2022_05_04_160344) do
     t.boolean "active_status", default: true
     t.boolean "del_status", default: false
     t.integer "user_id"
-    t.datetime "created_at", default: -> { "CURRENT_TIMESTAMP" }, null: false
-    t.datetime "updated_at"
+    t.datetime "created_at", precision: nil, default: -> { "CURRENT_TIMESTAMP" }, null: false
+    t.datetime "updated_at", precision: nil
     t.string "activity_div_desc", limit: 150
     t.integer "activity_fixture_id"
   end
@@ -76,8 +75,8 @@ ActiveRecord::Schema.define(version: 2022_05_04_160344) do
     t.boolean "active_status", default: true
     t.boolean "del_status", default: false
     t.integer "user_id"
-    t.datetime "created_at", default: -> { "CURRENT_TIMESTAMP" }
-    t.datetime "updated_at"
+    t.datetime "created_at", precision: nil, default: -> { "CURRENT_TIMESTAMP" }
+    t.datetime "updated_at", precision: nil
   end
 
   create_table "activity_groups", force: :cascade do |t|
@@ -86,8 +85,8 @@ ActiveRecord::Schema.define(version: 2022_05_04_160344) do
     t.boolean "active_status"
     t.boolean "del_status"
     t.integer "user_id"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "updated_at", precision: nil, null: false
   end
 
   create_table "activity_participant", id: false, force: :cascade do |t|
@@ -101,8 +100,8 @@ ActiveRecord::Schema.define(version: 2022_05_04_160344) do
     t.boolean "active_status", default: true
     t.boolean "del_status", default: false
     t.integer "user_id"
-    t.datetime "created_at", default: -> { "CURRENT_TIMESTAMP" }
-    t.datetime "updated_at"
+    t.datetime "created_at", precision: nil, default: -> { "CURRENT_TIMESTAMP" }
+    t.datetime "updated_at", precision: nil
   end
 
   create_table "activity_sub_div_class", id: false, force: :cascade do |t|
@@ -113,8 +112,8 @@ ActiveRecord::Schema.define(version: 2022_05_04_160344) do
     t.integer "user_id"
     t.boolean "active_status", default: true
     t.boolean "del_status", default: false
-    t.datetime "created_at", default: -> { "CURRENT_TIMESTAMP" }, null: false
-    t.datetime "updated_at"
+    t.datetime "created_at", precision: nil, default: -> { "CURRENT_TIMESTAMP" }, null: false
+    t.datetime "updated_at", precision: nil
     t.integer "max_num", default: 0
     t.string "activity_group_code"
   end
@@ -128,8 +127,8 @@ ActiveRecord::Schema.define(version: 2022_05_04_160344) do
     t.boolean "active_status", default: true
     t.boolean "del_status", default: false
     t.integer "user_id"
-    t.datetime "created_at", default: -> { "CURRENT_TIMESTAMP" }, null: false
-    t.datetime "updated_at"
+    t.datetime "created_at", precision: nil, default: -> { "CURRENT_TIMESTAMP" }, null: false
+    t.datetime "updated_at", precision: nil
   end
 
   create_table "activity_type", id: false, force: :cascade do |t|
@@ -140,8 +139,8 @@ ActiveRecord::Schema.define(version: 2022_05_04_160344) do
     t.integer "user_id"
     t.boolean "active_status", default: true
     t.boolean "del_status", default: false
-    t.datetime "created_at", default: -> { "CURRENT_TIMESTAMP" }, null: false
-    t.datetime "updated_at"
+    t.datetime "created_at", precision: nil, default: -> { "CURRENT_TIMESTAMP" }, null: false
+    t.datetime "updated_at", precision: nil
     t.string "channel", limit: 5
   end
 
@@ -154,8 +153,8 @@ ActiveRecord::Schema.define(version: 2022_05_04_160344) do
     t.boolean "active_status"
     t.boolean "del_status"
     t.integer "user_id"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "updated_at", precision: nil, null: false
     t.index ["active_status"], name: "activity_type_media_active_status_idx"
     t.index ["activity_type_code"], name: "activity_type_media_activity_type_code_idx"
     t.index ["comment"], name: "activity_type_media_comment_idx"
@@ -178,8 +177,8 @@ ActiveRecord::Schema.define(version: 2022_05_04_160344) do
     t.integer "payment_info_id"
     t.string "alert_type", limit: 5
     t.text "remote_resp"
-    t.datetime "created_at", default: -> { "CURRENT_TIMESTAMP" }
-    t.datetime "updated_at"
+    t.datetime "created_at", precision: nil, default: -> { "CURRENT_TIMESTAMP" }
+    t.datetime "updated_at", precision: nil
   end
 
   create_table "assigned_fees", id: false, force: :cascade do |t|
@@ -196,8 +195,8 @@ ActiveRecord::Schema.define(version: 2022_05_04_160344) do
     t.boolean "del_status", default: false
     t.integer "user_id"
     t.boolean "approved"
-    t.datetime "created_at", default: -> { "CURRENT_TIMESTAMP" }, null: false
-    t.datetime "updated_at"
+    t.datetime "created_at", precision: nil, default: -> { "CURRENT_TIMESTAMP" }, null: false
+    t.datetime "updated_at", precision: nil
     t.index ["cap"], name: "assigned_fees_cap_idx"
     t.index ["charged_to"], name: "assigned_fees_charged_to_idx"
     t.index ["comment"], name: "assigned_fees_comment_idx"
@@ -219,8 +218,10 @@ ActiveRecord::Schema.define(version: 2022_05_04_160344) do
     t.integer "user_id"
     t.boolean "active_status", default: true
     t.boolean "del_status", default: false
-    t.datetime "created_at", default: -> { "CURRENT_TIMESTAMP" }, null: false
-    t.datetime "updated_at"
+    t.datetime "created_at", precision: nil, default: -> { "CURRENT_TIMESTAMP" }, null: false
+    t.datetime "updated_at", precision: nil
+    t.text "assigned_qr_code"
+    t.text "url"
     t.index ["comment"], name: "assigned_service_code_comment_idx"
     t.index ["created_at"], name: "assigned_service_code_created_at_idx"
     t.index ["entity_div_code"], name: "assigned_service_code_entity_div_code_idx"
@@ -237,11 +238,36 @@ ActiveRecord::Schema.define(version: 2022_05_04_160344) do
     t.string "device_type", limit: 10
     t.boolean "expired", default: false
     t.string "status", limit: 10
-    t.datetime "created_at", default: -> { "CURRENT_TIMESTAMP" }, null: false
+    t.datetime "created_at", precision: nil, default: -> { "CURRENT_TIMESTAMP" }, null: false
     t.string "ref_code", limit: 50
-    t.datetime "updated_at"
+    t.datetime "updated_at", precision: nil
     t.string "entity_code"
     t.string "division_code"
+  end
+
+  create_table "bat_access_token", id: false, force: :cascade do |t|
+    t.serial "id", null: false
+    t.text "encryptedaccesstoken"
+    t.text "accesstoken"
+    t.integer "expireinseconds"
+    t.integer "userid"
+    t.text "refreshtoken"
+    t.integer "refreshtokenexpireinseconds"
+    t.datetime "created_at", precision: nil, default: -> { "CURRENT_TIMESTAMP" }
+  end
+
+  create_table "bat_cust_bill_items", id: false, force: :cascade do |t|
+    t.serial "id", null: false
+    t.integer "payment_info_id"
+    t.string "product_id", limit: 255
+    t.integer "product_qty"
+    t.decimal "prod_tot_price"
+    t.string "prod_unit_id", limit: 100
+    t.decimal "prod_unit_price"
+    t.boolean "processed"
+    t.datetime "created_at", precision: nil, default: -> { "CURRENT_TIMESTAMP" }
+    t.datetime "updated_at", precision: nil
+    t.string "product_name", limit: 100
   end
 
   create_table "bulk_purchase_items", id: false, force: :cascade do |t|
@@ -254,8 +280,8 @@ ActiveRecord::Schema.define(version: 2022_05_04_160344) do
     t.string "session_id", limit: 20
     t.string "customer_number", limit: 20
     t.boolean "processed"
-    t.datetime "created_at", default: -> { "CURRENT_TIMESTAMP" }
-    t.datetime "updated_at"
+    t.datetime "created_at", precision: nil, default: -> { "CURRENT_TIMESTAMP" }
+    t.datetime "updated_at", precision: nil
   end
 
   create_table "city_town_masters", force: :cascade do |t|
@@ -265,8 +291,24 @@ ActiveRecord::Schema.define(version: 2022_05_04_160344) do
     t.boolean "active_status"
     t.boolean "del_status"
     t.integer "user_id"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "updated_at", precision: nil, null: false
+  end
+
+  create_table "client_webhook_config", id: :serial, force: :cascade do |t|
+    t.string "entity_div_code", limit: 10
+    t.string "trans_type", limit: 5
+    t.string "url", limit: 255
+    t.boolean "active_status", default: true
+    t.boolean "del_status", default: false
+    t.integer "user_id"
+    t.datetime "created_at", precision: nil, default: -> { "CURRENT_TIMESTAMP" }
+    t.datetime "updated_at", precision: nil
+    t.index ["created_at"], name: "webhook_config_created_at_idx"
+    t.index ["entity_div_code"], name: "webhook_config_entity_div_code_idx"
+    t.index ["trans_type"], name: "webhook_config_trans_type_idx"
+    t.index ["updated_at"], name: "webhook_config_updated_at_idx"
+    t.index ["user_id"], name: "webhook_config_user_id_idx"
   end
 
   create_table "cust_code_vault", id: false, force: :cascade do |t|
@@ -280,8 +322,8 @@ ActiveRecord::Schema.define(version: 2022_05_04_160344) do
     t.integer "verified_by"
     t.boolean "active_status", default: true
     t.boolean "del_status", default: false
-    t.datetime "created_at", default: -> { "CURRENT_TIMESTAMP" }
-    t.datetime "updated_at"
+    t.datetime "created_at", precision: nil, default: -> { "CURRENT_TIMESTAMP" }
+    t.datetime "updated_at", precision: nil
   end
 
   create_table "division_activity_lov", id: false, force: :cascade do |t|
@@ -293,8 +335,8 @@ ActiveRecord::Schema.define(version: 2022_05_04_160344) do
     t.integer "user_id"
     t.boolean "active_status", default: true
     t.boolean "del_status", default: false
-    t.datetime "created_at", default: -> { "CURRENT_TIMESTAMP" }, null: false
-    t.datetime "updated_at"
+    t.datetime "created_at", precision: nil, default: -> { "CURRENT_TIMESTAMP" }, null: false
+    t.datetime "updated_at", precision: nil
     t.decimal "assigned_amount", precision: 11, scale: 3, default: "0.0"
   end
 
@@ -304,7 +346,7 @@ ActiveRecord::Schema.define(version: 2022_05_04_160344) do
     t.string "nw_trans_id", limit: 50
     t.string "trans_ref", limit: 20
     t.string "trans_msg", limit: 255
-    t.datetime "created_at", default: -> { "CURRENT_TIMESTAMP" }, null: false
+    t.datetime "created_at", precision: nil, default: -> { "CURRENT_TIMESTAMP" }, null: false
   end
 
   create_table "entity_admin_whitelist", id: false, force: :cascade do |t|
@@ -315,8 +357,8 @@ ActiveRecord::Schema.define(version: 2022_05_04_160344) do
     t.integer "user_id"
     t.boolean "active_status", default: true
     t.boolean "del_status", default: false
-    t.datetime "created_at", default: -> { "CURRENT_TIMESTAMP" }
-    t.datetime "updated_at"
+    t.datetime "created_at", precision: nil, default: -> { "CURRENT_TIMESTAMP" }
+    t.datetime "updated_at", precision: nil
     t.string "full_name", limit: 150
   end
 
@@ -327,8 +369,8 @@ ActiveRecord::Schema.define(version: 2022_05_04_160344) do
     t.boolean "active_status", default: true
     t.boolean "del_status", default: false
     t.integer "user_id"
-    t.datetime "created_at", default: -> { "CURRENT_TIMESTAMP" }, null: false
-    t.datetime "updated_at"
+    t.datetime "created_at", precision: nil, default: -> { "CURRENT_TIMESTAMP" }, null: false
+    t.datetime "updated_at", precision: nil
   end
 
   create_table "entity_div_alert_recipient", id: false, force: :cascade do |t|
@@ -339,8 +381,8 @@ ActiveRecord::Schema.define(version: 2022_05_04_160344) do
     t.boolean "active_status", default: true
     t.boolean "del_status", default: false
     t.integer "user_id"
-    t.datetime "created_at", default: -> { "CURRENT_TIMESTAMP" }, null: false
-    t.datetime "updated_at"
+    t.datetime "created_at", precision: nil, default: -> { "CURRENT_TIMESTAMP" }, null: false
+    t.datetime "updated_at", precision: nil
     t.boolean "alerts"
     t.boolean "trans_rpt"
     t.string "email"
@@ -355,8 +397,8 @@ ActiveRecord::Schema.define(version: 2022_05_04_160344) do
     t.boolean "active_status", default: true
     t.boolean "del_status", default: false
     t.integer "user_id"
-    t.datetime "created_at", default: -> { "CURRENT_TIMESTAMP" }, null: false
-    t.datetime "updated_at"
+    t.datetime "created_at", precision: nil, default: -> { "CURRENT_TIMESTAMP" }, null: false
+    t.datetime "updated_at", precision: nil
     t.index ["created_at"], name: "entity_div_media_created_at_idx"
     t.index ["entity_div_code"], name: "entity_div_media_entity_div_code_idx"
     t.index ["media_data"], name: "entity_div_media_media_data_idx"
@@ -374,8 +416,8 @@ ActiveRecord::Schema.define(version: 2022_05_04_160344) do
     t.boolean "active_status", default: true
     t.boolean "del_status", default: false
     t.integer "user_id"
-    t.datetime "created_at", default: -> { "CURRENT_TIMESTAMP" }, null: false
-    t.datetime "updated_at"
+    t.datetime "created_at", precision: nil, default: -> { "CURRENT_TIMESTAMP" }, null: false
+    t.datetime "updated_at", precision: nil
   end
 
   create_table "entity_div_sub_activity", id: false, force: :cascade do |t|
@@ -386,8 +428,8 @@ ActiveRecord::Schema.define(version: 2022_05_04_160344) do
     t.integer "user_id"
     t.boolean "active_status", default: true
     t.boolean "del_status", default: false
-    t.datetime "created_at", default: -> { "CURRENT_TIMESTAMP" }, null: false
-    t.datetime "updated_at"
+    t.datetime "created_at", precision: nil, default: -> { "CURRENT_TIMESTAMP" }, null: false
+    t.datetime "updated_at", precision: nil
   end
 
   create_table "entity_division", id: false, force: :cascade do |t|
@@ -403,8 +445,8 @@ ActiveRecord::Schema.define(version: 2022_05_04_160344) do
     t.integer "user_id"
     t.boolean "active_status", default: true
     t.boolean "del_status", default: false
-    t.datetime "created_at", default: -> { "CURRENT_TIMESTAMP" }, null: false
-    t.datetime "updated_at"
+    t.datetime "created_at", precision: nil, default: -> { "CURRENT_TIMESTAMP" }, null: false
+    t.datetime "updated_at", precision: nil
     t.boolean "allow_qr"
     t.string "msg_sender_id", limit: 10
     t.string "sms_sender_id", limit: 10
@@ -415,6 +457,7 @@ ActiveRecord::Schema.define(version: 2022_05_04_160344) do
     t.boolean "payment_type"
     t.boolean "card_option_status"
     t.boolean "event_progress", default: true
+    t.string "division_category", limit: 10
   end
 
   create_table "entity_info", id: false, force: :cascade do |t|
@@ -427,8 +470,8 @@ ActiveRecord::Schema.define(version: 2022_05_04_160344) do
     t.integer "user_id"
     t.boolean "active_status", default: true
     t.boolean "del_status", default: false
-    t.datetime "created_at", default: -> { "CURRENT_TIMESTAMP" }, null: false
-    t.datetime "updated_at"
+    t.datetime "created_at", precision: nil, default: -> { "CURRENT_TIMESTAMP" }, null: false
+    t.datetime "updated_at", precision: nil
   end
 
   create_table "entity_info_extra", id: false, force: :cascade do |t|
@@ -442,8 +485,8 @@ ActiveRecord::Schema.define(version: 2022_05_04_160344) do
     t.boolean "active_status", default: true
     t.boolean "del_status", default: false
     t.integer "user_id"
-    t.datetime "created_at", default: -> { "CURRENT_TIMESTAMP" }, null: false
-    t.datetime "updated_at"
+    t.datetime "created_at", precision: nil, default: -> { "CURRENT_TIMESTAMP" }, null: false
+    t.datetime "updated_at", precision: nil
   end
 
   create_table "entity_service_account", id: false, force: :cascade do |t|
@@ -453,8 +496,8 @@ ActiveRecord::Schema.define(version: 2022_05_04_160344) do
     t.decimal "net_bal", precision: 11, scale: 3
     t.boolean "active_status", default: true
     t.boolean "del_status", default: false
-    t.datetime "created_at", default: -> { "CURRENT_TIMESTAMP" }, null: false
-    t.datetime "updated_at"
+    t.datetime "created_at", precision: nil, default: -> { "CURRENT_TIMESTAMP" }, null: false
+    t.datetime "updated_at", precision: nil
   end
 
   create_table "entity_service_account_trxn", id: false, force: :cascade do |t|
@@ -467,7 +510,7 @@ ActiveRecord::Schema.define(version: 2022_05_04_160344) do
     t.string "processing_id", limit: 20
     t.decimal "charge", precision: 11, scale: 3
     t.string "trans_type", limit: 5
-    t.datetime "created_at", default: -> { "CURRENT_TIMESTAMP" }, null: false
+    t.datetime "created_at", precision: nil, default: -> { "CURRENT_TIMESTAMP" }, null: false
   end
 
   create_table "entity_wallet_configs", force: :cascade do |t|
@@ -479,8 +522,8 @@ ActiveRecord::Schema.define(version: 2022_05_04_160344) do
     t.boolean "active_status", default: true
     t.boolean "del_status", default: false
     t.integer "user_id"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "updated_at", precision: nil, null: false
     t.string "activity_type_code"
     t.string "division_code", limit: 50
     t.index ["activity_type_code"], name: "entity_wallet_configs_activity_type_code_idx"
@@ -502,7 +545,7 @@ ActiveRecord::Schema.define(version: 2022_05_04_160344) do
     t.string "trans_type", limit: 5
     t.string "nw", limit: 5
     t.text "err_msg"
-    t.datetime "created_at", default: -> { "CURRENT_TIMESTAMP" }, null: false
+    t.datetime "created_at", precision: nil, default: -> { "CURRENT_TIMESTAMP" }, null: false
   end
 
   create_table "fund_movement", id: false, force: :cascade do |t|
@@ -515,8 +558,8 @@ ActiveRecord::Schema.define(version: 2022_05_04_160344) do
     t.string "trans_status", limit: 10
     t.string "trans_desc", limit: 255
     t.boolean "processed"
-    t.datetime "created_at", default: -> { "CURRENT_TIMESTAMP" }, null: false
-    t.datetime "updated_at"
+    t.datetime "created_at", precision: nil, default: -> { "CURRENT_TIMESTAMP" }, null: false
+    t.datetime "updated_at", precision: nil
     t.string "entity_div_code", limit: 10
   end
 
@@ -531,8 +574,8 @@ ActiveRecord::Schema.define(version: 2022_05_04_160344) do
     t.boolean "active_status"
     t.boolean "del_status"
     t.integer "user_id"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "updated_at", precision: nil, null: false
   end
 
   create_table "multi_user_roles", force: :cascade do |t|
@@ -543,8 +586,17 @@ ActiveRecord::Schema.define(version: 2022_05_04_160344) do
     t.text "comment"
     t.boolean "active_status"
     t.boolean "del_status"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "updated_at", precision: nil, null: false
+  end
+
+  create_table "notification_recipient", force: :cascade do |t|
+    t.string "short_code"
+    t.string "customer_number"
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "updated_at", precision: nil
+    t.boolean "active_status"
+    t.boolean "del_status"
   end
 
   create_table "payment_callback", id: false, force: :cascade do |t|
@@ -553,7 +605,7 @@ ActiveRecord::Schema.define(version: 2022_05_04_160344) do
     t.string "nw_trans_id", limit: 50
     t.string "trans_ref", limit: 20
     t.string "trans_msg", limit: 255
-    t.datetime "created_at", default: -> { "CURRENT_TIMESTAMP" }, null: false
+    t.datetime "created_at", precision: nil, default: -> { "CURRENT_TIMESTAMP" }, null: false
   end
 
   create_table "payment_info", id: false, force: :cascade do |t|
@@ -564,8 +616,8 @@ ActiveRecord::Schema.define(version: 2022_05_04_160344) do
     t.integer "activity_div_id"
     t.boolean "processed"
     t.string "src", limit: 5
-    t.datetime "created_at", default: -> { "CURRENT_TIMESTAMP" }, null: false
-    t.datetime "updated_at"
+    t.datetime "created_at", precision: nil, default: -> { "CURRENT_TIMESTAMP" }, null: false
+    t.datetime "updated_at", precision: nil
     t.string "payment_mode", limit: 5
     t.decimal "amount", precision: 11, scale: 3, default: "0.0"
     t.string "customer_number", limit: 20
@@ -582,6 +634,9 @@ ActiveRecord::Schema.define(version: 2022_05_04_160344) do
     t.string "customer_name", limit: 255
     t.boolean "payment_option"
     t.string "card_option", limit: 5
+    t.boolean "deferred_pay"
+    t.string "deferred_code", limit: 20
+    t.string "nw", limit: 5
   end
 
   create_table "payment_request", id: false, force: :cascade do |t|
@@ -596,8 +651,8 @@ ActiveRecord::Schema.define(version: 2022_05_04_160344) do
     t.string "payment_mode", limit: 5
     t.string "reference", limit: 50
     t.boolean "processed"
-    t.datetime "created_at", default: -> { "CURRENT_TIMESTAMP" }, null: false
-    t.datetime "updated_at"
+    t.datetime "created_at", precision: nil, default: -> { "CURRENT_TIMESTAMP" }, null: false
+    t.datetime "updated_at", precision: nil
   end
 
   create_table "permission_roles", force: :cascade do |t|
@@ -606,8 +661,8 @@ ActiveRecord::Schema.define(version: 2022_05_04_160344) do
     t.boolean "active_status"
     t.boolean "del_status"
     t.integer "user_id"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "updated_at", precision: nil, null: false
     t.string "role_code"
   end
 
@@ -619,8 +674,8 @@ ActiveRecord::Schema.define(version: 2022_05_04_160344) do
     t.boolean "active_status"
     t.boolean "del_status"
     t.integer "user_id"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "updated_at", precision: nil, null: false
   end
 
   create_table "region_masters", force: :cascade do |t|
@@ -629,8 +684,8 @@ ActiveRecord::Schema.define(version: 2022_05_04_160344) do
     t.boolean "active_status"
     t.boolean "del_status"
     t.integer "user_id"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "updated_at", precision: nil, null: false
   end
 
   create_table "roles", force: :cascade do |t|
@@ -638,8 +693,8 @@ ActiveRecord::Schema.define(version: 2022_05_04_160344) do
     t.boolean "active_status"
     t.boolean "del_status"
     t.integer "user_id"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "updated_at", precision: nil, null: false
     t.string "assigned_code", limit: 15
   end
 
@@ -653,8 +708,8 @@ ActiveRecord::Schema.define(version: 2022_05_04_160344) do
     t.integer "payment_info_id"
     t.integer "payment_req_id"
     t.boolean "status"
-    t.datetime "created_at", default: -> { "CURRENT_TIMESTAMP" }, null: false
-    t.datetime "updated_at"
+    t.datetime "created_at", precision: nil, default: -> { "CURRENT_TIMESTAMP" }, null: false
+    t.datetime "updated_at", precision: nil
   end
 
   create_table "sub_activity_master", id: false, force: :cascade do |t|
@@ -664,8 +719,8 @@ ActiveRecord::Schema.define(version: 2022_05_04_160344) do
     t.integer "user_id"
     t.boolean "active_status", default: true
     t.boolean "del_status", default: false
-    t.datetime "created_at", default: -> { "CURRENT_TIMESTAMP" }
-    t.datetime "updated_at"
+    t.datetime "created_at", precision: nil, default: -> { "CURRENT_TIMESTAMP" }
+    t.datetime "updated_at", precision: nil
   end
 
   create_table "suburb_masters", force: :cascade do |t|
@@ -675,8 +730,8 @@ ActiveRecord::Schema.define(version: 2022_05_04_160344) do
     t.boolean "active_status"
     t.boolean "del_status"
     t.integer "user_id"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "updated_at", precision: nil, null: false
   end
 
   create_table "transferred_reports", id: false, force: :cascade do |t|
@@ -685,9 +740,9 @@ ActiveRecord::Schema.define(version: 2022_05_04_160344) do
     t.string "patient_id", limit: 20
     t.string "transaction_id", limit: 20
     t.decimal "trans_amount", precision: 10, scale: 2
-    t.datetime "trans_datetime"
+    t.datetime "trans_datetime", precision: nil
     t.string "user_id", limit: 50
-    t.datetime "created_at", default: -> { "CURRENT_TIMESTAMP" }, null: false
+    t.datetime "created_at", precision: nil, default: -> { "CURRENT_TIMESTAMP" }, null: false
     t.string "nw", limit: 5
   end
 
@@ -702,8 +757,8 @@ ActiveRecord::Schema.define(version: 2022_05_04_160344) do
     t.text "comment"
     t.boolean "active_status"
     t.boolean "del_status"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "updated_at", precision: nil, null: false
   end
 
   create_table "users", force: :cascade do |t|
@@ -722,22 +777,22 @@ ActiveRecord::Schema.define(version: 2022_05_04_160344) do
     t.boolean "active_status"
     t.boolean "del_status"
     t.string "reset_password_token"
-    t.datetime "reset_password_sent_at"
-    t.datetime "remember_created_at"
+    t.datetime "reset_password_sent_at", precision: nil
+    t.datetime "remember_created_at", precision: nil
     t.integer "sign_in_count", default: 0, null: false
-    t.datetime "current_sign_in_at"
-    t.datetime "last_sign_in_at"
+    t.datetime "current_sign_in_at", precision: nil
+    t.datetime "last_sign_in_at", precision: nil
     t.inet "current_sign_in_ip"
     t.inet "last_sign_in_ip"
     t.string "confirmation_token"
-    t.datetime "confirmed_at"
-    t.datetime "confirmation_sent_at"
+    t.datetime "confirmed_at", precision: nil
+    t.datetime "confirmation_sent_at", precision: nil
     t.string "unconfirmed_email"
     t.integer "failed_attempts", default: 0, null: false
     t.string "unlock_token"
-    t.datetime "locked_at"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at"
+    t.datetime "locked_at", precision: nil
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "updated_at", precision: nil
     t.boolean "for_portal"
     t.boolean "show_charge"
     t.index ["confirmation_token"], name: "index_users_on_confirmation_token", unique: true
@@ -754,8 +809,8 @@ ActiveRecord::Schema.define(version: 2022_05_04_160344) do
     t.string "activity_div_cat_index"
     t.string "activity_div_cat_id"
     t.string "activity_div_category"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at"
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "updated_at", precision: nil
   end
 
   create_table "ussd_activity_div_sub_cat_temps", id: :serial, force: :cascade do |t|
@@ -768,8 +823,8 @@ ActiveRecord::Schema.define(version: 2022_05_04_160344) do
     t.string "category_div_desc"
     t.string "activity_div_category"
     t.string "activity_category"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at"
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "updated_at", precision: nil
   end
 
   create_table "ussd_activity_fixtures_temps", id: :serial, force: :cascade do |t|
@@ -785,8 +840,8 @@ ActiveRecord::Schema.define(version: 2022_05_04_160344) do
     t.string "participant_b"
     t.string "activity_category_div"
     t.string "image_b"
-    t.datetime "created_at", default: -> { "now()" }, null: false
-    t.datetime "updated_at"
+    t.datetime "created_at", precision: nil, default: -> { "now()" }, null: false
+    t.datetime "updated_at", precision: nil
     t.string "fixtures_index"
   end
 
@@ -799,8 +854,8 @@ ActiveRecord::Schema.define(version: 2022_05_04_160344) do
     t.string "activity_plan_id"
     t.string "activity_plan"
     t.string "activity_date"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at"
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "updated_at", precision: nil
     t.string "activity_category_div"
     t.string "participant_a_alias"
     t.string "participant_a"
@@ -821,8 +876,8 @@ ActiveRecord::Schema.define(version: 2022_05_04_160344) do
     t.string "activity_time"
     t.string "classification"
     t.string "price"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at"
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "updated_at", precision: nil
     t.boolean "max_ticket_reached"
     t.integer "ticket_count", default: 0
     t.integer "max_num_ticket", default: 0
@@ -833,8 +888,8 @@ ActiveRecord::Schema.define(version: 2022_05_04_160344) do
     t.string "session_id"
     t.string "mobile_number"
     t.boolean "status", default: true
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "updated_at", precision: nil, null: false
   end
 
   create_table "ussd_cart_temps", id: :serial, force: :cascade do |t|
@@ -846,8 +901,8 @@ ActiveRecord::Schema.define(version: 2022_05_04_160344) do
     t.decimal "unit_amount", precision: 11, scale: 2
     t.integer "qty"
     t.boolean "status", default: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at"
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "updated_at", precision: nil
     t.decimal "total_amount", precision: 11, scale: 2
     t.string "mobile_number"
     t.string "entity_div_code"
@@ -862,8 +917,8 @@ ActiveRecord::Schema.define(version: 2022_05_04_160344) do
     t.string "msg_type"
     t.boolean "previous_tracker", default: false
     t.string "activity_type"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "updated_at", precision: nil, null: false
   end
 
   create_table "ussd_div_sub_activity_temps", id: :serial, force: :cascade do |t|
@@ -873,8 +928,8 @@ ActiveRecord::Schema.define(version: 2022_05_04_160344) do
     t.string "entity_div_code"
     t.string "sub_activity_desc"
     t.string "activity_code"
-    t.datetime "created_at", default: -> { "now()" }, null: false
-    t.datetime "updated_at"
+    t.datetime "created_at", precision: nil, default: -> { "now()" }, null: false
+    t.datetime "updated_at", precision: nil
   end
 
   create_table "ussd_event_temps", id: :serial, force: :cascade do |t|
@@ -888,8 +943,8 @@ ActiveRecord::Schema.define(version: 2022_05_04_160344) do
     t.string "event_index"
     t.string "entity_alias"
     t.string "allow_qr"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at"
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "updated_at", precision: nil
     t.boolean "event_progress"
   end
 
@@ -900,10 +955,11 @@ ActiveRecord::Schema.define(version: 2022_05_04_160344) do
     t.string "entity_div_code"
     t.string "lov_id"
     t.string "lov_desc"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at"
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "updated_at", precision: nil
     t.string "lov_index"
     t.decimal "assigned_amount", precision: 11, scale: 3, default: "0.0"
+    t.string "product_id"
   end
 
   create_table "ussd_lov_temps", id: :integer, default: -> { "nextval('lov_temps_id_seq'::regclass)" }, force: :cascade do |t|
@@ -913,8 +969,8 @@ ActiveRecord::Schema.define(version: 2022_05_04_160344) do
     t.string "entity_div_code"
     t.string "lov_id"
     t.string "lov_desc"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at"
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "updated_at", precision: nil
     t.string "lov_index"
     t.decimal "assigned_amount", precision: 11, scale: 3, default: "0.0"
   end
@@ -926,8 +982,8 @@ ActiveRecord::Schema.define(version: 2022_05_04_160344) do
     t.string "amount"
     t.string "status"
     t.string "trans_date"
-    t.datetime "created_at", default: -> { "now()" }, null: false
-    t.datetime "updated_at"
+    t.datetime "created_at", precision: nil, default: -> { "now()" }, null: false
+    t.datetime "updated_at", precision: nil
   end
 
   create_table "ussd_more_algos", force: :cascade do |t|
@@ -938,8 +994,8 @@ ActiveRecord::Schema.define(version: 2022_05_04_160344) do
     t.string "ussd_body"
     t.integer "the_up"
     t.integer "the_down"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at"
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "updated_at", precision: nil
   end
 
   create_table "ussd_requests", id: :serial, force: :cascade do |t|
@@ -947,16 +1003,16 @@ ActiveRecord::Schema.define(version: 2022_05_04_160344) do
     t.string "mobile_number"
     t.string "ussd_body"
     t.string "body"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "updated_at", precision: nil, null: false
   end
 
   create_table "ussd_service_codes", id: :serial, force: :cascade do |t|
     t.string "session_id"
     t.string "mobile_number"
     t.string "service_code"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at"
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "updated_at", precision: nil
   end
 
   create_table "ussd_session_trackers", id: :integer, default: -> { "nextval('session_trackers_id_seq'::regclass)" }, force: :cascade do |t|
@@ -967,8 +1023,8 @@ ActiveRecord::Schema.define(version: 2022_05_04_160344) do
     t.integer "mobile_number"
     t.string "ussd_body"
     t.string "msg_type"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "updated_at", precision: nil, null: false
   end
 
   create_table "ussd_tracker_activity_temps", id: :serial, force: :cascade do |t|
@@ -986,8 +1042,8 @@ ActiveRecord::Schema.define(version: 2022_05_04_160344) do
     t.string "reference"
     t.decimal "amount", precision: 10, scale: 2, default: "0.0"
     t.string "activity_purpose"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at"
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "updated_at", precision: nil
     t.string "fullname"
     t.string "month_code"
     t.string "month_full"
@@ -1035,6 +1091,10 @@ ActiveRecord::Schema.define(version: 2022_05_04_160344) do
     t.integer "ticket_count", default: 0
     t.integer "max_num_ticket", default: 0
     t.boolean "event_progress"
+    t.string "customer_id"
+    t.string "custom", limit: 255
+    t.string "custom_reference", limit: 255
+    t.string "regions", limit: 255
   end
 
   create_table "ussd_tracker_logs", id: :integer, default: -> { "nextval('tracker_logs_id_seq'::regclass)" }, force: :cascade do |t|
@@ -1045,8 +1105,8 @@ ActiveRecord::Schema.define(version: 2022_05_04_160344) do
     t.string "ussd_body"
     t.string "msg_type"
     t.boolean "previous_tracker"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "updated_at", precision: nil, null: false
   end
 
   create_table "ussd_trackers", id: :integer, default: -> { "nextval('trackers_id_seq'::regclass)" }, force: :cascade do |t|
@@ -1058,8 +1118,8 @@ ActiveRecord::Schema.define(version: 2022_05_04_160344) do
     t.string "msg_type"
     t.boolean "previous_tracker", default: false
     t.string "activity_type"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "updated_at", precision: nil, null: false
     t.string "service_code"
   end
 

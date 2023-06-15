@@ -1,6 +1,4 @@
 Rails.application.routes.draw do
-  resources :client_webhook_configs
-
   root 'home#index'
   #devise_for :users
    get "/users" => redirect("/")
@@ -199,6 +197,7 @@ Rails.application.routes.draw do
   resources :user_roles
   resources :multi_user_roles
   resources :loan_requests
+  resources :client_webhook_configs
 
 
 
