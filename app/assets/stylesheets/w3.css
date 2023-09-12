@@ -411,7 +411,7 @@ hr{border:0;border-top:1px solid #eee;margin:20px 0}
     background: -webkit-linear-gradient(top, #57421d 0%, #222222 100%);
     background: -o-linear-gradient(top, #57421d 0%, #222222 100%);
     background: -ms-linear-gradient(top, #57421d 0%, #222222 100%);
-    background: linear-gradient(top, #57421d 0%, #222222 100%);
+    background: linear-gradient(to left, #57421d 0%, #222222 100%);
 }
 #cssmenu > ul > li > a:hover {
     background: #080808;
@@ -443,7 +443,7 @@ hr{border:0;border-top:1px solid #eee;margin:20px 0}
     background: -webkit-linear-gradient(top, #57421d 0%, #222222 100%);
     background: -o-linear-gradient(top, #57421d 0%, #222222 100%);
     background: -ms-linear-gradient(top, #57421d 0%, #222222 100%);
-    background: linear-gradient(top, #57421d 0%, #222222 100%);
+    background: linear-gradient(to left, #57421d 0%, #222222 100%);
 }
 /*Hide checkbox*/
 input[type=checkbox]{
@@ -473,7 +473,7 @@ input[type=checkbox]:checked ~ #menu{
         background: -webkit-linear-gradient(top, #57421d 0%, #222222 100%);
         background: -o-linear-gradient(top, #57421d 0%, #222222 100%);
         background: -ms-linear-gradient(top, #57421d 0%, #222222 100%);
-        background: linear-gradient(top, #57421d 0%, #222222 100%);
+        background: linear-gradient(to left, #57421d 0%, #222222 100%);
     }
     /*Display 'show menu' link*/
     .show-menu {
@@ -493,7 +493,7 @@ input[type=checkbox]:checked ~ #menu{
     background: -webkit-linear-gradient(top, #57421d 0%, #222222 100%);
     background: -o-linear-gradient(top, #57421d 0%, #222222 100%);
     background: -ms-linear-gradient(top, #57421d 0%, #222222 100%);
-    background: linear-gradient(top, #57421d 0%, #222222 100%);
+    background: linear-gradient(to left, #57421d 0%, #222222 100%);
 }
 
 .home_interface {
@@ -535,7 +535,7 @@ input[type=checkbox]:checked ~ #menu{
     background: -webkit-linear-gradient(top, #57421d 0%, #222222 100%);
     background: -o-linear-gradient(top, #57421d 0%, #222222 100%);
     background: -ms-linear-gradient(top, #57421d 0%, #222222 100%);
-    background: linear-gradient(top, #57421d 0%, #222222 100%);
+    background: linear-gradient(to left, #57421d 0%, #222222 100%);
 }
 
 .w3-vpos-purple,.w3-hover-vpos-purple:hover{color:#fff!important;background-color:#A31780!important}

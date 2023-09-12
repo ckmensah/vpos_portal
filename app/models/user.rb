@@ -6,6 +6,7 @@ class User < ApplicationRecord
   #has_many :entity_, class_name: 'ActivitySubDivClass', foreign_key: :entity_div_code
   has_many :user_roles, -> { where active_status: true }, class_name: "UserRole", foreign_key: :user_id
   has_many :multi_user_roles, -> { where active_status: true }, class_name: "MultiUserRole", foreign_key: :user_id
+  # has_many :multi_service_roles, -> { where active_status: true }, class_name: "MultiServiceRole", foreign_key: :user_id
   #belongs_to :role, class_name: "Role", foreign_key: :role_id
   #belongs_to :entity_info, -> { where active_status: true }, class_name: "EntityInfo", foreign_key: :entity_code
   belongs_to :entity_division, -> { where active_status: true }, class_name: "EntityDivision", foreign_key: :division_code
@@ -83,6 +84,10 @@ class User < ApplicationRecord
       unless self.for_entity_code_multi.present?
         errors.add :for_entity_code_multi, " cannot be empty."
       end
+    # elsif self.for_role_code == "MSA"
+    #   unless self.for_entity_code_multi.present?
+    #     errors.add :for_entity_code_multi, " cannot be empty."
+    #   end
      end
   end
 
@@ -155,8 +160,27 @@ class User < ApplicationRecord
   end
 
   def multi_user_entity_code
+    entity_code_arr =[]
     user_role_obj = self.multi_user_roles&.order(created_at: :desc)
-    user_role_obj ? user_role_obj.entity_code : ""
+    if user_role_obj.present?
+      user_role_obj.each do |code|
+        entity_code_arr << "'#{code}'"
+      end
+    end
+    entity_code_arr
+    p "#{entity_code_arr}"
+  end
+
+  def multi_user_service_code
+    service_code_arr =[]
+    user_role_obj = self.multi_service_roles&.order(created_at: :desc)
+    if user_role_obj.present?
+      user_role_obj.each do |code|
+        service_code_arr << "'#{code}'"
+      end
+    end
+    service_code_arr
+    p "#{service_code_arr}"
   end
 
   def user_division_code

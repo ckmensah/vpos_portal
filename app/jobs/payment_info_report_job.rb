@@ -242,7 +242,7 @@ class PaymentInfoReportJob < ApplicationJob
             if service_for_header.present?
               case service_for_header.activity_type_code
               when "OMC"
-                csv << [merchant, service, extra_ref, customer_name, lov_name, activity_type, mobile_num, network, transaction_id, src, for_gross_amt, m_charge, c_charge, actual_amt, status, trans_msg, for_date, for_time] #[merchant, rec_name, summary.pc_name, summary.momo_number, summary.product_name, bags, quantity, summary.amount, summary.exttrid, status, trans_msg, summary.date]
+                csv << [merchant, service, extra_ref, reference, lov_name, activity_type, mobile_num, network, transaction_id, src, for_gross_amt, m_charge, c_charge, actual_amt, status, trans_msg, for_date, for_time] #[merchant, rec_name, summary.pc_name, summary.momo_number, summary.product_name, bags, quantity, summary.amount, summary.exttrid, status, trans_msg, summary.date]
               when "MOP"
                 csv << [merchant, service, lov_name, activity_type, mobile_num, recipient_no, narration, network, transaction_id, src, for_gross_amt, m_charge, c_charge, actual_amt, status, trans_msg, for_date, for_time] #[merchant, rec_name, summary.pc_name, summary.momo_number, summary.product_name, bags, quantity, summary.amount, summary.exttrid, status, trans_msg, summary.date]
               when "HSP"
@@ -263,7 +263,7 @@ class PaymentInfoReportJob < ApplicationJob
           else
             case for_activity_type
             when "OMC"
-              csv << [merchant, service, service_id, extra_ref, customer_name, lov_name, activity_type, mobile_num, network, transaction_id, src, for_gross_amt, m_charge, c_charge, actual_amt, status, trans_msg, for_date, for_time] #[merchant, rec_name, summary.pc_name, summary.momo_number, summary.product_name, bags, quantity, summary.amount, summary.exttrid, status, trans_msg, summary.date]
+              csv << [merchant, service, service_id, extra_ref, reference, lov_name, activity_type, mobile_num, network, transaction_id, src, for_gross_amt, m_charge, c_charge, actual_amt, status, trans_msg, for_date, for_time] #[merchant, rec_name, summary.pc_name, summary.momo_number, summary.product_name, bags, quantity, summary.amount, summary.exttrid, status, trans_msg, summary.date]
             when "MOP"
               csv << [merchant, service, service_id, lov_name, activity_type, mobile_num, recipient_no, narration, network, transaction_id, src, for_gross_amt, m_charge, c_charge, actual_amt, status, trans_msg, for_date, for_time] #[merchant, rec_name, summary.pc_name, summary.momo_number, summary.product_name, bags, quantity, summary.amount, summary.exttrid, status, trans_msg, summary.date]
             when "HSP"
@@ -284,7 +284,7 @@ class PaymentInfoReportJob < ApplicationJob
             if service_for_header.present?
               case service_for_header.activity_type_code
               when "OMC"
-                csv << [merchant, service, extra_ref, customer_name, lov_name, activity_type, mobile_num, network, transaction_id, src, actual_amt, status, trans_msg, for_date, for_time] #[merchant, rec_name, summary.pc_name, summary.momo_number, summary.product_name, bags, quantity, summary.amount, summary.exttrid, status, trans_msg, summary.date]
+                csv << [merchant, service, extra_ref, reference, lov_name, activity_type, mobile_num, network, transaction_id, src, actual_amt, status, trans_msg, for_date, for_time] #[merchant, rec_name, summary.pc_name, summary.momo_number, summary.product_name, bags, quantity, summary.amount, summary.exttrid, status, trans_msg, summary.date]
               when "MOP"
                 csv << [merchant, service, lov_name, activity_type, mobile_num, recipient_no, narration, network, transaction_id, src, actual_amt, status, trans_msg, for_date, for_time] #[merchant, rec_name, summary.pc_name, summary.momo_number, summary.product_name, bags, quantity, summary.amount, summary.exttrid, status, trans_msg, summary.date]
               when "HSP"
@@ -305,7 +305,7 @@ class PaymentInfoReportJob < ApplicationJob
           else
             case for_activity_type
             when "OMC"
-              csv << [merchant, service, extra_ref, customer_name, lov_name, activity_type, mobile_num, network, transaction_id, src, actual_amt, status, trans_msg, for_date, for_time] #[merchant, rec_name, summary.pc_name, summary.momo_number, summary.product_name, bags, quantity, summary.amount, summary.exttrid, status, trans_msg, summary.date]
+              csv << [merchant, service, extra_ref, reference, lov_name, activity_type, mobile_num, network, transaction_id, src, actual_amt, status, trans_msg, for_date, for_time] #[merchant, rec_name, summary.pc_name, summary.momo_number, summary.product_name, bags, quantity, summary.amount, summary.exttrid, status, trans_msg, summary.date]
             when "MOP"
               csv << [merchant, service, lov_name, activity_type, mobile_num, recipient_no, narration, network, transaction_id, src, actual_amt, status, trans_msg, for_date, for_time] #[merchant, rec_name, summary.pc_name, summary.momo_number, summary.product_name, bags, quantity, summary.amount, summary.exttrid, status, trans_msg, summary.date]
             when "HSP"

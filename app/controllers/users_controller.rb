@@ -378,12 +378,6 @@ class UsersController < ApplicationController
                 user_role_save(@user.id, user_params)
                 user_params[:for_entity_code_multi].each do |i|
                   next if i.empty?
-                  # user_role_save = UserRole.new(user_id: @user.id, role_code: user_params[:for_role_code],
-                  #                               entity_code: i, for_portal: user_params[:for_the_portal],
-                  #                               show_charge: user_params[:for_show_charge],
-                  #                               creator_id: user_params[:for_creator_id],
-                  #                               active_status: true, del_status: false)
-                  # user_role_save.save(validate: false)
                   multi_user_role_save = MultiUserRole.new(user_id: @user.id, role_code: user_params[:for_role_code],
                                                   entity_code: i,
                                                   creator_id: user_params[:for_creator_id],

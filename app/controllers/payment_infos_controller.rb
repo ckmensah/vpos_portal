@@ -100,35 +100,35 @@ class PaymentInfosController < ApplicationController
         #                             .where("payment_info.processed = true AND payment_info.entity_div_code = '#{current_user.user_division_code}'").paginate(:page => params[:page], :per_page => params[:count]).order('payment_info.created_at desc').load_async
 
 
-    # elsif current_user.multi_merchant_admin?
-    #   @merchant_service_search = EntityDivision.where(active_status: true, entity_code: current_user.multi_user_entity_code).order(division_name: :asc).load_async
-    #   entity_div_id_str = "'0'"
-    #   ref_div_id_str = "'0'"
-    #   activity_type_str = "'0'"
-    #   activity_type_arr = []
-    #   @entity_divs = EntityDivision.where(entity_code: current_user.multi_user_entity_code, active_status: true).load_async
-    #   @entity_divs.each do |entity_div|
-    #     entity_div_id_str << ",'#{entity_div.assigned_code}'"
-    #     unless activity_type_arr.include?("'#{entity_div.activity_type_code}'")
-    #       activity_type_arr << "'#{entity_div.activity_type_code}'"
-    #       activity_type_str << ",'#{entity_div.activity_type_code}'"
-    #     end
-    #     if entity_div.activity_type_code == "CHC"
-    #       ref_div_id_str << ",'#{entity_div.assigned_code}'"
-    #     end
-    #   end
-    #   final_div_ids = "(#{entity_div_id_str})"
-    #   final_ref_div_ids = "(#{ref_div_id_str})"
-    #   final_activity_types = "(#{activity_type_str})"
-    #
-    #   @activity_types = ActivityType.where("active_status = true AND assigned_code IN #{final_activity_types}").load_async
-    #   #@references = PaymentReport.select(:reference).where("entity_div_code IN #{final_ref_div_ids}").group(:reference).order(reference: :asc)
-    #   @menu_items = PaymentReport.joins("INNER JOIN entity_division ON payment_reports.entity_div_code = entity_division.assigned_code")
-    #                              .select(:activity_main_code, :narration).where("entity_code = '#{current_user.user_entity_code}' AND active_status = true AND activity_type_code = 'CHC'")
-    #                              .group(:activity_main_code, :narration).order(activity_main_code: :asc).load_async
-    #   @division_lovs = DivisionActivityLov.select(:lov_desc).where("active_status = true AND division_code IN #{final_div_ids}").group(:lov_desc).order(lov_desc: :asc).load_async
-    #   #@payment_infos = PaymentReport.where("split_part(trans_status, '/', 1) = '000' AND entity_div_code IN #{final_div_ids} ").paginate(:page => params[:page], :per_page => params[:count]).order('created_at desc')
-    #   @payment_infos = PaymentReport.where("processed = true AND entity_div_code IN #{final_div_ids} ").paginate(:page => params[:page], :per_page => params[:count]).order('created_at desc').load_async
+    elsif current_user.multi_merchant_admin?
+      @merchant_service_search = EntityDivision.where(active_status: true, entity_code: current_user.multi_user_entity_code).order(division_name: :asc).load_async
+      entity_div_id_str = "'0'"
+      ref_div_id_str = "'0'"
+      activity_type_str = "'0'"
+      activity_type_arr = []
+      @entity_divs = EntityDivision.where(entity_code: current_user.multi_user_entity_code, active_status: true).load_async
+      @entity_divs.each do |entity_div|
+        entity_div_id_str << ",'#{entity_div.assigned_code}'"
+        unless activity_type_arr.include?("'#{entity_div.activity_type_code}'")
+          activity_type_arr << "'#{entity_div.activity_type_code}'"
+          activity_type_str << ",'#{entity_div.activity_type_code}'"
+        end
+        if entity_div.activity_type_code == "CHC"
+          ref_div_id_str << ",'#{entity_div.assigned_code}'"
+        end
+      end
+      final_div_ids = "(#{entity_div_id_str})"
+      final_ref_div_ids = "(#{ref_div_id_str})"
+      final_activity_types = "(#{activity_type_str})"
+
+      @activity_types = ActivityType.where("active_status = true AND assigned_code IN #{final_activity_types}").load_async
+      #@references = PaymentReport.select(:reference).where("entity_div_code IN #{final_ref_div_ids}").group(:reference).order(reference: :asc)
+      @menu_items = PaymentReport.joins("INNER JOIN entity_division ON payment_reports.entity_div_code = entity_division.assigned_code")
+                                 .select(:activity_main_code, :narration).where("entity_code = '#{current_user.user_entity_code}' AND active_status = true AND activity_type_code = 'CHC'")
+                                 .group(:activity_main_code, :narration).order(activity_main_code: :asc).load_async
+      @division_lovs = DivisionActivityLov.select(:lov_desc).where("active_status = true AND division_code IN #{final_div_ids}").group(:lov_desc).order(lov_desc: :asc).load_async
+      #@payment_infos = PaymentReport.where("split_part(trans_status, '/', 1) = '000' AND entity_div_code IN #{final_div_ids} ").paginate(:page => params[:page], :per_page => params[:count]).order('created_at desc')
+      @payment_infos = PaymentReport.where("processed = true AND entity_div_code IN #{final_div_ids} ").paginate(:page => params[:page], :per_page => params[:count]).order('created_at desc').load_async
 
 
     end
@@ -478,6 +478,36 @@ class PaymentInfosController < ApplicationController
         # @payment_infos = PaymentInfo.payments_join_3.where(entity_div_code: current_user.user_division_code).where(the_search).paginate(:page => params[:page], :per_page => 10000000000000000).order('created_at desc').load_async
 
       end
+    elsif current_user.multi_merchant_admin?
+      @merchant_service_search = EntityDivision.where("active_status = true and entity_code IN #{current_user.multi_user_entity_code}").order(division_name: :asc).load_async
+      entity_div_id_str = "'0'"
+      ref_div_id_str = "'0'"
+      activity_type_str = "'0'"
+      activity_type_arr = []
+      @entity_divs = EntityDivision.where("entity_code IN #{current_user.multi_user_entity_code} and active_status = true").load_async
+      @entity_divs.each do |entity_div|
+        entity_div_id_str << ",'#{entity_div.assigned_code}'"
+        unless activity_type_arr.include?("'#{entity_div.activity_type_code}'")
+          activity_type_arr << "'#{entity_div.activity_type_code}'"
+          activity_type_str << ",'#{entity_div.activity_type_code}'"
+        end
+        if entity_div.activity_type_code == "CHC"
+          ref_div_id_str << ",'#{entity_div.assigned_code}'"
+        end
+      end
+      final_div_ids = "(#{entity_div_id_str})"
+      final_ref_div_ids = "(#{ref_div_id_str})"
+      final_activity_types = "(#{activity_type_str})"
+
+      @activity_types = ActivityType.where("active_status = true AND assigned_code IN #{final_activity_types}").load_async
+      #@references = PaymentReport.select(:reference).where("entity_div_code IN #{final_ref_div_ids}").group(:reference).order(reference: :asc)
+      @menu_items = PaymentReport.joins("INNER JOIN entity_division ON payment_reports.entity_div_code = entity_division.assigned_code")
+                                 .select(:activity_main_code, :narration).where("entity_code IN '#{current_user.multi_user_entity_code}' AND active_status = true AND activity_type_code = 'CHC'")
+                                 .group(:activity_main_code, :narration).order(activity_main_code: :asc).load_async
+      @division_lovs = DivisionActivityLov.select(:lov_desc).where("active_status = true AND division_code IN #{final_div_ids}").group(:lov_desc).order(lov_desc: :asc).load_async
+      #@payment_infos = PaymentReport.where("split_part(trans_status, '/', 1) = '000' AND entity_div_code IN #{final_div_ids} ").paginate(:page => params[:page], :per_page => params[:count]).order('created_at desc')
+      @payment_infos = PaymentReport.where("processed = true AND entity_div_code IN #{final_div_ids} ").paginate(:page => params[:page], :per_page => params[:count]).order('created_at desc').load_async
+
     end
 
     respond_to do |format|

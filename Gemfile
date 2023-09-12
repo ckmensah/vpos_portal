@@ -80,6 +80,9 @@ gem 'dropzonejs-rails'
 gem 'fusioncharts-rails'
 gem 'redis'
 gem 'sidekiq'
+gem 'will_paginate', '~> 3.0'
+gem 'will_paginate-bootstrap', '~> 1.0.1'
+# gem 'autoprefixer-rails'
 
 
 
@@ -165,8 +168,7 @@ gem 'sidekiq'
 # gem 'savon', '~> 2.11.1'
 # # gem 'nokogiri', '~> 1.6.6.2'
 #
- gem 'will_paginate', '~> 3.0'
- gem 'will_paginate-bootstrap', '~> 1.0.1'
+
 #
 # gem 'momentjs-rails', '>= 2.9.0'
 # gem 'bootstrap3-datetimepicker-rails', '~> 4.15.35'

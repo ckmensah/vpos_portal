@@ -39,7 +39,7 @@
             <% elsif current_user.super_user? %>
               <%= f.input :for_role_code, collection: Role.where("active_status = true and assigned_code not in ('SA','TV')").order(role_name: :asc), label_method: :role_name, value_method: :assigned_code, :required => true , include_blank: true, label: "Role:", :input_html => {id: "id_role", autocomplete: "off", style:"",  :class => 'form-control w3-input w3-border w3-white input-group input-append'} %>
               <%= f.input :for_the_portal, :as => :hidden, input_html:{value: true} %>
-<%# elsif current_user.merchant_admin? %>
+            <%# elsif current_user.merchant_admin? %>
               <%#= f.input :role_id, collection: Role.where("active_status = true and id not in (1,2,3)").order(role_name: :asc), label_method: :role_name, value_method: :id, :required => true , include_blank: true, label: "Role:", :input_html => {id: "id_role", autocomplete: "off", style:"",  :class => 'form-control w3-input w3-border w3-white input-group input-append'} %>
             <% else %>
               <%#= f.input :role_id, collection: Role.where("active_status = true and id not in (1,2,3)").order(role_name: :asc), label_method: :role_name, value_method: :id, :required => true , include_blank: true, label: "Role:", :input_html => {autocomplete: "off", style:"",  :class => 'form-control w3-input w3-border w3-white input-group input-append'} %>

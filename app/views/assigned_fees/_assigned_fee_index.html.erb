@@ -6,7 +6,7 @@
   <br>
   <div>
     <div class="w3-half">
-      <% unless @fee_size_obj.exists? && @fee_size_obj.size > 1 %>
+      <% unless @fee_size_obj.exists? && @fee_size_obj.size > 3 %>
         <%= link_to 'NEW', new_assigned_fee_path(entity_code: params[:entity_code], code: params[:code], count1: params[:count1], count2: params[:count2], count: params[:count], page: params[:page]), style: "width:120px;",
                     class: 'w3-button w3-purple-vpos w3-border w3-border-purple w3-small w3-round-large',remote:true %>
         <% end %>
@@ -35,7 +35,6 @@
       <thead>
       <tr>
         <th></th>
-
 <!--        <th>Merchant Name</th>-->
         <th>Service Name</th>
 <!--        <th>Trans Type</th>-->
@@ -44,9 +43,10 @@
         <th>Cap</th>
         <th>Limit Capped</th>
         <th>Charged To</th>
+        <th>Payment Mode</th>
         <th>Status</th>
         <th>Date</th>
-        <th>Actions</th>
+        <th colspan="2">Actions</th>
       </tr>
       </thead>
       <tbody>
@@ -68,6 +68,11 @@
             <td>Merchant</td>
           <% elsif assigned_fee.charged_to == "C" %>
             <td>Customer</td>
+          <% end %>
+          <% if assigned_fee.payment_mode == "MOM" %>
+                      <td>MOMO</td>
+          <% elsif assigned_fee.payment_mode == "CRD" %>
+                      <td>CARD</td>
           <% end %>
           <% if assigned_fee.active_status %>
             <td>Active</td>

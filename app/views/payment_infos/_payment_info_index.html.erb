@@ -162,7 +162,7 @@
         <% end %>
 
         <th>Customer No.</th>
-        <% entity_dive = EntityDivision.where(active_status: true, del_status: false, assigned_code: current_user.user_division_code).order(created_at: :desc).first %>
+        <% entity_dive = EntityDivision.where(active_status: true, del_status: false, assigned_code: current_user.user_division_code, activity_type_code: 'PDD').order(created_at: :desc).first %>
         <% if current_user.merchant_service? %>
           <%if entity_dive %>
             <th>Location</th>
@@ -294,10 +294,11 @@
           <% end %>
 
           <td><%= payment_info.customer_number %></td>
-          <% entity_dive = EntityDivision.where(active_status: true, del_status: false, assigned_code: current_user.user_division_code).order(created_at: :desc).first %>
+          <% entity_dive = EntityDivision.where(active_status: true, del_status: false, assigned_code: current_user.user_division_code, activity_type_code: 'PDD').order(created_at: :desc).first %>
           <% if current_user.merchant_service? %>
-              <%if entity_dive %>
-              <td><%= payment_info.reference %></td>
+            <%if entity_dive %>
+              <% reference = UssdTrackerActivityTemp.where(session_id: payment_info.session_id).first %>
+              <td><%= reference.regions if reference %></td>
             <% end %>
           <% end %>
           <td><%= payment_info.processing_id if payment_info.processing_id.present? %></td>

@@ -58,7 +58,7 @@
             <% if entity_division.activity_type.assigned_code == "SHW" || entity_division.activity_type.assigned_code == "SPO" %>
                 <button id="navbardrop" data-toggle="dropdown" onclick="ticketDropdownControl('ticket-dropdown-id-<%= ind + 1 %>', 'division-dropdown-id-<%= ind + 1 %>'); return false;" class="w3-button div-dropdown-2 w3-white w3-border dropdown-toggle w3-border-purple w3-tiny w3-round-large" style="width:80px; height: 30px; color: #800754 !important">TICKETS</button>
 
-                <div id="ticket-dropdown-id-<%= ind + 1 %>" class="dropdown-menu division-dropdown dropdown-menu-left">
+                <div id="ticket-dropdown-id-<%= ind + 1 %>" class="dropdown-menu division-dropdown dropdown-menu-right">
                   <% if entity_division.active_status %>
                     <% if entity_division.event_progress %>
                       <a class="dropdown-item" href="<%= entity_division_index_path(code: entity_division.assigned_code, event_type: "EVENT", entity_code: params[:entity_code], count1: params[:count1], count: params[:count]) %>" data-remote="true" data-confirm="Do you wish to end the event for : <%= entity_division.division_name %> (<%= entity_division.division_alias %>)?" ><strong>End Event</strong></a>

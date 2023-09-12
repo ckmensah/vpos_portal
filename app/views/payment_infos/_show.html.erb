@@ -70,7 +70,8 @@
               <% if @pay_info.entity_division != nil && @pay_info.entity_division.activity_type_code == "OMC" %>
                 <tr>
                   <td class="raw_theme w3-border w3-border-black w3-leftbar"><strong>Attendant ID/Reference:</strong></td>
-                  <td><strong><%= @pay_info.customer_name %></strong></td>
+                  <td><strong><%= @pay_info.reference %></strong></td>
+<!--                  <td><strong><%#= @pay_info.customer_name %></strong></td>-->
                 </tr>
               <% else %>
                 <% if @pay_info.entity_division != nil && (@pay_info.entity_division.activity_type_code != "MOP" && @pay_info.entity_division.activity_type_code != "PDD") %>
@@ -246,8 +247,14 @@
 
               <% if @pay_info.entity_division != nil && @pay_info.entity_division.activity_type_code == "PDD" %>
                 <tr>
-                  <td class="raw_theme w3-border w3-border-black w3-leftbar"><strong>Location</strong></td>
-                  <td><strong><%= @pay_info.reference %></strong></td>
+                  <% entity_dive = EntityDivision.where(active_status: true, del_status: false, assigned_code: current_user.user_division_code).order(created_at: :desc).first %>
+                  <% if current_user.merchant_service? %>
+                    <%if entity_dive %>
+                      <% reference = UssdTrackerActivityTemp.where(session_id: @pay_info.session_id).first %>
+                      <td class="raw_theme w3-border w3-border-black w3-leftbar"><strong>Location</strong></td>
+                      <td><strong><%= reference.regions if reference %></strong></td>
+                    <% end %>
+                  <% end %>
                 </tr>
               <% end %>
 

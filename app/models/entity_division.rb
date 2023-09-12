@@ -2,8 +2,7 @@ class EntityDivision < ApplicationRecord
   self.table_name = "entity_division"
   self.primary_key = :assigned_code
   attr_accessor :region_name, :city_town_name, :service_code, :action_type, :for_update, :div_lov_query, :activity_query,
-                :sub_activity_query, :serv_id, :s_key, :c_key, :sport_type, :sport_category, :category_type, :for_fixture,
-                :reference, :ref_label
+                :sub_activity_query, :serv_id, :s_key, :c_key, :sport_type, :sport_category, :category_type, :for_fixture
   # validates_uniqueness_of :region_name
   has_many :entity_division_exts, class_name: 'EntityDivisionExt', foreign_key: :entity_div_code
   has_many :activity_divs, class_name: 'ActivityDiv', foreign_key: :division_code
@@ -157,6 +156,93 @@ class EntityDivision < ApplicationRecord
     "#{val}"
     # code = "%07d" % val
     # "ST#{code}"
+  end
+
+  def self.media_upload_validity(div_med_params, div_code)
+    valid_image = true
+    selected = true
+    if div_med_params[:media_type] == "IMG"
+      if div_med_params.key?(:media_data)
+        # div_med_params[:media_data].each_with_index do |image, ind|
+          filename = div_med_params[:media_data]
+          logger.info "Media IMG ==== 1 #{filename.inspect}"
+          # logger.info "#{ind + 1}. Media IMG ==== 2 #{filename.inspect}"
+        @entity_division = EntityDivision.new(media_type: div_med_params[:media_type],
+                                              media_path: div_med_params[:media_path],
+                                              media_data: filename, division_name: div_med_params[:division_name],
+                                              ref_label: div_med_params[:ref_label],assigned_code: div_code,
+                                              division_alias: div_med_params[:division_alias],
+                                              suburb_id: div_med_params[:suburb_id], activity_type_code: div_med_params[:activity_type_code],
+                                              service_label: div_med_params[:service_label], service_code: div_med_params[:service_code],
+                                              allow_qr: div_med_params[:allow_qr], msg_sender_id: div_med_params[:msg_sender_id],
+                                              sms_sender_id: div_med_params[:sms_sender_id], link_master: div_med_params[:link_master],
+                                              min_amount: div_med_params[:min_amount], activity_loc: div_med_params[:activity_loc],
+                                              extra_desc: div_med_params[:extra_desc], payment_type: div_med_params[:payment_type],
+                                              entity_code: div_med_params[:entity_code], serv_id: div_med_params[:serv_id],
+                                              s_key: div_med_params[:s_key], c_key: div_med_params[:c_key],
+                                              city_town_name: div_med_params[:city_town_name], region_name: div_med_params[:region_name],
+                                              card_option_status: div_med_params[:card_option_status], division_category: div_med_params[:division_category],
+                                              event_progress: div_med_params[:event_progress],active_status: true, del_status: false)
+
+          logger.info "Media IMG ==== 2 check the validity of the object #{@entity_division.media_data.inspect} #################################"
+          logger.info "Media IMG ==== 2 check the error messages of the object #{@entity_division.errors.messages} #################################"
+
+          unless @entity_division.valid?
+            valid_image = false
+           else
+            valid_image = true
+            # break
+          end
+        # end
+      else
+        #valid_image = false
+        selected = false
+      end
+    end
+    return valid_image, selected
+  end
+
+
+
+  def self.media_upload_save(div_med_params, media_uploader, div_code, current_user)
+    if div_med_params[:media_type] == "IMG"
+      puts "this is the class of the object#{div_med_params.class}"
+      if div_med_params.key?(:media_data)
+        # div_med_params[:media_data].each_with_index do |image, ind|
+          img_public_id = media_uploader.service_logo_pub_id(div_med_params[:media_type])
+          filename = media_uploader.filename_logo(div_med_params[:media_data], img_public_id)
+          logger.info "1. Media ==== TELL ME THE FILENAME I'M SAVING #{filename.inspect} ##########################"
+          # logger.info "#{ind + 1}. Media ==== 2 #{filename.inspect}"
+        @entity_division = EntityDivision.new(media_type: div_med_params[:media_type],
+                                              media_path: div_med_params[:media_path],
+                                              media_data: filename, division_name: div_med_params[:division_name],
+                                              ref_label: div_med_params[:ref_label], assigned_code: div_code,
+                                              division_alias: div_med_params[:division_alias],
+                                              reference: div_med_params[:reference],
+                                              suburb_id: div_med_params[:suburb_id], activity_type_code: div_med_params[:activity_type_code],
+                                              service_label: div_med_params[:service_label], service_code: div_med_params[:service_code],
+                                              allow_qr: div_med_params[:allow_qr], msg_sender_id: div_med_params[:msg_sender_id],
+                                              sms_sender_id: div_med_params[:sms_sender_id], link_master: div_med_params[:link_master],
+                                              min_amount: div_med_params[:min_amount], activity_loc: div_med_params[:activity_loc],
+                                              extra_desc: div_med_params[:extra_desc], payment_type: div_med_params[:payment_type],
+                                              entity_code: div_med_params[:entity_code], serv_id: div_med_params[:serv_id],
+                                              s_key: div_med_params[:s_key], c_key: div_med_params[:c_key],
+                                              city_town_name: div_med_params[:city_town_name], region_name: div_med_params[:region_name],
+                                              card_option_status: div_med_params[:card_option_status], division_category: div_med_params[:division_category],
+                                              event_progress: div_med_params[:event_progress],active_status: true, del_status: false, user_id: current_user)
+          logger.info "Media ==== 3 #{@entity_division.media_data.inspect}"
+          # logger.info "#{ind + 1}. Media ==== 3 #{@entity_division.media_data.inspect}"
+          # resource_type: div_med_params[:media_data]
+          @entity_division.save(validate: false)
+          if @entity_division.save
+            Cloudinary::Uploader.upload(div_med_params[:media_data], :public_id => img_public_id)
+          else
+            logger.info "Image Couldn't Save"
+          end
+        # end
+      end
+    end
+
   end
 
   def self.hsh_key_validator(all_params)

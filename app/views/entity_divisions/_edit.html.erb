@@ -27,33 +27,17 @@
                 <%#= f.input :allow_qr, label: false, as: :boolean, required: false, input_html: {id: "allow_qr", autocomplete: "off", class: "", style: "display: block; float: left; width: 50%"} %>
 <!--              </div>-->
 <!--            </div>-->
-
-            <div class="w3-container " style="">
-
-              <div class="w3-center">
-                <div class="">
-                  <!--                <div class=""><label>Allow QR</label></div>-->
-                  <%= f.input :allow_qr, label: "Allow QR", as: :boolean, required: false, input_html: {id: "allow_qr", autocomplete: "off", class: "", style: "display: block; float: left; width: 50%"} %>
-                </div>
-              </div>
-
-              <div class="w3-half">
-<!--                <div class=""><label>Allow QR</label></div>-->
-                <%= f.input :payment_type, label: "Payment Type", as: :boolean, required: false, input_html: {id: "payment_type", autocomplete: "off", class: "", style: "display: block; float: left; width: 50%"} %>
-              </div>
-
-              <div class="w3-half">
-                <!--                <div class=""><label>Allow QR</label></div>-->
-                <%= f.input :card_option_status, label: "Card Option Status", as: :boolean, required: false, input_html: {id: "card_option_status", autocomplete: "off", class: "", style: "display: block; float: left; width: 50%"} %>
-              </div>
-
-              <div class="" style="display: none;">
-<!--                <div class=""><label>Link Master</label></div>-->
+            <div class="container-fluid col-md-12 justify-content-between form-inline">
+              <%= f.input :allow_qr, label: "Allow QR", as: :boolean, required: false, wrapper: :inline_boolean, input_html: {id: "allow_qr", autocomplete: "off", class: "", style: "display: block; float: right; width: 50%"} %>
+              <%= f.input :card_option_status, label: "Card Options Status", as: :boolean,wrapper: :inline_boolean, required: false, input_html: {id: "card_status", autocomplete: "off", class: "", style: "display: block; float: right; width: 50%"} %>
+              <%= f.input :payment_type, label: "Payment Type", as: :boolean, required: false,wrapper: :inline_boolean, input_html: {id: "payment_type", autocomplete: "off", class: "", style: "display: block; float: right; width: 50%"} %>
+              <%= f.input :reference, label: "Apply Reference", as: :boolean, required: false,wrapper: :inline_boolean, input_html: {id: "reference", autocomplete: "off", class: "",checked: false, style: "display: block; float: right; width: 50%"} %>
+              <div style="display: none;">
                 <%= f.input :link_master, label: "Link To Merchant", as: :boolean, required: false, input_html: {id: "link_master", autocomplete: "off", value: "off", style: "display: block; float: left; width: 50%"} %>
-<!--              <h6 id="link_master">sdfsdf</h6>-->
               </div>
-              <br><br>
             </div>
+            <br>
+
 
             <div class="w3-half">
                 <%= f.input :division_name, label: "Service Name", required: true, input_html: {id: "div_name", value: @entity_division.division_name, autofocus: true, autocomplete: "off", class: "form-control w3-input w3-border w3-white input-group input-append", style: "width: 90%;"} %>
@@ -69,7 +53,14 @@
                 <%= f.input :service_code, as: :integer, label: "Shortcode Ext", required: true, input_html: {id: "serv_code", value: @service_code, autocomplete: "off", min: 1, max: 999999, oninput: "validity.valid||(value='');", class: "form-control w3-input w3-border w3-white input-group input-append", style: "width: 90%;"} %>
                 <%= f.input :service_label, label: "Service Label", required: true, input_html: {id: "serv_label", value: @entity_division.service_label, autocomplete: "off", class: "form-control w3-input w3-border w3-white input-group input-append", style: "width: 90%;"} %>
                 <%= f.input :comment, label: "Extra Ref.", required: true, input_html: {id: "extra_ref", value: @entity_division.comment, autocomplete: "off", class: "form-control w3-input w3-border w3-white input-group input-append", style: "width: 90%"} %>
-
+                  <%#= f.input :media_data, as: :file, label: "Service Logo(Add only one logo)", array: false, input_html:{multiple: false, id: "avatar-upload"}, accept: "image/*", value: @data_media, class: "btn btn-primary btn-file w3-center"%>
+              <img class="w3-hover-shadow w3-card-2 w3-border w3-round-xlarge" width=150 height=70 src="<%= @current_div_media %>"  alt="your image" />
+              <%= f.input :media_data, as: :file, label: "Service Logo(Add only one logo)", input_html:{id: "avatar-upload"}, accept: "image/*", value:@data_media, class: "btn btn-primary btn-file form-control w3-input"%>
+              <div id="add_ref_label" class="w3-hide">
+                    <%= f.input :ref_label, label: "Reference Label", collection: [%w[Name name], ["Account Number", "Account"], ["Mobile number", "mobile_number"], ["Station Code", "code"]], required: true, input_html: { id: "ref_lab", autocomplete: "off", class: "form-control w3-input w3-border w3-white input-group input-append", style: "width: 90%;"} %>
+                  </div>
+                  <%= f.input :media_path,  as: :hidden, input_html:{value: "https://res.cloudinary.com/appsnmob/virtual_pos/media/images/logos"} %>
+                  <%= f.input :media_type,  as: :hidden, input_html:{value: "IMG"} %>
               </div>
 
 
@@ -169,6 +160,7 @@
         var for_wallet = "for_wallet";
         var link_master = $("#link_master");
         var activity_type_id = $("#activity_key");
+        var reference = $("#reference");
 
         // if (activity_type_id.val() === "DON") {
         //     document.getElementById("min_amt_div").style.display = "block";
@@ -197,6 +189,21 @@
             document.getElementById("extra_desc").value = "";
             document.getElementById("act_loc").value = "";
         }
+
+        // if (reference.val() == true) {
+        //     $("#add_ref_label").removeClass("w3-hide");
+        //     document.getElementById("ref_lab").style.display = "block";
+        // }
+        // else if (reference.val() == false) {
+        //     $("#add_ref_label").addClass("w3-hide");
+        //     document.getElementById("ref_lab").style.display = "none";
+        //     document.getElementById("ref_lab").value = "";
+        // }
+        // else {
+        //     $("#add_ref_label").addClass("w3-hide");
+        //     document.getElementById("ref_lab").style.display = "none";
+        //     document.getElementById("ref_lab").value = "";
+        // }
 
         <% if @entity_division.link_master %>
         document.getElementById(for_wallet).style.display = "none";
@@ -277,6 +284,22 @@
             }
         });
 
+        reference.change(function() {
+            if (reference.val() == true) {
+                $("#add_ref_label").removeClass("w3-hide");
+                document.getElementById("ref_lab").style.display = "block";
+            }
+            else if (reference.val() == false) {
+                $("#add_ref_label").addClass("w3-hide");
+                document.getElementById("ref_lab").style.display = "none";
+                document.getElementById("ref_lab").value = "";
+            }
+            else {
+                $("#add_ref_label").addClass("w3-hide");
+                document.getElementById("ref_lab").style.display = "none";
+                document.getElementById("ref_lab").value = "";
+            }
+        });
     });
 
 </script>

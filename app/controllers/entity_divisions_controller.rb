@@ -4,6 +4,8 @@ class EntityDivisionsController < ApplicationController
   before_action :load_permissions
   # GET /entity_divisions
   # GET /entity_divisions.json
+  require 'vpos_core'
+
   def index
     params[:count] ? params[:count] : params[:count] = 50
     params[:page] ? params[:page] : params[:page] = 1
@@ -847,6 +849,7 @@ class EntityDivisionsController < ApplicationController
     @suburb_masters = SuburbMaster.where(id: 0)
     @city_masters = CityTownMaster.where(id: 0)
     @sub_masters = SuburbMaster.where(id: 0)
+    @data_media = ""
   end
 
 
@@ -871,6 +874,7 @@ class EntityDivisionsController < ApplicationController
     @activity_types = ActivityType.where(active_status: true, del_status: false).order(assigned_code: :asc)
     @assigned_service_codes = @entity_division.assigned_service_codes.where(active_status: true, del_status: false).order(created_at: :desc)
     @service_code = @assigned_service_codes.exists? ? @assigned_service_codes.first.service_code : ""
+    @current_div_media = "https://res.cloudinary.com/appsnmob/#{@entity_division.media_data}"
     @suburb_id = @entity_division.suburb_id
     if @suburb_id.present?
       logger.info "Long chain is :: #{@entity_division.suburb_master.a_city.a_region.inspect}"
@@ -1036,28 +1040,79 @@ class EntityDivisionsController < ApplicationController
     @region_masters = RegionMaster.where(active_status: true).order(region_name: :asc)
     @city_town_masters = CityTownMaster.where(id: 0)
     @suburb_masters = SuburbMaster.where(id: 0)
+    @data_media = !params[:entity_division].nil? && !params[:entity_division][:media_data].nil? ? params[:entity_division][:media_data] : ""
 
+    media_uploader = VposCore::MediaDataUploader.new
     respond_to do |format|
 
       assigned_code = EntityDivision.gen_entity_div_code
       serv_code = @entity_division.service_code
       logger.info "Assigned Code :: #{assigned_code.inspect} and Short Code :: #{@entity_division.service_code.inspect}"
+      valid_image, selected = EntityDivision.media_upload_validity(params[:entity_division], assigned_code)
+      logger.info "the result of the validity ==== #{valid_image.inspect} and the selection ==== #{selected.inspect}########################"
       if @entity_division.valid? && assigned_code.present?
+        @entity_division.min_amount = entity_division_params[:activity_type_code] == "DON" && entity_division_params[:min_amount].present? ? entity_division_params[:min_amount] : nil
+        @entity_division.assigned_code = assigned_code
+        @entity_division.reference = entity_division_params[:reference] ? true : false
+        logger.info "the reference status I'm saving #{@entity_division.reference}"
+        if selected && valid_image
+         EntityDivision.media_upload_save(params[:entity_division], media_uploader, assigned_code, current_user.id)
+        else
+          @entity_division.save(validate: false)
+        end
+
+        # @entity_division.save(validate: false)
+
         @for_service_codes = AssignedServiceCode.new(entity_div_code: assigned_code, service_code: serv_code,
                                                      active_status: true, del_status: false, user_id: current_user.id)
         @for_service_codes.save(validate: false)
-        @entity_division.min_amount = entity_division_params[:activity_type_code] == "DON" && entity_division_params[:min_amount].present? ? entity_division_params[:min_amount] : nil
-        @entity_division.assigned_code = assigned_code
-        @entity_division.save(validate: false)
 
         @entity_wallet_conf = EntityWalletConfig.new(entity_code: params[:entity_code], division_code: assigned_code,
                                                      service_id: @entity_division.serv_id, secret_key: @entity_division.s_key,
                                                      client_key: @entity_division.c_key, active_status: true, del_status: false,
                                                      user_id: current_user.id)
         @entity_wallet_conf.save(validate: false)
+        @core_connect = VposCore::CoreConnect.new
+        begin
+          res=@core_connect.connection.post do |req|
+            req.url '/get_qr_code'
+            req.body = JSON.generate(
+          { "merchants": [
+                code: "#{serv_code}",
+                url: "#{ENV['VPOS_QR_URL']}"
+              ]
+              }
+            )
+          end
+          logger.info "Result from API main: #{res.inspect}"
+          json_valid_res = @core_connect.json_validate(res.body)
 
-        flash.now[:notice] == "Merchant Service has been created successfully."
-        format.js { render :show }
+          if json_valid_res
+           # @result = JSON.parse(res.body)
+           # resp_code = the_resp["resp_code"]
+           # resp_desc = the_resp["resp_desc"]
+           # if resp_code == "00"
+             flash.now[:notice] == "Merchant Service has been created successfully."
+             format.js { render :show }
+           else
+             flash.now[:notice] == "There was a problem generating QR code for the service."
+             format.js { render :new }
+           # end
+          # else
+          #   flash.now[:danger] = "Sorry, There was an issue. Kindly check and try again."
+          #   format.js { render :new }
+          end
+        rescue Faraday::TimeoutError
+          flash.now[:alert] = "Connection timed out. Please try again."
+          format.js { render :new }
+        rescue Faraday::SSLError
+          logger.info "SSL Error ==============="
+          flash.now[:danger] = "Sorry, There was an issue. Kindly check and try again."
+          format.js { render :new }
+        rescue Faraday::ConnectionFailed => e
+          flash.now[:alert] = "Connection failed. Please try again shortly."
+          format.js { render :new }
+        end
       else
         @city_masters = @entity_division.region_name.present? ? CityTownMaster.where(active_status: true, region_id: @entity_division.region_name) : CityTownMaster.where(id: 0)
         @sub_masters = @entity_division.city_town_name.present? ? SuburbMaster.where(active_status: true, city_town_id: @entity_division.city_town_name) : SuburbMaster.where(id: 0)
@@ -1070,7 +1125,57 @@ class EntityDivisionsController < ApplicationController
 
   end
 
+  def reset_qr_code
+    @assigned_code = params[:entity_division][:assigned_code]
+    @find_service_code = AssignedServiceCode.where(entity_div_code: @assigned_code,active_status: true, del_status: false).order(created_at: :desc).first
+    if @find_service_code
+      @service_code = AssignedServiceCode.new(entity_div_code: @assigned_code, service_code: @find_service_code.service_code,
+                                              active_status: true, del_status: false, user_id: current_user.id)
+      @service_code.save(validate: false)
+      AssignedServiceCode.update_last_but_one("assigned_service_code", "entity_div_code", @find_service_code.entity_div_code)
+    end
+    begin
+      @core_connect = VposCore::CoreConnect.new
+      res=@core_connect.connection.post do |req|
+        req.url '/get_qr_code'
+        req.body = JSON.generate(
+          {
+            code: @service_code.service_code,
+            url: ENV['VPOS_QR_URL']
+          }
+        )
+      end
+      logger.info "Result from API main: #{res.inspect}"
+      json_valid_res = @core_connect.json_validate(res.body)
 
+      if json_valid_res
+        # @result = JSON.parse(res.body)
+        # resp_code = the_resp["resp_code"]
+        # resp_desc = the_resp["resp_desc"]
+        # if resp_code == "00"
+          flash.now[:notice] == "QR code has been reset successfully."
+          format.js { render :index }
+        else
+          flash.now[:notice] == "There was a problem regenerating the QR code for the service. Kindly try again"
+          format.js { render :request.referer }
+        # end
+      # else
+      #   flash.now[:danger] = "Sorry, There was an issue. Kindly check and try again."
+      #   format.js { render :request.referer }
+      end
+    rescue Faraday::TimeoutError
+      flash.now[:alert] = "Connection timed out. Please try again."
+      format.js { render :request.referer}
+    rescue Faraday::SSLError
+      logger.info "SSL Error ==============="
+      flash.now[:danger] = "Sorry, There was an issue. Kindly check and try again."
+      format.js { render :request.referer }
+    rescue Faraday::ConnectionFailed => e
+      flash.now[:alert] = "Connection failed. Please try again shortly."
+      format.js { render :request.referer }
+    end
+
+  end
 
 
   def create
@@ -1140,6 +1245,8 @@ class EntityDivisionsController < ApplicationController
     @region_masters = RegionMaster.where(active_status: true).order(region_name: :asc)
     entity_division_params[:region_name].present? ? @city_town_masters = CityTownMaster.where(active_status: true, region_id: entity_division_params[:region_name]).order(city_town_name: :asc) : @city_town_masters = [["", ""]].insert(0,['Please select a city', ""])
     entity_division_params[:city_town_name].present? ? @suburb_masters = SuburbMaster.where(active_status: true, city_town_id: entity_division_params[:city_town_name]).order(suburb_name: :asc) : @suburb_masters = [["", ""]].insert(0,['Please select a suburb', ""])
+    @data_media = !params[:entity_division].nil? && !params[:entity_division][:media_data].nil? ? params[:entity_division][:media_data] : ""
+    @current_div_media = "https://res.cloudinary.com/appsnmob/#{@entity_division.media_data}"
 
     @suburb_id = entity_division_params[:suburb_id]
     if @suburb_id.present?
@@ -1163,14 +1270,20 @@ class EntityDivisionsController < ApplicationController
       entity_division_params[:city_town_name].present? ? @suburb_masters = SuburbMaster.where(active_status: true, city_town_id: entity_division_params[:city_town_name]).order(suburb_name: :asc) : @suburb_masters = SuburbMaster.where(id: 0)
 
     end
-
+    media_uploader = VposCore::MediaDataUploader.new
     respond_to do |format|
       @new_record.assigned_code = @entity_division.assigned_code
       if @new_record.valid?#.update(entity_division_params)
         logger.info "LOGGER 1 ====================================================="
         @new_record.assigned_code = @entity_division.assigned_code
         @new_record.min_amount = entity_division_params[:activity_type_code] == "DON" && entity_division_params[:min_amount].present? ? entity_division_params[:min_amount] : nil
-        @new_record.save(validate: false)
+        valid_image, selected = EntityDivision.media_upload_validity(params[:entity_division], @new_record.assigned_code)
+        if valid_image && selected
+          EntityDivision.media_upload_save(params[:entity_division], media_uploader, @new_record.assigned_code, current_user.id)
+        else
+          @new_record.save(validate: false)
+        end
+        # @new_record.save(validate: false)
         @assigned_service_code = AssignedServiceCode.where(del_status: false, entity_div_code: @entity_division.assigned_code).order(created_at: :desc)
         @active_service_code = @assigned_service_code.where(active_status: true).first
         if @active_service_code
@@ -1178,7 +1291,8 @@ class EntityDivisionsController < ApplicationController
             logger.info "LOGGER 2 ========================================================"
             #@active_service_code.update(service_code: entity_division_params[:service_code], user_id: current_user.id)
             @service_code = AssignedServiceCode.new(entity_div_code: @entity_division.assigned_code, service_code: entity_division_params[:service_code],
-                                                    active_status: true, del_status: false, user_id: current_user.id)
+                                                    active_status: true, del_status: false, user_id: current_user.id, assigned_qr_code: @active_service_code.assigned_qr_code,
+                                                    url: @active_service_code.url)
             @service_code.save(validate: false)
             AssignedServiceCode.update_last_but_one("assigned_service_code", "entity_div_code", @active_service_code.entity_div_code)
 
@@ -1187,6 +1301,31 @@ class EntityDivisionsController < ApplicationController
           @service_code = AssignedServiceCode.new(entity_div_code: @entity_division.assigned_code, service_code: entity_division_params[:service_code],
                                                   active_status: true, del_status: false, user_id: current_user.id)
           @service_code.save(validate: false)
+          @core_connect = VposCore::CoreConnect.new
+          begin
+            res=@core_connect.connection.post do |req|
+              req.url '/get_qr_code'
+              req.body = JSON.generate(
+                { "merchants": [
+                  code: "#{@service_code.service_code}",
+                  url: "#{ENV['VPOS_QR_URL']}"
+                ]
+                }
+              )
+            end
+            logger.info "Result from API main: #{res.inspect}"
+            json_valid_res = @core_connect.json_validate(res.body)
+            if json_valid_res
+              logger.info " Hurray The QR was generated"
+            end
+          rescue Faraday::TimeoutError
+            flash.now[:alert] = "Connection timed out. Please try again."
+          rescue Faraday::SSLError
+            logger.info "SSL Error ==============="
+            flash.now[:danger] = "Sorry, There was an issue. Kindly check and try again."
+          rescue Faraday::ConnectionFailed => e
+            flash.now[:alert] = "Connection failed. Please try again shortly."
+          end
         end
 
         EntityDivision.update_last_but_one("entity_division", "assigned_code", @entity_division.assigned_code)
@@ -1310,7 +1449,8 @@ class EntityDivisionsController < ApplicationController
                                             :activity_type_code, :service_label, :region_name, :city_town_name, :comment, :link_master, :card_option_status,
                                             :div_lov_query, :activity_query, :sub_activity_query, :serv_id, :s_key, :c_key, :created_at, :payment_type,
                                             :sport_type, :sport_category, :category_type, :sms_sender_id, :allow_qr, :min_amount, :activity_loc, :extra_desc,
-                                            :active_status, :del_status, :user_id, :service_code, :for_update, divisions: [], :the_div_acts_lov => {})
+                                            :active_status, :del_status, :user_id, :service_code, :for_update, :media_data, :media_path, :media_type, :ref_label,
+                                            :reference, divisions: [], :the_div_acts_lov => {})
     # entity_wallet_configs_attributes: [:id, :division_code, :service_id, :secret_key, :client_key, :comment, :active_status, :del_status, :user_id]
     #activity_divs_attributes: [:id, :division_code, :activity_div_desc, :activity_date, :comment, :active_status, :del_status, :user_id],
 

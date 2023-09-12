@@ -168,6 +168,22 @@
             <% assigned_service = @entity_division.assigned_service_codes != nil ? @entity_division.assigned_service_codes.where(active_status: true, del_status: false).order("assigned_service_code.created_at desc").first : false %>
             <% %>
             <div class="w3-container w3-responsive pre-scrollable w3-mobile">
+
+              <div class="row no-gutters">
+                <div class="col col-md-6 p-3 card align-items-center">
+                  <label>Service Logo</label>
+                  <% @current_div_media = "https://res.cloudinary.com/appsnmob/#{@entity_division.media_data}" %>
+                  <img class="w3-hover-shadow w3-card-2 w3-border rounded" width=300 height=190 src="<%= "#{@current_div_media}" %>"  alt="your logo" />
+                </div>
+
+                <div class="col col-md-6 p-3 card align-items-center">
+                  <label>Service QR</label>
+                  <img class="w3-hover-shadow w3-card-2 w3-border rounded" width=300 height=190 src="<%= "#{assigned_service.assigned_qr_code if assigned_service}" %>"  alt="your QR" />
+                </div>
+              </div>
+              <br>
+              <br>
+
               <table class="w3-table-all table table-bordered w3-hoverable w3-card-4">
 
                 <tr>
@@ -192,6 +208,10 @@
                   <% else %>
                     <td><strong>No</strong></td>
                   <% end %>
+                </tr>
+                <tr>
+                  <td class="raw_theme w3-border w3-border-black w3-leftbar"><strong>Logo</strong></td>
+                  <td><strong><%= @entity_division.media_data %></strong></td>
                 </tr>
 
                 <tr>
@@ -226,7 +246,11 @@
                     <td><strong><%= assigned_service.service_code %></strong></td>
                   </tr>
 
-                <% end %>
+                  <tr>
+                    <td class="raw_theme w3-border w3-border-black w3-leftbar"><strong>Service QR code</strong></td>
+                    <td><strong><%= assigned_service.assigned_qr_code %></strong></td>
+                  </tr>
+              <% end %>
 
                 <% if entity_wallet_conf %>
                   <tr>

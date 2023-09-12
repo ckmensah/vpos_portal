@@ -35,13 +35,27 @@ class AssignedFeesController < ApplicationController
   # GET /assigned_fees/new
   def new
     @assigned_fee = AssignedFee.new
-    charged_to_merchant = AssignedFee.where(entity_div_code: params[:code], charged_to: 'M', active_status: true).first
-    charged_to_customer = AssignedFee.where(entity_div_code: params[:code], charged_to: 'C', active_status: true).first
+    charged_to_merchant = AssignedFee.where(entity_div_code: params[:code], charged_to: 'M', active_status: true)
+    charged_to_customer = AssignedFee.where(entity_div_code: params[:code], charged_to: 'C', active_status: true)
+
+    @payment_mode = [["MOMO", "MOM"], ["CARD", "CRD"]]
 
     if charged_to_customer
-      @charged_to_type = [["Merchant", "M"]]
+      if charged_to_customer.size > 1 && charged_to_customer.size == 2
+        @charged_to_type = [["Merchant", "M"]]
+      elsif charged_to_customer.size < 2 && charged_to_customer.size == 1
+        @charged_to_type = [["Merchant", "M"],["Customer", "C"]]
+      else
+        @charged_to_type = [["Merchant", "M"],["Customer", "C"]]
+      end
     elsif charged_to_merchant
-      @charged_to_type = [["Customer", "C"]]
+      if charged_to_merchant.size > 1 && charged_to_merchant.size == 2
+        @charged_to_type = [["Customer", "C"]]
+      elsif charged_to_merchant.size < 2 && charged_to_merchant.size == 1
+        @charged_to_type = [["Customer", "C"],["Merchant", "M"]]
+      else
+        @charged_to_type = [["Merchant", "M"],["Customer", "C"]]
+      end
     else
       @charged_to_type = [["Merchant", "M"], ["Customer", "C"]]
     end
@@ -51,6 +65,8 @@ class AssignedFeesController < ApplicationController
   def edit
     @fee_size_obj = AssignedFee.where(active_status: true, entity_div_code: @assigned_fee.entity_div_code)
     # Reassigning Charged_to to restrict it from duplicates
+    @payment_mode = [["MOMO", "MOM"], ["CARD", "CRD"]]
+
     if @fee_size_obj.exists? && @fee_size_obj.size > 1
       if @assigned_fee.charged_to == 'C'
         @charged_to_type = [["Customer", "C"]]
@@ -70,21 +86,42 @@ class AssignedFeesController < ApplicationController
   def create
     @assigned_fee = AssignedFee.new(assigned_fee_params)
     # Renaming Charged_to
-    charged_to_merchant = AssignedFee.where(entity_div_code: params[:code], charged_to: 'M', active_status: true).first
-    charged_to_customer = AssignedFee.where(entity_div_code: params[:code], charged_to: 'C', active_status: true).first
+    charged_to_merchant = AssignedFee.where(entity_div_code: params[:code], charged_to: 'M', active_status: true)
+    charged_to_customer = AssignedFee.where(entity_div_code: params[:code], charged_to: 'C', active_status: true)
+    @payment_mode = [["MOMO", "MOM"], ["CARD", "CRD"]]
 
     if charged_to_customer
-      @charged_to_type = [["Merchant", "M"]]
+      if charged_to_customer.size > 1 && charged_to_customer.size == 2
+        @charged_to_type = [["Merchant", "M"]]
+      elsif charged_to_customer.size < 2 && charged_to_customer.size == 1
+        @charged_to_type = [["Merchant", "M"],["Customer", "C"]]
+      else
+        @charged_to_type = [["Merchant", "M"],["Customer", "C"]]
+      end
     elsif charged_to_merchant
-      @charged_to_type = [["Customer", "C"]]
+      if charged_to_merchant.size > 1 && charged_to_merchant.size == 2
+        @charged_to_type = [["Customer", "C"]]
+      elsif charged_to_merchant.size < 2 && charged_to_merchant.size == 1
+        @charged_to_type = [["Customer", "C"],["Merchant", "M"]]
+      else
+        @charged_to_type = [["Merchant", "M"],["Customer", "C"]]
+      end
     else
       @charged_to_type = [["Merchant", "M"], ["Customer", "C"]]
     end
 
+    # if charged_to_customer
+    #   @charged_to_type = [["Merchant", "M"]]
+    # elsif charged_to_merchant
+    #   @charged_to_type = [["Customer", "C"]]
+    # else
+    #   @charged_to_type = [["Merchant", "M"], ["Customer", "C"]]
+    # end
+
     # Conditions to permit multiple charges on either customer or merchant. Also to prevent duplications
     fee_size_obj = AssignedFee.where(active_status: true, entity_div_code: params[:code])
     charged_to_exist = AssignedFee.where(entity_div_code: params[:code], charged_to: assigned_fee_params[:charged_to], active_status: true)
-    if assigned_fee_params[:charged_to].present? && fee_size_obj.exists? && fee_size_obj.size > 1 && charged_to_exist
+    if assigned_fee_params[:charged_to].present? && fee_size_obj.exists? && fee_size_obj.size > 3 && charged_to_exist && charged_to_exist.size == 2
       charge_type = assigned_fee_params[:charged_to] == 'M' ? 'Merchant' : 'Customer'
       respond_to do |format|
         @assigned_fee.entity_div_code = ""
@@ -133,7 +170,9 @@ class AssignedFeesController < ApplicationController
     @new_record = AssignedFee.new(assigned_fee_params)
     @fee_size_obj = AssignedFee.where(active_status: true, entity_div_code: @assigned_fee.entity_div_code)
     # Reassigning Charged_to to restrict it from duplicates
+    @payment_mode = [["MOMO", "MOM"], ["CARD", "CRD"]]
     logger.info "Fee size :: #{@fee_size_obj.inspect}"
+    @payment_mode = [["MOMO", "MOM"], ["CARD", "CRD"]]
     if @fee_size_obj.exists? && @fee_size_obj.size > 1
       if @assigned_fee.charged_to == 'C'
         @charged_to_type = [["Customer", "C"]]
@@ -315,6 +354,6 @@ class AssignedFeesController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def assigned_fee_params
-      params.require(:assigned_fee).permit(:entity_div_code, :trans_type, :fee, :flat_percent, :cap, :limit_capped, :charged_to, :comment, :active_status, :del_status, :user_id)
+      params.require(:assigned_fee).permit(:entity_div_code, :trans_type, :fee, :flat_percent, :cap, :limit_capped, :charged_to, :comment, :active_status, :del_status, :user_id, :payment_mode)
     end
 end

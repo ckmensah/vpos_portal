@@ -162,6 +162,30 @@ module VposCore
       end
     end
 
+    def service_logo(media_type)
+      if media_type == "IMG"
+      "virtual_pos/media/images/logos"
+      end
+    end
+
+    def service_logo_pub_id(media_type)
+      if media_type == "IMG"
+        "#{service_logo(media_type)}/" + Cloudinary::Utils.random_public_id
+      end
+    end
+
+    def filename_logo(file, public_id)
+      uploaded_file = file
+      # if uploaded_file.is_a?(ActionDispatch::Http::UploadedFile)
+        if uploaded_file.original_filename.present?
+          file_extension = uploaded_file.content_type.split("/")[1]
+          # file_extension = uploaded_file.tempfile.to_path.to_s
+          "#{public_id}.#{file_extension}" if file_extension.present?
+        end
+      # end
+      #"#{public_id}.#{file.extension}" #if original_filename.present?
+    end
+
     def public_id
       "#{store_dir}/" + Cloudinary::Utils.random_public_id
     end
