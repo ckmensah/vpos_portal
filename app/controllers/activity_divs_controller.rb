@@ -142,7 +142,8 @@ class ActivityDivsController < ApplicationController
           logger.info "Timeout Error ================="
           flash.now[:danger] = "Sorry, There was a timeout issue. Kindly check and try again."
           format.js { render :edit }
-        rescue Faraday::Error::ConnectionFailed => e
+        # rescue Faraday::Error::ConnectionFailed => e
+        rescue Faraday::Connection => e
           logger.info "Connection Failed ================"
           logger.info "Error message :: #{e} ==================="
           flash.now[:danger] = "Sorry, There was a connection issue. Kindly check and try again."

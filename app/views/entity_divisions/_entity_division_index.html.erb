@@ -50,12 +50,13 @@
 
 
           <tr>
-            <td>
+            <td class="d-flex d-md-inline-flex">
               <%= link_to 'VIEW', entity_division_path(entity_division, entity_code: params[:entity_code], count1: params[:count1], count: params[:count], page: params[:page]),
                             style: "width:60px; height: 30px;",
-                            class: 'w3-button w3-purple-vpos w3-border w3-border-purple w3-tiny w3-round-large', remote:true%>
+                            class: 'w3-button w3-purple-vpos w3-border w3-border-purple w3-tiny w3-round-large', remote:true%>&nbsp;&nbsp;&nbsp;
 
             <% if entity_division.activity_type.assigned_code == "SHW" || entity_division.activity_type.assigned_code == "SPO" %>
+                <div class="dropdown">
                 <button id="navbardrop" data-toggle="dropdown" onclick="ticketDropdownControl('ticket-dropdown-id-<%= ind + 1 %>', 'division-dropdown-id-<%= ind + 1 %>'); return false;" class="w3-button div-dropdown-2 w3-white w3-border dropdown-toggle w3-border-purple w3-tiny w3-round-large" style="width:80px; height: 30px; color: #800754 !important">TICKETS</button>
 
                 <div id="ticket-dropdown-id-<%= ind + 1 %>" class="dropdown-menu division-dropdown dropdown-menu-right">
@@ -83,6 +84,7 @@
                               style: "width:100px; height: 30px;",
                               class: 'w3-button w3-purple-vpos w3-border w3-border-purple w3-tiny w3-round-large', remote:true%>
                 <%# end %>
+                </div>
             <% else %>
 <!--                <button class="w3-button w3-purple-vpos w3-border w3-disabled w3-border-purple w3-tiny w3-round-large" style="width:100px; height: 30px; color: #800754 !important">TICKET TYPES</button>-->
             <% end %>
@@ -109,9 +111,8 @@
             <% end %>
 
             <td><strong><%= entity_division.created_at %></strong></td>
-            <td>
+            <td class=" d-flex d-md-inline-flex">
               <% if entity_division.active_status && entity_division.del_status == false %>
-
                 <% if current_user.super_admin? || current_user.super_user? %>
                   <%= link_to 'SERVICE FEES', assigned_fee_index_path(entity_code: params[:entity_code], code: entity_division.assigned_code, count1: params[:count1], count: params[:count]),
                               style: "width:100px; height: 30px; color: #800754 !important",
@@ -121,18 +122,21 @@
                               style: "width:120px; height: 30px;",
                               class: 'w3-button w3-purple-vpos w3-border w3-border-purple w3-tiny w3-round-large', remote:true%>
                 <% end %>
+                &nbsp;
                 <% if entity_division.activity_type.assigned_code == "CHC" || entity_division.activity_type.assigned_code == "SCH" || entity_division.activity_type.assigned_code == "SCL" #|| entity_division.activity_type.assigned_code == "OMC" #|| entity_division.activity_type.assigned_code == "DON" || entity_division.activity_type.assigned_code == "GEN" %>
                   <%= link_to 'ACTIVITY CODE', entity_div_sub_activity_index_path(entity_code: params[:entity_code], code: entity_division.assigned_code, count1: params[:count1], count: params[:count]),
                               style: "width:110px; height: 30px; color: #800754 !important",
                               class: 'w3-button w3-white w3-border w3-border-purple w3-tiny w3-round-large', remote:true%>
                 <% else %>
                 <% end %>
+                &nbsp;
                 <% if entity_division.activity_type.assigned_code == "SPO" %>
 
                   <!--                  <li class="nav-item dropdown">-->
                   <!--<i class="fas fa-angle-down"></i>-->
                   <!--                    <button class="nav-link text-light dropdown-toggle" href="#" id="navbardrop" data-toggle="dropdown">Setup </button>-->
 
+                <div class="dropdown">
                   <button id="navbardrop" data-toggle="dropdown" onclick="divisionDropdownControl('ticket-dropdown-id-<%= ind + 1 %>', 'division-dropdown-id-<%= ind + 1 %>'); return false;" class="w3-button div-dropdown-1 w3-white w3-border dropdown-toggle w3-border-purple w3-tiny w3-round-large" style="width:65px; height: 30px; color: #800754 !important">SETUP</button>
 
                   <div id="division-dropdown-id-<%= ind + 1 %>" class="dropdown-menu division-dropdown dropdown-menu-right">
@@ -142,8 +146,9 @@
                       <a class="dropdown-item" href= "<%= division_setup_path(entity_division, code: entity_division.assigned_code, entity_code: params[:entity_code], count1: params[:count1], count: params[:count], page: params[:page]) %>" data-remote="true" ><strong>General Setup</strong></a>
                     <% end %>
                     <a class="dropdown-item" href="<%= sport_setup_path(entity_division, code: entity_division.assigned_code, entity_code: params[:entity_code], count1: params[:count1], count: params[:count]) %>" data-remote="true"><strong>Add Fixtures</strong></a>
+                    <a class="dropdown-item" href="<%= reset_biz_qr_code_url(code: entity_division.assigned_code, entity_code: params[:entity_code], count1: params[:count1], count: params[:count]) %>" data-remote="true" data-confirm="You are about to reset the QR code for this service. Do you want to continue?" data-method="POST"><strong>Reset QR</strong></a>
                   </div>
-
+                </div>
                   <!--                  </li>-->
                 <% else %>
                   <% if entity_division.activity_type.assigned_code == "MIP" %>
@@ -151,8 +156,9 @@
                                 style: "width:65px; height: 30px; color: #800754 !important",
                                 class: 'w3-button w3-white w3-border w3-border-purple w3-tiny w3-round-large', remote:true%>
                   <% else %>
-                    <button id="navbardrop" data-toggle="dropdown" onclick="divisionDropdownControl('ticket-dropdown-id-<%= ind + 1 %>', 'division-dropdown-id-<%= ind + 1 %>'); return false;" class="w3-button div-dropdown-1 w3-white w3-border dropdown-toggle w3-border-purple w3-tiny w3-round-large" style="width:65px; height: 30px; color: #800754 !important">SETUP</button>
 
+                    <div class="dropdown">
+                    <button id="navbardrop" data-toggle="dropdown" type="button" onclick="divisionDropdownControl('ticket-dropdown-id-<%= ind + 1 %>', 'division-dropdown-id-<%= ind + 1 %>'); return false;" class="w3-button div-dropdown-1 w3-white w3-border dropdown-toggle w3-border-purple w3-tiny w3-round-large" aria-haspopup="true" aria-expanded="false" style="width:65px; height: 30px; color: #800754 !important">SETUP</button>
                     <div id="division-dropdown-id-<%= ind + 1 %>" class="dropdown-menu division-dropdown dropdown-menu-right">
                       <% if division_act_lov.exists? || activity_div.exists? %>
                         <a class="dropdown-item" href= "<%= division_edit_setup_path(entity_division, code: entity_division.assigned_code, entity_code: params[:entity_code], count1: params[:count1], count: params[:count], page: params[:page]) %>" data-remote="true" ><strong>General Setup</strong></a>
@@ -161,7 +167,8 @@
                       <% end %>
                       <% if entity_division.activity_type.assigned_code == "MOP" || entity_division.activity_type.assigned_code == "HSP" %>
                         <a class="dropdown-item" href="<%= entity_admin_whitelist_index_path(code: entity_division.assigned_code, entity_code: params[:entity_code], count1: params[:count1], count: params[:count]) %>" data-remote="true"><strong>WhiteList Merchant</strong></a>
-                      <% end %>
+                        <a class="dropdown-item" href="<%= reset_biz_qr_code_url(code: entity_division.assigned_code, entity_code: params[:entity_code], count1: params[:count1], count: params[:count]) %>" data-remote="true" data-confirm="You are about to reset the QR code for this service. Do you want to continue?" data-method= "POST"><strong>Reset QR</strong></a>
+                    <% end %>
 
                       <% if entity_division.activity_type.assigned_code == "SHW" %>
                         <% social_handle_state = EntityDivSocialHandle.where(entity_div_code: entity_division.assigned_code, del_status: false).first %>
@@ -172,12 +179,15 @@
                           <a class="dropdown-item" href="<%= new_entity_div_medium_path(code: entity_division.assigned_code, entity_code: params[:entity_code], count1: params[:count1], count: params[:count]) %>" data-remote="true"><strong>Media</strong></a>
                         <% end %>
                       <% end %>
-
+                        <a class="dropdown-item" href="<%= reset_biz_qr_code_url(code: entity_division.assigned_code, entity_code: params[:entity_code], count1: params[:count1], count: params[:count]) %>" data-remote="true" data-confirm="You are about to reset the QR code for this service. Do you want to continue?" data-method= "POST"><strong>Reset QR</strong></a>
                         <a class="dropdown-item" href="<%= entity_div_alert_recipient_index_path(entity_division, code: entity_division.assigned_code, entity_code: params[:entity_code], count1: params[:count1], count: params[:count]) %>" data-remote="true"><strong>Merchant Notification</strong></a>
 
                       <% if entity_division.activity_type.assigned_code == "MCE" %>
                         <a class="dropdown-item" href="<%= loan_request_index_path(code: entity_division.assigned_code, entity_code: params[:entity_code], count1: params[:count1], count: params[:count]) %>" data-remote="true"><strong>Loan Request</strong></a>
+                        <a class="dropdown-item" href="<%= reset_biz_qr_code_url(code: entity_division.assigned_code, entity_code: params[:entity_code], count1: params[:count1], count: params[:count]) %>" data-remote="true" data-confirm="You are about to reset the QR code for this service. Do you want to continue?" data-method= "POST"><strong>Reset QR</strong></a>
+
                       <% end %>
+                      </div>
                     </div>
 
 
@@ -198,7 +208,7 @@
                   <% end %>
 
                 <% end %>
-
+                &nbsp;&nbsp;
                   <%= link_to 'EDIT', edit_entity_division_path(entity_division, code: entity_division.assigned_code, entity_code: params[:entity_code], count1: params[:count1], count: params[:count], page: params[:page]),
                               style: "width:50px; height: 30px; color: #800754 !important",
                               class: 'w3-button w3-white w3-border w3-border-purple w3-tiny w3-round-large', remote:true %>
@@ -209,7 +219,7 @@
                   <button class="w3-button w3-white w3-border w3-disabled w3-border-purple w3-tiny w3-round-large" style="width:50px; height: 30px; color: #800754 !important">EDIT</button>
               <% end %>
 
-
+              &nbsp;&nbsp;
               <% if entity_division.active_status %>
                   <%= link_to 'DISABLE', entity_division_path(entity_division, entity_code: params[:entity_code], service_filter: session[:service_filter].present? ? session[:service_filter].to_enum.to_h : "", count1: params[:count1], count: params[:count], page: params[:page]),
                               style: "width:80px; height: 30px; color: #800754 !important",

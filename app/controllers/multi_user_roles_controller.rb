@@ -69,6 +69,6 @@ class MultiUserRolesController < ApplicationController
 
     # Only allow a list of trusted parameters through.
     def multi_user_role_params
-      params.require(:multi_user_role).permit(:user_id, :entity_code, :role_code, :creator_id, :comment, :active_status, :del_status)
+      params.require(:multi_user_role).permit(:user_id, :entity_code, :role_code, :division_code, :creator_id, :comment, :active_status, :del_status)
     end
 end

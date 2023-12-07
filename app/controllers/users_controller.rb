@@ -276,6 +276,8 @@ class UsersController < ApplicationController
         @user.access_type = "S"
       elsif user_params[:for_role_code] == "MMA"
         @user.access_type = "MM"
+      elsif user_params[:for_role_code] == "MMS"
+        @user.access_type = "MS"
       end
     end
     @user.show_charge = false if user_params[:for_role_code] == "SA" || user_params[:for_role_code] == "SU"
@@ -284,11 +286,14 @@ class UsersController < ApplicationController
       @entity_divisions = EntityDivision.where(entity_code: user_params[:for_entity_code], active_status: true).order(division_name: :asc)
       elsif user_params[:for_entity_code_multi].present?
       @entity_divisions = EntityDivision.where("entity_code IN ('#{user_params[:for_entity_code_multi]}') and active_status = true").order(division_name: :asc)
+      elsif user_params[:for_division_code_multi].present?
+        @entity_divisions = EntityDivision.where("assigned_code IN ('#{user_params[:for_division_code_multi]}') and active_status = true").order(division_name: :asc)
       end
         logger.info "Validator Validation ======================================="
       @entity_info_id = user_params[:for_entity_code]
       @entity_info_id_multi = user_params[:for_entity_code_multi]
       @entity_div_id = user_params[:for_division_code]
+      @entity_div_multi = user_params[:for_division_code_multi]
       logger.info "=========================================================="
       logger.info "ID's are :: #{@entity_info_id.inspect}, #{@entity_div_id.inspect}"
       if @user.valid?
@@ -383,6 +388,19 @@ class UsersController < ApplicationController
                                                   creator_id: user_params[:for_creator_id],
                                                   active_status: true, del_status: false)
                     multi_user_role_save.save(validate: false)
+                end
+              end
+            elsif user_params[:for_role_code] == "MMS"
+              if user_params[:for_division_code_multi].present? && user_params[:for_division_code_multi].count >= 1
+                user_role_save(@user.id, user_params)
+                user_params[:for_division_code_multi].each do |i|
+                  next if i.empty?
+                  multi_user_role_save = MultiUserRole.new(user_id: @user.id, role_code: user_params[:for_role_code],
+                                                           entity_code: user_params[:for_entity_code],
+                                                           creator_id: user_params[:for_creator_id],
+                                                           division_code: i,
+                                                           active_status: true, del_status: false)
+                  multi_user_role_save.save(validate: false)
                 end
               end
              end
@@ -651,7 +669,7 @@ class UsersController < ApplicationController
                                  :division_code, :contact_number, :password, :password_confirmation,
                                  :for_portal, :show_charge, :free_id, :role_id, :creator_id, :for_show_charge,
                                  :for_role_code, :for_the_portal, :for_entity_code, :for_division_code, :for_creator_id,
-                                 :active_status, :del_status, {:for_entity_code_multi => []})
+                                 :active_status, :del_status, {:for_entity_code_multi => []}, {:for_division_code_multi => []})
   end
 
 

@@ -1,5 +1,5 @@
 class User < ApplicationRecord
-  attr_accessor :for_role_code, :for_the_portal, :for_division_code,
+  attr_accessor :for_role_code, :for_the_portal, :for_division_code,:for_division_code_multi,
                 :for_creator_id, :for_show_charge, :for_entity_code, :for_entity_code_multi
   validates_uniqueness_of :user_name
   CTRYCODE = "233"

@@ -221,6 +221,26 @@ class EntityDivisionsController < ApplicationController
     logger.info "For Suburbs :: #{@info_update_division.inspect}"
     logger.info "For Activity main code (Menu Items) :: #{@merchant_update_ref.inspect}"
   end
+  # def multi_division_update
+  #   # converted_params = ActiveSupport::JSON.decode( params[:s] )
+  #   logger.info "Params:: #{params[:id_for_entity_info].inspect}"
+  #   if params[:id_for_entity_info].empty?
+  #     # @region_update_city = [["", ""]]
+  #     @info_update_division = [["", ""]].insert(0,['Please select a service', ""])
+  #     @merchant_update_ref = [["", ""]].insert(0,['Please select a menu item', ""])
+  #   else
+  #     info_id_record = EntityInfo.find(params[:id_for_entity_info])
+  #     info_update_division = info_id_record.entity_divisions.where(active_status: true).order(division_name: :asc).map { |a| [a.division_name, a.assigned_code] }.insert(0,['Please select a service', ""])
+  #     menu_items = PaymentReport.joins("INNER JOIN entity_division ON payment_reports.entity_div_code = entity_division.assigned_code")
+  #                      .select(:activity_main_code, :narration).where("entity_code = '#{params[:id_for_entity_info]}' AND active_status = true AND activity_type_code = 'CHC'")
+  #                      .group(:activity_main_code, :narration).order(activity_main_code: :asc).map { |a| a.narration.present? ? ["#{a.activity_main_code} (#{a.narration})", "#{a.activity_main_code} #{a.narration}"] : [a.activity_main_code, a.activity_main_code] }.insert(0,['Please select a menu item', ""])
+  #
+  #     @info_update_division = info_update_division.empty? ? [["", ""]].insert(0,['Please select a service', ""]) : info_update_division
+  #     @merchant_update_ref = menu_items.empty? ? [["", ""]].insert(0,['Please select a menu item', ""]) : menu_items
+  #   end
+  #   logger.info "For Suburbs :: #{@info_update_division.inspect}"
+  #   logger.info "For Activity main code (Menu Items) :: #{@merchant_update_ref.inspect}"
+  # end
 
 
   def lov_update
@@ -1126,13 +1146,20 @@ class EntityDivisionsController < ApplicationController
   end
 
   def reset_qr_code
-    @assigned_code = params[:entity_division][:assigned_code]
-    @find_service_code = AssignedServiceCode.where(entity_div_code: @assigned_code,active_status: true, del_status: false).order(created_at: :desc).first
+    if current_user.merchant_admin?
+      params[:entity_code] = current_user.user_entity_code
+    elsif current_user.merchant_service?
+      params[:entity_code] = current_user.user_entity_code
+      params[:code] = current_user.user_division_code
+    end
+    @assigned_code = params[:code]
+    @find_service_code = AssignedServiceCode.where(entity_div_code: @assigned_code, active_status: true, del_status: false).order(created_at: :desc).first
     if @find_service_code
+      AssignedServiceCode.update_last_but_one("assigned_service_code", "entity_div_code", @find_service_code.entity_div_code)
+
       @service_code = AssignedServiceCode.new(entity_div_code: @assigned_code, service_code: @find_service_code.service_code,
                                               active_status: true, del_status: false, user_id: current_user.id)
       @service_code.save(validate: false)
-      AssignedServiceCode.update_last_but_one("assigned_service_code", "entity_div_code", @find_service_code.entity_div_code)
     end
     begin
       @core_connect = VposCore::CoreConnect.new
@@ -1149,19 +1176,11 @@ class EntityDivisionsController < ApplicationController
       json_valid_res = @core_connect.json_validate(res.body)
 
       if json_valid_res
-        # @result = JSON.parse(res.body)
-        # resp_code = the_resp["resp_code"]
-        # resp_desc = the_resp["resp_desc"]
-        # if resp_code == "00"
-          flash.now[:notice] == "QR code has been reset successfully."
+          flash.now[:notice] == "QR code has been reset/regenerated successfully."
           format.js { render :index }
         else
           flash.now[:notice] == "There was a problem regenerating the QR code for the service. Kindly try again"
           format.js { render :request.referer }
-        # end
-      # else
-      #   flash.now[:danger] = "Sorry, There was an issue. Kindly check and try again."
-      #   format.js { render :request.referer }
       end
     rescue Faraday::TimeoutError
       flash.now[:alert] = "Connection timed out. Please try again."

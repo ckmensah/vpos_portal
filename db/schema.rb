@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2022_05_04_160344) do
+ActiveRecord::Schema[7.1].define(version: 2023_11_07_164112) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -197,6 +197,7 @@ ActiveRecord::Schema[7.0].define(version: 2022_05_04_160344) do
     t.boolean "approved"
     t.datetime "created_at", precision: nil, default: -> { "CURRENT_TIMESTAMP" }, null: false
     t.datetime "updated_at", precision: nil
+    t.string "payment_mode", limit: 5
     t.index ["cap"], name: "assigned_fees_cap_idx"
     t.index ["charged_to"], name: "assigned_fees_charged_to_idx"
     t.index ["comment"], name: "assigned_fees_comment_idx"
@@ -326,6 +327,18 @@ ActiveRecord::Schema[7.0].define(version: 2022_05_04_160344) do
     t.datetime "updated_at", precision: nil
   end
 
+  create_table "debug_log", id: false, force: :cascade do |t|
+    t.serial "id", null: false
+    t.string "service_id", limit: 10
+    t.string "ip_addr", limit: 20
+    t.text "payload"
+    t.text "client_signature"
+    t.text "host_signature"
+    t.text "err_msg"
+    t.string "req_url", limit: 255
+    t.datetime "created_at", precision: nil, default: -> { "CURRENT_TIMESTAMP" }, null: false
+  end
+
   create_table "division_activity_lov", id: false, force: :cascade do |t|
     t.serial "id", null: false
     t.string "activity_code", limit: 10
@@ -408,6 +421,17 @@ ActiveRecord::Schema[7.0].define(version: 2022_05_04_160344) do
     t.index ["user_id"], name: "entity_div_media_user_id_idx"
   end
 
+  create_table "entity_div_ref_lookups", force: :cascade do |t|
+    t.string "entity_div_code"
+    t.string "pan"
+    t.string "name"
+    t.boolean "active_status"
+    t.boolean "del_status"
+    t.integer "user_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
   create_table "entity_div_social_handle", id: false, force: :cascade do |t|
     t.serial "id", null: false
     t.string "entity_div_code", limit: 10
@@ -458,6 +482,11 @@ ActiveRecord::Schema[7.0].define(version: 2022_05_04_160344) do
     t.boolean "card_option_status"
     t.boolean "event_progress", default: true
     t.string "division_category", limit: 10
+    t.boolean "reference"
+    t.string "ref_label", limit: 25
+    t.string "media_path", limit: 400
+    t.string "media_type", limit: 5
+    t.string "media_data", limit: 400
   end
 
   create_table "entity_info", id: false, force: :cascade do |t|
@@ -548,6 +577,29 @@ ActiveRecord::Schema[7.0].define(version: 2022_05_04_160344) do
     t.datetime "created_at", precision: nil, default: -> { "CURRENT_TIMESTAMP" }, null: false
   end
 
+  create_table "ext_provider", id: false, force: :cascade do |t|
+    t.serial "id", null: false
+    t.string "service_name", limit: 155
+    t.string "entity_div_code", limit: 10
+    t.string "server_ip", limit: 255
+    t.boolean "active_status", default: true
+    t.boolean "del_status", default: false
+    t.integer "user_id"
+    t.datetime "created_at", precision: nil, default: -> { "CURRENT_TIMESTAMP" }, null: false
+    t.datetime "updated_at", precision: nil
+  end
+
+  create_table "ext_provider_key", id: false, force: :cascade do |t|
+    t.serial "id", null: false
+    t.integer "ext_provider_id"
+    t.text "client_token"
+    t.text "secret_token"
+    t.boolean "active_status", default: true
+    t.boolean "del_status", default: false
+    t.datetime "created_at", precision: nil, default: -> { "CURRENT_TIMESTAMP" }, null: false
+    t.datetime "updated_at", precision: nil
+  end
+
   create_table "fund_movement", id: false, force: :cascade do |t|
     t.serial "id", null: false
     t.integer "service_id"
@@ -561,6 +613,19 @@ ActiveRecord::Schema[7.0].define(version: 2022_05_04_160344) do
     t.datetime "created_at", precision: nil, default: -> { "CURRENT_TIMESTAMP" }, null: false
     t.datetime "updated_at", precision: nil
     t.string "entity_div_code", limit: 10
+  end
+
+  create_table "incoming_requests", id: false, force: :cascade do |t|
+    t.serial "id", null: false
+    t.binary "remote_ip"
+    t.binary "remote_ip_hash"
+    t.binary "req_url"
+    t.binary "req_url_hash"
+    t.binary "req_path"
+    t.binary "req_path_hash"
+    t.binary "req_body"
+    t.binary "req_body_hash"
+    t.datetime "created_at", precision: nil, default: -> { "CURRENT_TIMESTAMP" }, null: false
   end
 
   create_table "loan_requests", force: :cascade do |t|
@@ -588,6 +653,7 @@ ActiveRecord::Schema[7.0].define(version: 2022_05_04_160344) do
     t.boolean "del_status"
     t.datetime "created_at", precision: nil, null: false
     t.datetime "updated_at", precision: nil, null: false
+    t.string "division_code"
   end
 
   create_table "notification_recipient", force: :cascade do |t|
@@ -696,6 +762,15 @@ ActiveRecord::Schema[7.0].define(version: 2022_05_04_160344) do
     t.datetime "created_at", precision: nil, null: false
     t.datetime "updated_at", precision: nil, null: false
     t.string "assigned_code", limit: 15
+  end
+
+  create_table "route_whitelist", id: false, force: :cascade do |t|
+    t.serial "id", null: false
+    t.string "route", limit: 255
+    t.boolean "active_status", default: true
+    t.boolean "del_status", default: false
+    t.datetime "created_at", precision: nil, default: -> { "CURRENT_TIMESTAMP" }, null: false
+    t.datetime "updated_at", precision: nil
   end
 
   create_table "staged_request", id: false, force: :cascade do |t|

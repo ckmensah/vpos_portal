@@ -53,12 +53,15 @@
             <%= f.input :for_entity_code,  label: "Merchant", collection: @entity_infos, label_method: :entity_name, value_method: :assigned_code, required: true, input_html:{id: "id_entity_info", autocomplete: "off",class:"form-control w3-input w3-border w3-white input-group input-append",style:""}  %>
           </div>
             <div id="id_entity_multi" style="display: none">
-            <%= f.input :for_entity_code_multi,  label: "Merchant", collection: @entity_infos, label_method: :entity_name, value_method: :assigned_code, required: true, input_html:{id: "id_entity_info_multi", autocomplete: "off",class:"form-control w3-input w3-border w3-white input-group input-append", style:"width: 100%",:multiple=>"multiple"}, include_blank: false, :include_hidden => false %>
-            <%#= f.input :for_entity_code,  label: "Merchant", collection: @entity_infos, label_method: :entity_name, value_method: :assigned_code, required: true, input_html:{id: "id_entity_info_multi", autocomplete: "off",class:"form-control w3-input w3-border w3-white input-group input-append", multiple: "multiple"}  %>
+            <%= f.input :for_entity_code_multi,  label: "Merchants", collection: @entity_infos, label_method: :entity_name, value_method: :assigned_code, required: true,placeholder: "Select Merchants", input_html:{id: "id_entity_info_multi", autocomplete: "off",class:"form-control w3-input w3-border w3-white input-group input-append", style:"width: 100%",:multiple=>"multiple"}, include_blank: false, :include_hidden => false %>
             </div>
           <div id="id_service" style="display: none">
             <%= f.input :for_division_code,  label: "Service", collection: @entity_divisions, label_method: :division_name, value_method: :assigned_code, required: true, input_html:{id: "id_entity_div", autocomplete: "off",class:"form-control w3-input w3-border w3-white input-group input-append",style:""}  %>
           </div>
+
+            <div id="id_service_multi" style="display: none">
+              <%= f.input :for_division_code_multi, label: "Services", collection: @entity_divisions, label_method: :division_name, value_method: :assigned_code, required: true,input_html:{id: "id_entity_div_multi", autocomplete: "off",class:"form-control w3-input w3-border w3-white input-group input-append",style:"", :multiple=>true}, include_blank: false, :include_hidden => false  %>
+            </div>
 
           <%# elsif current_user.merchant_admin? %>
             <%#= f.input :entity_code, :as => :hidden, input_html:{value: current_user.user_entity_code} %>
@@ -118,7 +121,9 @@
         var service_id = "id_service";
         var entity_id = "id_entity";
         var entity_id_multi = "id_entity_multi";
+        var division_multi = "id_service_multi";
         var entity_div_id  = $('#id_entity_div');
+        var entity_div_id_multi  = $('#id_entity_div_multi');
         <% if params[:validator] == "validator" %>
 
         <% end %>
@@ -134,21 +139,38 @@
             });
         });
 
+        entity_info_id.change(function() {
+            console.log("For entity_info id:: " + entity_info_id.val());
+            entity_div_id_multi.attr("title", "Now select Services for user.");
+            Rails.ajax({
+                type: "POST",
+                url: "<%= general_division_ajax_call_path %>",
+                data: "id_for_entity_info=" + entity_info_id.val(),
+                dataType: "script"
+            });
+        });
+
+
+
         console.log("Role ID " + role_id.val());
         if (role_id.val() == "SA" || role_id.val() == "SU") {
             console.log("For SA and SU");
             document.getElementById(entity_id).style.display = "none";
             document.getElementById(entity_id_multi).style.display = "none";
             document.getElementById(service_id).style.display = "none";
+            document.getElementById(division_multi).style.display = "none";
             entity_info_id.val("");
+            entity_div_id_multi.val("");
             entity_div_id.empty();
         } else if (role_id.val() == "MA") {
             console.log("For MA");
             document.getElementById(entity_id_multi).style.display = "none";
             document.getElementById(entity_id).style.display = "block";
             document.getElementById(service_id).style.display = "none";
+            document.getElementById(division_multi).style.display = "none";
             entity_info_id.val("");
             entity_div_id.val("");
+            entity_div_id_multi.val("");
 
         } else if (role_id.val() == "TV") {
             console.log("For TV");
@@ -161,22 +183,26 @@
             document.getElementById(entity_id_multi).style.display = "none";
             document.getElementById(entity_id).style.display = "block";
             document.getElementById(service_id).style.display = "block";
+            document.getElementById(division_multi).style.display = "none";
 
         }  else if (role_id.val() == "MMA") {
             console.log("For MMA");
             document.getElementById(entity_id).style.display = "none";
             document.getElementById(entity_id_multi).style.display = "block";
             document.getElementById(service_id).style.display = "none";
+            document.getElementById(division_multi).style.display = "none";
             entity_info_id.val("");
             entity_info_id_multi.val("");
             entity_div_id.val("");
-
-            // $(entity_info_id_multi).select2({
-            //     allowClear: true,
-            //     theme: 'bootstrap',
-            //     width: 'resolve',
-            //     placeholder: 'Select Merchant/s'
-            // }(jQuery));
+        } else if (role_id.val() == "MMS") {
+            console.log("For MMS");
+            document.getElementById(entity_id).style.display = "block";
+            document.getElementById(entity_id_multi).style.display = "none";
+            document.getElementById(service_id).style.display = "none";
+            document.getElementById(division_multi).style.display = "block";
+            entity_info_id_multi.val("");
+            entity_div_id.val("");
+            service_id.val("");
         }
 
         role_id.change(function() {
@@ -194,6 +220,7 @@
                 document.getElementById(entity_id_multi).style.display = "none";
                 document.getElementById(entity_id).style.display = "block";
                 document.getElementById(service_id).style.display = "none";
+
                 entity_info_id.val("");
                 entity_div_id.val("");
 
@@ -208,6 +235,7 @@
                 document.getElementById(entity_id_multi).style.display = "none";
                 document.getElementById(entity_id).style.display = "block";
                 document.getElementById(service_id).style.display = "block";
+                document.getElementById(division_multi).style.display = "none";
 
             } else if (role_id.val() == "MMA") {
                 console.log("For MMA");
@@ -217,18 +245,16 @@
                 entity_info_id.val("");
                 entity_info_id_multi.val("");
                 entity_div_id.val("");
-
-                // $(entity_info_id_multi).select2({
-                //     allowClear: true,
-                //     theme: 'bootstrap',
-                //     width: 'resolve',
-                //     placeholder: 'Select Merchant/s'
-                // }(jQuery));
+            } else if (role_id.val() == "MMS") {
+                console.log("For MMS");
+                document.getElementById(entity_id).style.display = "block";
+                document.getElementById(entity_id_multi).style.display = "none";
+                document.getElementById(service_id).style.display = "none";
+                document.getElementById(division_multi).style.display = "block";
+                entity_info_id_multi.val("");
+                entity_div_id.val("");
+                service_id.val("");
             }
-
-            // $('#id_entity_info_multi').select2();
-
-            // $('#img_prev').removeClass('hidden');
         });
 
     });
@@ -238,12 +264,22 @@
 <script>
     $(document).ready(function() {
         var entity_info_id_multi = $('#id_entity_info_multi');
+
+        var entity_div_id_multi = $('#id_entity_div_multi');
         $(entity_info_id_multi).select2({
             allowClear: true,
             multiple:true,
             theme: 'bootstrap',
             width: 'resolve',
             placeholder: 'Select Merchant/s'
+        });
+
+        $(entity_div_id_multi).select2({
+            allowClear: true,
+            multiple:true,
+            theme: 'bootstrap',
+            width: 'resolve',
+            placeholder: 'Select Services/s'
         });
     });
 </script>

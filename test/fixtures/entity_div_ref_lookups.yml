@@ -1,0 +1,17 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  entity_div_code: MyString
+  pan: MyString
+  name: MyString
+  active_status: false
+  del_status: false
+  user_id: 1
+
+two:
+  entity_div_code: MyString
+  pan: MyString
+  name: MyString
+  active_status: false
+  del_status: false
+  user_id: 1

@@ -1,0 +1,71 @@
+<div class="w3-container" >
+  <div id="id01" class="w3-modal w3-animate-opacity" style=" display: block">
+    <!--<div class="w3-modal-content w3-card-4" >-->
+    <br/>
+
+    <div class="">
+
+      <div class="w3-white w3-hover-shadow col-md-6 offset-md-3 w3-card-4 w3-border w3-border-purple rcorners w3-center">
+        <h4 class="show w3-center"><strong>Division Reference Details</strong></h4>
+        <p id="notice1"><strong></strong></p>
+        <div class="w3-container">
+          <br/>
+
+          <table class="w3-table-all table table-bordered w3-hoverable w3-card-4">
+
+            <tr>
+              <td class="raw_theme w3-border cell-cust-grad w3-leftbar"><strong>Division Name:</strong></td>
+              <td><strong><%= @entity_div_ref_lookup.entity_division.division_name if @entity_div_ref_lookup.entity_division %></strong></td>
+            </tr>
+
+            <tr>
+              <td class="raw_theme w3-border cell-cust-grad w3-leftbar"><strong>Account Number</strong></td>
+              <td><strong><%= @entity_div_ref_lookup.pan %></strong></td>
+            </tr>
+
+            <tr>
+              <td class="raw_theme w3-border cell-cust-grad w3-leftbar"><strong>Name of Customer</strong></td>
+              <td><strong><%= @entity_div_ref_lookup.name %></strong></td>
+            </tr>
+
+            <tr>
+              <td class="raw_theme w3-border cell-cust-grad w3-leftbar"><strong>Status:</strong></td>
+              <% if @entity_div_ref_lookup.active_status %>
+                <td><strong>Active</strong></td>
+              <% else %>
+                <td><strong>Inactive</strong></td>
+              <% end %>
+            </tr>
+
+            <tr>
+              <td class="raw_theme w3-border cell-cust-grad w3-leftbar"><strong>Creator:</strong></td>
+              <td><strong><%= @entity_div_ref_lookup.users.user_name if @entity_div_ref_lookup.users %></strong></td>
+            </tr>
+
+
+            <tr>
+              <td class="raw_theme w3-border cell-cust-grad w3-leftbar"><strong>Date:</strong></td>
+              <td>
+                <strong><%= @entity_div_ref_lookup.created_at.strftime("%F %R")%></strong>
+              </td>
+            </tr>
+
+          </table>
+
+          <br/>
+          <div class="w3-center">
+            <%#= link_to 'Back',  client_webhook_index_path(page: params[:page], count: params[:count]), class: 'w3-bar-item w3-btn w3-ripple w3-round-large w3-dark-gray', remote: true %>
+            <span onclick="document.getElementById('id01').style.display='none'" class="w3-bar-item w3-btn w3-ripple w3-round-large w3-dark-gray" >Back</span>
+
+          </div>
+          <br/>
+        </div>
+
+      </div>
+
+    </div>
+
+    <!--</div>-->
+
+  </div>
+</div>

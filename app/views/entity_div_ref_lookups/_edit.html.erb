@@ -1,0 +1,64 @@
+<div class="w3-container" >
+  <div id="id01" class="w3-modal w3-animate-opacity" style=" display: block">
+<div class="">
+
+  <div class="w3-white w3-hover-shadow col-md-4 offset-md-4 w3-card-4 w3-border w3-border-purple rcorners w3-center">
+    <h4 class="show w3-center"><strong>Edit Entity Reference</strong></h4>
+
+    <div class="w3-container">
+      <br/>
+      <%= simple_form_for(@entity_div_ref_lookup, :data => { :remote => true, count: params[:count], page: params[:page]}) do |f| %>
+        <%= f.error_notification %>
+        <%= f.error_notification message: f.object.errors[:base].to_sentence if f.object.errors[:base].present? %>
+        <%= f.input :entity_div_code, label: "Division Name", collection: EntityDivision.where(active_status: true, del_status: false).order(division_name: :asc), label_method: :division_name, value_method: :id, required: true, input_html:{id: "for_division_code", autocomplete: "off", class:"form-control w3-input w3-border w3-white input-group input-append", style:""} %>
+        <%= f.input :pan, label: "Phone Number", allow_default: false,required: true, input_html:{ id: "pan", style:"width: 100%", autocomplete: "off", include_hidden: false, include_blank: false} %>
+        <%= f.input :name, label: "Name"%>
+        <%= f.input :active_status, :as => :hidden, input_html:{value: true}  %>
+        <%= f.input :del_status, :as => :hidden, input_html:{value: false}  %>
+        <%= f.input :user_id,:as => :hidden, input_html:{value: current_user.id} %>
+
+
+        <div>
+          <%= f.submit "Submit", class: "w3-button w3-purple-vpos w3-border w3-border-purple w3-small w3-round-large", :data => {:disable_with => 'Please Wait...'}, style: "width:auto;float:center;",remote:true %>
+          <%= link_to 'Back', entity_div_ref_lookup_path(page: params[:page], count: params[:count]), class: "w3-button w3-white w3-border w3-border-purple w3-small w3-round-large",remote:true %>
+
+
+        </div>
+      <% end %>
+      <br/>
+    </div>
+
+
+  </div>
+
+</div>
+</div>
+</div>
+
+
+<div class="col-md-7 col-md-offset-5">
+</div>
+
+
+<script>
+    $(document).ready(function() {
+        const trans_type = $('#trans_type');
+        $(trans_type).select2({
+            multiple: true,
+            theme: 'bootstrap',
+            width: 'resolve',
+            placeholder: "-- Select --"
+        });
+    });
+</script>
+
+<!--<h1>Editing entity div ref lookup</h1>-->
+
+<%#= render "form", entity_div_ref_lookup: @entity_div_ref_lookup %>
+
+<!--<br>-->
+
+<!--<div>-->
+<!--  <%#= link_to "Show this entity div ref lookup", @entity_div_ref_lookup %> |-->
+  <%#= link_to "Back to entity div ref lookups", entity_div_ref_lookups_path %>
+<!--</div>-->

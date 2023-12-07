@@ -64,6 +64,7 @@ Rails.application.routes.draw do
   post '/division_setup_creation' => 'entity_divisions#create_division_setup', :as => 'create_division_setup'
   get '/entity_divisions/division_edit_setup/:division_code' => 'entity_divisions#division_edit_setup', :as => 'division_edit_setup'
   post '/division_setup_update' => 'entity_divisions#update_division_setup', :as => 'update_division_setup'
+  post '/reset_qr_code' => 'entity_divisions#reset_qr_code', :as => 'reset_biz_qr_code'
 
 
   get '/entity_divisions/sport_setup/:division_code' => 'entity_divisions#sport_setup', :as => 'sport_setup'
@@ -136,6 +137,7 @@ Rails.application.routes.draw do
 
   get '/loan_requests/loan_request_index' => 'loan_requests#loan_request_index', :as => 'loan_request_index'
   get '/client_webhook_configs/client_webhook_index' => 'client_webhook_configs#client_webhook_index', :as => 'client_webhook_index'
+  get '/entity_div_ref_lookups/entity_div_ref_lookup_index' => 'entity_div_ref_lookups#entity_div_ref_lookup_index', :as => 'entity_div_ref_lookup_index'
 
 
 
@@ -149,6 +151,7 @@ Rails.application.routes.draw do
   post '/entity_divisions/category_div_update', :as => 'div_cat_to_cat_div_ajax_call'
   post '/entity_divisions/fixture_update', :as => 'cat_div_to_fixture_ajax_call'
   post '/entity_divisions/division_update', :as => 'general_division_ajax_call'
+  # post '/entity_divisions/multi_division_update', :as => 'general_multi_division_ajax_call'
   post '/entity_divisions/lov_update', :as => 'general_lov_ajax_call'
   post '/entity_divisions/ref_update', :as => 'general_ref_ajax_call'
   post '/activity_sub_div_classes/classification_update', :as => 'general_class_ajax_call'
@@ -165,6 +168,7 @@ Rails.application.routes.draw do
   resources :entity_categories
   resources :activity_types
   resources :entity_divisions
+  resources :entity_div_ref_lookups
   resources :entity_info_extras
   resources :entity_infos
   resources :entity_wallet_configs

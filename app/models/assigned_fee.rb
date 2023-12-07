@@ -13,7 +13,7 @@ class AssignedFee < ApplicationRecord
   #validates :cap, presence: {message: " cannot be empty."}
   #validates :limit_capped, presence: {message: " cannot be empty."}
   validates :charged_to, presence: {message: " cannot be empty."}
-  # validates :payment_mode, presence: {message: " cannot be empty."}
+  validates :payment_mode, presence: {message: " cannot be empty."}
 
 
   def self.update_last_but_one1(table, id_field, id, charged_to)
