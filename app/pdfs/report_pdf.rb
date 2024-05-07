@@ -1,5 +1,5 @@
 #require 'prawn'
-#class ReportPdf < Prawn::Document
+class ReportPdf < Prawn::Document
 #  # require 'active_record'
 #  # require 'active_support/core_ext'
 #  def initialize(stock_monitors, params_season_id, logger, options = {}, &block)
@@ -134,7 +134,7 @@
 #  end
 #
 #
-#end
+end
 #
 #
 #

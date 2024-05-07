@@ -1,0 +1,21 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  entity_div_code: MyString
+  username: MyString
+  password: MyString
+  company_code: MyString
+  company_url: MyString
+  user_id: 1
+  active_status: false
+  del_status: false
+
+two:
+  entity_div_code: MyString
+  username: MyString
+  password: MyString
+  company_code: MyString
+  company_url: MyString
+  user_id: 1
+  active_status: false
+  del_status: false

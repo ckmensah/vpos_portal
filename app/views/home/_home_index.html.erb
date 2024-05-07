@@ -250,7 +250,7 @@
 
 
         <tr>
-          <td><strong>Vodafone</strong></td>
+          <td><strong>Telecel</strong></td>
           <% if @vod_success.exists? %>
             <td><strong><%= @vod_success.count %></strong></td>
             <td><strong><%= number_to_currency(@vod_success.sum(:amount), unit: "GHS ") %></strong></td>

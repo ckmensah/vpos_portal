@@ -243,9 +243,55 @@ class UsersController < ApplicationController
     end
     if current_user.super_admin? || current_user.super_user?
       @entity_infos = EntityInfo.where(active_status: true).order(entity_name: :asc)
-      #@entity_divisions = EntityDivision.where(id: 0, active_status: true).order(division_name: :asc)
       @entity_divisions = @user.user_entity_code.present? ? EntityDivision.where(entity_code: @user.user_entity_code, active_status: true).order(division_name: :asc) : EntityDivision.where(id: 0, active_status: true).order(division_name: :asc)
 
+      if @user.multi_user_roles.present? &&  @user.multi_user_roles.map(&:entity_code).present?
+        if  @user.multi_user_roles.map{|i| i.division_code.nil? || i.division_code.empty? }
+         # if  @user.multi_user_roles.map(&:division_code).empty? || @user.multi_user_roles.map(&:division_code).nil?
+          # if @user.multi_user_roles.map {|i| i.division_code.nil? || i.division_code.empty? }
+            logger.info "it's true ampa but merchant admin"
+            @multiple_entities = @user.multi_user_entity_code #.map { |s| "'#{s}'" }.join(', ')
+            logger.info " @@@@@@@@@@@@@@ #{@multiple_entities.inspect}   ##########################"
+            # @existing_entities = EntityInfo.joins(:users).merge(UserRole.joins(:multi_user_roles)).where("user_roles.user_id = ? and user_roles.active_status = true and entity_info.assigned_code IN (?)", @user.id, @multiple_entities).select("entity_info.entity_name,entity_info.assigned_code as assigned_code, multi_user_roles.entity_code as entity_code, user_roles.user_id").order(entity_name: :asc)
+            @existing_entities = EntityInfo.where("active_status = true and assigned_code IN (?)", @multiple_entities).order(entity_name: :asc)
+            logger.info " @@@@@@@@@@@@@@ the existing entities selected #{@existing_entities.inspect}   ********************"
+            logger.info " @@@@the actual SQL query @@@@@@@@@@ #{@existing_entities.to_sql}   &&&&&&&&&&&&&&&&&&"
+            @entity_info_multi = @existing_entities.exists? ?  @existing_entities : @entity_infos
+         end
+        if  @user.multi_user_roles.map{|i| i.division_code.present?}
+        # elsif  @user.multi_user_roles.map(&:division_code).present?
+          # elsif @user.multi_user_roles.map  {|i| i.division_code.present?}
+            logger.info "it's true ampa but service admin"
+            @multiple_services = @user.multi_user_service_code #.map { |s| "#{s}" }.join(', ')
+          # @existing_services = User.joins(:entity_division,:user_roles,:multi_user_roles).where("user_roles.user_id = #{@user.id} and user_roles.active_status = true and entity_division.assigned_code IN (#{@multiple_services})").select("entity_division.division_name,entity_division.assigned_code as assigned_code,multi_user_roles.division_code as division_code, user_roles.user_id").order(division_name: :asc)
+          #   @existing_services = EntityDivision.joins(:users).merge(UserRole.joins(:multi_user_roles)).where("user_roles.user_id = ? and user_roles.active_status = true and entity_info.assigned_code IN (?)", @user.id, @multiple_services).select("entity_division.division_name,entity_division.assigned_code as assigned_code, multi_user_roles.division_code as division_code, user_roles.user_id").order(entity_name: :asc)
+            @existing_services = EntityDivision.where("active_status = true and assigned_code IN (?)", @multiple_services).order(division_name: :asc)
+            @entity_divisions_multi = @existing_services.exists? ? @existing_services : @entity_divisions
+            logger.info " @@@@@@@@@@@@@@ the existing services and entities #{@existing_services.inspect}   ********************"
+            logger.info " @@@@the actual SQL query @@@@@@@@@@ #{@existing_services.to_sql}   &&&&&&&&&&&&&&&&&&"
+        end
+        else
+      end
+
+      # @entity_info_multi = MultiUserRole.joins(:entity_info).where(user_id: @user.id, active_status: true).select("entity_info.entity_name,entity_info.assigned_code, multi_user_roles.entity_code").order(entity_name: :asc)
+      # @entity_divisions_multi = MultiUserRole.joins(:entity_division).where(user_id: @user.id, active_status: true).select("entity_division.division_name,entity_division.assigned_code, multi_user_roles.division_code").order(division_name: :asc)
+      # the_list= []
+      # if @entity_info_multi.present? && @entity_info_multi.size >= 1
+      #   @entity_info_multi.each do |entity|
+      #     the_list << "#{entity.entity_name}"
+      #   end
+      # elsif @entity_divisions_multi.present? && @entity_divisions_multi.size >= 1
+      #   @entity_divisions_multi.each do |service|
+      #     the_list << "#{service.division_name}"
+      #   end
+      # end
+
+      logger.info "########### #{@entity_info_multi.inspect}########"
+      logger.info "########### #{@multiple_entities.inspect}########"
+      logger.info "########### #{@entity_divisions_multi.inspect}########"
+      logger.info "########### #{@multiple_services.inspect}########"
+      # logger.info "########### this is the list that came out for me to see #{the_list.inspect}########"
+      # @entity_divisions_multi = EntityDivision.where(id: 0, active_status: true).order(division_name: :asc)
     end
   end
 
@@ -266,6 +312,7 @@ class UsersController < ApplicationController
     @user = User.new(user_params)
     if current_user.super_admin? || current_user.super_user?
       @entity_infos = EntityInfo.where(active_status: true).order(entity_name: :asc)
+      # @entity_divisions = EntityDivision.where(id: 0, active_status: true).order(division_name: :asc)
     end
     @user.for_portal = user_params[:for_role_code] == "TV" ? false : true
 
@@ -381,8 +428,8 @@ class UsersController < ApplicationController
             elsif user_params[:for_role_code] == "MMA"
               if user_params[:for_entity_code_multi].present? && user_params[:for_entity_code_multi].count >= 1
                 user_role_save(@user.id, user_params)
-                user_params[:for_entity_code_multi].each do |i|
-                  next if i.empty?
+                user_params[:for_entity_code_multi].reject(&:empty?).map(&:to_s).each do |i|
+                  # next if i.empty?
                   multi_user_role_save = MultiUserRole.new(user_id: @user.id, role_code: user_params[:for_role_code],
                                                   entity_code: i,
                                                   creator_id: user_params[:for_creator_id],
@@ -393,8 +440,8 @@ class UsersController < ApplicationController
             elsif user_params[:for_role_code] == "MMS"
               if user_params[:for_division_code_multi].present? && user_params[:for_division_code_multi].count >= 1
                 user_role_save(@user.id, user_params)
-                user_params[:for_division_code_multi].each do |i|
-                  next if i.empty?
+                user_params[:for_division_code_multi].reject(&:empty?).map(&:to_s).each do |i|
+                  # next if i.empty?
                   multi_user_role_save = MultiUserRole.new(user_id: @user.id, role_code: user_params[:for_role_code],
                                                            entity_code: user_params[:for_entity_code],
                                                            creator_id: user_params[:for_creator_id],
@@ -447,22 +494,79 @@ class UsersController < ApplicationController
     with_password = params[:validator] == "validator" ? true : false
     if current_user.super_admin? || current_user.super_user?
       @entity_infos = EntityInfo.where(active_status: true).order(entity_name: :asc)
+
+      if @user.multi_user_roles.present? &&  @user.multi_user_roles.map(&:entity_code).present?
+        if  @user.multi_user_roles.map{|i| i.division_code.nil? || i.division_code.empty? }
+          logger.info "it's true ampa but merchant admin"
+          @multiple_entities = @user.multi_user_entity_code #.map { |s| "'#{s}'" }.join(', ')
+          logger.info " @@@@@@@@@@@@@@ #{@multiple_entities.inspect}   ##########################"
+          @existing_entities = EntityInfo.where("active_status = true and assigned_code IN (?)", @multiple_entities).order(entity_name: :asc)
+          logger.info " @@@@@@@@@@@@@@ the existing entities selected #{@existing_entities.inspect}   ********************"
+          logger.info " @@@@the actual SQL query @@@@@@@@@@ #{@existing_entities.to_sql}   &&&&&&&&&&&&&&&&&&"
+          @entity_info_multi = @existing_entities.exists? ?  @existing_entities : @entity_infos
+        end
+        if  @user.multi_user_roles.map{|i| i.division_code.present?}
+          logger.info "it's true ampa but service admin"
+          @multiple_services = @user.multi_user_service_code
+          @existing_services = EntityDivision.where("active_status = true and assigned_code IN (?)", @multiple_services).order(division_name: :asc)
+          @entity_divisions_multi = @existing_services.exists? ? @existing_services : @entity_divisions
+          logger.info " @@@@@@@@@@@@@@ the existing services and entities #{@existing_services.inspect}   ********************"
+          logger.info " @@@@the actual SQL query @@@@@@@@@@ #{@existing_services.to_sql}   &&&&&&&&&&&&&&&&&&"
+        end
+      else
+      end
+
+      # if @user.multi_user_roles.present? && @user.multi_user_roles.map(&:entity_code).present?
+      #   if @user.multi_user_roles.map {|i| i.division_code.nil? || i.division_code.empty? }
+      #     logger.info "it's true ampa but merchant admin"
+      #     @multiple_entities = @user.multi_user_entity_code
+      #     logger.info " @@@@@@@@@@@@@@ #{@multiple_entities.inspect}   ##########################"
+      #     @existing_entities = EntityInfo.where("active_status = true and assigned_code IN (?)", @multiple_entities).order(entity_name: :asc)
+      #     logger.info " @@@@@@@@@@@@@@ #{@existing_entities.inspect}   ********************"
+      #     logger.info " @@@@the actual SQL query @@@@@@@@@@ #{@existing_entities.to_sql}   &&&&&&&&&&&&&&&&&&"
+      #     @entity_info_multi = @existing_entities.exists? ?  @existing_entities : @entity_infos
+      #   elsif @user.multi_user_roles.map  {|i| i.division_code.present?}
+      #     logger.info "it's true ampa but service admin"
+      #     @multiple_services = @user.multi_user_service_code
+      #     @existing_services = EntityDivision.where("active_status = true and assigned_code IN (?)", @multiple_services).order(division_name: :asc)
+      #     @entity_divisions_multi = @existing_services.exists? ? @existing_services : @entity_divisions
+      #   else
+      #   end
+      # else
+      # end
+      # if @user.multi_user_roles.present?
+      #   if @user.multi_user_roles.map(&:entity_code) && @user.multi_user_roles.map {|i| i.division_code.nil?}
+      #     @multiple_entities = @user.multi_user_entity_code.map { |s| "#{s}" }.join(', ')
+      #     @entity_info_multi = @user.multi_user_entity_code.present? ? User.joins(:entity_infos,:user_roles,:multi_user_roles).where("user_roles.user_id = '#{@user.id}' and user_roles.active_status = true and entity_info.assigned_code IN (#{@multiple_entities})").select("entity_info.entity_name,entity_info.assigned_code, multi_user_roles.entity_code").order(entity_name: :asc) : @entity_infos
+      #   elsif @user.multi_user_roles.map(&:entity_code) && @user.multi_user_roles.map  {|i| i.division_code.present?}
+      #     @multiple_services = @user.multi_user_service_code.map { |s| "#{s}" }.join(', ')
+      #     @entity_divisions_multi = @user.multi_user_service_code.present? ? User.joins(:entity_division,:user_roles,:multi_user_roles).where("user_roles.user_id = '#{@user.id}' and user_roles.active_status = true and entity_division.assigned_code IN (#{@multiple_services})").select("entity_division.division_name,entity_division.assigned_code,multi_user_roles.division_code").order(division_name: :asc) : @entity_divisions
+      #   else
+      #   end
+      # end
     end
     @user.for_entity_code = user_params[:for_entity_code]
     @user.for_division_code = user_params[:for_division_code]
     @user.for_role_code = user_params[:for_role_code]
     @user.for_show_charge = user_params[:for_show_charge]
+    @user.for_entity_code_multi = user_params[:for_entity_code_multi]
+    @user.for_division_code_multi = user_params[:for_division_code_multi]
+
+
     #@user.for_portal = user_params[:role_id] == "5" ? false : true
     #unless user_params[:role_id] == "1" || user_params[:role_id] == "2"
       if user_params[:for_role_code] == "MA"
         @user.access_type = "M"
       elsif user_params[:for_role_code] == "MS"
         @user.access_type = "S"
+      elsif user_params[:for_role_code] == "MMA"
+        @user.access_type = "MM"
+      elsif user_params[:for_role_code] == "MMS"
+        @user.access_type = "MS"
       else
         @user.access_type = nil
       end
     #end
-
     user_params[:show_charge] = false if user_params[:for_role_code] == "SA" || user_params[:for_role_code] == "SU"
     respond_to do |format|
       if params[:user][:password].blank? && params[:user][:password_confirmation].blank?
@@ -558,7 +662,36 @@ class UsersController < ApplicationController
           end
         else
           if @user.update(user_params)
-            user_role_update(@user, user_params)
+            # logic will come in here to disable the disable either multi merchant admin or multi service admin if in case their role is switched
+            # if user_params[:for_role_code] == "SA" || user_params[:for_role_code] == "SU"
+            #   user_role_update(@user, user_params)
+            # elsif user_params[:for_role_code] == "MMA"
+            #   if user_params[:for_entity_code_multi].present? && user_params[:for_entity_code_multi].count >= 1
+            #     user_role_save(@user.id, user_params)
+            #     user_params[:for_entity_code_multi].reject(&:empty?).map(&:to_s).each do |i|
+            #       # next if i.empty?
+            #       multi_user_role_save = MultiUserRole.new(user_id: @user.id, role_code: user_params[:for_role_code],
+            #                                                entity_code: i,
+            #                                                creator_id: user_params[:for_creator_id],
+            #                                                active_status: true, del_status: false)
+            #       multi_user_role_save.save(validate: false)
+            #     end
+            #   end
+            # elsif user_params[:for_role_code] == "MMS"
+            #   if user_params[:for_division_code_multi].present? && user_params[:for_division_code_multi].count >= 1
+            #     user_role_save(@user.id, user_params)
+            #     user_params[:for_division_code_multi].reject(&:empty?).map(&:to_s).each do |i|
+            #       # next if i.empty?
+            #       multi_user_role_save = MultiUserRole.new(user_id: @user.id, role_code: user_params[:for_role_code],
+            #                                                entity_code: user_params[:for_entity_code],
+            #                                                creator_id: user_params[:for_creator_id],
+            #                                                division_code: i,
+            #                                                active_status: true, del_status: false)
+            #       multi_user_role_save.save(validate: false)
+            #     end
+            #   end
+            # end
+            # user_role_update(@user, user_params)
             flash.now[:notice] = "#{user_params[:user_name].capitalize} was successfully updated."
             format.js { render :show }
           else

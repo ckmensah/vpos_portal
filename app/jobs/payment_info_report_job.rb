@@ -132,7 +132,7 @@ class PaymentInfoReportJob < ApplicationJob
         qty = summary.qty.present? ? summary.qty : 0
         src = summary.src.present? ? summary.src : ""
         recipient_email = summary.recipient_email.present? ? summary.recipient_email : ""
-        network = summary.nw
+        network = summary.nw == "VOD" ? "TLC" : "#{summary.nw}"
         trans_type = summary.trans_type
         act_sub_div_obj = ActivitySubDiv.where(id: summary.activity_sub_div_id).first
         if act_sub_div_obj

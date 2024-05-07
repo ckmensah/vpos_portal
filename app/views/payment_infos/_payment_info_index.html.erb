@@ -333,7 +333,7 @@
           <!--          <td><%#= actual_amt %></td>-->
           <!--          <td><%#= charge.round(3) %></td>-->
           <!--          <td><%#= payment_info.amount %></td>-->
-          <td><%= payment_info.nw %></td>
+          <td><%= payment_info.nw == "VOD" ? "TLC" : "#{payment_info.nw}"%></td>
           <%# if payment_info.src == "USSD" %>
           <!--            <td>USS</td>-->
           <%# else %>
@@ -467,7 +467,7 @@
     <div class="">
       <div class="w3-white w3-hover-shadow col-md-6 offset-md-3 w3-card-4 w3-border w3-border-purple rcorners w3-center">
         <h4 class="show w3-center"><strong>Filter Transactions</strong></h4>
-        <% @networks = [["MTN", "MTN"], ["VOD", "VOD"], ["TIGO", "TIG"], ["AIRTEL", "AIR"], ["CARD", "CRD"]] %>
+        <% @networks = [["MTN", "MTN"], ["TELECEL", "VOD"], ["TIGO", "TIG"], ["AIRTEL", "AIR"], ["CARD", "CRD"]] %>
         <% @transaction_types = [["Collections (CTM)", "CTM"], ["Cash (CSH)", "CSH"], ["Disbursements (MTC)", "MTC"]] %>
         <% @statuses = [["SUCCESS", "000"], ["FAILED", "001"], ["PENDING", "NIL"]] %>
         <% @sources = [["Web", "WEB"], ["Portal", "PTL"], ["USSD", "USSD"]] %>
@@ -628,7 +628,19 @@
 
 </style>
 
+<script>
+  const service = $('#id_entity_div');
+  const entity = $('#id_entity_info');
+    $(service).select2({
+        theme: 'bootstrap',
+        width: 'resolve'
+    });
 
+  $(entity).select2({
+      theme: 'bootstrap',
+      width: 'resolve'
+  });
+</script>
 
 <script>
     $(function () {

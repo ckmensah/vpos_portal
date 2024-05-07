@@ -7,6 +7,16 @@
 
     <div class="">
 
+      <%#
+<!--          def custom_label_method(entity)-->
+<!--            "#{entity.custom_variable_1} - #{entity.custom_variable_2}"-->
+<!--          end-->
+
+<!--          def custom_selected(value)-->
+<!--            @selected_entities.pluck(:id).include?(value.to_i)-->
+<!--          end-->
+      %>
+
       <div class="w3-white w3-hover-shadow col-md-6 offset-md-3 w3-card-4 w3-border w3-border-purple rcorners w3-center">
         <h4 class="show w3-center"><strong>Edit User</strong></h4>
 
@@ -60,7 +70,6 @@
                   <div id="edit_id_service_valid" style="display: none">
                     <%= f.input :for_division_code,  label: "Service", collection: @entity_divisions, label_method: :division_name, value_method: :assigned_code, required: true, input_html:{id: "id_entity_div", autocomplete: "off",class:"form-control w3-input w3-border w3-white input-group input-append",style:""}  %>
                   </div>
-
                   <%= f.input :for_the_portal, :as => :hidden, input_html:{value: false} %>
                 <% else %>
                     <div id="edit_id_entity" style="display: none">
@@ -69,6 +78,17 @@
                     <div id="edit_id_service" style="display: none">
                       <%= f.input :for_division_code,  label: "Service", collection: @entity_divisions, label_method: :division_name, value_method: :assigned_code, required: true, input_html:{id: "id_entity_div", autocomplete: "off",class:"form-control w3-input w3-border w3-white input-group input-append",style:""}  %>
                     </div>
+                  <div id="edit_id_entity_multi" style="display: none">
+
+                    <%= f.input :for_entity_code_multi, label: "Merchants", as: :select, collection: @entity_infos, label_method: :entity_name, value_method: :assigned_code,required: true, placeholder: "Select Merchants", input_html:{id: "edit_id_entity_info_multi", selected: lambda { |entity| "#{entity.entity_name}" }, value: @entity_info_multi, autocomplete: "off",class:"form-control w3-input w3-border w3-white input-group input-append", style:"width: 100%",:multiple=> true}, include_blank: false, :include_hidden => false %>
+                    <%#= f.input :for_entity_code_multi, label: "Merchants Already selected", as: :text, collection: @entity_info_multi, label_method: :entity_name, value_method: :assigned_code, required: true, readonly: true, disabled: true, input_html:{id: "edit_id_entity_info_multi", autocomplete: "off",  value: @entity_info_multi, selected: lambda { |entity| "#{entity.entity_name} - #{entity.assigned_code }" }, class:"form-control w3-input w3-border w3-white input-group input-append", style:"width: 100%",:multiple=> true}, include_blank: false, :include_hidden => false %>
+                    <%#= f.input :for_entity_code_multi, label: "Merchants", collection: @entity_infos, label_method: lambda { |entity| "#{entity.entity_name} - #{entity.assigned_code}" }, value_method: :assigned_code, include_blank: false %>
+                    <%#= f.association :multi_user_roles, as: :select, label: "Merchants", collection: @entity_infos, label_method: :entity_name, value_method: :assigned_code,selected: @entity_info_multi, required: true,input_html:{id: "edit_id_entity_info_multi", autocomplete: "off",class:"form-control w3-input w3-border w3-white input-group input-append", style:"width: 100%",:multiple=> true, value: @entity_info_multi}, include_blank: false, :include_hidden => false %>
+                    <%#= f.select :for_entity_code_multi, options_for_select(@entity_infos.map { |entity| [entity.entity_name, entity.assigned_code] }, @entity_info_multi), {}, multiple: true, class: 'select2 form-control w3-input w3-border w3-white input-group input-append', id: "edit_id_entity_info_multi", autocomplete: "off",style:"width: 100%"%>
+                  </div>
+                  <div id="edit_id_service_multi" style="display: none">
+                    <%= f.input :for_division_code_multi, label: "Services", as: :select, collection: @entity_divisions, label_method: :division_name, value_method: :assigned_code, required: true, input_html:{id: "edit_id_entity_div_multi", autocomplete: "off",class:"form-control w3-input w3-border w3-white input-group input-append",style:"width: 100%", :multiple=> true, selected: @entity_divisions_multi,value: @entity_divisions_multi }, include_blank: false, :include_hidden => false  %>
+                  </div>
                   <%= f.input :for_the_portal, :as => :hidden, input_html:{value: true} %>
                 <% end %>
               <%# elsif current_user.merchant_admin? %>
@@ -129,12 +149,16 @@
     $(document).ready(function(){
         $('[data-toggle="tooltip"]').tooltip();
         var entity_info_id = $('#edit_id_entity_info');
+        var entity_info_id_multi = $('#edit_id_entity_info_multi');
         var role_id = $('#edit_id_role');
         var service_id = "edit_id_service";
         var entity_id = "edit_id_entity";
+        var entity_id_multi = "edit_id_entity_multi";
+        var service_id_multi = "edit_id_service_multi";
         var service_valid_id = "edit_id_service_valid";
         var entity_valid_id = "edit_id_entity_valid";
         var entity_div_id  = $('#id_entity_div');
+        var entity_div_id_multi  = $('#edit_id_entity_div_multi');
 
         entity_info_id.change(function() {
             console.log("For entity_info id:: " + entity_info_id.val());
@@ -162,8 +186,15 @@
             console.log("For TV..");
             document.getElementById(entity_valid_id).style.display = "block";
             document.getElementById(service_valid_id).style.display = "block";
+        }else if (role_id.val() == "MMA") {
+            console.log("For MS..");
+            document.getElementById(entity_id_multi).style.display = "block";
+            document.getElementById(service_id_multi).style.display = "none";
+        }else if (role_id.val() == "MMS") {
+            console.log("For MS..");
+            document.getElementById(entity_id).style.display = "block";
+            document.getElementById(service_id_multi).style.display = "block";
         }
-
 
         role_id.change(function() {
             console.log("For role id:: " + role_id.val());
@@ -172,12 +203,16 @@
                 console.log("For SA and SU");
                 document.getElementById(entity_id).style.display = "none";
                 document.getElementById(service_id).style.display = "none";
+                document.getElementById(entity_id_multi).style.display = "none";
+                document.getElementById(service_id_multi).style.display = "none";
                 entity_info_id.val("");
                 entity_div_id.empty();
             } else if (role_id.val() == "MA") {
                 console.log("For MA");
                 document.getElementById(entity_id).style.display = "block";
                 document.getElementById(service_id).style.display = "none";
+                document.getElementById(entity_id_multi).style.display = "none";
+                document.getElementById(service_id_multi).style.display = "none";
                 entity_info_id.val("");
                 entity_div_id.val("");
 
@@ -185,10 +220,24 @@
                 console.log("For MS..");
                 document.getElementById(entity_id).style.display = "block";
                 document.getElementById(service_id).style.display = "block";
+                document.getElementById(entity_id_multi).style.display = "none";
+                document.getElementById(service_id_multi).style.display = "none";
             } else if (role_id.val() == "TV") {
                 console.log("For TV..");
                 document.getElementById(entity_valid_id).style.display = "block";
                 document.getElementById(service_valid_id).style.display = "block";
+            }else if (role_id.val() == "MMA") {
+                console.log("For MMA..");
+                document.getElementById(entity_id).style.display = "none";
+                document.getElementById(service_id).style.display = "none";
+                document.getElementById(entity_id_multi).style.display = "block";
+                document.getElementById(service_id_multi).style.display = "none";
+            } else if (role_id.val() == "MMS") {
+                console.log("For MMS..");
+                document.getElementById(entity_id).style.display = "block";
+                document.getElementById(service_id).style.display = "none";
+                document.getElementById(entity_id_multi).style.display = "none";
+                document.getElementById(service_id_multi).style.display = "none";
             }
             // $('#img_prev').removeClass('hidden');
         });
@@ -199,7 +248,56 @@
 
 </script>
 
+<script>
+    const entity_info_id_multi = $('#edit_id_entity_info_multi');
+    const entity_div_id_multi = $('#edit_id_entity_div_multi');
+    const role_id = $('#id_role');
+    const preloadEntity = <%= @entity_info_multi.to_json.html_safe %>;
+    const preloadServices = <%= @entity_divisions_multi.to_json.html_safe %>;
 
+    console.log(preloadEntity);
+    console.log(preloadServices);
+     // console.log("the js logs" + preloadEntity);
+    $(document).ready(function() {
+        $(entity_info_id_multi).select2({
+            allowClear: true,
+            multiple: true,
+            theme: 'classic',
+            width: 'resolve',
+            data: preloadEntity.map(item => ({
+                id: item.assigned_code,
+                text: item.entity_name
+            }))
+        });
+
+        $(entity_div_id_multi).select2({
+            allowClear: true,
+            multiple: true,
+            theme: 'classic',
+            width: 'resolve',
+            data: preloadServices.map(item => ({
+                id: item.assigned_code,
+                text: item.division_name
+            }))
+        });
+    });
+
+    role_id.change(function() {
+        $(entity_info_id_multi).select2({
+            allowClear: true,
+            multiple: true,
+            theme: 'classic',
+            width: 'resolve'
+        });
+
+        $(entity_div_id_multi).select2({
+            allowClear: true,
+            multiple: true,
+            theme: 'classic',
+            width: 'resolve'
+        });
+    });
+</script>
 
 
 

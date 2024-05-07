@@ -894,6 +894,8 @@ class EntityDivisionsController < ApplicationController
     @activity_types = ActivityType.where(active_status: true, del_status: false).order(assigned_code: :asc)
     @assigned_service_codes = @entity_division.assigned_service_codes.where(active_status: true, del_status: false).order(created_at: :desc)
     @service_code = @assigned_service_codes.exists? ? @assigned_service_codes.first.service_code : ""
+    @company_code = @assigned_service_codes.exists? ? @assigned_service_codes.first.company_code : ""
+    @company_url = @assigned_service_codes.exists? ? @assigned_service_codes.first.company_url : ""
     @current_div_media = "https://res.cloudinary.com/appsnmob/#{@entity_division.media_data}"
     @suburb_id = @entity_division.suburb_id
     if @suburb_id.present?
@@ -1084,7 +1086,7 @@ class EntityDivisionsController < ApplicationController
         # @entity_division.save(validate: false)
 
         @for_service_codes = AssignedServiceCode.new(entity_div_code: assigned_code, service_code: serv_code,
-                                                     active_status: true, del_status: false, user_id: current_user.id)
+                                                     active_status: true, del_status: false, user_id: current_user.id, company_code: entity_division_params[:company_code] , company_url: entity_division_params[:company_url] )
         @for_service_codes.save(validate: false)
 
         @entity_wallet_conf = EntityWalletConfig.new(entity_code: params[:entity_code], division_code: assigned_code,
@@ -1166,9 +1168,10 @@ class EntityDivisionsController < ApplicationController
       res=@core_connect.connection.post do |req|
         req.url '/get_qr_code'
         req.body = JSON.generate(
-          {
-            code: @service_code.service_code,
-            url: ENV['VPOS_QR_URL']
+          { "merchants": [
+            code: "#{@service_code.service_code}",
+            url: "#{ENV['VPOS_QR_URL']}"
+          ]
           }
         )
       end
@@ -1291,7 +1294,7 @@ class EntityDivisionsController < ApplicationController
     end
     media_uploader = VposCore::MediaDataUploader.new
     respond_to do |format|
-      @new_record.assigned_code = @entity_division.assigned_code
+      # @new_record.assigned_code = @entity_division.assigned_code
       if @new_record.valid?#.update(entity_division_params)
         logger.info "LOGGER 1 ====================================================="
         @new_record.assigned_code = @entity_division.assigned_code
@@ -1311,14 +1314,14 @@ class EntityDivisionsController < ApplicationController
             #@active_service_code.update(service_code: entity_division_params[:service_code], user_id: current_user.id)
             @service_code = AssignedServiceCode.new(entity_div_code: @entity_division.assigned_code, service_code: entity_division_params[:service_code],
                                                     active_status: true, del_status: false, user_id: current_user.id, assigned_qr_code: @active_service_code.assigned_qr_code,
-                                                    url: @active_service_code.url)
+                                                    url: @active_service_code.url, company_code: entity_division_params[:company_code] , company_url: entity_division_params[:company_url])
             @service_code.save(validate: false)
             AssignedServiceCode.update_last_but_one("assigned_service_code", "entity_div_code", @active_service_code.entity_div_code)
 
           end
         else
           @service_code = AssignedServiceCode.new(entity_div_code: @entity_division.assigned_code, service_code: entity_division_params[:service_code],
-                                                  active_status: true, del_status: false, user_id: current_user.id)
+                                                  active_status: true, del_status: false, user_id: current_user.id, company_code: entity_division_params[:company_code] , company_url: entity_division_params[:company_url])
           @service_code.save(validate: false)
           @core_connect = VposCore::CoreConnect.new
           begin
@@ -1469,7 +1472,7 @@ class EntityDivisionsController < ApplicationController
                                             :div_lov_query, :activity_query, :sub_activity_query, :serv_id, :s_key, :c_key, :created_at, :payment_type,
                                             :sport_type, :sport_category, :category_type, :sms_sender_id, :allow_qr, :min_amount, :activity_loc, :extra_desc,
                                             :active_status, :del_status, :user_id, :service_code, :for_update, :media_data, :media_path, :media_type, :ref_label,
-                                            :reference, divisions: [], :the_div_acts_lov => {})
+                                            :company_code, :company_url, :reference, divisions: [], :the_div_acts_lov => {})
     # entity_wallet_configs_attributes: [:id, :division_code, :service_id, :secret_key, :client_key, :comment, :active_status, :del_status, :user_id]
     #activity_divs_attributes: [:id, :division_code, :activity_div_desc, :activity_date, :comment, :active_status, :del_status, :user_id],
 

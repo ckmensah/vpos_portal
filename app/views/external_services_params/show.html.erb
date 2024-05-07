@@ -1,0 +1,10 @@
+<p style="color: green"><%= notice %></p>
+
+<%= render @external_services_param %>
+
+<div>
+  <%= link_to "Edit this external services param", edit_external_services_param_path(@external_services_param) %> |
+  <%= link_to "Back to external services params", external_services_params_path %>
+
+  <%= button_to "Destroy this external services param", @external_services_param, method: :delete %>
+</div>

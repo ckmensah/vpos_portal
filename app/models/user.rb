@@ -1,6 +1,10 @@
 class User < ApplicationRecord
   attr_accessor :for_role_code, :for_the_portal, :for_division_code,:for_division_code_multi,
                 :for_creator_id, :for_show_charge, :for_entity_code, :for_entity_code_multi
+
+
+  serialize :for_entity_code_multi, Array
+  serialize :for_division_code_multi, Array
   validates_uniqueness_of :user_name
   CTRYCODE = "233"
   #has_many :entity_, class_name: 'ActivitySubDivClass', foreign_key: :entity_div_code
@@ -8,11 +12,11 @@ class User < ApplicationRecord
   has_many :multi_user_roles, -> { where active_status: true }, class_name: "MultiUserRole", foreign_key: :user_id
   # has_many :multi_service_roles, -> { where active_status: true }, class_name: "MultiServiceRole", foreign_key: :user_id
   #belongs_to :role, class_name: "Role", foreign_key: :role_id
-  #belongs_to :entity_info, -> { where active_status: true }, class_name: "EntityInfo", foreign_key: :entity_code
+  belongs_to :entity_infos, -> { where active_status: true }, class_name: "EntityInfo", foreign_key: :entity_code
   belongs_to :entity_division, -> { where active_status: true }, class_name: "EntityDivision", foreign_key: :division_code
   has_many :roles, through: :user_roles, primary_key: :assigned_code
-  has_many :multi_users, through: :multi_user_roles, primary_key: :assigned_code
-  has_many :entity_infos, through: :user_roles, primary_key: :assigned_code
+  has_many :multi_users, through: :multi_user_roles,  primary_key: :assigned_code
+  has_many :entity_info, through: :user_roles, primary_key: :assigned_code
   has_many :client_webhook_configs, class_name: "ClientWebhookConfig", foreign_key: :user_id
 
   #default_scope {where(active_status: true, for_portal: true)}
@@ -140,6 +144,10 @@ class User < ApplicationRecord
     self.roles.first.assigned_code == "MMA" if self.roles.first
   end
 
+  def multi_service_admin?
+    self.roles.first.assigned_code == "MMS" if self.roles.first
+  end
+
   def merchant_service?
     self.roles.first.assigned_code == "MS" if self.roles.first
   end
@@ -160,27 +168,31 @@ class User < ApplicationRecord
   end
 
   def multi_user_entity_code
-    entity_code_arr =[]
+    entity_code_arr = []
     user_role_obj = self.multi_user_roles&.order(created_at: :desc)
+    logger.info "#the list of multiple entityies = #{user_role_obj.inspect}@@@@@@@@@@@@@@@@@@@@@@@@@@"
     if user_role_obj.present?
       user_role_obj.each do |code|
-        entity_code_arr << "'#{code}'"
+        # entity_code_arr << "'#{code.entity_code}'"
+        entity_code_arr.push(code.entity_code)
       end
     end
     entity_code_arr
-    p "#{entity_code_arr}"
   end
 
   def multi_user_service_code
     service_code_arr =[]
-    user_role_obj = self.multi_service_roles&.order(created_at: :desc)
+    user_role_obj = self.multi_user_roles&.order(created_at: :desc)
+    logger.info "#the list of multiple services = #{user_role_obj.inspect}@@@@@@@@@@@@@@@@@@@@@@@@@@"
     if user_role_obj.present?
       user_role_obj.each do |code|
-        service_code_arr << "'#{code}'"
+        # service_code_arr << "'#{code}'"
+        service_code_arr.push(code.division_code)
       end
     end
+    # p "#{service_code_arr}"
     service_code_arr
-    p "#{service_code_arr}"
+
   end
 
   def user_division_code

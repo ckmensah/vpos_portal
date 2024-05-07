@@ -29,7 +29,7 @@ class EntityServiceAccountTrxn < ApplicationRecord
   end
 
 
-  def self.to_finance_csv(payment_report, fund_movements, fund_moves, service_name, balance_bf, options = {})
+  def self.to_finance_csv(payment_report, fund_movements, fund_moves, service_name, balance_bf, options = "")
     CSV.generate(options) do |csv|
       headers = %w{Value_Date Description Debit Credit Balance}
       balance = balance_bf

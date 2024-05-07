@@ -77,8 +77,14 @@
                   <%= f.input :serv_id, as: :integer, label: "Service ID", required: true, input_html: {id: "serv_id", value: @service_id, autocomplete: "off", min: 1, max: 9999, oninput: "validity.valid||(value='');", class: "form-control w3-input w3-border w3-white input-group input-append", style: ""} %>
                   <%= f.input :c_key, label: "Client Key", required: true, input_html: {id: "c_key", value: @client_key, autocomplete: "off", class: "form-control w3-input w3-border w3-white input-group input-append", style: ""} %>
                   <%= f.input :s_key, label: "Secret Key", required: true, input_html: {id: "s_key", value: @secret_key, autocomplete: "off", class: "form-control w3-input w3-border w3-white input-group input-append", style: ""} %>
-                </div>
 
+                </div>
+                <div id="comp_div_1">
+                  <%= f.input :company_code, label: "Company Code", required: true, input_html: {id: "comp_code", value: @company_code,autocomplete: "off", class: "form-control w3-input w3-border w3-white input-group input-append", style: ""} %>
+                </div>
+                <div id="comp_div_2">
+                  <%= f.input :company_url, label: "Company URL", required: true, input_html: {id: "comp_url",value: @company_url, autocomplete: "off", class: "form-control w3-input w3-border w3-white input-group input-append", style: ""} %>
+                </div>
                 <%# if @entity_division.link_master %>
                   <%#= f.input :comment, label: "Comment", :as => :text, required: false, input_html: {rows: 3, cols: 3, autocomplete: "off", class: "form-control w3-border ", style: ""} %>
                   <%#= f.input :link_master, :as => :hidden, input_html: {value: true} %>
@@ -180,6 +186,13 @@
             document.getElementById("act_loc_div").style.display = "block";
             document.getElementById("min_amt_div").style.display = "none";
             document.getElementById("min_amt").value = "";
+        }else if (activity_type_id.val() === "MCE") {
+            document.getElementById("comp_div_1").style.display = "block";
+            document.getElementById("comp_div_2").style.display = "block";
+            document.getElementById("extra_desc_div").style.display = "none";
+            document.getElementById("act_loc_div").style.display = "none";
+            document.getElementById("extra_desc").value = "";
+            document.getElementById("act_loc").value = "";
         }
         else {
             document.getElementById("extra_desc_div").style.display = "none";
@@ -266,18 +279,31 @@
                 document.getElementById("min_amt_div").style.display = "block";
                 document.getElementById("extra_desc_div").style.display = "none";
                 document.getElementById("act_loc_div").style.display = "none";
+                document.getElementById("comp_div_1").style.display = "none";
+                document.getElementById("comp_div_2").style.display = "none";
                 document.getElementById("extra_desc").value = "";
                 document.getElementById("act_loc").value = "";
             } else if (activity_type_id.val() === "SHW") {
                 document.getElementById("extra_desc_div").style.display = "block";
                 document.getElementById("act_loc_div").style.display = "block";
                 document.getElementById("min_amt_div").style.display = "none";
+                document.getElementById("comp_div_1").style.display = "none";
+                document.getElementById("comp_div_2").style.display = "none";
                 document.getElementById("min_amt").value = "";
+            } else if (activity_type_id.val() === "MCE") {
+                document.getElementById("comp_div_1").style.display = "block";
+                document.getElementById("comp_div_2").style.display = "block";
+                document.getElementById("extra_desc_div").style.display = "none";
+                document.getElementById("act_loc_div").style.display = "none";
+                document.getElementById("extra_desc").value = "";
+                document.getElementById("act_loc").value = "";
             }
             else {
                 document.getElementById("extra_desc_div").style.display = "none";
                 document.getElementById("act_loc_div").style.display = "none";
                 document.getElementById("min_amt_div").style.display = "none";
+                document.getElementById("comp_div_1").style.display = "none";
+                document.getElementById("comp_div_2").style.display = "none";
                 document.getElementById("min_amt").value = "";
                 document.getElementById("extra_desc").value = "";
                 document.getElementById("act_loc").value = "";

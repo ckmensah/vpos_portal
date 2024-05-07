@@ -2,6 +2,7 @@ require 'csv'
 class ApplicationController < ActionController::Base
   # Prevent CSRF attacks by raising an exception.
   # For APIs, you may want to use :null_session instead.
+  before_action :redirect_to_https
   protect_from_forgery with: :exception
   before_action :authenticate_user!
   before_action :configure_permitted_parameters, if: :devise_controller?
@@ -66,5 +67,12 @@ class ApplicationController < ActionController::Base
     devise_parameter_sanitizer.permit(:account_update) { |u| u.permit(:user_name, :last_name, :first_name, :contact_number, :entity_code, :division_code, :access_type, :email, :password, :password_confirmation, :current_password, :for_role_code, :for_division_code, :for_entity_code) }
 
   end
+
+  private
+    def redirect_to_https
+      unless request.ssl? || Rails.env.development?
+        redirect_to protocol: 'https://', status: :moved_permanently
+      end
+    end
 
 end

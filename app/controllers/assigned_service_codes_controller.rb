@@ -70,6 +70,6 @@ class AssignedServiceCodesController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def assigned_service_code_params
-      params.require(:assigned_service_code).permit(:entity_div_code, :service_code, :comment, :active_status, :del_status, :user_id)
+      params.require(:assigned_service_code).permit(:entity_div_code, :service_code, :comment, :active_status, :del_status, :user_id,:company_code, :company_url)
     end
 end

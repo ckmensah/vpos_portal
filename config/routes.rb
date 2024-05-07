@@ -1,4 +1,5 @@
 Rails.application.routes.draw do
+  resources :external_services_params
   root 'home#index'
   #devise_for :users
    get "/users" => redirect("/")

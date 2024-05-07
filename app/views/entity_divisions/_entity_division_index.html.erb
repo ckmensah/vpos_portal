@@ -167,7 +167,7 @@
                       <% end %>
                       <% if entity_division.activity_type.assigned_code == "MOP" || entity_division.activity_type.assigned_code == "HSP" %>
                         <a class="dropdown-item" href="<%= entity_admin_whitelist_index_path(code: entity_division.assigned_code, entity_code: params[:entity_code], count1: params[:count1], count: params[:count]) %>" data-remote="true"><strong>WhiteList Merchant</strong></a>
-                        <a class="dropdown-item" href="<%= reset_biz_qr_code_url(code: entity_division.assigned_code, entity_code: params[:entity_code], count1: params[:count1], count: params[:count]) %>" data-remote="true" data-confirm="You are about to reset the QR code for this service. Do you want to continue?" data-method= "POST"><strong>Reset QR</strong></a>
+<!--                        <a class="dropdown-item" href="<%#= reset_biz_qr_code_url(code: entity_division.assigned_code, entity_code: params[:entity_code], count1: params[:count1], count: params[:count]) %>" data-remote="true" data-confirm="You are about to reset the QR code for this service. Do you want to continue?" data-method= "POST"><strong>Reset QR</strong></a>-->
                     <% end %>
 
                       <% if entity_division.activity_type.assigned_code == "SHW" %>

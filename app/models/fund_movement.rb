@@ -5,7 +5,7 @@ class FundMovement < ApplicationRecord
   belongs_to :entity_division, class_name: "EntityDivision", foreign_key: :entity_div_code
 
 
-  def self.to_csv(general_report, current_user, options = {})
+  def self.to_csv(general_report, current_user, options = "")
     CSV.generate(options) do |csv|
       #headers = %w{Merchant Service Reference Selected_Option Activity_Type Mobile_No Name/Reference Network Tranx_ID Gross_Amount Charge Actual_Amount Source Status Date}
       if current_user.super_admin? || current_user.super_user?

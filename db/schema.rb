@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2023_11_07_164112) do
+ActiveRecord::Schema[7.1].define(version: 2024_02_12_111009) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -223,6 +223,8 @@ ActiveRecord::Schema[7.1].define(version: 2023_11_07_164112) do
     t.datetime "updated_at", precision: nil
     t.text "assigned_qr_code"
     t.text "url"
+    t.string "company_code", limit: 5
+    t.string "company_url"
     t.index ["comment"], name: "assigned_service_code_comment_idx"
     t.index ["created_at"], name: "assigned_service_code_created_at_idx"
     t.index ["entity_div_code"], name: "assigned_service_code_entity_div_code_idx"
@@ -516,6 +518,7 @@ ActiveRecord::Schema[7.1].define(version: 2023_11_07_164112) do
     t.integer "user_id"
     t.datetime "created_at", precision: nil, default: -> { "CURRENT_TIMESTAMP" }, null: false
     t.datetime "updated_at", precision: nil
+    t.string "external_ref_id", limit: 255
   end
 
   create_table "entity_service_account", id: false, force: :cascade do |t|
@@ -598,6 +601,20 @@ ActiveRecord::Schema[7.1].define(version: 2023_11_07_164112) do
     t.boolean "del_status", default: false
     t.datetime "created_at", precision: nil, default: -> { "CURRENT_TIMESTAMP" }, null: false
     t.datetime "updated_at", precision: nil
+  end
+
+  create_table "external_services_params", force: :cascade do |t|
+    t.string "entity_div_code"
+    t.string "username"
+    t.string "password"
+    t.string "company_code"
+    t.string "company_url"
+    t.integer "user_id"
+    t.boolean "active_status"
+    t.boolean "del_status"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.string "mobile_number"
   end
 
   create_table "fund_movement", id: false, force: :cascade do |t|

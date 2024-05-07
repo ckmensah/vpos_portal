@@ -1,0 +1,14 @@
+<p style="color: green"><%= notice %></p>
+
+<h1>External services params</h1>
+
+<div id="external_services_params">
+  <% @external_services_params.each do |external_services_param| %>
+    <%= render external_services_param %>
+    <p>
+      <%= link_to "Show this external services param", external_services_param %>
+    </p>
+  <% end %>
+</div>
+
+<%= link_to "New external services param", new_external_services_param_path %>

@@ -42,7 +42,7 @@ gem 'cancancan'
 gem 'jquery-validation-rails'
 gem 'email_validator'
 #gem "select2-rails"
- gem 'select2-rails', '~> 4.0', '>= 4.0.3'
+gem 'select2-rails', '~> 4.0', '>= 4.0.3'
 #source 'https://rails-assets.org' do
 #  gem 'rails-assets-select2', '~> 4.0.0'
 #end
