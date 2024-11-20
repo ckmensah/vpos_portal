@@ -1,10 +1,14 @@
 class User < ApplicationRecord
+  devise :database_authenticatable, :registerable,:timeoutable, :lockable,
+         :recoverable, :rememberable, :validatable, :trackable,:session_limitable
+
   attr_accessor :for_role_code, :for_the_portal, :for_division_code,:for_division_code_multi,
                 :for_creator_id, :for_show_charge, :for_entity_code, :for_entity_code_multi
 
 
-  serialize :for_entity_code_multi, Array
-  serialize :for_division_code_multi, Array
+  serialize :for_entity_code_multi, type: Array
+  serialize :for_division_code_multi, type: Array
+
   validates_uniqueness_of :user_name
   CTRYCODE = "233"
   #has_many :entity_, class_name: 'ActivitySubDivClass', foreign_key: :entity_div_code
@@ -110,20 +114,21 @@ class User < ApplicationRecord
 
   # Include default devise modules. Others available are:
   # :confirmable, :lockable, :timeoutable, :trackable and :omniauthable
-  devise :database_authenticatable, :registerable,
-         :recoverable, :rememberable, :validatable, :trackable
 
-
+        # :password_expirable, :secure_validatable, :password_archivable, :session_limitable, :expirable
+  
   #############################################################################
   ########################### USER ROLES ######################################
   #############################################################################
 
   def self.user_roles_join
     joins("LEFT JOIN user_roles ON users.id = user_roles.user_id")
+    # joins(:user_roles)
   end
 
   def self.multi_user_roles_join
     joins("LEFT JOIN multi_user_roles ON users.id = multi_user_roles.user_id")
+    # joins(:multi_user_roles)
     # joins("LEFT JOIN multi_user_roles ON user_roles.user_id = multi_user_roles.user_id")
   end
 

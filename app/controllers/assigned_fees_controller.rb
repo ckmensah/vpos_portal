@@ -37,28 +37,55 @@ class AssignedFeesController < ApplicationController
     @assigned_fee = AssignedFee.new
     charged_to_merchant = AssignedFee.where(entity_div_code: params[:code], charged_to: 'M', active_status: true)
     charged_to_customer = AssignedFee.where(entity_div_code: params[:code], charged_to: 'C', active_status: true)
-
+    logger.info "charged to customer == #{charged_to_customer.pretty_inspect}"
+    logger.info "charged to merchant == #{charged_to_merchant.pretty_inspect}"
     @payment_mode = [["MOMO", "MOM"], ["CARD", "CRD"]]
-
     if charged_to_customer
-      if charged_to_customer.size > 1 && charged_to_customer.size == 2
+      if charged_to_customer.size == 1 && charged_to_customer[0].payment_mode == 'MOM'
+        @charged_to_type = [["Merchant", "M"], ["Customer", "C"]]
+      elsif charged_to_customer.size == 1 && charged_to_customer[0].payment_mode == 'CRD'
+        @charged_to_type = [["Merchant", "M"], ["Customer", "C"]]
+
+      elsif charged_to_customer.size == 2
         @charged_to_type = [["Merchant", "M"]]
-      elsif charged_to_customer.size < 2 && charged_to_customer.size == 1
-        @charged_to_type = [["Merchant", "M"],["Customer", "C"]]
       else
         @charged_to_type = [["Merchant", "M"],["Customer", "C"]]
+
       end
     elsif charged_to_merchant
-      if charged_to_merchant.size > 1 && charged_to_merchant.size == 2
+      if charged_to_merchant.size == 1 && charged_to_merchant[0].payment_mode == 'MOM'
+        @charged_to_type = [["Merchant", "M"], ["Customer", "C"]]
+
+      elsif charged_to_merchant.size == 1 && charged_to_merchant[0].payment_mode == 'CRD'
+        @charged_to_type = [["Merchant", "M"], ["Customer", "C"]]
+      elsif charged_to_merchant.size == 2
         @charged_to_type = [["Customer", "C"]]
-      elsif charged_to_merchant.size < 2 && charged_to_merchant.size == 1
-        @charged_to_type = [["Customer", "C"],["Merchant", "M"]]
       else
         @charged_to_type = [["Merchant", "M"],["Customer", "C"]]
       end
     else
       @charged_to_type = [["Merchant", "M"], ["Customer", "C"]]
     end
+
+    # if charged_to_customer
+    #   if charged_to_customer.size > 1 && charged_to_customer.size == 2
+    #     @charged_to_type = [["Merchant", "M"]]
+    #   elsif charged_to_customer.size < 2 && charged_to_customer.size == 1
+    #     @charged_to_type = [["Merchant", "M"],["Customer", "C"]]
+    #   else
+    #     @charged_to_type = [["Merchant", "M"],["Customer", "C"]]
+    #   end
+    # elsif charged_to_merchant
+    #   if charged_to_merchant.size > 1 && charged_to_merchant.size == 2
+    #     @charged_to_type = [["Customer", "C"]]
+    #   elsif charged_to_merchant.size < 2 && charged_to_merchant.size == 1
+    #     @charged_to_type = [["Customer", "C"],["Merchant", "M"]]
+    #   else
+    #     @charged_to_type = [["Merchant", "M"],["Customer", "C"]]
+    #   end
+    # else
+    #   @charged_to_type = [["Merchant", "M"], ["Customer", "C"]]
+    # end
   end
 
   # GET /assigned_fees/1/edit
@@ -66,6 +93,15 @@ class AssignedFeesController < ApplicationController
     @fee_size_obj = AssignedFee.where(active_status: true, entity_div_code: @assigned_fee.entity_div_code)
     # Reassigning Charged_to to restrict it from duplicates
     @payment_mode = [["MOMO", "MOM"], ["CARD", "CRD"]]
+
+    # case @assigned_fee.payment_mode
+    # when 'MOM'
+    #   @payment_mode = [["MOMO", "MOM"]]
+    # when 'CRD'
+    #   @payment_mode = [["CARD", "CRD"]]
+    # else
+    #   @payment_mode = [["MOMO", "MOM"], ["CARD", "CRD"]]
+    # end
 
     if @fee_size_obj.exists? && @fee_size_obj.size > 1
       if @assigned_fee.charged_to == 'C'
@@ -88,27 +124,50 @@ class AssignedFeesController < ApplicationController
     # Renaming Charged_to
     charged_to_merchant = AssignedFee.where(entity_div_code: params[:code], charged_to: 'M', active_status: true)
     charged_to_customer = AssignedFee.where(entity_div_code: params[:code], charged_to: 'C', active_status: true)
-    @payment_mode = [["MOMO", "MOM"], ["CARD", "CRD"]]
 
+    @payment_mode = [["MOMO", "MOM"], ["CARD", "CRD"]]
     if charged_to_customer
-      if charged_to_customer.size > 1 && charged_to_customer.size == 2
+      if charged_to_customer.size == 1 && charged_to_customer[0].payment_mode == 'MOM'
+        @charged_to_type = [["Merchant", "M"], ["Customer", "C"]]
+      elsif charged_to_customer.size == 1 && charged_to_customer[0].payment_mode == 'CRD'
+        @charged_to_type = [["Merchant", "M"], ["Customer", "C"]]
+      elsif charged_to_customer.size == 2
         @charged_to_type = [["Merchant", "M"]]
-      elsif charged_to_customer.size < 2 && charged_to_customer.size == 1
-        @charged_to_type = [["Merchant", "M"],["Customer", "C"]]
       else
         @charged_to_type = [["Merchant", "M"],["Customer", "C"]]
       end
     elsif charged_to_merchant
-      if charged_to_merchant.size > 1 && charged_to_merchant.size == 2
+      if charged_to_merchant.size == 1 && charged_to_merchant[0].payment_mode == 'MOM'
+        @charged_to_type = [["Merchant", "M"], ["Customer", "C"]]
+      elsif charged_to_merchant.size == 1 && charged_to_merchant[0].payment_mode == 'CRD'
+        @charged_to_type = [["Merchant", "M"], ["Customer", "C"]]
+      elsif charged_to_merchant.size == 2
         @charged_to_type = [["Customer", "C"]]
-      elsif charged_to_merchant.size < 2 && charged_to_merchant.size == 1
-        @charged_to_type = [["Customer", "C"],["Merchant", "M"]]
       else
         @charged_to_type = [["Merchant", "M"],["Customer", "C"]]
       end
     else
       @charged_to_type = [["Merchant", "M"], ["Customer", "C"]]
     end
+    # if charged_to_customer
+    #   if charged_to_customer.size > 1 && charged_to_customer.size == 2
+    #     @charged_to_type = [["Merchant", "M"]]
+    #   elsif charged_to_customer.size < 2 && charged_to_customer.size == 1
+    #     @charged_to_type = [["Merchant", "M"],["Customer", "C"]]
+    #   else
+    #     @charged_to_type = [["Merchant", "M"],["Customer", "C"]]
+    #   end
+    # elsif charged_to_merchant
+    #   if charged_to_merchant.size > 1 && charged_to_merchant.size == 2
+    #     @charged_to_type = [["Customer", "C"]]
+    #   elsif charged_to_merchant.size < 2 && charged_to_merchant.size == 1
+    #     @charged_to_type = [["Customer", "C"],["Merchant", "M"]]
+    #   else
+    #     @charged_to_type = [["Merchant", "M"],["Customer", "C"]]
+    #   end
+    # else
+    #   @charged_to_type = [["Merchant", "M"], ["Customer", "C"]]
+    # end
 
     # if charged_to_customer
     #   @charged_to_type = [["Merchant", "M"]]
@@ -144,6 +203,10 @@ class AssignedFeesController < ApplicationController
         @assigned_fee.entity_div_code = params[:code]
         if @assigned_fee.valid?
           @assigned_fee.save
+          if fee_size_obj.size >=1
+            rate_stat = AssignedServiceCode.where(active_status: true, del_status: false, entity_div_code: params[:code])[0]
+            rate_stat.update(rate_status: true)
+          end
           flash.now[:notice] = "Assigned Fee was successfully created."
           format.js { render :show}
           format.html { redirect_to @assigned_fee, notice: 'Assigned fee was successfully created.' }
@@ -172,7 +235,14 @@ class AssignedFeesController < ApplicationController
     # Reassigning Charged_to to restrict it from duplicates
     @payment_mode = [["MOMO", "MOM"], ["CARD", "CRD"]]
     logger.info "Fee size :: #{@fee_size_obj.inspect}"
-    @payment_mode = [["MOMO", "MOM"], ["CARD", "CRD"]]
+    # case @assigned_fee.payment_mode
+    # when 'MOM'
+    #   @payment_mode = [["MOMO", "MOM"]]
+    # when 'CRD'
+    #   @payment_mode = [["CARD", "CRD"]]
+    # else
+    #   @payment_mode = [["MOMO", "MOM"], ["CARD", "CRD"]]
+    # end
     if @fee_size_obj.exists? && @fee_size_obj.size > 1
       if @assigned_fee.charged_to == 'C'
         @charged_to_type = [["Customer", "C"]]

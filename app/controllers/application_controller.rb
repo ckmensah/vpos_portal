@@ -17,7 +17,6 @@ class ApplicationController < ActionController::Base
   #end
   #
   rescue_from ActionController::InvalidAuthenticityToken do
-
     respond_to do |format|
       if request.format.html?
         flash[:danger] = "Sorry, your session has expired. Kindly try again!"

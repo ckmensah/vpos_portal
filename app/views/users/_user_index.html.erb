@@ -91,6 +91,16 @@
                               method: :delete, data: { confirm: "Do you wish to enable: #{user.user_name}?" },
                               class: 'w3-button w3-vpos-purple w3-border w3-border-purple w3-tiny w3-round-large', remote:true%>
                 <% end %>
+                <% if user.failed_attempts >= 5 %>
+                  <%= link_to 'UNLOCK USER', unlock_user_path(id: user, count: params[:count], user_filter: session[:user_filter].present? ? session[:user_filter].to_enum.to_h : "", page: params[:page]),
+                              style: "height: 30px;",
+                              method: :post, data: { confirm: "Do you wish to unlock: #{user.user_name}?" },
+                              class: 'w3-button w3-vpos-purple w3-border w3-border-purple w3-tiny w3-round-large'%>
+                  <%#= link_to  unlock_user_path(id: user), method: :post, data: {confirm: "Are you sure you want to unlock this user?"}, class: "w3-button w3-vpos-purple w3-border w3-border-purple w3-tiny w3-round-large" do %>
+<!--                    <i class="" style="width:80px; height: 30px;" aria-hidden="true" title="Edit user"> Unlock User</i>-->
+                  <%# end %>
+
+              <% end %>
               <% end %>
 
             </td>

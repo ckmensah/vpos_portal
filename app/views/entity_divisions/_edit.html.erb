@@ -52,7 +52,9 @@
 
                 <%= f.input :service_code, as: :integer, label: "Shortcode Ext", required: true, input_html: {id: "serv_code", value: @service_code, autocomplete: "off", min: 1, max: 999999, oninput: "validity.valid||(value='');", class: "form-control w3-input w3-border w3-white input-group input-append", style: "width: 90%;"} %>
                 <%= f.input :service_label, label: "Service Label", required: true, input_html: {id: "serv_label", value: @entity_division.service_label, autocomplete: "off", class: "form-control w3-input w3-border w3-white input-group input-append", style: "width: 90%;"} %>
-                <%= f.input :comment, label: "Extra Ref.", required: true, input_html: {id: "extra_ref", value: @entity_division.comment, autocomplete: "off", class: "form-control w3-input w3-border w3-white input-group input-append", style: "width: 90%"} %>
+                <%= f.input :attendant_prefix, label: "Attendant Prefix", required: true, input_html: {id: "attend_id", value: @entity_division.attendant_prefix, autocomplete: "off", class: "form-control w3-input w3-border w3-white input-group input-append", style: "width: 90%"} %>
+
+              <%= f.input :comment, label: "Extra Ref.", required: true, input_html: {id: "extra_ref", value: @entity_division.comment, autocomplete: "off", class: "form-control w3-input w3-border w3-white input-group input-append", style: "width: 90%"} %>
                   <%#= f.input :media_data, as: :file, label: "Service Logo(Add only one logo)", array: false, input_html:{multiple: false, id: "avatar-upload"}, accept: "image/*", value: @data_media, class: "btn btn-primary btn-file w3-center"%>
               <img class="w3-hover-shadow w3-card-2 w3-border w3-round-xlarge" width=150 height=70 src="<%= @current_div_media %>"  alt="your image" />
               <%= f.input :media_data, as: :file, label: "Service Logo(Add only one logo)", input_html:{id: "avatar-upload"}, accept: "image/*", value:@data_media, class: "btn btn-primary btn-file form-control w3-input"%>

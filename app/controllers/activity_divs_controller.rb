@@ -84,16 +84,17 @@ class ActivityDivsController < ApplicationController
       if @activity_div.valid?
         @activity_divs = ActivityDiv.where(division_code: params[:code], del_status: false).order(created_at: :desc)
         reference = @activity_div.entity_division != nil ? @activity_div.entity_division.division_name : ""
-        endpoint = '/bulk_ticket_generate_req'
+        endpoint = '/process_payment_req'
+        # endpoint = '/bulk_ticket_generate_req'
         @activity_classes = []
         @activity_sub_divs = []
 
         payload = {
-            "activity_div_id": @activity_div.id, "activity_lov_id": "", "activity_main_code": "",
+            "activity_div_id": "#{@activity_div.id}", "activity_lov_id": "", "activity_main_code": "",
             "activity_sub_plan_id": activity_div_params[:activity_sub_plan_id], "amount": activity_div_params[:amt],
             "charge": activity_div_params[:amt], "customer_name": activity_div_params[:customer_name],
             "entity_div_code": @activity_div.division_code, "nw": activity_div_params[:nw],
-            "pan": activity_div_params[:recipient_number], "payment_mode": "MOM", "qty": activity_div_params[:qty].to_s,
+            "pan": activity_div_params[:recipient_number], "payment_mode": "CSH", "qty": activity_div_params[:qty].to_s,
             "recipient_email": activity_div_params[:recipient_email], "recipient_number": activity_div_params[:recipient_number],
             "recipient_type": "", "reference": reference, "session_id": "", "src": "PTL"
         }

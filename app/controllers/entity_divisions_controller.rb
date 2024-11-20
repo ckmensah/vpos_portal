@@ -499,6 +499,9 @@ class EntityDivisionsController < ApplicationController
     elsif @entity_division_sub && @entity_division_sub.activity_type_code == "HSP"
       @activity_type_desc = ActivityType.where(assigned_code: @entity_division_sub.activity_type_code).first
       @activity_codes = [["#{@activity_type_desc.activity_type_desc} (HSP)", "HSP"]]
+    elsif @entity_division_sub && @entity_division_sub.activity_type_code == "GBC"
+      @activity_type_desc = ActivityType.where(assigned_code: @entity_division_sub.activity_type_code).first
+      @activity_codes = [["#{@activity_type_desc.activity_type_desc} (GBC)", "GBC"]]
     else
       @entity_div_sub_activities = EntityDivSubActivity.where(entity_div_code: params[:code], active_status: true, del_status: false).order(div_sub_activity_desc: :asc)
       @activity_codes = @entity_div_sub_activities.map { |a| ["#{a.div_sub_activity_desc} (#{a.sub_activity_code})", "#{a.sub_activity_code}"] }.insert(0,['Select an Activity Code', ""])
@@ -694,6 +697,9 @@ class EntityDivisionsController < ApplicationController
     elsif @entity_division_sub && @entity_division_sub.activity_type_code == "HSP"
       @activity_type_desc = ActivityType.where(assigned_code: @entity_division_sub.activity_type_code).first
       @activity_codes = [["#{@activity_type_desc.activity_type_desc} (HSP)", "HSP"]]
+    elsif @entity_division_sub && @entity_division_sub.activity_type_code == "GBC"
+      @activity_type_desc = ActivityType.where(assigned_code: @entity_division_sub.activity_type_code).first
+      @activity_codes = [["#{@activity_type_desc.activity_type_desc} (GBC)", "GBC"]]
     else
       @entity_div_sub_activities = EntityDivSubActivity.where(entity_div_code: params[:code], active_status: true, del_status: false).order(div_sub_activity_desc: :asc)
       @activity_codes = @entity_div_sub_activities.map { |a| ["#{a.div_sub_activity_desc} (#{a.sub_activity_code})", "#{a.sub_activity_code}"] }.insert(0,['Select an Activity Code', ""])
@@ -768,6 +774,9 @@ class EntityDivisionsController < ApplicationController
     elsif @entity_division_sub && @entity_division_sub.activity_type_code == "HSP"
       @activity_type_desc = ActivityType.where(assigned_code: @entity_division_sub.activity_type_code).first
       @activity_codes = [["#{@activity_type_desc.activity_type_desc} (HSP)", "HSP"]]
+    elsif @entity_division_sub && @entity_division_sub.activity_type_code == "GBC"
+      @activity_type_desc = ActivityType.where(assigned_code: @entity_division_sub.activity_type_code).first
+      @activity_codes = [["#{@activity_type_desc.activity_type_desc} (GBC)", "GBC"]]
     else
       @entity_div_sub_activities = EntityDivSubActivity.where(entity_div_code: params[:code], active_status: true, del_status: false).order(div_sub_activity_desc: :asc)
       @activity_codes = @entity_div_sub_activities.map { |a| ["#{a.div_sub_activity_desc} (#{a.sub_activity_code})", "#{a.sub_activity_code}"] }.insert(0,['Select an Activity Code', ""])
@@ -1086,7 +1095,9 @@ class EntityDivisionsController < ApplicationController
         # @entity_division.save(validate: false)
 
         @for_service_codes = AssignedServiceCode.new(entity_div_code: assigned_code, service_code: serv_code,
-                                                     active_status: true, del_status: false, user_id: current_user.id, company_code: entity_division_params[:company_code] , company_url: entity_division_params[:company_url] )
+                                                     active_status: true, del_status: false, user_id: current_user.id,
+                                                     company_code: entity_division_params[:company_code] ,
+                                                     company_url: entity_division_params[:company_url], rate_status: false )
         @for_service_codes.save(validate: false)
 
         @entity_wallet_conf = EntityWalletConfig.new(entity_code: params[:entity_code], division_code: assigned_code,
@@ -1314,14 +1325,14 @@ class EntityDivisionsController < ApplicationController
             #@active_service_code.update(service_code: entity_division_params[:service_code], user_id: current_user.id)
             @service_code = AssignedServiceCode.new(entity_div_code: @entity_division.assigned_code, service_code: entity_division_params[:service_code],
                                                     active_status: true, del_status: false, user_id: current_user.id, assigned_qr_code: @active_service_code.assigned_qr_code,
-                                                    url: @active_service_code.url, company_code: entity_division_params[:company_code] , company_url: entity_division_params[:company_url])
+                                                    url: @active_service_code.url, rate_status: @active_service_code.rate_status, company_code: entity_division_params[:company_code] , company_url: entity_division_params[:company_url])
             @service_code.save(validate: false)
             AssignedServiceCode.update_last_but_one("assigned_service_code", "entity_div_code", @active_service_code.entity_div_code)
 
           end
         else
           @service_code = AssignedServiceCode.new(entity_div_code: @entity_division.assigned_code, service_code: entity_division_params[:service_code],
-                                                  active_status: true, del_status: false, user_id: current_user.id, company_code: entity_division_params[:company_code] , company_url: entity_division_params[:company_url])
+                                                  active_status: true, del_status: false, user_id: current_user.id, rate_status: false, company_code: entity_division_params[:company_code] , company_url: entity_division_params[:company_url])
           @service_code.save(validate: false)
           @core_connect = VposCore::CoreConnect.new
           begin
@@ -1435,6 +1446,8 @@ class EntityDivisionsController < ApplicationController
 
     if @entity_division.active_status && @entity_division.del_status == false
       EntityDivision.disable_by_update_onef("entity_division","assigned_code",@entity_division.assigned_code)
+      EntityDivision.disable_by_update_onef("assigned_service_code","entity_div_code",@entity_division.assigned_code)
+      EntityDivision.disable_by_update_onef("entity_wallet_configs","division_code",@entity_division.assigned_code)
 
       @entity_divisions = EntityDivision.where(entity_code: params[:entity_code], del_status: false).paginate(:page => params[:page1], :per_page => params[:count1]).order('created_at desc')
       respond_to do |format|
@@ -1447,6 +1460,10 @@ class EntityDivisionsController < ApplicationController
 
     elsif @entity_division.active_status == false && @entity_division.del_status == false
       EntityInfo.enable_by_update_onet("entity_division","assigned_code",@entity_division.assigned_code)
+      assigned_serve = AssignedServiceCode.where(active_status: false, del_status: false, entity_div_code: @entity_division.assigned_code).order(created_at: :desc).first
+      EntityInfo.enable_by_update_onet("assigned_service_code","'#{assigned_serve.entity_div_code}'", @entity_division.assigned_code)
+      assigned_wall = EntityWalletConfig.where(active_status: false, del_status: false, division_code: @entity_division.assigned_code).order(created_at: :desc).first
+      EntityInfo.enable_by_update_onet("entity_division","'#{assigned_wall.division_code}'",@entity_division.assigned_code)
       @entity_divisions = EntityDivision.where(entity_code: params[:entity_code], del_status: false).paginate(:page => params[:page1], :per_page => params[:count1]).order('created_at desc')
 
       respond_to do |format|
@@ -1472,7 +1489,7 @@ class EntityDivisionsController < ApplicationController
                                             :div_lov_query, :activity_query, :sub_activity_query, :serv_id, :s_key, :c_key, :created_at, :payment_type,
                                             :sport_type, :sport_category, :category_type, :sms_sender_id, :allow_qr, :min_amount, :activity_loc, :extra_desc,
                                             :active_status, :del_status, :user_id, :service_code, :for_update, :media_data, :media_path, :media_type, :ref_label,
-                                            :company_code, :company_url, :reference, divisions: [], :the_div_acts_lov => {})
+                                            :company_code, :company_url, :reference,:attendant_prefix, divisions: [], :the_div_acts_lov => {})
     # entity_wallet_configs_attributes: [:id, :division_code, :service_id, :secret_key, :client_key, :comment, :active_status, :del_status, :user_id]
     #activity_divs_attributes: [:id, :division_code, :activity_div_desc, :activity_date, :comment, :active_status, :del_status, :user_id],
 

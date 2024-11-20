@@ -86,4 +86,50 @@ class LoanRequest < ApplicationRecord
     the_search
   end
 
+   def self.to_csv(general_report, current_user, options="")
+    CSV.generate(options) do |csv|
+      #headers = %w{Merchant Service Reference Selected_Option Activity_Type Mobile_No Name/Reference Network Tranx_ID Gross_Amount Charge Actual_Amount Source Status Date}
+      if current_user.super_admin? || current_user.super_user?
+        headers = %w{Merchant Service Service_ID Full_Name ID_Number Ref_ID Location Amount Comment Status Date Time}
+      else
+        headers = %w{Merchant Service Service_ID Full_Name ID_Number Ref_ID Location Amount Status Date Time}
+      end
+      csv << headers
+      general_report.each do |summary|
+        # ------code comes here
+        logger.info "General report :: #{summary.inspect}"
+        entity_div = EntityDivision.where(active_status: true, assigned_code: summary.division_code).order(created_at: :desc).first
+        logger.info "General report to check if I was able to reach this point :: #{summary.inspect}"
+        if entity_div
+          ent_info = EntityInfo.where(active_status: true, assigned_code: entity_div.entity_code).order(created_at: :desc).first
+          if ent_info
+            merchant = ent_info.entity_name
+          else
+            merchant = ""
+          end
+          service = entity_div.division_name
+        else
+          merchant = ""
+          service = ""
+        end
+
+        if summary.active_status
+          status = "Active"
+        elsif summary.active_status == false
+          status = "Inactive"
+        else
+          status = "Inactive"
+        end
+        date = summary.created_at
+        for_date = summary.created_at.strftime('%Y-%m-%d')
+        for_time = summary.created_at.strftime('%H:%M:%S')
+        if current_user.super_admin? || current_user.super_user?
+          csv << [merchant, service, summary.division_code, summary.full_name, summary.id_number, summary.ref_number, summary.location, summary.amount, summary.comment, status, for_date, for_time]
+        else
+          csv << [merchant, service, summary.division_code, summary.full_name, summary.id_number, summary.ref_number, summary.location, summary.amount, status, for_date, for_time]
+        end
+      end
+
+    end
+  end
 end

@@ -6,7 +6,7 @@ class AssignedFee < ApplicationRecord
   #has_many :entity_divisions, class_name: 'EntityDivision', foreign_key: :activity_type_code
   belongs_to :entity_division, class_name: 'EntityDivision', foreign_key: :entity_div_code
 
-  validates :entity_div_code, presence: {message: " cannot be empty."}
+  validates :entity_div_code, presence: {message: " cannot be empty."} #uniqueness: {scope: [:charged_to, :payment_mode, :active_status], message: "Payment mode and charge to already exists for Service"}, on: :create
   validates :trans_type, presence: {message: " cannot be empty."}
   validates :fee, presence: {message: " cannot be empty."}
   validates :flat_percent, presence: {message: " cannot be empty."}

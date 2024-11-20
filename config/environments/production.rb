@@ -78,4 +78,20 @@ Rails.application.configure do
   config.active_record.dump_schema_after_migration = false
   config.active_record.async_query_executor = :global_thread_pool
 
+  Rails.application.routes.default_url_options[:host] = 'https://vposportal.anmgw.com'
+
+  # config.action_mailer.delivery_method = :sendmail
+  # config.action_mailer.perform_deliveries = true
+  # config.action_mailer.raise_delivery_errors = true
+  # config.action_mailer.default :charset => "utf-8"
+  # # config.action_mailer.default_options = {from: '159.8.238.90:7115'}
+  config.action_mailer.delivery_method = :smtp
+  # config.action_mailer.smtp_settings = {
+  #   address:              'smtp.gmail.com',
+  #   port:                 587,
+  #   domain:               'example.com',
+  #   user_name:            Rails.application.credentials.gmail[:email],
+  #   password:            Rails.application.credentials.gmail[:password],
+  #   authentication:       'plain',enable_starttls_auto: true  }
+
 end

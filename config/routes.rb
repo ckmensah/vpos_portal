@@ -28,6 +28,7 @@ Rails.application.routes.draw do
   #put '/users/scanner_user/:id' => 'user#scanner_user_update', :as => 'scanner_user_update'
   patch '/users/:id' => 'users#update'
   delete '/users/:id' => 'users#destroy', :as => 'user_delete'
+  post '/unlock_user' => 'users#unlock_user'
 
   get '/roles/role_index' => 'roles#role_index', :as => 'role_index'
 

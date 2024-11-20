@@ -190,7 +190,16 @@ class UsersController < ApplicationController
   # GET /users/1
   # GET /users/1.json
   def show
+  end
 
+  def unlock_user
+    user = User.find(params[:id])
+    user.unlock_access!
+    respond_to do |format|
+      format.html { redirect_to main_users_path, notice: 'User was successfully unlocked.' }
+      format.js { render :layout => false, notice: 'User was successfully unlocked.' }
+      format.json { head :no_content }
+    end
   end
 
   def new_validator
@@ -802,7 +811,7 @@ class UsersController < ApplicationController
                                  :division_code, :contact_number, :password, :password_confirmation,
                                  :for_portal, :show_charge, :free_id, :role_id, :creator_id, :for_show_charge,
                                  :for_role_code, :for_the_portal, :for_entity_code, :for_division_code, :for_creator_id,
-                                 :active_status, :del_status, {:for_entity_code_multi => []}, {:for_division_code_multi => []})
+                                 :active_status, :del_status,:unique_session_id, {:for_entity_code_multi => []}, {:for_division_code_multi => []})
   end
 
 

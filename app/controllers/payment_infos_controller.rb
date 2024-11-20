@@ -170,6 +170,8 @@ class PaymentInfosController < ApplicationController
         @source = filter_params[:source]
         @start_date = filter_params[:start_date]
         @end_date = filter_params[:end_date]
+        @s_time = filter_params[:s_time]
+        @e_time = filter_params[:e_time]
         @a_download = filter_params[:a_download]
         params[:entity_name] = filter_params[:entity_name]
         params[:division_name] = filter_params[:division_name]
@@ -185,6 +187,8 @@ class PaymentInfosController < ApplicationController
         params[:source] = filter_params[:source]
         params[:start_date] = filter_params[:start_date]
         params[:end_date] = filter_params[:end_date]
+        # params[:s_time] = filter_params[:s_time]
+        # params[:e_time] = filter_params[:e_time]
         params[:a_download] = filter_params[:a_download]
       else
 
@@ -204,6 +208,8 @@ class PaymentInfosController < ApplicationController
           @source = params[:source]
           @start_date = params[:start_date]
           @end_date = params[:end_date]
+          @s_time = filter_params[:s_time]
+          @e_time = filter_params[:e_time]
           @a_download = params[:a_download]
           params[:entity_name] = @entity_name
           params[:division_name] = @division_name
@@ -219,6 +225,8 @@ class PaymentInfosController < ApplicationController
           params[:source] = @source
           params[:start_date] = @start_date
           params[:end_date] = @end_date
+          # params[:s_time] = filter_params[:s_time]
+          # params[:e_time] = filter_params[:e_time]
           params[:a_download] = @a_download
         else
           params[:entity_name] = filter_params[:entity_name]
@@ -235,10 +243,11 @@ class PaymentInfosController < ApplicationController
           params[:source] = filter_params[:source]
           params[:start_date] = filter_params[:start_date]
           params[:end_date] = filter_params[:end_date]
+          # params[:s_time] = filter_params[:s_time]
+          # params[:e_time] = filter_params[:e_time]
           params[:a_download] = filter_params[:a_download]
         end
       end
-
 
       if @entity_name.present?
         division_str = "'0'"
@@ -254,7 +263,6 @@ class PaymentInfosController < ApplicationController
         search_arr << "entity_div_code IN #{final_div_str}"
       end
 
-
       if @division_name.present?
         #division_str = "'0'"
         #@entity_divis = EntityDivision.where("LOWER(division_name) LIKE '%#{@division_name.downcase}%'")
@@ -265,14 +273,9 @@ class PaymentInfosController < ApplicationController
         search_arr << "entity_div_code = '#{@division_name}'"
       end
 
-
-
       if @act_main_code.present?
         search_arr << "CASE WHEN narration IS NOT NULL THEN LOWER(activity_main_code) || ' ' || LOWER(narration) ELSE LOWER(activity_main_code) END = '#{@act_main_code.downcase}'"
       end
-
-
-
 
       if @activity_type.present?
         #activity_str = "'0'"
@@ -360,19 +363,69 @@ class PaymentInfosController < ApplicationController
         #search_arr << "split_part(trans_status, '/', 1) = '000'"
       end
 
-
-      if @start_date.present? && @end_date.present?
-        f_start_date =  @start_date.to_date.strftime("%Y-%m-%d") # Date.strptime(@start_date, '%m/%d/%Y') # @start_date.to_date.strftime('%Y-%m-%d')
-        f_end_date = @end_date.to_date.strftime("%Y-%m-%d") # Date.strptime(@end_date, '%m/%d/%Y') # @end_date.to_date.strftime('%Y-%m-%d')
-
-        # f_start_date = DateTime.parse(@start_date)
-        # f_end_date = DateTime.parse(@end_date)
-        if f_start_date <= f_end_date
-          search_arr << "created_at BETWEEN '#{f_start_date} 00:00:00' AND '#{f_end_date} 23:59:59'"
-        else
-          search_arr << "created_at IS NULL"
-        end
+     if @start_date.present? && @end_date.present?
+      f_start_date =  @start_date.to_date.strftime("%Y-%m-%d") # Date.strptime(@start_date, '%m/%d/%Y') # @start_date.to_date.strftime('%Y-%m-%d')
+      f_end_date = @end_date.to_date.strftime("%Y-%m-%d") # Date.strptime(@end_date, '%m/%d/%Y') # @end_date.to_date.strftime('%Y-%m-%d')
+      if f_start_date <= f_end_date
+        search_arr << "created_at BETWEEN '#{f_start_date} 00:00:00' AND '#{f_end_date} 23:59:59'"
+      else
+        search_arr << "created_at IS NULL"
       end
+      end
+
+      # if @start_date.present?
+      #   f_start_date =  @start_date.to_date.strftime("%Y-%m-%d") # Date.strptime(@start_date, '%m/%d/%Y') # @start_date.to_date.strftime('%Y-%m-%d')
+      #   if f_start_date
+      #     search_arr << "created_at >= '#{f_start_date} 00:00:00'"
+      #   else
+      #     search_arr << "created_at IS NULL"
+      #   end
+      #
+      # elsif (@start_date.present? && @end_date.present?)
+      #   f_start_date =  @start_date.to_date.strftime("%Y-%m-%d") # Date.strptime(@start_date, '%m/%d/%Y') # @start_date.to_date.strftime('%Y-%m-%d')
+      #   f_end_date = @end_date.to_date.strftime("%Y-%m-%d") # Date.strptime(@end_date, '%m/%d/%Y') # @end_date.to_date.strftime('%Y-%m-%d')
+      #
+      #   if f_start_date <= f_end_date
+      #     search_arr << "created_at BETWEEN '#{f_start_date} 00:00:00' AND '#{f_end_date} 23:59:59'"
+      #   else
+      #     search_arr << "created_at IS NULL"
+      #   end
+      #
+      #
+      # elsif @start_date.present? && (@s_time.present? || @etime.present?)
+      #    f_start_date =  @start_date.to_date.strftime("%Y-%m-%d")
+      #     if f_start_date && @s_time.present?
+      #       search_arr << "created_at >= '#{f_start_date} #{@s_time}'"
+      #     elsif f_start_date && @e_time.present?
+      #       search_arr << "created_at >= '#{f_start_date} #{@e_time}'"
+      #     elsif f_start_date && (@s_time <= @e_time)
+      #       search_arr << "created_at BETWEEN '#{f_start_date} #{@s_time}' AND '#{f_start_date} #{@e_time}'"
+      #     end
+      # elsif @end_date.present?
+      #   f_end_date = @end_date.to_date.strftime("%Y-%m-%d") # Date.strptime(@end_date, '%m/%d/%Y') # @end_date.to_date.strftime('%Y-%m-%d')
+      #   if f_end_date
+      #     search_arr << "created_at <= '#{f_end_date} 23:59:59'"
+      #   else
+      #     search_arr << "created_at IS NULL"
+      #   end
+      # elsif @end_date.present? && (@s_time.present? || @etime.present?)
+      #   if f_end_date && @s_time.present?
+      #     search_arr << "created_at <= '#{f_end_date} #{@s_time}'"
+      #   elsif f_end_date && @e_time.present?
+      #     search_arr << "created_at <= '#{f_end_date} #{@e_time}'"
+      #   elsif f_end_date && (@s_time <= @e_time)
+      #     search_arr << "created_at BETWEEN '#{f_end_date} #{@s_time}' AND '#{f_end_date} #{@e_time}'"
+      #   end
+      #
+      # elsif  @start_date.present? && @end_date.present? && (@s_time.present? || @etime.present?)
+      #   if f_start_date <= f_end_date && @s_time.present?
+      #     search_arr << "created_at BETWEEN '#{f_start_date} #{@s_time}' AND '#{f_end_date} 23:59:59'"
+      #   elsif f_start_date <= f_end_date && @e_time.present?
+      #     search_arr << "created_at BETWEEN '#{f_start_date} 00:00:00' AND '#{f_end_date} #{@e_time}'"
+      #   elsif f_start_date <= f_end_date && (@s_time <= @e_time)
+      #     search_arr << "created_at BETWEEN '#{f_start_date} #{@s_time}' AND '#{f_end_date} #{@e_time}'"
+      #   end
+      # end
       logger.info "Values :: #{filter_params.inspect}"
     else
       #logger.info "====================================================================="
@@ -1100,7 +1153,7 @@ class PaymentInfosController < ApplicationController
         respond_to do |format|
           format.js { render :resend_form }
         end
-      rescue Faraday::Error::ConnectionFailed => e
+      rescue Faraday::ConnectionFailed => e
         #payment_info_index
         logger.info "Connection Failed ================"
         logger.info "Error message :: #{e} ==================="

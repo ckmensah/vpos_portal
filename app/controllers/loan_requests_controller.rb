@@ -35,6 +35,12 @@ class LoanRequestsController < ApplicationController
     #   @loan_requests = LoanRequest.where(the_search).where(del_status: false, entity_code: current_user.user_entity_code).paginate(:page => page, :per_page => params[:count1]).order(created_at: :desc)
     end
 
+    respond_to do |format|
+      format.js
+      format.csv { send_data @loan_requests.to_csv(@loan_requests, current_user), :filename => "Loan_requests_report.csv" }
+      format.xls { send_data @loan_requests.to_csv(@loan_requests, current_user, col_sep: "\t"), :filename => "Loan_requests_report.xls" }
+    end
+
   end
 
   def show

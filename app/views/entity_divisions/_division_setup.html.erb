@@ -51,7 +51,7 @@
 <!--                    <th><strong>No.</strong></th>-->
                   <%# end %>
                   <th><strong>Activity Code</strong></th>
-                  <% if @div_activity_type == "PDD" || @div_activity_type == "SPC" %>
+                  <% if @div_activity_type == "PDD" || @div_activity_type == "SPC" ||  @div_activity_type == "GBC" %>
                     <th><strong>Amount</strong></th>
                   <% end %>
                   <th><strong>Description</strong></th>
@@ -72,7 +72,7 @@
                       <tr id="del_div_lov_<%= count %>">
 <!--                        <td><strong><%#= count %></strong></td>-->
                         <td style=""><strong><%= collection_select :the_div_acts_lov, "#{count}[activity_code]", @activity_codes, :last, :first, {selected: the_params["activity_code"], :prompt => 'Select an Activity Code', :include_blank => true}, {id: "act_code_#{count}", class:"form-control w3-input w3-border w3-white input-group input-append", style:"" } %></strong></td>
-                        <% if @div_activity_type == "PDD" || @div_activity_type == "SPC" %>
+                        <% if @div_activity_type == "PDD" || @div_activity_type == "SPC" || @div_activity_type == "GBC"%>
                           <td><strong><input type="number" name="the_div_acts_lov[<%= count %>[assigned_amount]]" value="<%= the_params["assigned_amount"] %>" autocomplete="off" min="0" placeholder="Enter amount" class="form-control w3-input w3-border w3-white input-group input-append"></strong></td>
                           <% end %>
 
@@ -97,7 +97,7 @@
                     <tr id="del_div_lov_<%= count %>">
 <!--                      <td><strong><%#= count %></strong></td>-->
                       <td style=""><strong><%= collection_select :the_div_acts_lov, "#{count}[activity_code]", @activity_codes, :last, :first, { :prompt => 'Select an Activity Code', :include_blank => true}, {id: "act_code_#{count}", class:"form-control w3-input w3-border w3-white input-group input-append", style:"" } %></strong></td>
-                      <% if @div_activity_type == "PDD" || @div_activity_type == "SPC" %>
+                      <% if @div_activity_type == "PDD" || @div_activity_type == "SPC" || @div_activity_type == "GBC" %>
                         <td><strong><input type="number" name="the_div_acts_lov[<%= count %>[assigned_amount]]" autocomplete="off" min="0" placeholder="Enter amount" class="form-control w3-input w3-border w3-white input-group input-append"></strong></td>
                       <% end %>
                       <td><strong><textarea name="the_div_acts_lov[<%= count %>[lov_desc]]" rows="1" placeholder="Description" class="form-control"></textarea></strong></td>
@@ -470,7 +470,7 @@
         cell1.appendChild(element);
 
 
-        <% if @div_activity_type == "PDD" || @div_activity_type == "SPC" %>
+        <% if @div_activity_type == "PDD" || @div_activity_type == "SPC" || @div_activity_type == "GBC"%>
         var cell4       = row.insertCell(1);
         var element3    = document.createElement("input");
         element3.type = "number";
@@ -485,7 +485,7 @@
         <% end %>
 
 
-        <% if @div_activity_type == "PDD" || @div_activity_type == "SPC" %>
+        <% if @div_activity_type == "PDD" || @div_activity_type == "SPC" || @div_activity_type == "GBC" %>
         var cell2       = row.insertCell(2);
         <% else %>
         var cell2       = row.insertCell(1);
@@ -502,7 +502,7 @@
         cell2.appendChild(element1);
 
 
-        <% if @div_activity_type == "PDD" || @div_activity_type == "SPC" %>
+        <% if @div_activity_type == "PDD" || @div_activity_type == "SPC"  || @div_activity_type == "GBC"%>
         var cell3      = row.insertCell(3);
         <% else %>
         var cell3      = row.insertCell(2);

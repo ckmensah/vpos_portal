@@ -10,7 +10,7 @@ en:
       already_authenticated: "You are already signed in."
       inactive: "Your account is not activated yet."
       invalid: "Invalid %{authentication_keys} or password."
-      locked: "Your account is locked."
+      locked: "Your account is locked. Kindly check the email you signed up with for a link to reset your password or Contact system admin to unlock your password."
       last_attempt: "You have one more attempt before your account is locked."
       not_found_in_database: "Invalid %{authentication_keys} or password."
       timeout: "Your session expired. Please sign in again to continue."
@@ -58,7 +58,7 @@ en:
       already_confirmed: "was already confirmed, please try signing in"
       confirmation_period_expired: "needs to be confirmed within %{period}, please request a new one"
       expired: "has expired, please request a new one"
-      not_found: "not found"
+      not_found: "If your account is associated with this email or your email exists with us, you will receive instructions on how to reset your password."
       not_locked: "was not locked"
       not_saved:
         one: "1 error prohibited this %{resource} from being saved:"
