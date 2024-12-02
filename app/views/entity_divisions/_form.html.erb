@@ -77,8 +77,10 @@
                 <%= f.input :activity_type_code, label: "Activity Code", collection: @activity_types, label_method: :activity_name, value_method: :assigned_code, required: true, input_html: {id: "activity_key", autocomplete: "off", class: "form-control w3-input w3-border w3-white input-group input-append", style: "width: 90%;"} %>
                 <%= f.input :service_code, as: :integer, label: "Shortcode Ext", required: true, input_html: {id: "serv_code", value: @service_code, autocomplete: "off", min: 1, max: 999999, oninput: "validity.valid||(value='');", class: "form-control w3-input w3-border w3-white input-group input-append", style: "width: 90%;"} %>
                 <%= f.input :sms_sender_id, label: "SMS Sender ID", required: true, input_html: {id: "sender_id", value: @entity_division.sms_sender_id, autocomplete: "off", class: "form-control w3-input w3-border w3-white input-group input-append", style: "width: 90%"} %>
+              <div id="att_pfre">
                 <%= f.input :attendant_prefix, label: "Attendant Prefix", required: true, input_html: {id: "attend_id", value:"", autocomplete: "off", class: "form-control w3-input w3-border w3-white input-group input-append", style: "width: 90%"} %>
-              <div id="comp_div_1">
+              </div>
+                <div id="comp_div_1">
               <%= f.input :company_code, label: "Company Code", required: true, input_html: {id: "comp_code", autocomplete: "off", class: "form-control w3-input w3-border w3-white input-group input-append", style: ""} %>
               </div>
               </div>

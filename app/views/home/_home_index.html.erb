@@ -404,7 +404,7 @@
             <%= f.input :division_name, collection: @payment_service, label_method: :division_name, value_method: :assigned_code, class:"form-control", input_html: {style: "width: 100%;"}, label: "Service Name", boolean_style: :inline %>
             <%#= f.input :division_name, class:"form-control", input_html: {style: "width: 90%;", autocomplete: "off"}, label: "Merchant Service", boolean_style: :inline %>
 
-      <% elsif current_user.merchant_service? %>
+         <% elsif current_user.merchant_service? %>
 
           <% end %>
 

@@ -1327,12 +1327,13 @@ class EntityDivisionsController < ApplicationController
                                                     active_status: true, del_status: false, user_id: current_user.id, assigned_qr_code: @active_service_code.assigned_qr_code,
                                                     url: @active_service_code.url, rate_status: @active_service_code.rate_status, company_code: entity_division_params[:company_code] , company_url: entity_division_params[:company_url])
             @service_code.save(validate: false)
+
             AssignedServiceCode.update_last_but_one("assigned_service_code", "entity_div_code", @active_service_code.entity_div_code)
 
           end
         else
           @service_code = AssignedServiceCode.new(entity_div_code: @entity_division.assigned_code, service_code: entity_division_params[:service_code],
-                                                  active_status: true, del_status: false, user_id: current_user.id, rate_status: false, company_code: entity_division_params[:company_code] , company_url: entity_division_params[:company_url])
+                                                  active_status: true, del_status: false, user_id: current_user.id, rate_status: true, company_code: entity_division_params[:company_code] , company_url: entity_division_params[:company_url])
           @service_code.save(validate: false)
           @core_connect = VposCore::CoreConnect.new
           begin
@@ -1459,11 +1460,10 @@ class EntityDivisionsController < ApplicationController
       end
 
     elsif @entity_division.active_status == false && @entity_division.del_status == false
-      EntityInfo.enable_by_update_onet("entity_division","assigned_code",@entity_division.assigned_code)
-      assigned_serve = AssignedServiceCode.where(active_status: false, del_status: false, entity_div_code: @entity_division.assigned_code).order(created_at: :desc).first
-      EntityInfo.enable_by_update_onet("assigned_service_code","'#{assigned_serve.entity_div_code}'", @entity_division.assigned_code)
-      assigned_wall = EntityWalletConfig.where(active_status: false, del_status: false, division_code: @entity_division.assigned_code).order(created_at: :desc).first
-      EntityInfo.enable_by_update_onet("entity_division","'#{assigned_wall.division_code}'",@entity_division.assigned_code)
+      EntityDivision.enable_by_update_onet("entity_division","assigned_code",@entity_division.assigned_code)
+      EntityDivision.enable_by_update_onet("assigned_service_code","entity_div_code", @entity_division.assigned_code)
+      EntityDivision.enable_by_update_onet("entity_wallet_configs", "division_code", @entity_division.assigned_code)
+
       @entity_divisions = EntityDivision.where(entity_code: params[:entity_code], del_status: false).paginate(:page => params[:page1], :per_page => params[:count1]).order('created_at desc')
 
       respond_to do |format|

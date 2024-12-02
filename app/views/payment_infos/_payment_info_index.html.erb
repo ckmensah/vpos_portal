@@ -563,33 +563,34 @@
                 </div>
 
               <% elsif current_user.merchant_admin? %>
-                <%= f.input :start_date, :id => "datepicker1", as: :datetime, html5: true, class: "form-control input-group date", label: "Start Date", boolean_style: :inline, input_html: {style: "", data: {behaviour: 'datepicker', provide: 'datepicker'}, autocomplete: "off"} %>
-                <%= f.input :end_date, :id => "datepicker2", as: :datetime, html5: true, class: "form-control", label: "End Date", boolean_style: :inline, input_html: {style: "", data: {behaviour: 'datepicker', provide: 'datepicker'}, autocomplete: "off"} %>
-<!--                <p class="text-muted text-tiny  `d ">To filter with Time select Date/s first</p>-->
-                <%#= f.input :s_time, :id => "datepicker3", as: :time, html5: true, class: "form-control input-group date", label: "Start Time", boolean_style: :inline, input_html: {style: "", data: {behaviour: 'datepicker', provide: 'datepicker'}, autocomplete: "off"} %>
-                <%#= f.input :e_time, :id => "datepicker4", as: :time, html5: true, class: "form-control", label: "End Time", boolean_style: :inline, input_html: {style: "", data: {behaviour: 'datepicker', provide: 'datepicker'}, autocomplete: "off"} %>
+                <%= f.input :start_date, :id => "datepicker1", as: :date, html5: true, class: "form-control input-group date", label: "Start Date", boolean_style: :inline, input_html: {style: "", data: {behaviour: 'datepicker', provide: 'datepicker'}, autocomplete: "off"} %>
+                <%= f.input :end_date, :id => "datepicker2", as: :date, html5: true, class: "form-control", label: "End Date", boolean_style: :inline, input_html: {style: "", data: {behaviour: 'datepicker', provide: 'datepicker'}, autocomplete: "off"} %>
+
+                <p class="text-muted text-tiny  `d ">To filter with Time select Date/s first</p>
+                <%= f.input :s_time, :id => "datepicker3", as: :time, html5: true, class: "form-control input-group date", label: "Start Time", boolean_style: :inline, input_html: {style: "", data: {behaviour: 'datepicker', provide: 'datepicker'}, autocomplete: "off"} %>
+                <%= f.input :e_time, :id => "datepicker4", as: :time, html5: true, class: "form-control", label: "End Time", boolean_style: :inline, input_html: {style: "", data: {behaviour: 'datepicker', provide: 'datepicker'}, autocomplete: "off"} %>
               <% elsif current_user.merchant_service? %>
                 <% a_service = EntityDivision.where(assigned_code: current_user.user_division_code, active_status: true).order(created_at: :desc).first %>
                 <% if a_service && a_service.activity_type_code == "CHC" %>
-                  <%= f.input :start_date, :id => "datepicker1", as: :datetime, html5: true, class: "form-control input-group date", label: "Start Date", boolean_style: :inline, input_html: {style: "", data: {behaviour: 'datepicker', provide: 'datepicker'}, autocomplete: "off"} %>
-                  <%= f.input :end_date, :id => "datepicker2", as: :datetime, html5: true, class: "form-control", label: "End Date", boolean_style: :inline, input_html: {style: "", data: {behaviour: 'datepicker', provide: 'datepicker'}, autocomplete: "off"} %>
+                  <%= f.input :start_date, :id => "datepicker1", as: :date, html5: true, class: "form-control input-group date", label: "Start Date", boolean_style: :inline, input_html: {style: "", data: {behaviour: 'datepicker', provide: 'datepicker'}, autocomplete: "off"} %>
+                  <%= f.input :end_date, :id => "datepicker2", as: :date, html5: true, class: "form-control", label: "End Date", boolean_style: :inline, input_html: {style: "", data: {behaviour: 'datepicker', provide: 'datepicker'}, autocomplete: "off"} %>
 <!--                  <p class="text-muted text-tiny">To filter with Time select Date/s first</p>-->
                   <%#= f.input :s_time, :id => "datepicker3", as: :date, html5: true, class: "form-control input-group date", label: "Start Time", boolean_style: :inline, input_html: {style: "", data: {behaviour: 'datepicker', provide: 'datepicker'}, autocomplete: "off"} %>
                   <%#= f.input :e_time, :id => "datepicker4", as: :date, html5: true, class: "form-control", label: "End Time", boolean_style: :inline, input_html: {style: "", data: {behaviour: 'datepicker', provide: 'datepicker'}, autocomplete: "off"} %>
                 <% else %>
                   <div class="w3-half">
-                    <%= f.input :start_date, :id => "datepicker1", as: :datetime, html5: true, class: "form-control input-group date", label: "Start Date", boolean_style: :inline, input_html: {style: "width: 90%", data: {behaviour: 'datepicker', provide: 'datepicker'}, autocomplete: "off"} %>
+                    <%= f.input :start_date, :id => "datepicker1", as: :date, html5: true, class: "form-control input-group date", label: "Start Date", boolean_style: :inline, input_html: {style: "width: 90%", data: {behaviour: 'datepicker', provide: 'datepicker'}, autocomplete: "off"} %>
                   </div>
                   <div class="w3-half">
-                    <%= f.input :end_date, :id => "datepicker2", as: :datetime, html5: true, class: "form-control", label: "End Date", boolean_style: :inline, input_html: {style: "", data: {behaviour: 'datepicker', provide: 'datepicker'}, autocomplete: "off"} %>
+                    <%= f.input :end_date, :id => "datepicker2", as: :date, html5: true, class: "form-control", label: "End Date", boolean_style: :inline, input_html: {style: "", data: {behaviour: 'datepicker', provide: 'datepicker'}, autocomplete: "off"} %>
                   </div>
-<!--                  <p class="text-muted text-tiny">To filter with Time select Date/s first</p>-->
-<!--                  <div class="w3-half">-->
-                    <%#= f.input :s_time, :id => "datepicker3", as: :date, html5: true, class: "form-control input-group date", label: "Start Time", boolean_style: :inline, input_html: {style: "width: 90%", data: {behaviour: 'datepicker', provide: 'datepicker'}, autocomplete: "off"} %>
-<!--                  </div>-->
-<!--                  <div class="w3-half">-->
-                    <%#= f.input :e_time, :id => "datepicker4", as: :date, html5: true, class: "form-control", label: "End Time", boolean_style: :inline, input_html: {style: "", data: {behaviour: 'datepicker', provide: 'datepicker'}, autocomplete: "off"} %>
-<!--                  </div>-->
+                  <p class="text-muted text-tiny">To filter with Time select Date/s first</p>
+                  <div class="w3-half">
+                    <%= f.input :s_time, :id => "datepicker3", as: :time, html5: true, class: "form-control input-group date", label: "Start Time", boolean_style: :inline, input_html: {style: "width: 90%", data: {behaviour: 'datepicker', provide: 'datepicker'}, autocomplete: "off"} %>
+                  </div>
+                  <div class="w3-half">
+                    <%= f.input :e_time, :id => "datepicker4", as: :time, html5: true, class: "form-control", label: "End Time", boolean_style: :inline, input_html: {style: "", data: {behaviour: 'datepicker', provide: 'datepicker'}, autocomplete: "off"} %>
+                  </div>
                 <% end %>
 
               <% end %>

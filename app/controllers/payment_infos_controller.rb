@@ -187,8 +187,8 @@ class PaymentInfosController < ApplicationController
         params[:source] = filter_params[:source]
         params[:start_date] = filter_params[:start_date]
         params[:end_date] = filter_params[:end_date]
-        # params[:s_time] = filter_params[:s_time]
-        # params[:e_time] = filter_params[:e_time]
+        params[:s_time] = filter_params[:s_time]
+        params[:e_time] = filter_params[:e_time]
         params[:a_download] = filter_params[:a_download]
       else
 
@@ -225,8 +225,8 @@ class PaymentInfosController < ApplicationController
           params[:source] = @source
           params[:start_date] = @start_date
           params[:end_date] = @end_date
-          # params[:s_time] = filter_params[:s_time]
-          # params[:e_time] = filter_params[:e_time]
+          params[:s_time] = filter_params[:s_time]
+          params[:e_time] = filter_params[:e_time]
           params[:a_download] = @a_download
         else
           params[:entity_name] = filter_params[:entity_name]
@@ -243,8 +243,8 @@ class PaymentInfosController < ApplicationController
           params[:source] = filter_params[:source]
           params[:start_date] = filter_params[:start_date]
           params[:end_date] = filter_params[:end_date]
-          # params[:s_time] = filter_params[:s_time]
-          # params[:e_time] = filter_params[:e_time]
+          params[:s_time] = filter_params[:s_time]
+          params[:e_time] = filter_params[:e_time]
           params[:a_download] = filter_params[:a_download]
         end
       end
@@ -363,14 +363,89 @@ class PaymentInfosController < ApplicationController
         #search_arr << "split_part(trans_status, '/', 1) = '000'"
       end
 
-     if @start_date.present? && @end_date.present?
-      f_start_date =  @start_date.to_date.strftime("%Y-%m-%d") # Date.strptime(@start_date, '%m/%d/%Y') # @start_date.to_date.strftime('%Y-%m-%d')
-      f_end_date = @end_date.to_date.strftime("%Y-%m-%d") # Date.strptime(@end_date, '%m/%d/%Y') # @end_date.to_date.strftime('%Y-%m-%d')
-      if f_start_date <= f_end_date
-        search_arr << "created_at BETWEEN '#{f_start_date} 00:00:00' AND '#{f_end_date} 23:59:59'"
-      else
-        search_arr << "created_at IS NULL"
+      if (@start_date.present? && @end_date.present?)
+        # f_start_date =  @start_date.to_time.strftime("%Y-%m-%dT%H:%M") # Date.strptime(@start_date, '%m/%d/%Y') # @start_date.to_date.strftime('%Y-%m-%d')
+        # f_end_date = @end_date.to_time.strftime("%Y-%m-%dT%H:%M")
+        # f_start_date =  @start_date.to_date.strftime("%Y-%m-%d") # Date.strptime(@start_date, '%m/%d/%Y') # @start_date.to_date.strftime('%Y-%m-%d')
+        # f_end_date = @end_date.to_date.strftime("%Y-%m-%d") # Date.strptime(@end_date, '%m/%d/%Y') # @end_date.to_date.strftime('%Y-%m-%d')
+        f_start_date = Date.parse(@start_date).beginning_of_day
+        f_end_date = Date.parse(@end_date).end_of_day
+        if f_start_date <= f_end_date
+          # search_arr << "created_at BETWEEN '#{f_start_date} ' AND '#{f_end_date}'"
+          search_arr << "created_at BETWEEN '#{f_start_date}' AND '#{f_end_date}'"
+        else
+          search_arr << "created_at IS NULL"
+        end
       end
+
+      if @start_date.present?
+        start_datetime = Time.zone.parse("#{@start_date}").beginning_of_day
+        search_arr << "created_at >= '#{start_datetime}'"
+      end
+
+      if @end_date.present?.present?
+        end_datetime = Time.zone.parse("#{@end_date}").end_of_day
+        search_arr << "created_at <= '#{end_datetime}'"
+      end
+
+      if @s_time.present?
+        start_time = Time.zone.parse("#{Date.today} #{@s_time}")
+        search_arr << "created_at::time >= '#{start_time.strftime("%H:%M:%S")}'"
+      end
+
+      if @e_time.present?
+        end_time = Time.zone.parse("#{Date.today} #{@e_time}")
+        search_arr << "created_at::time <= '#{end_time.strftime("%H:%M:%S")}'"
+      end
+
+      if (@start_date.present? && (@s_time.present? || @etime.present?))
+         f_start_date =  @start_date.to_date.strftime("%Y-%m-%d")
+          if (f_start_date && @s_time.present?)
+            search_arr << "created_at >= '#{f_start_date} #{@s_time}'"
+          elsif (f_start_date && @e_time.present?)
+            search_arr << "created_at >= '#{f_start_date} #{@e_time}'"
+          end
+      end
+
+      if (@start_date.present? && (@s_time.present? && @etime.present?))
+        f_start_date =  @start_date.to_date.strftime("%Y-%m-%d")
+        if f_start_date && (@s_time <= @e_time)
+            search_arr << "created_at BETWEEN '#{f_start_date} #{@s_time}' AND '#{f_start_date} #{@e_time}'"
+        end
+      end
+
+      if (@end_date.present? && (@s_time.present? || @etime.present?))
+       f_end_date =  @end_date.to_date.strftime("%Y-%m-%d")
+        if (f_end_date && @s_time.present?)
+          search_arr << "created_at <= '#{f_end_date} #{@s_time}'"
+        elsif (f_end_date && @e_time.present?)
+          search_arr << "created_at <= '#{f_end_date} #{@e_time}'"
+        end
+      end
+
+      if (@end_date.present? && (@s_time.present? && @etime.present?))
+      f_end_date =  @end_date.to_date.strftime("%Y-%m-%d")
+        if f_end_date && (@s_time <= @e_time)
+          search_arr << "created_at BETWEEN '#{f_end_date} #{@s_time}' AND '#{f_end_date} #{@e_time}'"
+        end
+      end
+
+      if (@start_date.present? && @end_date.present? && @s_time.present? && @etime.present?)
+        f_start_date =  @start_date.to_date.strftime("%Y-%m-%d")
+        f_end_date = @end_date.to_date.strftime("%Y-%m-%d")
+        if (f_start_date <= f_end_date) && (@s_time <= @e_time)
+          search_arr << "created_at BETWEEN '#{f_start_date} #{@s_time}' AND '#{f_end_date} #{@e_time}'"
+        end
+      end
+
+      if (@start_date.present? && @end_date.present? && (@s_time.present? || @etime.present?))
+        f_start_date =  @start_date.to_date.strftime("%Y-%m-%d")
+        f_end_date = @end_date.to_date.strftime("%Y-%m-%d")
+        if f_start_date <= f_end_date && @s_time.present?
+          search_arr << "created_at BETWEEN '#{f_start_date} #{@s_time}' AND '#{f_end_date} 23:59:59'"
+        elsif f_start_date <= f_end_date && @e_time.present?
+          search_arr << "created_at BETWEEN '#{f_start_date} 00:00:00' AND '#{f_end_date} #{@e_time}'"
+        end
       end
 
       # if @start_date.present?
